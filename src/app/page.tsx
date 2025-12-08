@@ -103,8 +103,8 @@ export default function Home() {
               </span>
             </Link>
             
-            <div className="p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 opacity-60">
-              <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-4">
+            <Link href="/forms" className="p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-pink-500/50 transition-all hover:scale-105 group">
+              <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-pink-500/30 transition-colors">
                 <svg className="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -113,10 +113,10 @@ export default function Home() {
               <p className="text-gray-400 text-sm">
                 Création de formulaires personnalisés et paiements
               </p>
-              <span className="inline-block mt-3 text-gray-500 text-sm font-medium">
-                Bientôt disponible
+              <span className="inline-block mt-3 text-pink-400 text-sm font-medium">
+                Disponible →
               </span>
-            </div>
+            </Link>
             
             <div className="p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 opacity-60">
               <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4">

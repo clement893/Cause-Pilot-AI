@@ -101,6 +101,7 @@ model Donor {
   preferences     DonorPreference?
   customFields    DonorCustomField[]
   communications  Communication[]
+  submissions     DonationSubmission[]
 
   @@index([email])
   @@index([lastName, firstName])
@@ -356,3 +357,254 @@ enum CommunicationStatus {
   BOUNCED
   FAILED
 }
+
+
+// ============================================
+// MODULE FORMULAIRES DON
+// ============================================
+
+model DonationForm {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations générales
+  name          String
+  slug          String   @unique
+  description   String?
+  formType      FormType @default(ONE_TIME)
+  status        FormStatus @default(DRAFT)
+
+  // Configuration des montants
+  suggestedAmounts    Int[]    @default([25, 50, 100, 250, 500])
+  minimumAmount       Float    @default(5)
+  maximumAmount       Float?
+  allowCustomAmount   Boolean  @default(true)
+  defaultAmount       Float?
+
+  // Configuration récurrence (pour dons récurrents)
+  recurringOptions    RecurringFrequency[] @default([MONTHLY])
+  defaultRecurring    RecurringFrequency?
+
+  // Personnalisation visuelle
+  primaryColor        String   @default("#6366f1")
+  secondaryColor      String   @default("#8b5cf6")
+  logoUrl             String?
+  bannerUrl           String?
+  thankYouMessage     String?
+  thankYouRedirectUrl String?
+
+  // Configuration des champs
+  collectPhone        Boolean  @default(false)
+  collectAddress      Boolean  @default(false)
+  collectEmployer     Boolean  @default(false)
+  collectComment      Boolean  @default(true)
+  collectDedication   Boolean  @default(false)
+  allowAnonymous      Boolean  @default(true)
+
+  // SEO et partage
+  metaTitle           String?
+  metaDescription     String?
+  ogImage             String?
+
+  // Campagne associée
+  campaignId          String?
+  campaignName        String?
+
+  // Statistiques (dénormalisées)
+  totalCollected      Float    @default(0)
+  donationCount       Int      @default(0)
+  averageDonation     Float    @default(0)
+
+  // Dates de validité
+  startDate           DateTime?
+  endDate             DateTime?
+  goalAmount          Float?
+
+  // Relations
+  fields              FormField[]
+  submissions         DonationSubmission[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([formType])
+  @@index([createdAt])
+}
+
+enum FormType {
+  ONE_TIME        // Don unique
+  RECURRING       // Don récurrent
+  TICKETING       // Billetterie événement
+  IN_MEMORIAM     // Don in memoriam
+  PEER_TO_PEER    // Collecte P2P
+  PLEDGE          // Promesse de don
+}
+
+enum FormStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  SCHEDULED
+}
+
+enum RecurringFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model FormField {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Configuration du champ
+  name          String
+  label         String
+  fieldType     FormFieldType
+  placeholder   String?
+  helpText      String?
+  defaultValue  String?
+  options       String[]  // Pour SELECT/RADIO/CHECKBOX
+  
+  // Validation
+  isRequired    Boolean   @default(false)
+  minLength     Int?
+  maxLength     Int?
+  pattern       String?   // Regex pour validation
+  
+  // Affichage
+  sortOrder     Int       @default(0)
+  isVisible     Boolean   @default(true)
+  width         FieldWidth @default(FULL)
+  
+  // Logique conditionnelle
+  showIf        String?   // JSON condition
+
+  // Relation
+  formId        String
+  form          DonationForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@index([sortOrder])
+}
+
+enum FormFieldType {
+  TEXT
+  EMAIL
+  PHONE
+  NUMBER
+  TEXTAREA
+  SELECT
+  RADIO
+  CHECKBOX
+  DATE
+  HIDDEN
+}
+
+enum FieldWidth {
+  FULL
+  HALF
+  THIRD
+}
+
+model DonationSubmission {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations du don
+  amount            Float
+  currency          String    @default("CAD")
+  paymentMethod     PaymentMethod?
+  paymentStatus     PaymentStatus @default(PENDING)
+  
+  // Référence paiement
+  stripePaymentId   String?
+  stripeCustomerId  String?
+  transactionId     String?   @unique
+
+  // Informations donateur
+  email             String
+  firstName         String
+  lastName          String
+  phone             String?
+  address           String?
+  city              String?
+  state             String?
+  postalCode        String?
+  country           String?   @default("Canada")
+  
+  // Employeur (pour matching gifts)
+  employer          String?
+  
+  // Don récurrent
+  isRecurring       Boolean   @default(false)
+  recurringFrequency RecurringFrequency?
+  nextPaymentDate   DateTime?
+  recurringStatus   RecurringStatus?
+
+  // Dédicace (in memoriam)
+  dedicationType    DedicationType?
+  dedicateeName     String?
+  dedicateeEmail    String?
+  dedicateeMessage  String?
+  notifyDedicatee   Boolean   @default(false)
+
+  // Options
+  isAnonymous       Boolean   @default(false)
+  comment           String?
+  
+  // Consentements
+  consentEmail      Boolean   @default(false)
+  consentNewsletter Boolean   @default(false)
+  
+  // Données personnalisées (JSON)
+  customFields      String?   // JSON des champs personnalisés
+  
+  // Reçu fiscal
+  receiptNumber     String?
+  receiptSentAt     DateTime?
+  
+  // Tracking
+  source            String?   // UTM source
+  medium            String?   // UTM medium
+  campaign          String?   // UTM campaign
+  referrer          String?
+  ipAddress         String?
+  userAgent         String?
+
+  // Relations
+  formId            String
+  form              DonationForm @relation(fields: [formId], references: [id])
+  donorId           String?
+  donor             Donor?    @relation(fields: [donorId], references: [id])
+
+  @@index([formId])
+  @@index([donorId])
+  @@index([email])
+  @@index([createdAt])
+  @@index([paymentStatus])
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum RecurringStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  FAILED
+  COMPLETED
+}
+
+// Ajout de la relation dans Donor
+// (déjà géré par la relation DonationSubmission.donor)

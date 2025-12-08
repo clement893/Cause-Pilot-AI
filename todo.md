@@ -35,4 +35,35 @@
 ## Phase 6 - Données de Test
 - [x] Créer script de seed avec 50 donateurs fictifs
 - [x] Ajouter API route pour exécuter le seed
-- [ ] Push sur GitHub
+- [x] Push sur GitHub
+
+## Module Formulaires Don
+
+### Phase 1 - Schéma Base de Données
+- [x] Créer le modèle DonationForm pour les formulaires
+- [x] Créer le modèle FormField pour les champs personnalisés
+- [x] Créer le modèle DonationSubmission pour les soumissions
+- [x] Ajouter les types de formulaires (unique, récurrent, billetterie, in memoriam)
+
+### Phase 2 - API Routes
+- [x] API CRUD formulaires de don
+- [x] API soumission de don
+- [x] API statistiques par formulaire
+
+### Phase 3 - Interface Administration
+- [x] Page liste des formulaires
+- [x] Créateur de formulaire
+- [x] Configuration des montants suggérés
+- [x] Personnalisation visuelle
+
+### Phase 4 - Formulaires Publics
+- [x] Page de don publique
+- [x] Formulaire don unique
+- [x] Formulaire don récurrent
+- [x] Formulaire billetterie événement
+- [x] Formulaire don in memoriam
+- [x] Page de confirmation/remerciement
+
+### Phase 5 - Tests et Déploiement
+- [x] Tests des formulaires
+- [x] Push sur GitHub

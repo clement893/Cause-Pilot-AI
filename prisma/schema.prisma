@@ -8,10 +8,351 @@ datasource db {
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
+// ============================================
+// AUTHENTIFICATION & UTILISATEURS
+// ============================================
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
+  role      UserRole @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  createdDonors  Donor[]    @relation("CreatedBy")
+  updatedDonors  Donor[]    @relation("UpdatedBy")
+  donations      Donation[] @relation("RecordedBy")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  ANALYST
+  VIEWER
+  USER
+}
+
+// ============================================
+// MODULE BASE DONATEURS
+// ============================================
+
+model Donor {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations personnelles
+  firstName   String
+  lastName    String
+  email       String?  @unique
+  phone       String?
+  mobile      String?
+  dateOfBirth DateTime?
+
+  // Adresse
+  address     String?
+  address2    String?
+  city        String?
+  state       String?
+  postalCode  String?
+  country     String?  @default("Canada")
+
+  // Données professionnelles
+  profession  String?
+  employer    String?
+  jobTitle    String?
+  industry    String?
+
+  // Statut et classification
+  status      DonorStatus @default(ACTIVE)
+  donorType   DonorType   @default(INDIVIDUAL)
+  segment     String?
+  tags        String[]
+
+  // Métriques calculées (dénormalisées pour performance)
+  totalDonations    Float    @default(0)
+  donationCount     Int      @default(0)
+  averageDonation   Float    @default(0)
+  highestDonation   Float    @default(0)
+  lastDonationDate  DateTime?
+  firstDonationDate DateTime?
+
+  // Notes et commentaires
+  notes       String?
+  source      String?  // Comment le donateur a été acquis
+
+  // Conformité RGPD/PIPEDA
+  consentEmail     Boolean @default(false)
+  consentPhone     Boolean @default(false)
+  consentMail      Boolean @default(false)
+  consentDate      DateTime?
+  optOutDate       DateTime?
+
+  // Audit
+  createdById Int?
+  createdBy   User? @relation("CreatedBy", fields: [createdById], references: [id])
+  updatedById Int?
+  updatedBy   User? @relation("UpdatedBy", fields: [updatedById], references: [id])
+
+  // Relations
+  donations       Donation[]
+  preferences     DonorPreference?
+  customFields    DonorCustomField[]
+  communications  Communication[]
+
+  @@index([email])
+  @@index([lastName, firstName])
+  @@index([status])
+  @@index([segment])
+  @@index([createdAt])
+  @@index([totalDonations])
+}
+
+enum DonorStatus {
+  ACTIVE
+  INACTIVE
+  LAPSED
+  DECEASED
+  DO_NOT_CONTACT
+  PENDING
+}
+
+enum DonorType {
+  INDIVIDUAL
+  CORPORATE
+  FOUNDATION
+  GOVERNMENT
+  ANONYMOUS
+}
+
+// ============================================
+// HISTORIQUE DES DONS
+// ============================================
+
+model Donation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations du don
+  amount        Float
+  currency      String    @default("CAD")
+  donationDate  DateTime
+  paymentMethod PaymentMethod
+  status        DonationStatus @default(COMPLETED)
+
+  // Référence
+  transactionId   String?   @unique
+  receiptNumber   String?
+  receiptSentAt   DateTime?
+
+  // Campagne associée
+  campaignId    String?
+  campaignName  String?
+
+  // Type de don
+  donationType  DonationType @default(ONE_TIME)
+  isRecurring   Boolean      @default(false)
+  recurringId   String?
+
+  // Don dédié (in memoriam, en l'honneur de)
+  dedicationType  DedicationType?
+  dedicateeName   String?
+  dedicateeEmail  String?
+  notifyDedicatee Boolean @default(false)
+
+  // Notes
+  notes         String?
+  isAnonymous   Boolean @default(false)
+
+  // Relations
+  donorId     String
+  donor       Donor  @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  recordedById Int?
+  recordedBy   User?  @relation("RecordedBy", fields: [recordedById], references: [id])
+
+  @@index([donorId])
+  @@index([donationDate])
+  @@index([campaignId])
+  @@index([status])
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT
+  BANK_TRANSFER
+  CHECK
+  CASH
+  PAYPAL
+  OTHER
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum DonationType {
+  ONE_TIME
+  MONTHLY
+  QUARTERLY
+  ANNUAL
+  PLEDGE
+}
+
+enum DedicationType {
+  IN_MEMORY
+  IN_HONOR
+  TRIBUTE
+}
+
+// ============================================
+// PRÉFÉRENCES DONATEUR
+// ============================================
+
+model DonorPreference {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Canaux de communication préférés
+  preferredChannel    CommunicationChannel @default(EMAIL)
+  preferredFrequency  CommunicationFrequency @default(MONTHLY)
+  preferredLanguage   String @default("fr")
+
+  // Causes d'intérêt
+  causesOfInterest    String[]
+
+  // Préférences de don
+  preferredAmount     Float?
+  preferredPaymentMethod PaymentMethod?
+
+  // Dates importantes
+  birthday            DateTime?
+  anniversary         DateTime?
+
+  // Relation
+  donorId String @unique
+  donor   Donor  @relation(fields: [donorId], references: [id], onDelete: Cascade)
+}
+
+enum CommunicationChannel {
+  EMAIL
+  PHONE
+  SMS
+  MAIL
+  SOCIAL_MEDIA
+}
+
+enum CommunicationFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+  NEVER
+}
+
+// ============================================
+// CHAMPS PERSONNALISÉS
+// ============================================
+
+model CustomFieldDefinition {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String   @unique
+  label       String
+  fieldType   FieldType
+  options     String[] // Pour les champs SELECT/MULTISELECT
+  isRequired  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+
+  // Valeurs
+  values DonorCustomField[]
+}
+
+model DonorCustomField {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  value     String
+
+  // Relations
+  donorId   String
+  donor     Donor @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  fieldId   String
+  field     CustomFieldDefinition @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@unique([donorId, fieldId])
+}
+
+enum FieldType {
+  TEXT
+  NUMBER
+  DATE
+  BOOLEAN
+  SELECT
+  MULTISELECT
+  URL
+  EMAIL
+  PHONE
+}
+
+// ============================================
+// COMMUNICATIONS
+// ============================================
+
+model Communication {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  type      CommunicationType
+  channel   CommunicationChannel
+  subject   String?
+  content   String?
+  sentAt    DateTime?
+  status    CommunicationStatus @default(PENDING)
+
+  // Métriques
+  openedAt    DateTime?
+  clickedAt   DateTime?
+  bouncedAt   DateTime?
+
+  // Relation
+  donorId String
+  donor   Donor  @relation(fields: [donorId], references: [id], onDelete: Cascade)
+
+  @@index([donorId])
+  @@index([sentAt])
+  @@index([type])
+}
+
+enum CommunicationType {
+  THANK_YOU
+  RECEIPT
+  NEWSLETTER
+  APPEAL
+  EVENT_INVITATION
+  SURVEY
+  REMINDER
+  OTHER
+}
+
+enum CommunicationStatus {
+  PENDING
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  FAILED
 }

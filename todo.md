@@ -106,4 +106,28 @@
 
 ### Phase 4 - Déploiement
 - [x] Tester le build
+- [x] Push sur GitHub
+
+## Module Copilote IA
+
+### Phase 1 - API Backend
+- [x] Créer l'API route pour le chat IA
+- [x] Implémenter le contexte donateurs/dons
+- [x] Ajouter les fonctions d'analyse de données
+- [x] Créer les prompts système spécialisés
+
+### Phase 2 - Interface Chat
+- [x] Page principale du Copilote
+- [x] Composant de chat avec historique
+- [x] Suggestions de questions prédéfinies
+- [x] Affichage des réponses avec markdown
+
+### Phase 3 - Recommandations et Insights
+- [x] Génération de recommandations automatiques
+- [x] Insights sur les donateurs
+- [x] Suggestions d'actions
+- [x] Visualisations dans les réponses
+
+### Phase 4 - Déploiement
+- [x] Tester le build
 - [ ] Push sur GitHub

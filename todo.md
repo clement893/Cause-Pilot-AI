@@ -153,5 +153,30 @@
 - [x] Tableau des donateurs par campagne
 
 ### Phase 4 - Déploiement
+- [x] Tester le build
+- [x] Push sur GitHub
+
+## Module Marketing Automation
+
+### Phase 1 - Schéma Base de Données
+- [x] Créer le modèle EmailTemplate
+- [x] Créer le modèle EmailCampaign
+- [x] Créer le modèle EmailRecipient
+- [x] Créer le modèle AutomationRule (triggers)
+
+### Phase 2 - API Routes
+- [x] API CRUD templates email
+- [x] API CRUD campagnes email
+- [x] API envoi de campagne
+- [x] API CRUD automatisations (ouvertures, clics)
+
+### Phase 3 - Interface Utilisateur
+- [ ] Page liste des campagnes email
+- [ ] Éditeur de templates email
+- [ ] Page création campagne avec segmentation
+- [ ] Page statistiques des envois
+- [ ] Configuration des automatisations
+
+### Phase 4 - Déploiement
 - [ ] Tester le build
 - [ ] Push sur GitHub

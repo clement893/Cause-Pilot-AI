@@ -862,3 +862,397 @@ model CampaignTeamMember {
 
   @@index([campaignId])
 }
+
+
+// ============================================
+// MODULE MARKETING AUTOMATION
+// ============================================
+
+// Templates d'emails réutilisables
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations générales
+  name          String
+  description   String?
+  category      EmailCategory @default(GENERAL)
+  
+  // Contenu
+  subject       String
+  preheader     String?       // Texte de prévisualisation
+  htmlContent   String        @db.Text
+  textContent   String?       @db.Text  // Version texte brut
+  
+  // Variables disponibles
+  variables     String[]      // Ex: ["firstName", "lastName", "donationAmount"]
+  
+  // Design
+  primaryColor  String        @default("#6366f1")
+  logoUrl       String?
+  footerText    String?
+  
+  // Statut
+  isActive      Boolean       @default(true)
+  isDefault     Boolean       @default(false)
+  
+  // Relations
+  campaigns     EmailCampaign[]
+
+  @@index([category])
+  @@index([isActive])
+}
+
+enum EmailCategory {
+  GENERAL
+  THANK_YOU
+  RECEIPT
+  NEWSLETTER
+  APPEAL
+  EVENT
+  REMINDER
+  WELCOME
+  BIRTHDAY
+  ANNIVERSARY
+  REACTIVATION
+}
+
+// Campagnes email
+model EmailCampaign {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations générales
+  name          String
+  description   String?
+  campaignType  EmailCampaignType @default(ONE_TIME)
+  status        EmailCampaignStatus @default(DRAFT)
+  
+  // Contenu (peut surcharger le template)
+  subject       String?
+  preheader     String?
+  htmlContent   String?       @db.Text
+  
+  // Segmentation des destinataires
+  segmentRules  Json?         // Règles de segmentation JSON
+  tags          String[]      // Tags pour filtrer les donateurs
+  segments      String[]      // Segments de donateurs
+  
+  // Planification
+  scheduledAt   DateTime?
+  sentAt        DateTime?
+  completedAt   DateTime?
+  
+  // Configuration
+  fromName      String        @default("Nucleus Cause")
+  fromEmail     String        @default("noreply@nucleuscause.com")
+  replyTo       String?
+  
+  // A/B Testing
+  isABTest      Boolean       @default(false)
+  variantA      Json?         // Configuration variante A
+  variantB      Json?         // Configuration variante B
+  winningVariant String?
+  
+  // Statistiques
+  totalRecipients   Int       @default(0)
+  sentCount         Int       @default(0)
+  deliveredCount    Int       @default(0)
+  openCount         Int       @default(0)
+  clickCount        Int       @default(0)
+  bounceCount       Int       @default(0)
+  unsubscribeCount  Int       @default(0)
+  complaintCount    Int       @default(0)
+  
+  // Métriques calculées
+  openRate          Float     @default(0)
+  clickRate         Float     @default(0)
+  bounceRate        Float     @default(0)
+  
+  // Relations
+  templateId    String?
+  template      EmailTemplate? @relation(fields: [templateId], references: [id])
+  recipients    EmailRecipient[]
+  automationId  String?
+  automation    AutomationRule? @relation(fields: [automationId], references: [id])
+
+  @@index([status])
+  @@index([campaignType])
+  @@index([scheduledAt])
+  @@index([sentAt])
+}
+
+enum EmailCampaignType {
+  ONE_TIME      // Envoi unique
+  RECURRING     // Envoi récurrent
+  AUTOMATED     // Déclenché par automation
+  TRANSACTIONAL // Email transactionnel
+}
+
+enum EmailCampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  PAUSED
+  CANCELLED
+  FAILED
+}
+
+// Destinataires d'une campagne email
+model EmailRecipient {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations du destinataire
+  email         String
+  firstName     String?
+  lastName      String?
+  
+  // Statut d'envoi
+  status        EmailRecipientStatus @default(PENDING)
+  sentAt        DateTime?
+  deliveredAt   DateTime?
+  
+  // Engagement
+  openedAt      DateTime?
+  openCount     Int       @default(0)
+  clickedAt     DateTime?
+  clickCount    Int       @default(0)
+  clickedLinks  String[]
+  
+  // Problèmes
+  bouncedAt     DateTime?
+  bounceType    BounceType?
+  bounceReason  String?
+  unsubscribedAt DateTime?
+  complainedAt  DateTime?
+  
+  // Variante A/B
+  variant       String?   // "A" ou "B"
+  
+  // Relation avec donateur (optionnel)
+  donorId       String?
+  
+  // Relation
+  campaignId    String
+  campaign      EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, email])
+  @@index([campaignId])
+  @@index([status])
+  @@index([email])
+}
+
+enum EmailRecipientStatus {
+  PENDING
+  QUEUED
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  UNSUBSCRIBED
+  COMPLAINED
+  FAILED
+}
+
+enum BounceType {
+  HARD
+  SOFT
+  TRANSIENT
+}
+
+// Règles d'automatisation
+model AutomationRule {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations générales
+  name          String
+  description   String?
+  isActive      Boolean       @default(false)
+  
+  // Déclencheur
+  triggerType   AutomationTrigger
+  triggerConfig Json?         // Configuration spécifique au trigger
+  
+  // Conditions
+  conditions    Json?         // Conditions additionnelles
+  
+  // Actions
+  actionType    AutomationAction
+  actionConfig  Json?         // Configuration de l'action
+  
+  // Délai
+  delayMinutes  Int           @default(0)
+  delayType     DelayType     @default(IMMEDIATE)
+  
+  // Limites
+  maxExecutions Int?          // Limite d'exécutions par donateur
+  cooldownHours Int?          // Délai entre exécutions
+  
+  // Statistiques
+  executionCount    Int       @default(0)
+  lastExecutedAt    DateTime?
+  successCount      Int       @default(0)
+  failureCount      Int       @default(0)
+  
+  // Relations
+  campaigns     EmailCampaign[]
+
+  @@index([triggerType])
+  @@index([isActive])
+}
+
+enum AutomationTrigger {
+  // Événements donateur
+  NEW_DONOR           // Nouveau donateur créé
+  FIRST_DONATION      // Premier don
+  DONATION_RECEIVED   // Don reçu
+  RECURRING_STARTED   // Début don récurrent
+  RECURRING_CANCELLED // Annulation don récurrent
+  
+  // Anniversaires
+  BIRTHDAY            // Anniversaire du donateur
+  DONATION_ANNIVERSARY // Anniversaire du premier don
+  MEMBERSHIP_ANNIVERSARY // Anniversaire d'adhésion
+  
+  // Engagement
+  INACTIVE_30_DAYS    // Inactif depuis 30 jours
+  INACTIVE_90_DAYS    // Inactif depuis 90 jours
+  INACTIVE_365_DAYS   // Inactif depuis 1 an
+  
+  // Formulaires
+  FORM_SUBMITTED      // Formulaire soumis
+  FORM_ABANDONED      // Formulaire abandonné
+  
+  // Campagnes
+  CAMPAIGN_STARTED    // Campagne démarrée
+  CAMPAIGN_ENDING     // Campagne se termine bientôt
+  CAMPAIGN_GOAL_REACHED // Objectif atteint
+  
+  // Manuel
+  MANUAL              // Déclenché manuellement
+  SCHEDULED           // Planifié (date/heure)
+}
+
+enum AutomationAction {
+  SEND_EMAIL          // Envoyer un email
+  SEND_SMS            // Envoyer un SMS
+  ADD_TAG             // Ajouter un tag
+  REMOVE_TAG          // Retirer un tag
+  UPDATE_SEGMENT      // Mettre à jour le segment
+  CREATE_TASK         // Créer une tâche
+  NOTIFY_TEAM         // Notifier l'équipe
+  WEBHOOK             // Appeler un webhook
+}
+
+enum DelayType {
+  IMMEDIATE           // Immédiat
+  MINUTES             // Après X minutes
+  HOURS               // Après X heures
+  DAYS                // Après X jours
+  SPECIFIC_TIME       // À une heure précise
+}
+
+// Journal des exécutions d'automatisation
+model AutomationLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Référence à la règle
+  automationId  String
+  automationName String
+  
+  // Donateur concerné
+  donorId       String?
+  donorEmail    String?
+  
+  // Résultat
+  status        AutomationLogStatus
+  errorMessage  String?
+  
+  // Détails
+  triggerData   Json?         // Données du déclencheur
+  actionResult  Json?         // Résultat de l'action
+
+  @@index([automationId])
+  @@index([donorId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+enum AutomationLogStatus {
+  SUCCESS
+  FAILED
+  SKIPPED
+  PENDING
+}
+
+// Listes de diffusion
+model MailingList {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations
+  name          String
+  description   String?
+  
+  // Configuration
+  isPublic      Boolean       @default(false)  // Visible pour inscription
+  isDoubleOptIn Boolean       @default(true)   // Double opt-in requis
+  
+  // Statistiques
+  subscriberCount   Int       @default(0)
+  activeCount       Int       @default(0)
+  
+  // Relations
+  subscribers   MailingListSubscriber[]
+
+  @@index([isPublic])
+}
+
+model MailingListSubscriber {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations
+  email         String
+  firstName     String?
+  lastName      String?
+  
+  // Statut
+  status        SubscriberStatus @default(PENDING)
+  confirmedAt   DateTime?
+  unsubscribedAt DateTime?
+  
+  // Source
+  source        String?       // Comment ils se sont inscrits
+  
+  // Relation avec donateur
+  donorId       String?
+  
+  // Relation
+  listId        String
+  list          MailingList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, email])
+  @@index([listId])
+  @@index([email])
+  @@index([status])
+}
+
+enum SubscriberStatus {
+  PENDING       // En attente de confirmation
+  ACTIVE        // Actif
+  UNSUBSCRIBED  // Désabonné
+  BOUNCED       // Email invalide
+  COMPLAINED    // A signalé comme spam
+}

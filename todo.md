@@ -29,5 +29,10 @@
 ## Phase 5 - Tests et Déploiement
 - [ ] Tests unitaires API
 - [ ] Tests d'intégration
-- [ ] Push sur GitHub
+- [x] Push sur GitHub
 - [ ] Déploiement Railway
+
+## Phase 6 - Données de Test
+- [x] Créer script de seed avec 50 donateurs fictifs
+- [x] Ajouter API route pour exécuter le seed
+- [ ] Push sur GitHub

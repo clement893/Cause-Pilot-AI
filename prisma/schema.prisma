@@ -681,6 +681,7 @@ model Campaign {
   forms             CampaignForm[]
   updates           CampaignUpdate[]
   team              CampaignTeamMember[]
+  p2pFundraisers    P2PFundraiser[]
 
   @@index([slug])
   @@index([status])
@@ -1255,4 +1256,270 @@ enum SubscriberStatus {
   UNSUBSCRIBED  // Désabonné
   BOUNCED       // Email invalide
   COMPLAINED    // A signalé comme spam
+}
+
+
+// ============================================
+// MODULE CAMPAGNES P2P (PEER-TO-PEER)
+// ============================================
+
+// Page de collecte individuelle créée par un fundraiser
+model P2PFundraiser {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations du fundraiser
+  firstName     String
+  lastName      String
+  email         String
+  phone         String?
+  photoUrl      String?
+  
+  // Page de collecte
+  slug          String   @unique
+  title         String
+  story         String?  @db.Text  // Histoire personnelle
+  videoUrl      String?
+  
+  // Objectifs
+  goalAmount    Float    @default(500)
+  
+  // Statistiques (dénormalisées)
+  totalRaised       Float    @default(0)
+  donationCount     Int      @default(0)
+  donorCount        Int      @default(0)
+  averageDonation   Float    @default(0)
+  
+  // Statut
+  status        P2PStatus @default(PENDING)
+  approvedAt    DateTime?
+  publishedAt   DateTime?
+  
+  // Personnalisation
+  primaryColor  String   @default("#6366f1")
+  coverImageUrl String?
+  
+  // Gamification
+  points        Int      @default(0)
+  level         Int      @default(1)
+  badges        String[] // IDs des badges obtenus
+  
+  // Partage social
+  shareCount    Int      @default(0)
+  viewCount     Int      @default(0)
+  
+  // Relations
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  teamId        String?
+  team          P2PTeam? @relation(fields: [teamId], references: [id])
+  donations     P2PDonation[]
+  activities    P2PActivity[]
+  
+  // Relation optionnelle avec un donateur existant
+  donorId       String?
+
+  @@index([campaignId])
+  @@index([teamId])
+  @@index([slug])
+  @@index([status])
+  @@index([totalRaised])
+}
+
+enum P2PStatus {
+  PENDING     // En attente d'approbation
+  APPROVED    // Approuvé mais pas encore publié
+  ACTIVE      // Actif et visible
+  PAUSED      // Mis en pause
+  COMPLETED   // Objectif atteint ou campagne terminée
+  CANCELLED   // Annulé
+}
+
+// Équipe P2P (plusieurs fundraisers ensemble)
+model P2PTeam {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations
+  name          String
+  slug          String   @unique
+  description   String?  @db.Text
+  logoUrl       String?
+  coverImageUrl String?
+  
+  // Objectifs
+  goalAmount    Float    @default(2000)
+  
+  // Statistiques (dénormalisées)
+  totalRaised       Float    @default(0)
+  donationCount     Int      @default(0)
+  memberCount       Int      @default(0)
+  
+  // Statut
+  status        P2PStatus @default(PENDING)
+  
+  // Gamification
+  points        Int      @default(0)
+  rank          Int?     // Classement parmi les équipes
+  
+  // Relations
+  campaignId    String
+  members       P2PFundraiser[]
+  captainId     String?  // ID du fundraiser capitaine
+
+  @@index([campaignId])
+  @@index([slug])
+  @@index([totalRaised])
+}
+
+// Dons effectués via une page P2P
+model P2PDonation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Informations du don
+  amount        Float
+  currency      String   @default("CAD")
+  
+  // Donateur
+  donorName     String?
+  donorEmail    String
+  isAnonymous   Boolean  @default(false)
+  message       String?  // Message de soutien
+  
+  // Statut
+  status        PaymentStatus @default(PENDING)
+  transactionId String?  @unique
+  
+  // Relations
+  fundraiserId  String
+  fundraiser    P2PFundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  
+  // Relation optionnelle avec donateur existant
+  donorId       String?
+
+  @@index([fundraiserId])
+  @@index([donorEmail])
+  @@index([createdAt])
+}
+
+// Activités et événements P2P (pour le fil d'actualité)
+model P2PActivity {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Type d'activité
+  activityType  P2PActivityType
+  
+  // Contenu
+  title         String
+  description   String?
+  imageUrl      String?
+  
+  // Données associées (JSON)
+  metadata      Json?
+  
+  // Visibilité
+  isPublic      Boolean  @default(true)
+  
+  // Relations
+  fundraiserId  String
+  fundraiser    P2PFundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+
+  @@index([fundraiserId])
+  @@index([activityType])
+  @@index([createdAt])
+}
+
+enum P2PActivityType {
+  PAGE_CREATED      // Page créée
+  DONATION_RECEIVED // Don reçu
+  GOAL_REACHED      // Objectif atteint
+  MILESTONE_REACHED // Jalon atteint (25%, 50%, 75%)
+  BADGE_EARNED      // Badge obtenu
+  SHARE_SOCIAL      // Partage sur réseaux sociaux
+  UPDATE_POSTED     // Mise à jour publiée
+  TEAM_JOINED       // A rejoint une équipe
+}
+
+// Badges et récompenses
+model P2PBadge {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Informations
+  name          String
+  description   String
+  iconUrl       String?
+  color         String   @default("#6366f1")
+  
+  // Conditions d'obtention
+  badgeType     P2PBadgeType
+  threshold     Float?   // Seuil pour obtenir le badge
+  
+  // Points accordés
+  pointsAwarded Int      @default(10)
+  
+  // Affichage
+  sortOrder     Int      @default(0)
+  isActive      Boolean  @default(true)
+
+  @@index([badgeType])
+}
+
+enum P2PBadgeType {
+  FIRST_DONATION      // Premier don reçu
+  AMOUNT_RAISED       // Montant collecté (100$, 500$, 1000$, etc.)
+  DONOR_COUNT         // Nombre de donateurs (5, 10, 25, etc.)
+  GOAL_PERCENT        // Pourcentage de l'objectif (25%, 50%, 100%, 150%)
+  SOCIAL_SHARE        // Partages sociaux
+  STREAK              // Dons consécutifs (jours)
+  TOP_FUNDRAISER      // Meilleur collecteur
+  TEAM_PLAYER         // Membre d'équipe actif
+  EARLY_BIRD          // Inscription rapide
+  STORY_TELLER        // A partagé son histoire
+}
+
+// Classement P2P (leaderboard)
+model P2PLeaderboard {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Période
+  periodType    LeaderboardPeriod
+  periodStart   DateTime
+  periodEnd     DateTime
+  
+  // Type de classement
+  leaderboardType LeaderboardType
+  
+  // Campagne associée
+  campaignId    String
+  
+  // Données du classement (JSON array)
+  rankings      Json     // [{fundraiserId, rank, amount, donorCount}]
+  
+  // Statut
+  isFinal       Boolean  @default(false)
+
+  @@index([campaignId])
+  @@index([periodType])
+  @@index([leaderboardType])
+}
+
+enum LeaderboardPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+enum LeaderboardType {
+  AMOUNT_RAISED     // Par montant collecté
+  DONOR_COUNT       // Par nombre de donateurs
+  POINTS            // Par points de gamification
+  TEAM              // Classement des équipes
 }

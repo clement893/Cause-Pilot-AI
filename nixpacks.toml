@@ -5,7 +5,10 @@ nixPkgs = ["nodejs_20", "pnpm"]
 cmds = ["pnpm install"]
 
 [phases.build]
-cmds = ["rm -rf .next", "NODE_ENV=production pnpm build"]
+cmds = ["NODE_ENV=production pnpm build"]
 
 [start]
 cmd = "pnpm start"
+
+[variables]
+NODE_ENV = "production"

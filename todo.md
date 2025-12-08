@@ -82,4 +82,28 @@
 
 ### Phase 3 - Déploiement
 - [x] Tester le build
+- [x] Push sur GitHub
+
+## Module Analytics & Reporting
+
+### Phase 1 - API Routes
+- [x] API statistiques globales (KPIs)
+- [x] API tendances temporelles (dons par période)
+- [x] API répartition par segment/source
+- [x] API performance des campagnes
+
+### Phase 2 - Tableau de Bord
+- [x] Page dashboard principale
+- [x] Cartes KPIs (total dons, donateurs, taux conversion)
+- [x] Sélecteur de période
+- [x] Filtres par campagne/segment
+
+### Phase 3 - Graphiques
+- [x] Graphique évolution des dons (barres)
+- [x] Graphique répartition par type (barres de progression)
+- [x] Graphique top donateurs (liste classée)
+- [x] Graphique tendances mensuelles
+
+### Phase 4 - Déploiement
+- [x] Tester le build
 - [ ] Push sur GitHub

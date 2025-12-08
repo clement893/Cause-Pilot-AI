@@ -130,4 +130,28 @@
 
 ### Phase 4 - Déploiement
 - [x] Tester le build
+- [x] Push sur GitHub
+
+## Module Gestion Campagnes
+
+### Phase 1 - Schéma Base de Données
+- [x] Créer le modèle Campaign
+- [x] Créer le modèle CampaignMilestone
+- [x] Créer le modèle CampaignDonor (relation campagne-donateur)
+- [x] Ajouter les relations avec DonationForm
+
+### Phase 2 - API Routes
+- [x] API CRUD campagnes
+- [x] API statistiques par campagne
+- [x] API timeline et jalons
+- [x] API donateurs par campagne
+### Phase 3 - Interface Utilisateur
+- [x] Page liste des campagnes
+- [x] Page création campagne
+- [x] Page détail campagne avec progression
+- [x] Composant timeline des jalons
+- [x] Tableau des donateurs par campagne
+
+### Phase 4 - Déploiement
+- [ ] Tester le build
 - [ ] Push sur GitHub

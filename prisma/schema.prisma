@@ -608,3 +608,257 @@ enum RecurringStatus {
 
 // Ajout de la relation dans Donor
 // (déjà géré par la relation DonationSubmission.donor)
+
+
+// ============================================
+// MODULE GESTION CAMPAGNES
+// ============================================
+
+model Campaign {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations générales
+  name          String
+  slug          String   @unique
+  description   String?
+  shortDescription String?
+  
+  // Type et statut
+  campaignType  CampaignType @default(FUNDRAISING)
+  status        CampaignStatus @default(DRAFT)
+  priority      CampaignPriority @default(MEDIUM)
+
+  // Dates
+  startDate     DateTime?
+  endDate       DateTime?
+  launchDate    DateTime?
+
+  // Objectifs financiers
+  goalAmount    Float?
+  minimumGoal   Float?
+  stretchGoal   Float?
+
+  // Statistiques (dénormalisées)
+  totalRaised       Float    @default(0)
+  donationCount     Int      @default(0)
+  donorCount        Int      @default(0)
+  averageDonation   Float    @default(0)
+  largestDonation   Float    @default(0)
+  conversionRate    Float    @default(0)
+
+  // Personnalisation visuelle
+  primaryColor      String   @default("#6366f1")
+  secondaryColor    String   @default("#8b5cf6")
+  logoUrl           String?
+  bannerUrl         String?
+  thumbnailUrl      String?
+
+  // Contenu
+  thankYouMessage   String?
+  impactStatement   String?
+
+  // SEO
+  metaTitle         String?
+  metaDescription   String?
+  ogImage           String?
+
+  // Configuration
+  isPublic          Boolean  @default(true)
+  allowP2P          Boolean  @default(false)
+  enableMatching    Boolean  @default(false)
+  matchingRatio     Float?   // Ex: 2.0 = 2:1 matching
+  matchingCap       Float?
+
+  // Catégorie/Tags
+  category          String?
+  tags              String[]
+
+  // Relations
+  milestones        CampaignMilestone[]
+  donors            CampaignDonor[]
+  forms             CampaignForm[]
+  updates           CampaignUpdate[]
+  team              CampaignTeamMember[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([campaignType])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+enum CampaignType {
+  FUNDRAISING       // Collecte générale
+  ANNUAL_FUND       // Campagne annuelle
+  CAPITAL           // Campagne de capital
+  EMERGENCY         // Urgence/Crise
+  EVENT             // Événement
+  PEER_TO_PEER      // P2P
+  CROWDFUNDING      // Financement participatif
+  MATCHING          // Campagne avec matching
+  PLANNED_GIVING    // Dons planifiés
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+enum CampaignPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// Jalons de campagne
+model CampaignMilestone {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations
+  title         String
+  description   String?
+  targetAmount  Float?
+  targetDate    DateTime?
+  
+  // Statut
+  isCompleted   Boolean   @default(false)
+  completedAt   DateTime?
+  actualAmount  Float?
+
+  // Affichage
+  sortOrder     Int       @default(0)
+  icon          String?
+  color         String?
+
+  // Relation
+  campaignId    String
+  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([sortOrder])
+}
+
+// Relation Campagne-Donateur
+model CampaignDonor {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Montants
+  totalDonated      Float    @default(0)
+  donationCount     Int      @default(0)
+  firstDonationDate DateTime?
+  lastDonationDate  DateTime?
+  largestDonation   Float    @default(0)
+
+  // Statut dans la campagne
+  donorLevel        DonorLevel @default(SUPPORTER)
+  isRecurring       Boolean    @default(false)
+  isMajorDonor      Boolean    @default(false)
+
+  // Notes spécifiques à la campagne
+  notes             String?
+
+  // Relations
+  campaignId        String
+  campaign          Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  donorId           String
+
+  @@unique([campaignId, donorId])
+  @@index([campaignId])
+  @@index([donorId])
+  @@index([totalDonated])
+}
+
+enum DonorLevel {
+  SUPPORTER
+  CONTRIBUTOR
+  PATRON
+  BENEFACTOR
+  CHAMPION
+  VISIONARY
+}
+
+// Formulaires associés à une campagne
+model CampaignForm {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  formId        String
+
+  // Configuration
+  isPrimary     Boolean  @default(false)
+
+  @@unique([campaignId, formId])
+  @@index([campaignId])
+}
+
+// Mises à jour de campagne
+model CampaignUpdate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Contenu
+  title         String
+  content       String
+  imageUrl      String?
+  videoUrl      String?
+
+  // Publication
+  isPublished   Boolean   @default(false)
+  publishedAt   DateTime?
+
+  // Statistiques
+  viewCount     Int       @default(0)
+  shareCount    Int       @default(0)
+
+  // Relation
+  campaignId    String
+  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([publishedAt])
+}
+
+// Équipe de campagne
+model CampaignTeamMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Informations
+  name          String
+  role          String?
+  email         String?
+  phone         String?
+  photoUrl      String?
+  bio           String?
+
+  // Objectifs personnels (pour P2P)
+  personalGoal      Float?
+  totalRaised       Float    @default(0)
+  donorCount        Int      @default(0)
+
+  // Affichage
+  sortOrder     Int       @default(0)
+  isVisible     Boolean   @default(true)
+
+  // Relation
+  campaignId    String
+  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+}

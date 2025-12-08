@@ -67,3 +67,19 @@
 ### Phase 5 - Tests et Déploiement
 - [x] Tests des formulaires
 - [x] Push sur GitHub
+
+## Navigation - Sidebar
+
+### Phase 1 - Composants
+- [x] Créer le composant Sidebar avec menu de navigation
+- [x] Créer le composant AppLayout avec sidebar intégrée
+- [x] Ajouter les icônes pour chaque section
+
+### Phase 2 - Intégration
+- [x] Intégrer le layout dans les pages donateurs
+- [x] Intégrer le layout dans les pages formulaires
+- [x] Ajouter les liens vers les modules à venir
+
+### Phase 3 - Déploiement
+- [x] Tester le build
+- [ ] Push sur GitHub

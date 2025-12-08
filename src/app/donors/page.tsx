@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button, Card } from "@/components/ui";
 import { DonorTable } from "@/components/donors/DonorTable";
 import { SearchFilters } from "@/components/donors/SearchFilters";
@@ -70,7 +71,6 @@ export default function DonorsPage() {
   const handleSearch = async (filters: DonorSearchFilters) => {
     setCurrentFilters(filters);
     
-    // Si des filtres avancés sont utilisés, utiliser l'API de recherche
     if (filters.status?.length || filters.donorType?.length || filters.minTotalDonations || filters.maxTotalDonations || filters.hasEmailConsent) {
       setLoading(true);
       try {
@@ -124,59 +124,44 @@ export default function DonorsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Base Donateurs</h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Gérez et analysez votre base de donateurs
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost">
-                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                  Accueil
-                </Button>
-              </Link>
-              <Link href="/donors/new">
-                <Button variant="primary">
-                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Nouveau donateur
-                </Button>
-              </Link>
-            </div>
+    <AppLayout breadcrumbs={[{ name: "Base Donateurs" }]}>
+      {/* Page Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Base Donateurs</h1>
+            <p className="mt-1 text-sm text-gray-400">
+              Gérez et analysez votre base de donateurs
+            </p>
           </div>
+          <Link href="/donors/new">
+            <Button variant="primary">
+              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Nouveau donateur
+            </Button>
+          </Link>
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        <StatsCards stats={stats} loading={statsLoading} />
+      {/* Stats Cards */}
+      <StatsCards stats={stats} loading={statsLoading} />
 
-        {/* Search and Filters */}
-        <SearchFilters onSearch={handleSearch} loading={loading} />
+      {/* Search and Filters */}
+      <SearchFilters onSearch={handleSearch} loading={loading} />
 
-        {/* Donors Table */}
-        <Card padding="none">
-          <DonorTable donors={donors} onDelete={handleDelete} loading={loading} />
-          <Pagination
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages}
-            total={pagination.total}
-            limit={pagination.limit}
-            onPageChange={handlePageChange}
-          />
-        </Card>
-      </main>
-    </div>
+      {/* Donors Table */}
+      <Card padding="none" className="bg-slate-900 border-slate-800">
+        <DonorTable donors={donors} onDelete={handleDelete} loading={loading} />
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          total={pagination.total}
+          limit={pagination.limit}
+          onPageChange={handlePageChange}
+        />
+      </Card>
+    </AppLayout>
   );
 }

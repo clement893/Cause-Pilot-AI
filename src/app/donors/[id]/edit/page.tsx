@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button, Spinner } from "@/components/ui";
 import { DonorForm } from "@/components/donors/DonorForm";
 import { Donor, DonorFormData } from "@/types/donor";
@@ -69,62 +70,56 @@ export default function EditDonorPage({ params }: EditDonorPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
+      <AppLayout>
+        <div className="flex items-center justify-center py-20">
+          <Spinner size="lg" />
+        </div>
+      </AppLayout>
     );
   }
 
   if (error && !donor) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <AppLayout breadcrumbs={[{ name: "Base Donateurs", href: "/donors" }, { name: "Erreur" }]}>
         <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-900">{error}</h3>
+          <h3 className="text-lg font-semibold text-white">{error}</h3>
           <div className="mt-4">
             <Link href="/donors">
               <Button variant="primary">Retour à la liste</Button>
             </Link>
           </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
-            <Link href={`/donors/${id}`}>
-              <Button variant="ghost" size="sm">
-                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Retour
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Modifier {donor?.firstName} {donor?.lastName}
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Modifiez les informations du donateur
-              </p>
-            </div>
-          </div>
+    <AppLayout 
+      breadcrumbs={[
+        { name: "Base Donateurs", href: "/donors" },
+        { name: `${donor?.firstName} ${donor?.lastName}`, href: `/donors/${id}` },
+        { name: "Modifier" }
+      ]}
+    >
+      <div className="max-w-4xl">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">
+            Modifier {donor?.firstName} {donor?.lastName}
+          </h1>
+          <p className="mt-1 text-sm text-gray-400">
+            Modifiez les informations du donateur
+          </p>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
+        
         {donor && <DonorForm donor={donor} onSubmit={handleSubmit} loading={saving} />}
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 }

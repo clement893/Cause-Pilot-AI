@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui";
+import AppLayout from "@/components/layout/AppLayout";
 import { DonorForm } from "@/components/donors/DonorForm";
 import { DonorFormData } from "@/types/donor";
 
@@ -39,38 +38,29 @@ export default function NewDonorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/donors">
-              <Button variant="ghost" size="sm">
-                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Retour
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Nouveau donateur</h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Ajoutez un nouveau donateur à votre base
-              </p>
-            </div>
-          </div>
+    <AppLayout 
+      breadcrumbs={[
+        { name: "Base Donateurs", href: "/donors" },
+        { name: "Nouveau donateur" }
+      ]}
+    >
+      <div className="max-w-4xl">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">Nouveau donateur</h1>
+          <p className="mt-1 text-sm text-gray-400">
+            Ajoutez un nouveau donateur à votre base
+          </p>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
+        
         <DonorForm onSubmit={handleSubmit} loading={loading} />
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 }

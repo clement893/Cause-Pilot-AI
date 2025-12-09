@@ -247,7 +247,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     });
 
     if (originalDonation) {
-      const amountInDollars = (invoice.amount_paid || 0) / 100;
+      const amountInDollars = (invoiceAny.amount_paid || 0) / 100;
 
       // Create new donation record for recurring payment
       await prisma.donation.create({
@@ -258,7 +258,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
           donationDate: new Date(),
           paymentMethod: "CREDIT_CARD",
           status: "COMPLETED",
-          transactionId: invoice.payment_intent as string,
+          transactionId: invoiceAny.payment_intent as string,
           isRecurring: true,
           recurringId: subscriptionId,
           campaignId: originalDonation.campaignId,

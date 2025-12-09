@@ -92,58 +92,43 @@ export async function POST(request: NextRequest) {
         data: { donorId: keepDonorId },
       });
 
-      // 3. Transférer les activités (si le modèle existe)
-      let activitiesTransferred = { count: 0 };
+      // 3. Transférer les campagnes P2P
+      let p2pTransferred = 0;
       try {
-        activitiesTransferred = await tx.donorActivity.updateMany({
+        const p2pResult = await tx.p2PFundraiser.updateMany({
           where: { donorId: mergeDonorId },
           data: { donorId: keepDonorId },
         });
+        p2pTransferred = p2pResult.count;
       } catch {
-        // Le modèle DonorActivity n'existe peut-être pas
+        // Le modèle P2PFundraiser n'existe peut-être pas ou pas de données
       }
 
-      // 4. Transférer les préférences (si le modèle existe)
+      // 4. Transférer les destinataires email
+      let emailRecipientsTransferred = 0;
       try {
-        await tx.donorPreferences.updateMany({
+        const emailResult = await tx.emailRecipient.updateMany({
           where: { donorId: mergeDonorId },
           data: { donorId: keepDonorId },
         });
+        emailRecipientsTransferred = emailResult.count;
       } catch {
-        // Le modèle DonorPreferences n'existe peut-être pas
+        // Le modèle EmailRecipient n'existe peut-être pas ou pas de données
       }
 
-      // 5. Transférer les consentements
+      // 5. Transférer l'historique des consentements
+      let consentHistoryTransferred = 0;
       try {
-        await tx.consent.updateMany({
+        const consentResult = await tx.consentHistory.updateMany({
           where: { donorId: mergeDonorId },
           data: { donorId: keepDonorId },
         });
+        consentHistoryTransferred = consentResult.count;
       } catch {
-        // Le modèle Consent n'existe peut-être pas
+        // Le modèle ConsentHistory n'existe peut-être pas ou pas de données
       }
 
-      // 6. Transférer les campagnes P2P
-      try {
-        await tx.p2PFundraiser.updateMany({
-          where: { donorId: mergeDonorId },
-          data: { donorId: keepDonorId },
-        });
-      } catch {
-        // Le modèle P2PFundraiser n'existe peut-être pas
-      }
-
-      // 7. Transférer les destinataires email
-      try {
-        await tx.emailRecipient.updateMany({
-          where: { donorId: mergeDonorId },
-          data: { donorId: keepDonorId },
-        });
-      } catch {
-        // Le modèle EmailRecipient n'existe peut-être pas
-      }
-
-      // 8. Supprimer le doublon
+      // 6. Supprimer le doublon
       await tx.donor.delete({
         where: { id: mergeDonorId },
       });
@@ -151,7 +136,9 @@ export async function POST(request: NextRequest) {
       return {
         updatedDonor,
         donationsTransferred: donationsTransferred.count,
-        activitiesTransferred: activitiesTransferred.count,
+        p2pTransferred,
+        emailRecipientsTransferred,
+        consentHistoryTransferred,
       };
     });
 
@@ -161,7 +148,9 @@ export async function POST(request: NextRequest) {
       mergedDonor: result.updatedDonor,
       stats: {
         donationsTransferred: result.donationsTransferred,
-        activitiesTransferred: result.activitiesTransferred,
+        p2pTransferred: result.p2pTransferred,
+        emailRecipientsTransferred: result.emailRecipientsTransferred,
+        consentHistoryTransferred: result.consentHistoryTransferred,
       },
     });
   } catch (error) {

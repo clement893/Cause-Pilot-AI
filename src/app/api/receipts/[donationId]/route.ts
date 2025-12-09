@@ -70,7 +70,7 @@ export async function GET(
       
       // Donor info
       donorName: `${donation.donor.firstName} ${donation.donor.lastName}`,
-      donorEmail: donation.donor.email,
+      donorEmail: donation.donor.email || "",
       donorAddress: donation.donor.address || undefined,
       donorCity: donation.donor.city || undefined,
       donorPostalCode: donation.donor.postalCode || undefined,

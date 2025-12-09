@@ -8,7 +8,10 @@ import { DonorTable } from "@/components/donors/DonorTable";
 import { SearchFilters } from "@/components/donors/SearchFilters";
 import { StatsCards } from "@/components/donors/StatsCards";
 import { Pagination } from "@/components/donors/Pagination";
+import { ImportModal } from "@/components/donors/ImportModal";
+import { ExportButtons } from "@/components/donors/ExportButtons";
 import { Donor, DonorStats, DonorSearchFilters, PaginatedResponse } from "@/types/donor";
+import { Upload } from "lucide-react";
 
 export default function DonorsPage() {
   const [donors, setDonors] = useState<Donor[]>([]);
@@ -22,6 +25,7 @@ export default function DonorsPage() {
     totalPages: 0,
   });
   const [currentFilters, setCurrentFilters] = useState<DonorSearchFilters>({});
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const fetchDonors = useCallback(async (filters: DonorSearchFilters = {}) => {
     setLoading(true);
@@ -123,6 +127,11 @@ export default function DonorsPage() {
     }
   };
 
+  const handleImportSuccess = () => {
+    fetchDonors(currentFilters);
+    fetchStats();
+  };
+
   return (
     <AppLayout breadcrumbs={[{ name: "Base Donateurs" }]}>
       {/* Page Header */}
@@ -134,14 +143,34 @@ export default function DonorsPage() {
               Gérez et analysez votre base de donateurs
             </p>
           </div>
-          <Link href="/donors/new">
-            <Button variant="primary">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Nouveau donateur
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            {/* Export Button */}
+            <ExportButtons
+              filters={{
+                status: currentFilters.status?.[0],
+                search: currentFilters.query,
+              }}
+            />
+
+            {/* Import Button */}
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors border border-slate-700"
+            >
+              <Upload className="w-4 h-4" />
+              Importer
+            </button>
+
+            {/* New Donor Button */}
+            <Link href="/donors/new">
+              <Button variant="primary">
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Nouveau donateur
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -162,6 +191,13 @@ export default function DonorsPage() {
           onPageChange={handlePageChange}
         />
       </Card>
+
+      {/* Import Modal */}
+      <ImportModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onSuccess={handleImportSuccess}
+      />
     </AppLayout>
   );
 }

@@ -22,14 +22,17 @@
     "@sendgrid/mail": "^8.1.6",
     "lucide-react": "^0.556.0",
     "next": "15.5.7",
+    "papaparse": "^5.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "stripe": "^20.0.0"
+    "stripe": "^20.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/papaparse": "^5.5.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

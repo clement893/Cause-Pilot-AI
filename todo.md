@@ -21,8 +21,19 @@
 - [x] Composant filtres et segmentation
 
 ## Phase 4 - Fonctionnalités Avancées
-- [ ] Import CSV/Excel
-- [ ] Export données (CSV, Excel)
+- [x] Import CSV/Excel
+  - [x] API import CSV
+  - [x] API import Excel
+  - [x] Validation des données
+  - [x] Mapping des colonnes
+  - [x] Gestion des erreurs
+- [x] Export données (CSV, Excel)
+  - [x] API export CSV
+  - [x] API export Excel
+  - [x] Filtres d'export
+- [x] Interface utilisateur import/export
+  - [x] Modal d'import avec drag & drop
+  - [x] Boutons d'export dans la liste donateurs
 - [ ] Détection et gestion des doublons
 - [ ] Gestion des consentements RGPD
 

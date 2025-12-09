@@ -51,13 +51,14 @@ function TextBlockPreview({ block, padding, backgroundColor, textAlign }: { bloc
 function HeadingBlockPreview({ block, padding, backgroundColor, textAlign }: { block: HeadingBlock; padding: string; backgroundColor: string; textAlign: string }) {
   const fontSize = block.level === 1 ? "32px" : block.level === 2 ? "24px" : "20px";
   const color = block.style?.color || "#1a1a1a";
-  const Tag = `h${block.level}` as keyof JSX.IntrinsicElements;
+  
+  const headingStyle = { margin: 0, fontSize, color, fontWeight: "bold" as const };
   
   return (
     <div style={{ padding, backgroundColor, textAlign: textAlign as React.CSSProperties["textAlign"] }}>
-      <Tag style={{ margin: 0, fontSize, color, fontWeight: "bold" }}>
-        {block.content}
-      </Tag>
+      {block.level === 1 && <h1 style={headingStyle}>{block.content}</h1>}
+      {block.level === 2 && <h2 style={headingStyle}>{block.content}</h2>}
+      {block.level === 3 && <h3 style={headingStyle}>{block.content}</h3>}
     </div>
   );
 }

@@ -252,3 +252,32 @@
 - [x] Permettre la création de collectes P2P
 - [x] Ajouter API pour activer P2P sur campagnes existantes
 - [x] Améliorer interface pour guider l'utilisateur
+
+
+## Tracking SendGrid (Webhooks)
+
+### Phase 1 - Base de données
+- [x] Créer modèle EmailEvent pour stocker les événements
+- [x] Ajouter champs de tracking sur EmailRecipient
+
+### Phase 2 - API Webhook
+- [x] Créer endpoint /api/webhooks/sendgrid
+- [x] Valider la signature SendGrid
+- [x] Parser les événements (open, click, bounce, etc.)
+- [x] Enregistrer les événements en base
+
+### Phase 3 - Mise à jour des statistiques
+- [x] Calculer les taux d'ouverture réels
+- [x] Calculer les taux de clics réels
+- [x] Gérer les bounces et désabonnements
+
+### Phase 4 - Interface
+- [x] Afficher les statistiques réelles dans les résultats campagne
+- [x] Ajouter graphique d'évolution des ouvertures/clics
+- [x] Liste des destinataires avec statut détaillé
+- [x] API pour récupérer les événements d'une campagne
+- [x] Top liens cliqués
+
+### Phase 5 - Configuration SendGrid
+- [ ] Documenter la configuration du webhook dans SendGrid
+- [ ] Tester avec des emails réels

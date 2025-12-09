@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 // ============================================
@@ -1042,6 +1041,9 @@ model EmailRecipient {
   campaignId    String
   campaign      EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
+  // Relation avec les événements
+  events        EmailEvent[]
+
   @@unique([campaignId, email])
   @@index([campaignId])
   @@index([status])
@@ -1763,4 +1765,45 @@ enum InvitationStatus {
   ACCEPTED
   EXPIRED
   REVOKED
+}
+
+
+// ============================================
+// MODULE TRACKING EMAIL (SENDGRID WEBHOOKS)
+// ============================================
+
+// Événements email reçus via webhooks SendGrid
+model EmailEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Référence au destinataire
+  recipientId   String
+  recipient     EmailRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  
+  // Référence à la campagne
+  campaignId    String
+  
+  // Type d'événement
+  eventType     String    // processed, delivered, open, click, bounce, etc.
+  eventDate     DateTime
+  
+  // Informations du destinataire
+  email         String
+  
+  // Données spécifiques à l'événement
+  url           String?   // Pour les clics
+  ip            String?
+  userAgent     String?
+  reason        String?   // Pour les bounces
+  
+  // Identifiants SendGrid
+  sgEventId     String?
+  sgMessageId   String?
+
+  @@index([recipientId])
+  @@index([campaignId])
+  @@index([eventType])
+  @@index([eventDate])
+  @@index([email])
 }

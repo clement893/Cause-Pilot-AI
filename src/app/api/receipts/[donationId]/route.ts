@@ -17,7 +17,6 @@ export async function GET(
       where: { id: donationId },
       include: {
         donor: true,
-        campaign: true,
       },
     });
 
@@ -83,7 +82,7 @@ export async function GET(
       donationDate: donation.donationDate,
       paymentMethod: formatPaymentMethod(donation.paymentMethod),
       transactionId: donation.transactionId || undefined,
-      campaignName: donation.campaign?.name || undefined,
+      campaignName: donation.campaignName || undefined,
       
       // Organization info
       orgName: settings.org_name || "Votre Organisation",

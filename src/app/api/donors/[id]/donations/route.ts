@@ -11,20 +11,20 @@ export async function GET(
 
     const donations = await prisma.donation.findMany({
       where: { donorId: id },
-      include: {
-        campaign: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
       orderBy: { donationDate: "desc" },
     });
 
+    // Transformer les données pour inclure le nom de la campagne
+    const donationsWithCampaign = donations.map((donation) => ({
+      ...donation,
+      campaign: donation.campaignName
+        ? { id: donation.campaignId, name: donation.campaignName }
+        : null,
+    }));
+
     return NextResponse.json({
       success: true,
-      data: donations,
+      data: donationsWithCampaign,
     });
   } catch (error) {
     console.error("Error fetching donor donations:", error);

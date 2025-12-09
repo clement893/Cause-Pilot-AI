@@ -18,7 +18,6 @@ export async function POST(
       where: { id: donationId },
       include: {
         donor: true,
-        campaign: true,
       },
     });
 
@@ -82,7 +81,7 @@ export async function POST(
       donationDate: donation.donationDate,
       paymentMethod: formatPaymentMethod(donation.paymentMethod),
       transactionId: donation.transactionId || undefined,
-      campaignName: donation.campaign?.name || undefined,
+      campaignName: donation.campaignName || undefined,
       
       orgName: settings.org_name || "Votre Organisation",
       orgAddress: settings.org_address || undefined,

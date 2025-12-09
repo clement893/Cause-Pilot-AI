@@ -112,38 +112,22 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
     setError(null);
 
     try {
-      const donationData: DonationData = {
-        formId: form.id,
-        amount,
-        email: donorInfo.email,
-        firstName: donorInfo.firstName,
-        lastName: donorInfo.lastName,
-        phone: donorInfo.phone || undefined,
-        address: donorInfo.address || undefined,
-        city: donorInfo.city || undefined,
-        state: donorInfo.state || undefined,
-        postalCode: donorInfo.postalCode || undefined,
-        country: donorInfo.country,
-        employer: donorInfo.employer || undefined,
-        comment: donorInfo.comment || undefined,
-        isAnonymous: donorInfo.isAnonymous,
-        consentEmail: donorInfo.consentEmail,
-        consentNewsletter: donorInfo.consentNewsletter,
-      };
-
-      // Ajouter les infos de dédicace si applicable
-      if (form.collectDedication && donorInfo.dedicationType) {
-        donationData.dedicationType = donorInfo.dedicationType;
-        donationData.dedicateeName = donorInfo.dedicateeName;
-        donationData.dedicateeEmail = donorInfo.dedicateeEmail;
-        donationData.dedicateeMessage = donorInfo.dedicateeMessage;
-        donationData.notifyDedicatee = donorInfo.notifyDedicatee;
-      }
-
-      const response = await fetch("/api/donate", {
+      // Créer une session Stripe Checkout
+      const response = await fetch("/api/payments/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(donationData),
+        body: JSON.stringify({
+          amount: Math.round(amount * 100), // Convertir en cents
+          formId: form.id,
+          donorEmail: donorInfo.email,
+          donorFirstName: donorInfo.firstName,
+          donorLastName: donorInfo.lastName,
+          isRecurring: form.formType === "RECURRING",
+          recurringFrequency: form.recurringOptions?.[0] || "MONTHLY",
+          campaignId: form.campaignId || undefined,
+          comment: donorInfo.comment || undefined,
+          isAnonymous: donorInfo.isAnonymous,
+        }),
       });
 
       const data = await response.json();
@@ -152,14 +136,14 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
         throw new Error(data.error || "Une erreur est survenue");
       }
 
-      setResult({
-        transactionId: data.data.transactionId,
-        receiptNumber: data.data.receiptNumber,
-      });
-      setSuccess(true);
+      // Rediriger vers Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("URL de paiement non reçue");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Une erreur est survenue");
-    } finally {
       setSubmitting(false);
     }
   };

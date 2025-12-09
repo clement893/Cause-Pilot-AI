@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendBulkEmails, EmailOptions } from "@/lib/sendgrid";
 
 // POST - Envoyer une campagne email
 export async function POST(
@@ -99,38 +100,68 @@ export async function POST(
       data: { totalRecipients },
     });
 
-    // Simuler l'envoi (dans une vraie application, cela serait fait par un job en arrière-plan)
-    // Pour la démo, on marque simplement les emails comme envoyés
-    await prisma.emailRecipient.updateMany({
+    // Récupérer tous les destinataires en attente
+    const pendingRecipients = await prisma.emailRecipient.findMany({
       where: { campaignId: id, status: "PENDING" },
-      data: {
-        status: "SENT",
-        sentAt: new Date(),
-      },
     });
 
-    // Simuler quelques ouvertures et clics (pour la démo)
-    const recipients = await prisma.emailRecipient.findMany({
-      where: { campaignId: id },
-      take: Math.floor(totalRecipients * 0.3), // 30% d'ouvertures
+    // Préparer les emails à envoyer
+    const emailOptions: EmailOptions[] = pendingRecipients.map((recipient) => {
+      let htmlContent = campaign.template?.htmlContent || "";
+      let textContent = campaign.template?.textContent || "";
+
+      // Remplacer les variables
+      htmlContent = htmlContent
+        .replace(/{{firstName}}/g, recipient.firstName || "")
+        .replace(/{{lastName}}/g, recipient.lastName || "")
+        .replace(/{{email}}/g, recipient.email)
+        .replace(/{{date}}/g, new Date().toLocaleDateString("fr-CA"));
+
+      textContent = textContent
+        .replace(/{{firstName}}/g, recipient.firstName || "")
+        .replace(/{{lastName}}/g, recipient.lastName || "")
+        .replace(/{{email}}/g, recipient.email)
+        .replace(/{{date}}/g, new Date().toLocaleDateString("fr-CA"));
+
+      return {
+        to: recipient.email,
+        subject: campaign.subject,
+        html: htmlContent,
+        text: textContent,
+        from: campaign.senderEmail ? {
+          email: campaign.senderEmail,
+          name: campaign.senderName || undefined,
+        } : undefined,
+        categories: ["campaign", campaign.id],
+        customArgs: {
+          campaignId: campaign.id,
+          recipientId: recipient.id,
+        },
+      };
     });
 
-    for (const recipient of recipients) {
-      await prisma.emailRecipient.update({
-        where: { id: recipient.id },
+    // Envoyer les emails via SendGrid
+    let sendResult = { success: 0, failed: 0 };
+    if (emailOptions.length > 0) {
+      sendResult = await sendBulkEmails(emailOptions);
+    }
+
+    // Mettre à jour le statut des destinataires
+    if (sendResult.success > 0) {
+      await prisma.emailRecipient.updateMany({
+        where: { campaignId: id, status: "PENDING" },
         data: {
-          status: "OPENED",
-          openedAt: new Date(),
-          openCount: 1,
+          status: "SENT",
+          sentAt: new Date(),
         },
       });
     }
 
     // Marquer la campagne comme envoyée
-    const sentCount = totalRecipients;
-    const deliveredCount = Math.floor(totalRecipients * 0.98); // 98% de délivrabilité
-    const openCount = recipients.length;
-    const clickCount = Math.floor(openCount * 0.2); // 20% de clics parmi les ouvertures
+    const sentCount = sendResult.success;
+    const deliveredCount = sentCount; // Les stats réelles viendront des webhooks SendGrid
+    const openCount = 0; // Sera mis à jour par les webhooks
+    const clickCount = 0; // Sera mis à jour par les webhooks
 
     await prisma.emailCampaign.update({
       where: { id },

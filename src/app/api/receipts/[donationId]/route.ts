@@ -103,7 +103,7 @@ export async function GET(
 
     // Générer le PDF
     const pdfBuffer = await renderToBuffer(
-      React.createElement(TaxReceiptDocument, { data: receiptData })
+      React.createElement(TaxReceiptDocument, { data: receiptData }) as any
     );
 
     // Mettre à jour le don pour indiquer que le reçu a été généré

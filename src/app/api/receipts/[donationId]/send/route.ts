@@ -100,7 +100,7 @@ export async function POST(
 
     // Générer le PDF
     const pdfBuffer = await renderToBuffer(
-      React.createElement(TaxReceiptDocument, { data: receiptData })
+      React.createElement(TaxReceiptDocument, { data: receiptData }) as any
     );
 
     // Convertir le buffer en base64 pour l'attachement

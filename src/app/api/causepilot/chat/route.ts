@@ -115,20 +115,20 @@ async function collectFullContext() {
         select: {
           id: true,
           name: true,
-          goal: true,
-          raised: true,
+          goalAmount: true,
+          totalRaised: true,
           startDate: true,
           endDate: true,
           donorCount: true,
         },
       }),
       prisma.campaign.findMany({
-        orderBy: { raised: "desc" },
+        orderBy: { totalRaised: "desc" },
         take: 5,
         select: {
           name: true,
-          goal: true,
-          raised: true,
+          goalAmount: true,
+          totalRaised: true,
           donorCount: true,
           status: true,
         },
@@ -238,9 +238,9 @@ async function collectFullContext() {
       campaigns: {
         active: activeCampaigns.map(c => ({
           name: c.name,
-          goal: c.goal,
-          raised: c.raised,
-          progress: c.goal ? ((c.raised / c.goal) * 100).toFixed(1) : 0,
+          goal: c.goalAmount,
+          raised: c.totalRaised,
+          progress: c.goalAmount ? ((c.totalRaised / c.goalAmount) * 100).toFixed(1) : 0,
           donors: c.donorCount,
           endDate: c.endDate,
         })),

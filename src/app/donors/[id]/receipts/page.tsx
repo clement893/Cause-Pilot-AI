@@ -268,7 +268,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
                           disabled={sendingReceipt === donation.id}
                         >
                           {sendingReceipt === donation.id ? (
-                            <Spinner size="sm" className="mr-1" />
+                            <Spinner size="sm" />
                           ) : (
                             <svg
                               className="w-4 h-4 mr-1"

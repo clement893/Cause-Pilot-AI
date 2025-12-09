@@ -194,8 +194,12 @@ export function Card({ children, className = "", padding = "md" }: CardProps) {
     lg: "p-8",
   };
   
+  // Allow className to override default bg-white
+  const hasCustomBg = className.includes('bg-');
+  const bgClass = hasCustomBg ? '' : 'bg-white';
+  
   return (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-200 ${paddings[padding]} ${className}`}>
+    <div className={`${bgClass} rounded-xl shadow-sm border border-gray-200 ${paddings[padding]} ${className}`}>
       {children}
     </div>
   );

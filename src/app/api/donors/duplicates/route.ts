@@ -77,7 +77,7 @@ function calculateDuplicateScore(donor1: DonorData, donor2: DonorData): {
   }
   
   // Téléphone (normaliser les numéros)
-  const normalizePhone = (phone: string | null) => phone?.replace(/[\s\-\.\(\)]/g, "") || null;
+  const normalizePhone = (phone: string | null | undefined) => phone?.replace(/[\s\-\.\(\)]/g, "") || null;
   const phone1 = normalizePhone(donor1.phone) || normalizePhone(donor1.mobile);
   const phone2 = normalizePhone(donor2.phone) || normalizePhone(donor2.mobile);
   

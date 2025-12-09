@@ -233,10 +233,12 @@ async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {
 
 async function handleInvoicePaid(invoice: Stripe.Invoice) {
   // Handle recurring payment
-  if (invoice.subscription && invoice.billing_reason === "subscription_cycle") {
-    const subscriptionId = typeof invoice.subscription === "string" 
-      ? invoice.subscription 
-      : invoice.subscription.id;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const invoiceAny = invoice as any;
+  if (invoiceAny.subscription && invoice.billing_reason === "subscription_cycle") {
+    const subscriptionId = typeof invoiceAny.subscription === "string" 
+      ? invoiceAny.subscription 
+      : invoiceAny.subscription.id;
 
     // Find the original donation to get form/campaign info
     const originalDonation = await prisma.donation.findFirst({

@@ -128,9 +128,9 @@ export async function POST(
         subject: campaign.subject || "Sans sujet",
         html: htmlContent,
         text: textContent,
-        from: campaign.senderEmail ? {
-          email: campaign.senderEmail,
-          name: campaign.senderName || undefined,
+        from: campaign.fromEmail ? {
+          email: campaign.fromEmail,
+          name: campaign.fromName || undefined,
         } : undefined,
         categories: ["campaign", campaign.id],
         customArgs: {

@@ -178,8 +178,8 @@
 - [ ] Configuration des automatisations
 
 ### Phase 4 - Déploiement
-- [ ] Tester le build
-- [ ] Push sur GitHub
+- [x] Tester le build
+- [x] Push sur GitHub
 
 ## Intégration SendGrid
 
@@ -220,5 +220,5 @@
 - [x] Page résultats campagne (existante)
 
 ### Phase 4 - Déploiement
-- [ ] Tester le build
-- [ ] Push sur GitHub
+- [x] Tester le build
+- [x] Push sur GitHub

@@ -221,7 +221,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {
   // Find donations with this subscription ID and mark as cancelled
   await prisma.donation.updateMany({
-    where: { subscriptionId: subscription.id },
+    where: { recurringId: subscription.id },
     data: {
       isRecurring: false,
       notes: "Abonnement annulé",
@@ -240,7 +240,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
 
     // Find the original donation to get form/campaign info
     const originalDonation = await prisma.donation.findFirst({
-      where: { subscriptionId },
+      where: { recurringId: subscriptionId },
       orderBy: { createdAt: "asc" },
     });
 

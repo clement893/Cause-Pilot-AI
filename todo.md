@@ -313,3 +313,28 @@
 - [x] Page liste des templates
 - [x] Templates prédéfinis (starter)
 - [x] Duplication de templates
+
+
+## Détection et Gestion des Doublons
+
+### Phase 1 - API de détection
+- [x] Créer algorithme de scoring de similarité
+- [x] API recherche de doublons potentiels
+- [x] API scan complet de la base pour doublons
+- [x] Règles de détection configurables (email, nom, téléphone)
+
+### Phase 2 - Import avec détection
+- [x] Détecter les doublons pendant l'import CSV/Excel
+- [x] Afficher les doublons trouvés avant import
+- [x] Options: ignorer, mettre à jour, créer quand même
+
+### Phase 3 - Interface de gestion
+- [x] Page liste des doublons détectés
+- [x] Comparaison côte à côte des enregistrements
+- [x] Sélection des champs à conserver
+
+### Phase 4 - Fusion des doublons
+- [x] API fusion de deux donateurs
+- [x] Transfert des dons et historique
+- [x] Suppression du doublon après fusion
+- [ ] Journal des fusions effectuées

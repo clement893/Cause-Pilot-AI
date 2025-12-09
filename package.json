@@ -25,6 +25,7 @@
     "@sendgrid/mail": "^8.1.6",
     "lucide-react": "^0.556.0",
     "next": "15.5.7",
+    "openai": "^6.10.0",
     "papaparse": "^5.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",

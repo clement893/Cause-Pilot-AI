@@ -1,14 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET - Récupérer les données du dashboard
+// GET - Récupérer les données du dashboard amélioré
 export async function GET() {
   try {
     const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
     const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const sixMonthsAgo = new Date(now);
+    sixMonthsAgo.setMonth(now.getMonth() - 6);
+    const threeMonthsAgo = new Date(now);
+    threeMonthsAgo.setMonth(now.getMonth() - 3);
 
     // Métriques des donateurs
     const totalDonors = await prisma.donor.count();
@@ -23,31 +31,64 @@ export async function GET() {
     const activeDonors = await prisma.donor.count({
       where: { status: "ACTIVE" },
     });
+    const recurringDonorsCount = await prisma.donor.count({
+      where: { isRecurring: true },
+    });
+
+    // Donateurs inactifs (pas de don depuis 6 mois mais ont déjà donné)
+    const inactiveDonors = await prisma.donor.count({
+      where: {
+        status: "ACTIVE",
+        lastDonationDate: { lt: sixMonthsAgo },
+        donationCount: { gt: 0 },
+      },
+    });
 
     // Métriques des dons
     const donations = await prisma.donation.findMany({
       where: { status: "COMPLETED" },
-      select: { amount: true, createdAt: true, isRecurring: true },
+      select: { amount: true, createdAt: true, donationDate: true, isRecurring: true },
     });
 
-    const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
-    const donationsThisMonth = donations
-      .filter((d) => d.createdAt >= startOfMonth)
-      .reduce((sum, d) => sum + d.amount, 0);
-    const donationsLastMonth = donations
-      .filter((d) => d.createdAt >= startOfLastMonth && d.createdAt <= endOfLastMonth)
-      .reduce((sum, d) => sum + d.amount, 0);
-    const donationsThisYear = donations
-      .filter((d) => d.createdAt >= startOfYear)
-      .reduce((sum, d) => sum + d.amount, 0);
+    const totalDonationsAmount = donations.reduce((sum, d) => sum + d.amount, 0);
+    const totalDonationsCount = donations.length;
+    
+    // Dons par période
+    const donationsToday = donations.filter((d) => 
+      (d.donationDate || d.createdAt) >= startOfDay
+    );
+    const donationsTodayAmount = donationsToday.reduce((sum, d) => sum + d.amount, 0);
+    
+    const donationsThisWeek = donations.filter((d) => 
+      (d.donationDate || d.createdAt) >= startOfWeek
+    );
+    const donationsThisWeekAmount = donationsThisWeek.reduce((sum, d) => sum + d.amount, 0);
+    
+    const donationsThisMonth = donations.filter((d) => 
+      (d.donationDate || d.createdAt) >= startOfMonth
+    );
+    const donationsThisMonthAmount = donationsThisMonth.reduce((sum, d) => sum + d.amount, 0);
+    
+    const donationsLastMonth = donations.filter((d) => 
+      (d.donationDate || d.createdAt) >= startOfLastMonth && 
+      (d.donationDate || d.createdAt) <= endOfLastMonth
+    );
+    const donationsLastMonthAmount = donationsLastMonth.reduce((sum, d) => sum + d.amount, 0);
+    
+    const donationsThisYear = donations.filter((d) => 
+      (d.donationDate || d.createdAt) >= startOfYear
+    );
+    const donationsThisYearAmount = donationsThisYear.reduce((sum, d) => sum + d.amount, 0);
+    
     const recurringDonations = donations.filter((d) => d.isRecurring).length;
-    const averageDonation = donations.length > 0 ? totalDonations / donations.length : 0;
+    const averageDonation = donations.length > 0 ? totalDonationsAmount / donations.length : 0;
 
     // Métriques des campagnes
     const totalCampaigns = await prisma.campaign.count();
     const activeCampaigns = await prisma.campaign.count({
       where: { status: "ACTIVE" },
     });
+    
     const campaignsData = await prisma.campaign.findMany({
       where: { status: "ACTIVE" },
       select: {
@@ -57,10 +98,17 @@ export async function GET() {
         totalRaised: true,
         donorCount: true,
         endDate: true,
+        primaryColor: true,
       },
       orderBy: { totalRaised: "desc" },
       take: 5,
     });
+
+    // Objectif mensuel (somme des objectifs des campagnes actives)
+    const monthlyGoalTarget = campaignsData.reduce((sum, c) => sum + (c.goalAmount || 0), 0);
+    const monthlyGoalProgress = monthlyGoalTarget > 0 
+      ? (donationsThisMonthAmount / monthlyGoalTarget) * 100 
+      : 0;
 
     // Métriques des formulaires
     const totalForms = await prisma.donationForm.count();
@@ -80,6 +128,43 @@ export async function GET() {
       take: 10,
     });
 
+    // Top donateurs
+    const topDonors = await prisma.donor.findMany({
+      orderBy: { totalDonated: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        totalDonated: true,
+        donationCount: true,
+        lastDonationDate: true,
+        segment: true,
+      },
+    });
+
+    // Donateurs à relancer (inactifs avec historique de dons importants)
+    const donorsToReengage = await prisma.donor.findMany({
+      where: {
+        status: "ACTIVE",
+        lastDonationDate: { lt: sixMonthsAgo },
+        totalDonated: { gte: 50 },
+      },
+      orderBy: { totalDonated: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        totalDonated: true,
+        lastDonationDate: true,
+        donationCount: true,
+        segment: true,
+      },
+    });
+
     // Nouveaux donateurs récents
     const recentDonors = await prisma.donor.findMany({
       select: {
@@ -88,7 +173,7 @@ export async function GET() {
         lastName: true,
         email: true,
         createdAt: true,
-        totalDonations: true,
+        totalDonated: true,
       },
       orderBy: { createdAt: "desc" },
       take: 5,
@@ -100,13 +185,18 @@ export async function GET() {
       const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
       const monthTotal = donations
-        .filter((d) => d.createdAt >= monthStart && d.createdAt <= monthEnd)
+        .filter((d) => {
+          const date = d.donationDate || d.createdAt;
+          return date >= monthStart && date <= monthEnd;
+        })
         .reduce((sum, d) => sum + d.amount, 0);
-      const monthCount = donations.filter(
-        (d) => d.createdAt >= monthStart && d.createdAt <= monthEnd
-      ).length;
+      const monthCount = donations.filter((d) => {
+        const date = d.donationDate || d.createdAt;
+        return date >= monthStart && date <= monthEnd;
+      }).length;
       monthlyDonations.push({
         month: monthStart.toLocaleDateString("fr-CA", { month: "short", year: "2-digit" }),
+        fullMonth: monthStart.toLocaleDateString("fr-CA", { month: "long", year: "numeric" }),
         amount: monthTotal,
         count: monthCount,
       });
@@ -122,9 +212,122 @@ export async function GET() {
     const donorGrowth = newDonorsLastMonth > 0
       ? ((newDonorsThisMonth - newDonorsLastMonth) / newDonorsLastMonth) * 100
       : newDonorsThisMonth > 0 ? 100 : 0;
-    const donationGrowth = donationsLastMonth > 0
-      ? ((donationsThisMonth - donationsLastMonth) / donationsLastMonth) * 100
-      : donationsThisMonth > 0 ? 100 : 0;
+    const donationGrowth = donationsLastMonthAmount > 0
+      ? ((donationsThisMonthAmount - donationsLastMonthAmount) / donationsLastMonthAmount) * 100
+      : donationsThisMonthAmount > 0 ? 100 : 0;
+
+    // Alertes et notifications
+    const alerts = [];
+    
+    // Alerte: donateurs inactifs
+    if (inactiveDonors > 0) {
+      alerts.push({
+        id: "inactive-donors",
+        type: "warning",
+        title: "Donateurs inactifs",
+        message: `${inactiveDonors} donateur(s) n'ont pas donné depuis 6 mois`,
+        action: "/donors?status=inactive",
+        priority: inactiveDonors > 10 ? "high" : "medium",
+      });
+    }
+
+    // Alerte: campagnes proches de la fin
+    const endingSoon = campaignsData.filter(c => {
+      if (!c.endDate) return false;
+      const daysLeft = Math.ceil((new Date(c.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      return daysLeft <= 7 && daysLeft > 0;
+    });
+    
+    if (endingSoon.length > 0) {
+      alerts.push({
+        id: "campaigns-ending",
+        type: "info",
+        title: "Campagnes se terminant bientôt",
+        message: `${endingSoon.length} campagne(s) se terminent dans les 7 prochains jours`,
+        action: "/campaigns",
+        priority: "medium",
+      });
+    }
+
+    // Alerte: objectif mensuel
+    if (monthlyGoalProgress >= 100) {
+      alerts.push({
+        id: "goal-reached",
+        type: "success",
+        title: "Objectif atteint !",
+        message: "Félicitations ! L'objectif mensuel a été atteint",
+        action: "/dashboard",
+        priority: "low",
+      });
+    } else if (monthlyGoalProgress >= 75) {
+      alerts.push({
+        id: "goal-75",
+        type: "success",
+        title: "75% de l'objectif atteint",
+        message: "Vous êtes sur la bonne voie pour atteindre l'objectif mensuel",
+        action: "/dashboard",
+        priority: "low",
+      });
+    }
+
+    // Alerte: nouveaux donateurs
+    if (newDonorsThisMonth > 0) {
+      alerts.push({
+        id: "new-donors",
+        type: "info",
+        title: "Nouveaux donateurs",
+        message: `${newDonorsThisMonth} nouveau(x) donateur(s) ce mois-ci`,
+        action: "/donors?sort=newest",
+        priority: "low",
+      });
+    }
+
+    // Suggestions CausePilot
+    const suggestions = [];
+
+    // Suggestion: relancer les donateurs inactifs
+    if (donorsToReengage.length > 0) {
+      suggestions.push({
+        id: "reengage-donors",
+        type: "action",
+        title: "Relancer les donateurs inactifs",
+        message: `${donorsToReengage.length} donateur(s) avec un historique de ${donorsToReengage.reduce((sum, d) => sum + d.totalDonated, 0).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 })} n'ont pas donné depuis 6 mois`,
+        action: "/donors?status=inactive",
+        impact: "high",
+      });
+    }
+
+    // Suggestion: campagne de fin d'année (si on est en Q4)
+    if (now.getMonth() >= 9 && now.getMonth() <= 11) {
+      const hasYearEndCampaign = campaignsData.some(c => 
+        c.name.toLowerCase().includes("fin d'année") || 
+        c.name.toLowerCase().includes("noel") ||
+        c.name.toLowerCase().includes("noël")
+      );
+      if (!hasYearEndCampaign) {
+        suggestions.push({
+          id: "year-end-campaign",
+          type: "opportunity",
+          title: "Campagne de fin d'année",
+          message: "C'est la période idéale pour lancer une campagne de fin d'année. 30% des dons annuels sont faits en décembre.",
+          action: "/campaigns/new",
+          impact: "high",
+        });
+      }
+    }
+
+    // Suggestion: augmenter les dons récurrents
+    const recurringRate = totalDonors > 0 ? (recurringDonorsCount / totalDonors) * 100 : 0;
+    if (recurringRate < 20) {
+      suggestions.push({
+        id: "increase-recurring",
+        type: "growth",
+        title: "Augmenter les dons récurrents",
+        message: `Seulement ${recurringRate.toFixed(1)}% de vos donateurs sont récurrents. L'objectif idéal est 30%.`,
+        action: "/donors?recurring=false",
+        impact: "medium",
+      });
+    }
 
     return NextResponse.json({
       // KPIs principaux
@@ -133,9 +336,12 @@ export async function GET() {
         newDonorsThisMonth,
         donorGrowth: Math.round(donorGrowth * 10) / 10,
         activeDonors,
-        totalDonations,
-        donationsThisMonth,
-        donationsThisYear,
+        inactiveDonors,
+        recurringDonors: recurringDonorsCount,
+        totalDonations: totalDonationsAmount,
+        totalDonationsCount,
+        donationsThisMonth: donationsThisMonthAmount,
+        donationsThisYear: donationsThisYearAmount,
         donationGrowth: Math.round(donationGrowth * 10) / 10,
         averageDonation: Math.round(averageDonation * 100) / 100,
         recurringDonations,
@@ -144,6 +350,35 @@ export async function GET() {
         totalForms,
         activeForms,
       },
+      
+      // Période actuelle
+      period: {
+        today: {
+          amount: donationsTodayAmount,
+          count: donationsToday.length,
+        },
+        week: {
+          amount: donationsThisWeekAmount,
+          count: donationsThisWeek.length,
+        },
+        month: {
+          amount: donationsThisMonthAmount,
+          count: donationsThisMonth.length,
+        },
+        year: {
+          amount: donationsThisYearAmount,
+          count: donationsThisYear.length,
+        },
+      },
+      
+      // Objectif mensuel
+      monthlyGoal: {
+        target: monthlyGoalTarget,
+        current: donationsThisMonthAmount,
+        progress: Math.min(monthlyGoalProgress, 100),
+        remaining: Math.max(0, monthlyGoalTarget - donationsThisMonthAmount),
+      },
+      
       // Graphiques
       charts: {
         monthlyDonations,
@@ -152,7 +387,8 @@ export async function GET() {
           count: s._count.id,
         })),
       },
-      // Listes récentes
+      
+      // Listes
       recent: {
         donations: recentDonations.map((d) => ({
           id: d.id,
@@ -169,8 +405,19 @@ export async function GET() {
         campaigns: campaignsData.map((c) => ({
           ...c,
           progress: c.goalAmount ? (c.totalRaised / c.goalAmount) * 100 : 0,
+          daysRemaining: c.endDate 
+            ? Math.max(0, Math.ceil((new Date(c.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+            : null,
         })),
       },
+      
+      // Donateurs à relancer
+      donorsToReengage,
+      topDonors,
+      
+      // Alertes et suggestions
+      alerts,
+      suggestions,
     });
   } catch (error) {
     console.error("Dashboard API error:", error);

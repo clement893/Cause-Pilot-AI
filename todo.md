@@ -426,3 +426,51 @@
 - [x] Afficher les campagnes médias sociaux liées (pas de modèle Social dans le schéma)
 - [x] Afficher la liste des donateurs de la campagne
 - [x] Mettre à jour l'API campagnes pour inclure les relations
+
+
+## Améliorations Majeures - Phase 2
+
+### Tableau de bord personnalisé
+- [x] Créer API dashboard avec KPIs temps réel
+- [x] Widget objectif du mois avec progression
+- [x] Widget dons du jour/semaine/mois
+- [x] Widget donateurs à relancer (inactifs)
+- [x] Widget campagnes en cours avec progression
+- [x] Widget top donateurs récents
+- [x] Widget tendances (graphique)
+- [ ] Personnalisation des widgets (drag & drop)
+
+### Système d'alertes et notifications
+- [x] Créer modèle Notification dans Prisma
+- [x] API pour créer/lire/marquer notifications
+- [x] Centre de notifications dans l'interface
+- [x] Alerte don majeur (seuil configurable)
+- [x] Alerte annulation donateur récurrent
+- [x] Alerte campagne atteint 50%/75%/100%
+- [x] Alerte nouveau donateur
+- [x] Préférences de notifications par utilisateur
+
+### Segmentation avancée des donateurs
+- [x] Créer modèle Segment dans Prisma
+- [x] Interface de création de segments avec règles
+- [x] Règles: montant, fréquence, date dernier don, statut
+- [x] Segments dynamiques (mise à jour auto)
+- [x] Affichage du segment sur la fiche donateur
+- [x] Filtrer la liste des donateurs par segment
+
+### Actions en masse sur les donateurs
+- [x] Sélection multiple dans la liste des donateurs
+- [x] Action: Envoyer un email groupé
+- [x] Action: Ajouter/retirer un tag
+- [x] Action: Changer le segment
+- [x] Action: Exporter la sélection
+- [x] Action: Créer une campagne email pour la sélection
+- [x] Barre d'actions contextuelle
+
+### CausePilot - Suggestions proactives
+- [x] Analyse automatique des données au chargement
+- [x] Suggestions de donateurs à relancer
+- [x] Prédiction de churn (donateurs à risque)
+- [x] Recommandation de montant par donateur
+- [x] Suggestions de campagnes à créer
+- [x] Alertes proactives dans le chat

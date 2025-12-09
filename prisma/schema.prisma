@@ -1847,3 +1847,192 @@ model ConsentHistory {
   @@index([donorId])
   @@index([createdAt])
 }
+
+
+// ============================================
+// MODULE NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Type et catégorie
+  type        NotificationType
+  category    NotificationCategory
+  priority    NotificationPriority @default(MEDIUM)
+  
+  // Contenu
+  title       String
+  message     String
+  actionUrl   String?
+  actionLabel String?
+  
+  // Données additionnelles (JSON)
+  metadata    String?  // JSON avec données contextuelles
+  
+  // Entités liées (optionnel)
+  donorId     String?
+  campaignId  String?
+  donationId  String?
+  formId      String?
+  
+  // Statut
+  isRead      Boolean  @default(false)
+  readAt      DateTime?
+  isDismissed Boolean  @default(false)
+  dismissedAt DateTime?
+  
+  // Utilisateur destinataire (null = tous les admins)
+  userId      Int?
+  
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
+  @@index([category])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  // Dons
+  NEW_DONATION           // Nouveau don reçu
+  MAJOR_DONATION         // Don majeur (au-dessus d'un seuil)
+  RECURRING_CANCELLED    // Don récurrent annulé
+  RECURRING_FAILED       // Échec de prélèvement récurrent
+  
+  // Donateurs
+  NEW_DONOR              // Nouveau donateur
+  DONOR_MILESTONE        // Donateur atteint un jalon
+  DONOR_INACTIVE         // Donateur inactif depuis X mois
+  
+  // Campagnes
+  CAMPAIGN_GOAL_50       // Campagne à 50% de l'objectif
+  CAMPAIGN_GOAL_75       // Campagne à 75% de l'objectif
+  CAMPAIGN_GOAL_100      // Campagne objectif atteint
+  CAMPAIGN_ENDING        // Campagne se termine bientôt
+  CAMPAIGN_ENDED         // Campagne terminée
+  
+  // Formulaires
+  FORM_SUBMISSION        // Nouvelle soumission de formulaire
+  FORM_ERROR             // Erreur sur un formulaire
+  
+  // Emails
+  EMAIL_BOUNCED          // Email rebondi
+  EMAIL_CAMPAIGN_SENT    // Campagne email envoyée
+  EMAIL_LOW_OPEN_RATE    // Taux d'ouverture faible
+  
+  // P2P
+  P2P_NEW_FUNDRAISER     // Nouveau collecteur P2P
+  P2P_GOAL_REACHED       // Collecteur a atteint son objectif
+  
+  // Système
+  SYSTEM_ALERT           // Alerte système
+  SYSTEM_INFO            // Information système
+}
+
+enum NotificationCategory {
+  DONATIONS
+  DONORS
+  CAMPAIGNS
+  FORMS
+  EMAILS
+  P2P
+  SYSTEM
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// Préférences de notification par utilisateur
+model NotificationPreference {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  userId      Int      @unique
+  
+  // Préférences par catégorie (JSON)
+  // Format: { "DONATIONS": { "email": true, "inApp": true, "threshold": 1000 }, ... }
+  preferences String   @default("{}")
+  
+  // Seuils personnalisés
+  majorDonationThreshold Int @default(1000)
+  inactiveDonorDays      Int @default(180)
+  
+  // Canaux
+  emailEnabled    Boolean @default(true)
+  inAppEnabled    Boolean @default(true)
+  
+  @@index([userId])
+}
+
+
+// ============================================
+// MODULE SEGMENTATION AVANCÉE
+// ============================================
+
+model DonorSegment {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Informations de base
+  name        String
+  description String?
+  color       String   @default("#8B5CF6")
+  icon        String?
+  
+  // Type de segment
+  type        SegmentType @default(DYNAMIC)
+  
+  // Règles de segmentation (JSON)
+  // Format: { "operator": "AND", "rules": [{ "field": "totalDonated", "operator": ">=", "value": 1000 }, ...] }
+  rules       String?
+  
+  // Statistiques (mises à jour périodiquement)
+  donorCount  Int      @default(0)
+  totalValue  Float    @default(0)
+  avgDonation Float    @default(0)
+  
+  // Dernière mise à jour des stats
+  lastCalculatedAt DateTime?
+  
+  // Statut
+  isActive    Boolean  @default(true)
+  isSystem    Boolean  @default(false)  // Segments système non modifiables
+  
+  // Créateur
+  createdById Int?
+  
+  @@index([isActive])
+  @@index([type])
+  @@index([name])
+}
+
+enum SegmentType {
+  STATIC    // Liste fixe de donateurs
+  DYNAMIC   // Basé sur des règles, mis à jour automatiquement
+  SMART     // Basé sur l'IA/ML
+}
+
+// Appartenance manuelle à un segment (pour segments statiques)
+model DonorSegmentMembership {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  
+  donorId     String
+  segmentId   String
+  
+  // Métadonnées
+  addedBy     Int?     // ID utilisateur qui a ajouté
+  reason      String?  // Raison de l'ajout
+  
+  @@unique([donorId, segmentId])
+  @@index([donorId])
+  @@index([segmentId])
+}

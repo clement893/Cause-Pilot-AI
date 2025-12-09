@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, Lightbulb, TrendingUp, ArrowRight, RefreshCw } from "lucide-react";
+import { Lightbulb, TrendingUp, ArrowRight, RefreshCw } from "lucide-react";
+import CausePilotAvatar from "./CausePilotAvatar";
 
 interface CausePilotWidgetProps {
   stats?: {
@@ -159,9 +160,7 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
     <div className={`bg-gradient-to-r ${priorityColors[currentTip.priority]} border rounded-2xl p-6`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
+          <CausePilotAvatar size="md" animated={true} />
           <div>
             <h3 className="font-bold text-white flex items-center gap-2">
               CausePilot

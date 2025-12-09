@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Lightbulb,
 } from "lucide-react";
+import CausePilotAvatar from "./CausePilotAvatar";
 
 interface Message {
   role: "user" | "assistant";
@@ -112,23 +113,33 @@ export default function CausePilotChat({ currentPage = "dashboard" }: CausePilot
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button with Avatar */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all duration-300 ${
-          isOpen
-            ? "bg-slate-700 text-white"
-            : "bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700"
-        }`}
+        className="fixed bottom-6 right-6 z-50 group"
+        title="Parler à CausePilot"
       >
-        {isOpen ? (
-          <ChevronDown className="w-5 h-5" />
-        ) : (
-          <>
-            <Sparkles className="w-5 h-5" />
-            <span className="font-medium">CausePilot</span>
-          </>
-        )}
+        <div className={`relative transition-transform duration-300 ${isOpen ? 'scale-90' : 'hover:scale-110'}`}>
+          <CausePilotAvatar size="lg" animated={!isOpen} />
+          {!isOpen && (
+            <>
+              {/* Notification badge */}
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full flex items-center justify-center animate-bounce">
+                <Sparkles className="w-2.5 h-2.5 text-white" />
+              </div>
+              {/* Tooltip */}
+              <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-slate-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg border border-slate-700">
+                Besoin d&apos;aide ? Demandez à CausePilot !
+                <div className="absolute bottom-0 right-4 transform translate-y-1/2 rotate-45 w-2 h-2 bg-slate-800 border-r border-b border-slate-700" />
+              </div>
+            </>
+          )}
+          {isOpen && (
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 rounded-full">
+              <ChevronDown className="w-6 h-6 text-white" />
+            </div>
+          )}
+        </div>
       </button>
 
       {/* Chat Window */}
@@ -137,9 +148,7 @@ export default function CausePilotChat({ currentPage = "dashboard" }: CausePilot
           {/* Header */}
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
+              <CausePilotAvatar size="sm" animated={false} />
               <div>
                 <h3 className="font-bold text-white">CausePilot</h3>
                 <p className="text-xs text-white/80">Votre assistant fundraising</p>
@@ -158,8 +167,8 @@ export default function CausePilotChat({ currentPage = "dashboard" }: CausePilot
             {/* Welcome Message */}
             {showWelcome && messages.length === 0 && (
               <div className="text-center py-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-8 h-8 text-white" />
+                <div className="mx-auto mb-4">
+                  <CausePilotAvatar size="xl" animated={true} />
                 </div>
                 <h4 className="text-lg font-semibold text-white mb-2">
                   Bonjour ! Je suis CausePilot 👋
@@ -191,8 +200,8 @@ export default function CausePilotChat({ currentPage = "dashboard" }: CausePilot
                   }`}
                 >
                   {message.role === "assistant" && (
-                    <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="w-3 h-3 text-pink-400" />
+                    <div className="flex items-center gap-2 mb-2">
+                      <CausePilotAvatar size="sm" animated={false} className="w-6 h-6" />
                       <span className="text-xs font-medium text-pink-400">CausePilot</span>
                     </div>
                   )}
@@ -205,9 +214,12 @@ export default function CausePilotChat({ currentPage = "dashboard" }: CausePilot
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-slate-800 rounded-2xl px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 text-pink-400 animate-spin" />
-                    <span className="text-sm text-gray-400">CausePilot réfléchit...</span>
+                  <div className="flex items-center gap-3">
+                    <CausePilotAvatar size="sm" animated={true} className="w-6 h-6" />
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 text-pink-400 animate-spin" />
+                      <span className="text-sm text-gray-400">CausePilot réfléchit...</span>
+                    </div>
                   </div>
                 </div>
               </div>

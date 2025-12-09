@@ -71,7 +71,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
   useEffect(() => {
     const fetchDonor = async () => {
       try {
-        const response = await fetch(\`/api/donors/\${id}\`);
+        const response = await fetch(`/api/donors/${id}`);
         const data = await response.json();
 
         if (data.success) {
@@ -102,7 +102,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
   const fetchDonations = async () => {
     setLoadingDonations(true);
     try {
-      const response = await fetch(\`/api/donors/\${id}/donations\`);
+      const response = await fetch(`/api/donors/${id}/donations`);
       const data = await response.json();
       if (data.success) {
         setDonations(data.data);
@@ -127,7 +127,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
     if (!confirm("Êtes-vous sûr de vouloir supprimer ce donateur ?")) return;
 
     try {
-      const response = await fetch(\`/api/donors/\${id}\`, {
+      const response = await fetch(`/api/donors/${id}`, {
         method: "DELETE",
       });
 
@@ -200,7 +200,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
     <AppLayout 
       breadcrumbs={[
         { name: "Base Donateurs", href: "/donors" },
-        { name: \`\${donor.firstName} \${donor.lastName}\` }
+        { name: `${donor.firstName} ${donor.lastName}` }
       ]}
     >
       {/* Page Header */}
@@ -229,7 +229,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link href={\`/donors/\${id}/receipts\`}>
+            <Link href={`/donors/${id}/receipts`}>
               <Button variant="outline" size="sm">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -237,7 +237,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
                 Reçus fiscaux
               </Button>
             </Link>
-            <Link href={\`/donors/\${id}/edit\`}>
+            <Link href={`/donors/${id}/edit`}>
               <Button variant="outline" size="sm">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -280,8 +280,8 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
           <div className="flex items-center gap-2 mt-1">
             <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
               <div 
-                className={\`h-full \${getEngagementColor(engagementScore)} transition-all\`}
-                style={{ width: \`\${engagementScore}%\` }}
+                className={`h-full ${getEngagementColor(engagementScore)} transition-all`}
+                style={{ width: `${engagementScore}%` }}
               />
             </div>
             <span className="text-sm font-bold text-white">{engagementScore}%</span>
@@ -301,11 +301,11 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as typeof activeTab)}
-              className={\`flex items-center gap-2 py-3 px-1 border-b-2 transition-colors \${
+              className={`flex items-center gap-2 py-3 px-1 border-b-2 transition-colors ${
                 activeTab === tab.key
                   ? "border-indigo-500 text-indigo-400"
                   : "border-transparent text-gray-400 hover:text-white hover:border-gray-500"
-              }\`}
+              }`}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
@@ -605,11 +605,11 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             {activities.map((activity, index) => (
               <div key={activity.id} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className={\`w-8 h-8 rounded-full flex items-center justify-center \${
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     activity.type === "DONATION" ? "bg-green-500/20 text-green-400" :
                     activity.type === "EMAIL_SENT" ? "bg-blue-500/20 text-blue-400" :
                     "bg-gray-500/20 text-gray-400"
-                  }\`}>
+                  }`}>
                     {activity.type === "DONATION" && (
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

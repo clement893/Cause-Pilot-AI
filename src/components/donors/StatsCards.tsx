@@ -13,9 +13,9 @@ export function StatsCards({ stats, loading }: StatsCardsProps) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2" />
-            <div className="h-8 bg-gray-200 rounded w-3/4" />
+          <Card key={i} className="animate-pulse bg-slate-900 border-slate-700">
+            <div className="h-4 bg-slate-700 rounded w-1/2 mb-2" />
+            <div className="h-8 bg-slate-700 rounded w-3/4" />
           </Card>
         ))}
       </div>
@@ -74,10 +74,10 @@ export function StatsCards({ stats, loading }: StatsCardsProps) {
   ];
 
   const colorClasses: Record<string, { bg: string; text: string; icon: string }> = {
-    indigo: { bg: "bg-indigo-50", text: "text-indigo-600", icon: "text-indigo-500" },
-    green: { bg: "bg-green-50", text: "text-green-600", icon: "text-green-500" },
-    emerald: { bg: "bg-emerald-50", text: "text-emerald-600", icon: "text-emerald-500" },
-    blue: { bg: "bg-blue-50", text: "text-blue-600", icon: "text-blue-500" },
+    indigo: { bg: "bg-indigo-900/50", text: "text-indigo-400", icon: "text-indigo-400" },
+    green: { bg: "bg-green-900/50", text: "text-green-400", icon: "text-green-400" },
+    emerald: { bg: "bg-emerald-900/50", text: "text-emerald-400", icon: "text-emerald-400" },
+    blue: { bg: "bg-blue-900/50", text: "text-blue-400", icon: "text-blue-400" },
   };
 
   return (
@@ -85,26 +85,26 @@ export function StatsCards({ stats, loading }: StatsCardsProps) {
       {cards.map((card, index) => {
         const colors = colorClasses[card.color];
         return (
-          <Card key={index} className="relative overflow-hidden">
+          <Card key={index} className="relative overflow-hidden bg-slate-900 border-slate-700">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">{card.title}</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">{card.value}</p>
+                <p className="text-sm font-medium text-gray-400">{card.title}</p>
+                <p className="mt-1 text-2xl font-bold text-white">{card.value}</p>
                 {card.subtitle && (
-                  <p className="mt-1 text-sm text-gray-500">{card.subtitle}</p>
+                  <p className="mt-1 text-sm text-gray-400">{card.subtitle}</p>
                 )}
                 {card.change !== undefined && (
                   <div className="mt-2 flex items-center text-sm">
                     {card.change >= 0 ? (
-                      <svg className="w-4 h-4 text-green-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-green-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                       </svg>
                     ) : (
-                      <svg className="w-4 h-4 text-red-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-red-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
                       </svg>
                     )}
-                    <span className={card.change >= 0 ? "text-green-600" : "text-red-600"}>
+                    <span className={card.change >= 0 ? "text-green-400" : "text-red-400"}>
                       {card.change >= 0 ? "+" : ""}{card.change}%
                     </span>
                     <span className="text-gray-500 ml-1">{card.changeLabel}</span>

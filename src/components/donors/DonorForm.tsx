@@ -156,8 +156,8 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Informations personnelles */}
-      <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Informations personnelles</h3>
+      <Card className="bg-slate-900 border-slate-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Informations personnelles</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Prénom *"
@@ -205,8 +205,8 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
       </Card>
 
       {/* Adresse */}
-      <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresse</h3>
+      <Card className="bg-slate-900 border-slate-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Adresse</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <Input
@@ -252,8 +252,8 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
       </Card>
 
       {/* Informations professionnelles */}
-      <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Informations professionnelles</h3>
+      <Card className="bg-slate-900 border-slate-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Informations professionnelles</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Profession"
@@ -283,8 +283,8 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
       </Card>
 
       {/* Classification */}
-      <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Classification</h3>
+      <Card className="bg-slate-900 border-slate-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Classification</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Statut"
@@ -314,8 +314,8 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
       </Card>
 
       {/* Préférences de communication */}
-      <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Préférences de communication</h3>
+      <Card className="bg-slate-900 border-slate-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Préférences de communication</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             label="Canal préféré"
@@ -331,7 +331,7 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
           />
         </div>
         <div className="mt-4 space-y-3">
-          <p className="text-sm font-medium text-gray-700">Consentements (RGPD/PIPEDA)</p>
+          <p className="text-sm font-medium text-gray-300">Consentements (RGPD/PIPEDA)</p>
           <div className="flex flex-wrap gap-6">
             <Checkbox
               label="Consentement Email"
@@ -353,8 +353,8 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
       </Card>
 
       {/* Notes */}
-      <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Notes</h3>
+      <Card className="bg-slate-900 border-slate-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Notes</h3>
         <Textarea
           label="Notes internes"
           value={formData.notes}

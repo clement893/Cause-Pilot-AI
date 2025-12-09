@@ -80,7 +80,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
   };
 
   return (
-    <Card className="mb-6">
+    <Card className="mb-6 bg-slate-900 border-slate-700">
       <form onSubmit={handleSubmit}>
         {/* Barre de recherche principale */}
         <div className="flex gap-4">
@@ -111,11 +111,11 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
         {/* Filtres avancés */}
         {isExpanded && (
-          <div className="mt-6 pt-6 border-t border-gray-200">
+          <div className="mt-6 pt-6 border-t border-slate-700">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Statut */}
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Statut</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Statut</p>
                 <div className="space-y-2">
                   {statusOptions.map((option) => (
                     <Checkbox
@@ -130,7 +130,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Type de donateur */}
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Type de donateur</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Type de donateur</p>
                 <div className="space-y-2">
                   {donorTypeOptions.map((option) => (
                     <Checkbox
@@ -145,7 +145,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Montant des dons */}
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Total des dons</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Total des dons</p>
                 <div className="space-y-2">
                   <Input
                     type="number"
@@ -164,7 +164,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Tri */}
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Trier par</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Trier par</p>
                 <Select
                   value={filters.sortBy}
                   onChange={(e) => handleChange("sortBy", e.target.value)}

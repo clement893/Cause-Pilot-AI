@@ -23,7 +23,7 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+    <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 overflow-hidden hover:shadow-md hover:border-slate-600 transition-all">
       {/* Header avec couleur du formulaire */}
       <div 
         className="h-2"
@@ -33,7 +33,7 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
       <div className="p-6">
         {/* Type et Status */}
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">
             {FORM_TYPE_LABELS[form.formType]}
           </span>
           <span className={`px-2 py-1 text-xs font-medium rounded-full ${FORM_STATUS_COLORS[form.status]}`}>
@@ -42,13 +42,13 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
         </div>
 
         {/* Nom du formulaire */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-white mb-2">
           {form.name}
         </h3>
 
         {/* Description */}
         {form.description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <p className="text-sm text-gray-400 mb-4 line-clamp-2">
             {form.description}
           </p>
         )}
@@ -56,19 +56,19 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
         {/* Statistiques */}
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-white">
               {formatCurrency(form.totalCollected)}
             </p>
             <p className="text-xs text-gray-500">Collecté</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-white">
               {form.donationCount}
             </p>
             <p className="text-xs text-gray-500">Dons</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-white">
               {formatCurrency(form.averageDonation)}
             </p>
             <p className="text-xs text-gray-500">Moy.</p>
@@ -78,11 +78,11 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
         {/* Barre de progression si objectif défini */}
         {progress !== null && (
           <div className="mb-4">
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
+            <div className="flex justify-between text-xs text-gray-400 mb-1">
               <span>{progress.toFixed(0)}% de l&apos;objectif</span>
               <span>{formatCurrency(form.goalAmount!)}</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-slate-700 rounded-full h-2">
               <div 
                 className="h-2 rounded-full transition-all"
                 style={{ 
@@ -95,10 +95,10 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+        <div className="flex items-center gap-2 pt-4 border-t border-slate-700">
           <Link
             href={`/forms/${form.id}`}
-            className="flex-1 text-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex-1 text-center px-3 py-2 text-sm font-medium text-gray-300 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors"
           >
             Voir
           </Link>
@@ -113,7 +113,7 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
             <Link
               href={`/donate/${form.slug}`}
               target="_blank"
-              className="px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
+              className="px-3 py-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
               title="Voir le formulaire public"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ export default function FormCard({ form, onDelete }: FormCardProps) {
           {onDelete && form.status === "DRAFT" && (
             <button
               onClick={() => onDelete(form.id)}
-              className="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
+              className="px-3 py-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
               title="Supprimer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

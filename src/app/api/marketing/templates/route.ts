@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { STARTER_TEMPLATES } from "@/lib/email-editor/utils";
+import { blocksToHtml } from "@/lib/email-editor/utils";
 
 // GET - Liste des templates email
 export async function GET(request: NextRequest) {
@@ -7,6 +9,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
     const isActive = searchParams.get("isActive");
+    const includeStarters = searchParams.get("includeStarters") === "true";
 
     const where: Record<string, unknown> = {};
 
@@ -20,13 +23,45 @@ export async function GET(request: NextRequest) {
 
     const templates = await prisma.emailTemplate.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { isDefault: "desc" },
+        { createdAt: "desc" },
+      ],
       include: {
         _count: {
           select: { campaigns: true },
         },
       },
     });
+
+    // Inclure les templates de démarrage si demandé
+    if (includeStarters) {
+      const starterTemplates = STARTER_TEMPLATES.map((t, index) => ({
+        id: `starter-${index}`,
+        name: t.name,
+        description: t.description,
+        category: t.category?.toUpperCase() || "GENERAL",
+        blocks: t.blocks,
+        globalStyle: t.globalStyle,
+        htmlContent: null,
+        textContent: null,
+        subject: null,
+        preheader: null,
+        variables: [],
+        primaryColor: "#6366f1",
+        logoUrl: null,
+        footerText: null,
+        thumbnail: null,
+        isActive: true,
+        isDefault: true,
+        isStarter: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        _count: { campaigns: 0 },
+      }));
+      
+      return NextResponse.json([...starterTemplates, ...templates]);
+    }
 
     return NextResponse.json(templates);
   } catch (error) {
@@ -43,6 +78,12 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    // Si on a des blocs, générer le HTML
+    let htmlContent = body.htmlContent;
+    if (body.blocks && !htmlContent) {
+      htmlContent = blocksToHtml(body.blocks, body.globalStyle);
+    }
+
     const template = await prisma.emailTemplate.create({
       data: {
         name: body.name,
@@ -50,8 +91,11 @@ export async function POST(request: NextRequest) {
         category: body.category || "GENERAL",
         subject: body.subject,
         preheader: body.preheader,
-        htmlContent: body.htmlContent,
+        htmlContent,
         textContent: body.textContent,
+        blocks: body.blocks,
+        globalStyle: body.globalStyle,
+        thumbnail: body.thumbnail,
         variables: body.variables || [],
         primaryColor: body.primaryColor || "#6366f1",
         logoUrl: body.logoUrl,

@@ -281,3 +281,35 @@
 ### Phase 5 - Configuration SendGrid
 - [ ] Documenter la configuration du webhook dans SendGrid
 - [ ] Tester avec des emails réels
+
+
+## Éditeur de Templates Email (Drag & Drop)
+
+### Phase 1 - Composants de blocs
+- [x] Bloc Texte (titre, paragraphe, liste)
+- [x] Bloc Image (avec upload)
+- [x] Bloc Bouton (CTA)
+- [x] Bloc Diviseur/Espacement
+- [x] Bloc Colonnes (2-3 colonnes)
+- [x] Bloc Social (icônes réseaux sociaux)
+- [x] Bloc Footer (désabonnement, adresse)
+
+### Phase 2 - Éditeur Drag & Drop
+- [x] Zone de dépôt avec prévisualisation
+- [x] Panneau de blocs disponibles
+- [x] Réorganisation des blocs par glisser-déposer
+- [x] Édition inline des contenus
+- [x] Panneau de propriétés (couleurs, marges, etc.)
+
+### Phase 3 - Fonctionnalités avancées
+- [x] Sauvegarde automatique
+- [ ] Historique undo/redo
+- [x] Prévisualisation mobile/desktop
+- [x] Export HTML compatible email
+- [x] Variables de personnalisation
+
+### Phase 4 - Gestion des templates
+- [x] API CRUD templates
+- [x] Page liste des templates
+- [x] Templates prédéfinis (starter)
+- [x] Duplication de templates

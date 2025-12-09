@@ -880,10 +880,15 @@ model EmailTemplate {
   category      EmailCategory @default(GENERAL)
   
   // Contenu
-  subject       String
+  subject       String?
   preheader     String?       // Texte de prévisualisation
-  htmlContent   String        @db.Text
+  htmlContent   String?       @db.Text
   textContent   String?       @db.Text  // Version texte brut
+  
+  // Éditeur drag & drop
+  blocks        Json?         // Structure JSON des blocs de l'éditeur
+  globalStyle   Json?         // Styles globaux (backgroundColor, fontFamily, contentWidth)
+  thumbnail     String?       // URL de la miniature
   
   // Variables disponibles
   variables     String[]      // Ex: ["firstName", "lastName", "donationAmount"]
@@ -1807,3 +1812,4 @@ model EmailEvent {
   @@index([eventDate])
   @@index([email])
 }
+

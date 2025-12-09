@@ -394,3 +394,15 @@
 - [x] Contexte adapté selon la page (campagnes, donateurs, etc.)
 - [x] Suggestions d'actions pertinentes
 - [x] Aide à la création de campagnes
+
+
+## CausePilot - Accès Complet aux Données
+
+- [x] Créer fonction de collecte de données complètes
+- [x] Intégrer données donateurs (total, segments, top)
+- [x] Intégrer données campagnes (actives, performances)
+- [x] Intégrer données dons (récents, tendances)
+- [x] Intégrer données emails (taux, meilleures campagnes)
+- [x] Intégrer données P2P (collecteurs, performances)
+- [x] Mettre à jour le prompt système avec contexte enrichi
+- [ ] Tester les réponses personnalisées

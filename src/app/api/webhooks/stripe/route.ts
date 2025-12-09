@@ -191,8 +191,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     await prisma.campaign.update({
       where: { id: campaignId },
       data: {
-        currentAmount: { increment: amountInDollars },
+        totalRaised: { increment: amountInDollars },
         donorCount: { increment: 1 },
+        donationCount: { increment: 1 },
       },
     });
   }

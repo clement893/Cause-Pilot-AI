@@ -32,14 +32,14 @@ export async function GET(
           firstName: true,
           lastName: true,
           email: true,
-          totalDonated: true,
+          totalDonations: true,
           donationCount: true,
           lastDonationDate: true,
           segment: true,
           isRecurring: true,
           status: true,
         },
-        orderBy: { totalDonated: "desc" },
+        orderBy: { totalDonations: "desc" },
         take: 100,
       });
     } else if (segment.type === "STATIC") {
@@ -55,23 +55,23 @@ export async function GET(
           firstName: true,
           lastName: true,
           email: true,
-          totalDonated: true,
+          totalDonations: true,
           donationCount: true,
           lastDonationDate: true,
           segment: true,
           isRecurring: true,
           status: true,
         },
-        orderBy: { totalDonated: "desc" },
+        orderBy: { totalDonations: "desc" },
       });
     }
 
     // Calculer les statistiques
     const stats = {
       donorCount: donors.length,
-      totalValue: donors.reduce((sum, d) => sum + d.totalDonated, 0),
+      totalValue: donors.reduce((sum, d) => sum + d.totalDonations, 0),
       avgDonation: donors.length > 0
-        ? donors.reduce((sum, d) => sum + d.totalDonated, 0) / donors.length
+        ? donors.reduce((sum, d) => sum + d.totalDonations, 0) / donors.length
         : 0,
       recurringCount: donors.filter((d) => d.isRecurring).length,
     };

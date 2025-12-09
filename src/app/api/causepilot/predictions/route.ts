@@ -21,19 +21,19 @@ export async function GET() {
           lt: threeMonthsAgo,
         },
         donationCount: { gte: 2 },
-        totalDonated: { gte: 50 },
+        totalDonations: { gte: 50 },
       },
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
-        totalDonated: true,
+        totalDonations: true,
         donationCount: true,
         lastDonationDate: true,
         segment: true,
       },
-      orderBy: { totalDonated: "desc" },
+      orderBy: { totalDonations: "desc" },
       take: 10,
     });
 
@@ -56,8 +56,8 @@ export async function GET() {
       else if (donor.donationCount >= 3) riskScore += 10;
       
       // Les gros donateurs qui arrêtent sont prioritaires
-      if (donor.totalDonated >= 500) riskScore += 25;
-      else if (donor.totalDonated >= 200) riskScore += 15;
+      if (donor.totalDonations >= 500) riskScore += 25;
+      else if (donor.totalDonations >= 200) riskScore += 15;
       
       return {
         ...donor,
@@ -75,7 +75,7 @@ export async function GET() {
       where: {
         status: "ACTIVE",
         donationCount: { gte: 3 },
-        totalDonated: { gte: 100, lt: 1000 },
+        totalDonations: { gte: 100, lt: 1000 },
         lastDonationDate: { gte: threeMonthsAgo },
         isRecurring: false,
       },
@@ -84,17 +84,17 @@ export async function GET() {
         firstName: true,
         lastName: true,
         email: true,
-        totalDonated: true,
+        totalDonations: true,
         donationCount: true,
         lastDonationDate: true,
       },
-      orderBy: { totalDonated: "desc" },
+      orderBy: { totalDonations: "desc" },
       take: 10,
     });
 
     // Calculer le potentiel d'upgrade
     const upgradeWithPotential = upgradeCandidates.map(donor => {
-      const avgDonation = donor.totalDonated / donor.donationCount;
+      const avgDonation = donor.totalDonations / donor.donationCount;
       const suggestedRecurringAmount = Math.round(avgDonation / 12) * 12; // Arrondir au multiple de 12
       
       return {
@@ -200,7 +200,7 @@ export async function GET() {
       where: {
         status: "ACTIVE",
         lastDonationDate: { lt: sixMonthsAgo },
-        totalDonated: { gte: 50 },
+        totalDonations: { gte: 50 },
       },
     });
 

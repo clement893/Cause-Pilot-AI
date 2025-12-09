@@ -128,7 +128,7 @@ export async function notifyDonorMilestone(donor: {
   id: string;
   firstName: string;
   lastName: string;
-  totalDonated: number;
+  totalDonations: number;
   milestone: number;
 }) {
   return createNotification({
@@ -141,7 +141,7 @@ export async function notifyDonorMilestone(donor: {
     actionLabel: "Voir le profil",
     donorId: donor.id,
     metadata: {
-      totalDonated: donor.totalDonated,
+      totalDonations: donor.totalDonations,
       milestone: donor.milestone,
     },
   });
@@ -256,13 +256,13 @@ export async function checkInactiveDonors() {
     where: {
       status: "ACTIVE",
       lastDonationDate: { lt: sixMonthsAgo },
-      totalDonated: { gte: 100 },
+      totalDonations: { gte: 100 },
     },
     select: {
       id: true,
       firstName: true,
       lastName: true,
-      totalDonated: true,
+      totalDonations: true,
       lastDonationDate: true,
     },
     take: 10,
@@ -279,7 +279,7 @@ export async function checkInactiveDonors() {
       actionLabel: "Voir les donateurs",
       metadata: {
         count: inactiveDonors.length,
-        totalValue: inactiveDonors.reduce((sum, d) => sum + d.totalDonated, 0),
+        totalValue: inactiveDonors.reduce((sum, d) => sum + d.totalDonations, 0),
       },
     });
   }

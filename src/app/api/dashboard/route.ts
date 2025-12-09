@@ -130,14 +130,14 @@ export async function GET() {
 
     // Top donateurs
     const topDonors = await prisma.donor.findMany({
-      orderBy: { totalDonated: "desc" },
+      orderBy: { totalDonations: "desc" },
       take: 5,
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
-        totalDonated: true,
+        totalDonations: true,
         donationCount: true,
         lastDonationDate: true,
         segment: true,
@@ -149,16 +149,16 @@ export async function GET() {
       where: {
         status: "ACTIVE",
         lastDonationDate: { lt: sixMonthsAgo },
-        totalDonated: { gte: 50 },
+        totalDonations: { gte: 50 },
       },
-      orderBy: { totalDonated: "desc" },
+      orderBy: { totalDonations: "desc" },
       take: 10,
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
-        totalDonated: true,
+        totalDonations: true,
         lastDonationDate: true,
         donationCount: true,
         segment: true,
@@ -173,7 +173,7 @@ export async function GET() {
         lastName: true,
         email: true,
         createdAt: true,
-        totalDonated: true,
+        totalDonations: true,
       },
       orderBy: { createdAt: "desc" },
       take: 5,
@@ -291,7 +291,7 @@ export async function GET() {
         id: "reengage-donors",
         type: "action",
         title: "Relancer les donateurs inactifs",
-        message: `${donorsToReengage.length} donateur(s) avec un historique de ${donorsToReengage.reduce((sum, d) => sum + d.totalDonated, 0).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 })} n'ont pas donné depuis 6 mois`,
+        message: `${donorsToReengage.length} donateur(s) avec un historique de ${donorsToReengage.reduce((sum, d) => sum + d.totalDonations, 0).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 })} n'ont pas donné depuis 6 mois`,
         action: "/donors?status=inactive",
         impact: "high",
       });

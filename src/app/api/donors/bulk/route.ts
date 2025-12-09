@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
             city: true,
             province: true,
             postalCode: true,
-            totalDonated: true,
+            totalDonations: true,
             donationCount: true,
             lastDonationDate: true,
             segment: true,

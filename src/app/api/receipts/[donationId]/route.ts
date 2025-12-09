@@ -102,6 +102,7 @@ export async function GET(
     };
 
     // Générer le PDF
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pdfBuffer = await renderToBuffer(
       React.createElement(TaxReceiptDocument, { data: receiptData }) as any
     );

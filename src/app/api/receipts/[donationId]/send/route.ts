@@ -115,7 +115,7 @@ export async function POST(
     }).format(donation.amount);
 
     await sendEmail({
-      to: donation.donor.email,
+      to: donation.donor.email || "",
       subject: `Votre reçu fiscal - Don de ${formattedAmount}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

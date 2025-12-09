@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status");
     const type = searchParams.get("type");
     const search = searchParams.get("search");
+    const allowP2P = searchParams.get("allowP2P");
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
@@ -31,6 +32,10 @@ export async function GET(request: NextRequest) {
         { name: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
       ];
+    }
+
+    if (allowP2P === "true") {
+      where.allowP2P = true;
     }
 
     // Récupérer les campagnes

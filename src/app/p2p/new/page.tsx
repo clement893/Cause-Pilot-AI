@@ -11,6 +11,8 @@ import {
   FileText,
   Image,
   Palette,
+  AlertCircle,
+  CheckCircle,
 } from "lucide-react";
 
 interface Campaign {
@@ -31,8 +33,12 @@ export default function NewP2PPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [step, setStep] = useState(1);
+  const [showEnableP2PModal, setShowEnableP2PModal] = useState(false);
+  const [selectedCampaignToEnable, setSelectedCampaignToEnable] = useState<Campaign | null>(null);
+  const [enablingP2P, setEnablingP2P] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -62,10 +68,15 @@ export default function NewP2PPage() {
 
   const fetchCampaigns = async () => {
     try {
-      const res = await fetch("/api/campaigns?status=ACTIVE&allowP2P=true");
+      // Récupérer toutes les campagnes actives
+      const res = await fetch("/api/campaigns?status=ACTIVE&limit=100");
       const data = await res.json();
+      
+      const activeCampaigns = data.campaigns || [];
+      setAllCampaigns(activeCampaigns);
+      
       // Filtrer les campagnes qui permettent le P2P
-      setCampaigns(data.campaigns?.filter((c: Campaign) => c.allowP2P) || []);
+      setCampaigns(activeCampaigns.filter((c: Campaign) => c.allowP2P));
     } catch (error) {
       console.error("Error fetching campaigns:", error);
     }
@@ -78,6 +89,33 @@ export default function NewP2PPage() {
       setTeams(data.teams || []);
     } catch (error) {
       console.error("Error fetching teams:", error);
+    }
+  };
+
+  const handleEnableP2P = async (campaign: Campaign) => {
+    setEnablingP2P(true);
+    try {
+      const res = await fetch("/api/campaigns/enable-p2p", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ campaignId: campaign.id }),
+      });
+
+      if (res.ok) {
+        // Rafraîchir les campagnes
+        await fetchCampaigns();
+        setShowEnableP2PModal(false);
+        setSelectedCampaignToEnable(null);
+        // Sélectionner automatiquement la campagne
+        setFormData({ ...formData, campaignId: campaign.id });
+      } else {
+        alert("Erreur lors de l'activation du P2P");
+      }
+    } catch (error) {
+      console.error("Error enabling P2P:", error);
+      alert("Erreur lors de l'activation du P2P");
+    } finally {
+      setEnablingP2P(false);
     }
   };
 
@@ -124,6 +162,9 @@ export default function NewP2PPage() {
     { name: "Campagnes P2P", href: "/p2p" },
     { name: "Nouvelle page", href: "/p2p/new" },
   ];
+
+  // Campagnes sans P2P activé
+  const campaignsWithoutP2P = allCampaigns.filter((c) => !c.allowP2P);
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -245,9 +286,43 @@ export default function NewP2PPage() {
                   </option>
                 ))}
               </select>
-              {campaigns.length === 0 && (
+              
+              {campaigns.length === 0 && campaignsWithoutP2P.length > 0 && (
+                <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-yellow-400 font-medium">
+                        Aucune campagne P2P active
+                      </p>
+                      <p className="text-sm text-gray-400 mt-1">
+                        Vous avez {campaignsWithoutP2P.length} campagne(s) active(s) sans l&apos;option P2P activée.
+                        Activez le P2P sur une campagne existante :
+                      </p>
+                      <div className="mt-3 space-y-2">
+                        {campaignsWithoutP2P.slice(0, 5).map((campaign) => (
+                          <button
+                            key={campaign.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedCampaignToEnable(campaign);
+                              setShowEnableP2PModal(true);
+                            }}
+                            className="flex items-center gap-2 w-full px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-left transition-colors"
+                          >
+                            <span className="text-white flex-1">{campaign.name}</span>
+                            <span className="text-xs text-pink-400">Activer P2P →</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {campaigns.length === 0 && campaignsWithoutP2P.length === 0 && (
                 <p className="text-sm text-yellow-400 mt-2">
-                  Aucune campagne P2P active. Créez d&apos;abord une campagne avec l&apos;option P2P activée.
+                  Aucune campagne disponible. Créez d&apos;abord une campagne dans le module Campagnes.
                 </p>
               )}
             </div>
@@ -297,35 +372,17 @@ export default function NewP2PPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Objectif de collecte *
+                Objectif de collecte ($) *
               </label>
-              <div className="flex items-center gap-4">
-                <input
-                  type="number"
-                  min="50"
-                  step="50"
-                  value={formData.goalAmount}
-                  onChange={(e) => setFormData({ ...formData, goalAmount: parseInt(e.target.value) || 0 })}
-                  className="w-40 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
-                />
-                <span className="text-gray-400">CAD</span>
-              </div>
-              <div className="flex gap-2 mt-3">
-                {[250, 500, 1000, 2500, 5000].map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, goalAmount: amount })}
-                    className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                      formData.goalAmount === amount
-                        ? "bg-pink-500 text-white"
-                        : "bg-slate-700 text-gray-300 hover:bg-slate-600"
-                    }`}
-                  >
-                    {amount}$
-                  </button>
-                ))}
-              </div>
+              <input
+                type="number"
+                value={formData.goalAmount}
+                onChange={(e) => setFormData({ ...formData, goalAmount: parseInt(e.target.value) || 0 })}
+                min="100"
+                step="100"
+                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">Minimum: 100 $</p>
             </div>
 
             <div>
@@ -336,18 +393,15 @@ export default function NewP2PPage() {
               <textarea
                 value={formData.story}
                 onChange={(e) => setFormData({ ...formData, story: e.target.value })}
-                placeholder="Expliquez pourquoi cette cause vous tient à cœur et pourquoi vous collectez des fonds..."
                 rows={5}
+                placeholder="Partagez pourquoi cette cause vous tient à cœur..."
                 className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Une histoire personnelle augmente les dons de 30% en moyenne
-              </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Lien vidéo (optionnel)
+                URL vidéo (YouTube, Vimeo)
               </label>
               <input
                 type="url"
@@ -380,6 +434,13 @@ export default function NewP2PPage() {
                 placeholder="https://exemple.com/photo.jpg"
                 className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
+              {formData.photoUrl && (
+                <img
+                  src={formData.photoUrl}
+                  alt="Preview"
+                  className="mt-2 w-20 h-20 rounded-full object-cover"
+                />
+              )}
             </div>
 
             <div>
@@ -393,6 +454,13 @@ export default function NewP2PPage() {
                 placeholder="https://exemple.com/cover.jpg"
                 className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
+              {formData.coverImageUrl && (
+                <img
+                  src={formData.coverImageUrl}
+                  alt="Cover preview"
+                  className="mt-2 w-full h-32 rounded-lg object-cover"
+                />
+              )}
             </div>
 
             <div>
@@ -404,53 +472,32 @@ export default function NewP2PPage() {
                   type="color"
                   value={formData.primaryColor}
                   onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                  className="w-10 h-10 rounded cursor-pointer"
+                  className="w-12 h-10 rounded cursor-pointer border-0"
                 />
                 <input
                   type="text"
                   value={formData.primaryColor}
                   onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                  className="w-32 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+                  className="flex-1 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                 />
-              </div>
-            </div>
-
-            {/* Preview */}
-            <div className="p-4 bg-slate-900 rounded-lg">
-              <p className="text-sm text-gray-400 mb-3">Aperçu de votre page</p>
-              <div className="flex items-center gap-4">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold"
-                  style={{ backgroundColor: formData.primaryColor }}
-                >
-                  {formData.firstName?.[0] || "?"}{formData.lastName?.[0] || "?"}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white">
-                    {formData.title || `Collecte de ${formData.firstName || "..."}`}
-                  </h3>
-                  <p className="text-sm text-gray-400">
-                    par {formData.firstName} {formData.lastName}
-                  </p>
-                  <p className="text-sm text-green-400">
-                    Objectif: {formData.goalAmount.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setStep(Math.max(1, step - 1))}
-            disabled={step === 1}
-            className="px-4 py-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Précédent
-          </button>
+        {/* Navigation Buttons */}
+        <div className="flex justify-between">
+          {step > 1 ? (
+            <button
+              type="button"
+              onClick={() => setStep(step - 1)}
+              className="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+            >
+              Précédent
+            </button>
+          ) : (
+            <div />
+          )}
 
           {step < 3 ? (
             <button
@@ -464,15 +511,72 @@ export default function NewP2PPage() {
           ) : (
             <button
               type="submit"
-              disabled={loading || !canProceed()}
+              disabled={loading}
               className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all disabled:opacity-50"
             >
-              <Save className="w-4 h-4" />
-              {loading ? "Création..." : "Créer ma page"}
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Création...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  Créer ma page
+                </>
+              )}
             </button>
           )}
         </div>
       </form>
+
+      {/* Modal pour activer le P2P */}
+      {showEnableP2PModal && selectedCampaignToEnable && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Activer le P2P pour cette campagne ?
+            </h3>
+            <p className="text-gray-400 mb-4">
+              Voulez-vous activer les collectes peer-to-peer pour la campagne{" "}
+              <strong className="text-white">{selectedCampaignToEnable.name}</strong> ?
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Cela permettra aux participants de créer leurs propres pages de collecte liées à cette campagne.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEnableP2PModal(false);
+                  setSelectedCampaignToEnable(null);
+                }}
+                className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={() => handleEnableP2P(selectedCampaignToEnable)}
+                disabled={enablingP2P}
+                className="flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50"
+              >
+                {enablingP2P ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Activation...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Activer le P2P
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }

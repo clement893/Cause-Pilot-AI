@@ -243,3 +243,12 @@
 - [x] Actions: Continuer brouillon, Voir résultats
 - [x] Statistiques rapides (taux ouverture, clics)
 - [x] Améliorer page détail/résultats campagne
+
+
+## Liaison Campagnes P2P
+
+- [x] Analyser la logique P2P existante
+- [x] Corriger la liaison avec les campagnes
+- [x] Permettre la création de collectes P2P
+- [x] Ajouter API pour activer P2P sur campagnes existantes
+- [x] Améliorer interface pour guider l'utilisateur

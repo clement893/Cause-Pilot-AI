@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
             name,
             description: `Description de la campagne ${name}`,
             type: randomElement(["ANNUAL", "EMERGENCY", "PROJECT", "EVENT", "CAPITAL"] as const),
-            status: randomElement(["ACTIVE", "COMPLETED", "PLANNED"] as const),
+            status: randomElement(["ACTIVE", "COMPLETED", "DRAFT"] as const),
             goal,
             totalRaised: 0,
             donationCount: 0,

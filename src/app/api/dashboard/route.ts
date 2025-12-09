@@ -65,7 +65,7 @@ export async function GET() {
     // Métriques des formulaires
     const totalForms = await prisma.donationForm.count();
     const activeForms = await prisma.donationForm.count({
-      where: { status: "ACTIVE" },
+      where: { status: "PUBLISHED" },
     });
 
     // Dons récents

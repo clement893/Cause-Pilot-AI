@@ -115,7 +115,7 @@ async function main() {
           name,
           description: `Description de la campagne ${name}`,
           type: randomElement(["ANNUAL", "EMERGENCY", "PROJECT", "EVENT", "CAPITAL"]),
-          status: randomElement(["ACTIVE", "COMPLETED", "PLANNED"]),
+          status: randomElement(["ACTIVE", "COMPLETED", "DRAFT"]),
           goal,
           totalRaised: 0,
           donationCount: 0,

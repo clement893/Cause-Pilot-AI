@@ -138,26 +138,25 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
   const donation = await prisma.donation.create({
     data: {
-      donorId: donor?.id,
+      donorId: donor?.id || "",
       amount: amountInDollars,
       currency: "CAD",
+      donationDate: new Date(),
       paymentMethod: "CREDIT_CARD",
-      paymentStatus: "COMPLETED",
+      status: "COMPLETED",
       transactionId: typeof payment_intent === "string" ? payment_intent : payment_intent?.id || sessionId,
       isRecurring: mode === "subscription",
-      subscriptionId: typeof subscription === "string" ? subscription : subscription?.id,
+      recurringId: typeof subscription === "string" ? subscription : subscription?.id,
       campaignId: campaignId || undefined,
-      formId,
       notes: comment,
       isAnonymous,
-      receiptSent: false,
     },
   });
 
   // Update donor statistics
   if (donor) {
     const donorDonations = await prisma.donation.findMany({
-      where: { donorId: donor.id, paymentStatus: "COMPLETED" },
+      where: { donorId: donor.id, status: "COMPLETED" },
     });
 
     const totalDonations = donorDonations.reduce((sum, d) => sum + d.amount, 0);
@@ -250,18 +249,17 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
       // Create new donation record for recurring payment
       await prisma.donation.create({
         data: {
-          donorId: originalDonation.donorId,
+          donorId: originalDonation.donorId || "",
           amount: amountInDollars,
           currency: "CAD",
+          donationDate: new Date(),
           paymentMethod: "CREDIT_CARD",
-          paymentStatus: "COMPLETED",
+          status: "COMPLETED",
           transactionId: invoice.payment_intent as string,
           isRecurring: true,
-          subscriptionId,
+          recurringId: subscriptionId,
           campaignId: originalDonation.campaignId,
-          formId: originalDonation.formId,
           isAnonymous: originalDonation.isAnonymous,
-          receiptSent: false,
         },
       });
 

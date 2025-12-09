@@ -180,3 +180,19 @@
 ### Phase 4 - Déploiement
 - [ ] Tester le build
 - [ ] Push sur GitHub
+
+## Intégration SendGrid
+
+### Phase 1 - Configuration
+- [x] Installer le package @sendgrid/mail
+- [x] Configurer les variables d'environnement
+- [x] Créer le service d'envoi d'emails
+
+### Phase 2 - Intégration Campagnes
+- [x] Connecter SendGrid aux campagnes email
+- [x] Implémenter l'envoi de masse
+- [ ] Ajouter le tracking des ouvertures/clics
+
+### Phase 3 - Tests et Déploiement
+- [ ] Tester l'envoi d'emails
+- [ ] Push sur GitHub

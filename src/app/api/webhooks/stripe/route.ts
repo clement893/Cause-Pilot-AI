@@ -216,6 +216,20 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   });
 
   console.log(`Donation recorded: ${donation.id} - ${amountInDollars}$`);
+
+  // Envoyer automatiquement le reçu fiscal par email
+  if (donor && !isAnonymous) {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      await fetch(`${baseUrl}/api/receipts/${donation.id}/send`, {
+        method: "POST",
+      });
+      console.log(`Receipt sent for donation: ${donation.id}`);
+    } catch (receiptError) {
+      console.error("Failed to send receipt:", receiptError);
+      // Ne pas faire échouer le webhook si l'envoi du reçu échoue
+    }
+  }
 }
 
 async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {

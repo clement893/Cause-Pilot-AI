@@ -114,14 +114,14 @@ async function main() {
         data: {
           name,
           description: `Description de la campagne ${name}`,
-          type: randomElement(["ANNUAL", "EMERGENCY", "PROJECT", "EVENT", "CAPITAL"]),
+          campaignType: randomElement(["FUNDRAISING", "AWARENESS", "EVENT", "EMERGENCY", "CAPITAL"]) as any,
           status: randomElement(["ACTIVE", "COMPLETED", "DRAFT"]),
-          goal,
+          goalAmount: goal,
           totalRaised: 0,
           donationCount: 0,
           startDate,
           endDate,
-          currency: "CAD",
+          slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         },
       });
     })
@@ -209,7 +209,6 @@ async function main() {
         data: {
           donorId: donor.id,
           amount: donation.amount,
-          currency: "CAD",
           donationDate: donation.date,
           status: "COMPLETED",
           paymentMethod: donation.paymentMethod as "CREDIT_CARD" | "DEBIT" | "BANK_TRANSFER" | "CHECK" | "CASH" | "PAYPAL",

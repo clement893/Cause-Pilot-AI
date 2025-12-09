@@ -124,14 +124,14 @@ export async function POST(request: NextRequest) {
           data: {
             name,
             description: `Description de la campagne ${name}`,
-            type: randomElement(["ANNUAL", "EMERGENCY", "PROJECT", "EVENT", "CAPITAL"] as const),
+            campaignType: "FUNDRAISING",
             status: randomElement(["ACTIVE", "COMPLETED", "DRAFT"] as const),
-            goal,
+            goalAmount: goal,
             totalRaised: 0,
             donationCount: 0,
             startDate,
             endDate,
-            currency: "CAD",
+            slug: `campaign-${index}-${Date.now()}`,
           },
         });
       })
@@ -219,7 +219,6 @@ export async function POST(request: NextRequest) {
           data: {
             donorId: donor.id,
             amount: donation.amount,
-            currency: "CAD",
             donationDate: donation.date,
             status: "COMPLETED",
             paymentMethod: donation.paymentMethod,

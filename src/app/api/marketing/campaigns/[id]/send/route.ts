@@ -125,7 +125,7 @@ export async function POST(
 
       return {
         to: recipient.email,
-        subject: campaign.subject,
+        subject: campaign.subject || "Sans sujet",
         html: htmlContent,
         text: textContent,
         from: campaign.senderEmail ? {

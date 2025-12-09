@@ -150,7 +150,7 @@ async function collectFullContext() {
           name: true,
           subject: true,
           sentAt: true,
-          recipientCount: true,
+          totalRecipients: true,
           openCount: true,
           clickCount: true,
           bounceCount: true,
@@ -159,7 +159,7 @@ async function collectFullContext() {
       prisma.emailCampaign.aggregate({
         where: { status: "SENT" },
         _sum: {
-          recipientCount: true,
+          totalRecipients: true,
           openCount: true,
           clickCount: true,
           bounceCount: true,
@@ -193,8 +193,8 @@ async function collectFullContext() {
     const avgDonation = totalDonations._avg?.amount || 0;
     const totalRaised = totalDonations._sum?.amount || 0;
     const monthlyRaised = donationsThisMonth._sum?.amount || 0;
-    const emailOpenRate = emailStats._sum?.recipientCount 
-      ? ((emailStats._sum?.openCount || 0) / emailStats._sum.recipientCount * 100).toFixed(1)
+    const emailOpenRate = emailStats._sum?.totalRecipients 
+      ? ((emailStats._sum?.openCount || 0) / emailStats._sum.totalRecipients * 100).toFixed(1)
       : "N/A";
     const emailClickRate = emailStats._sum?.openCount
       ? ((emailStats._sum?.clickCount || 0) / emailStats._sum.openCount * 100).toFixed(1)
@@ -254,10 +254,10 @@ async function collectFullContext() {
         recentCampaigns: sentEmailCampaigns.map(e => ({
           name: e.name,
           subject: e.subject,
-          sent: e.recipientCount,
+          sent: e.totalRecipients,
           opens: e.openCount,
           clicks: e.clickCount,
-          openRate: e.recipientCount ? ((e.openCount / e.recipientCount) * 100).toFixed(1) : 0,
+          openRate: e.totalRecipients ? ((e.openCount / e.totalRecipients) * 100).toFixed(1) : 0,
         })),
       },
       // Détails P2P

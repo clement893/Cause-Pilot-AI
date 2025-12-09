@@ -174,12 +174,13 @@ async function collectFullContext() {
         prisma.p2PFundraiser.count(),
         prisma.p2PFundraiser.count({ where: { status: "ACTIVE" } }),
         prisma.p2PFundraiser.findMany({
-          orderBy: { amountRaised: "desc" },
+          orderBy: { totalRaised: "desc" },
           take: 5,
           select: {
-            fundraiserName: true,
-            goal: true,
-            amountRaised: true,
+            firstName: true,
+            lastName: true,
+            goalAmount: true,
+            totalRaised: true,
             donorCount: true,
           },
         }),
@@ -376,7 +377,7 @@ ${p2p ? `
 - Total collecteurs : ${p2p.totalP2P}
 - Collecteurs actifs : ${p2p.activeP2P}
 ${p2p.topFundraisers.length > 0 
-  ? `Top collecteurs :\n${p2p.topFundraisers.map(f => `- ${f.fundraiserName} : ${f.amountRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })} / ${f.goal?.toLocaleString("fr-CA", { style: "currency", currency: "CAD" }) || "Pas d'objectif"}`).join("\n")}`
+  ? `Top collecteurs :\n${p2p.topFundraisers.map(f => `- ${f.firstName} ${f.lastName} : ${f.totalRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })} / ${f.goalAmount?.toLocaleString("fr-CA", { style: "currency", currency: "CAD" }) || "Pas d'objectif"}`).join("\n")}`
   : ""}
 ` : ""}
 

@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialiser OpenAI uniquement si la clé est disponible
+const getOpenAI = () => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+  return new OpenAI({ apiKey });
+};
 
 // Contexte système pour CausePilot
 const CAUSEPILOT_SYSTEM_PROMPT = `Tu es CausePilot, l'assistant IA expert en collecte de fonds (fundraising) de la plateforme Cause Pilot AI.
@@ -118,6 +121,16 @@ export async function POST(request: NextRequest) {
     messages.push({ role: "user", content: message });
 
     // Appeler l'API OpenAI
+    const openai = getOpenAI();
+    if (!openai) {
+      // Fallback si pas de clé API
+      return NextResponse.json({
+        success: true,
+        message: "Bonjour ! Je suis CausePilot, votre assistant fundraising. Je suis là pour vous aider à maximiser vos collectes de fonds. Actuellement, je fonctionne en mode limité. Pour activer toutes mes capacités IA, configurez la clé OPENAI_API_KEY dans les variables d'environnement.",
+        suggestions: generateSuggestions(context?.page, message),
+      });
+    }
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages,

@@ -34,10 +34,13 @@ export async function GET(request: NextRequest) {
         },
       });
 
-      const rankedTeams = teams.map((team, index) => ({
-        rank: index + 1,
-        ...team,
-      }));
+      const rankedTeams = teams.map((team, index) => {
+        const { rank: _existingRank, ...teamData } = team as typeof team & { rank?: number };
+        return {
+          ...teamData,
+          rank: index + 1,
+        };
+      });
 
       return NextResponse.json({
         type: "teams",

@@ -338,3 +338,35 @@
 - [x] Transfert des dons et historique
 - [x] Suppression du doublon après fusion
 - [ ] Journal des fusions effectuées
+
+
+## Gestion des Consentements RGPD
+
+### Phase 1 - Modèle de données
+- [ ] Vérifier/créer le modèle Consent existant
+- [ ] Ajouter les types de consentement (email, téléphone, courrier, données)
+- [ ] Historique des modifications de consentement
+- [ ] Date d'expiration des consentements
+
+### Phase 2 - APIs
+- [ ] API CRUD consentements par donateur
+- [ ] API mise à jour en masse des consentements
+- [ ] API export des consentements (audit)
+- [ ] API centre de préférences public
+
+### Phase 3 - Interface Administration
+- [ ] Section consentements dans fiche donateur
+- [ ] Page rapport des consentements
+- [ ] Filtres par type de consentement
+- [ ] Export pour audit RGPD
+
+### Phase 4 - Centre de Préférences Public
+- [ ] Page publique de gestion des préférences
+- [ ] Lien unique par donateur (token)
+- [ ] Formulaire de mise à jour des préférences
+- [ ] Confirmation des modifications
+
+### Phase 5 - Intégration
+- [ ] Vérification consentement avant envoi email
+- [ ] Lien de désabonnement dans les emails
+- [ ] Journal des accès aux données

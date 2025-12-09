@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendEmail } from "@/lib/sendgrid";
+import sgMail from "@sendgrid/mail";
+
+// Initialize SendGrid
+const sendgridApiKey = process.env.SENDGRID_API_KEY;
+const fromEmail = process.env.SENDGRID_FROM_EMAIL || "hello@nukleo.digital";
+const fromName = process.env.SENDGRID_FROM_NAME || "CausePilotAI";
+
+if (sendgridApiKey) {
+  sgMail.setApiKey(sendgridApiKey);
+}
 
 interface TestSendRequest {
   testEmail: string;
@@ -71,27 +80,58 @@ export async function POST(request: NextRequest) {
       personalizedHtml = testBanner + personalizedHtml;
     }
 
-    // Envoyer l'email de test
-    const result = await sendEmail({
-      to: testEmail,
-      subject: `[TEST] ${subject}`,
-      html: personalizedHtml,
-      text: `[TEST] ${personalizedText}`,
-      from: fromName ? {
-        email: process.env.SENDGRID_FROM_EMAIL || "hello@nukleo.digital",
-        name: fromName,
-      } : undefined,
-      categories: ["test", "campaign-preview"],
-    });
+    // Vérifier la configuration SendGrid
+    if (!sendgridApiKey) {
+      console.error("SENDGRID_API_KEY not configured");
+      return NextResponse.json(
+        { error: "Configuration SendGrid manquante. Vérifiez que SENDGRID_API_KEY est configuré." },
+        { status: 500 }
+      );
+    }
 
-    if (result) {
+    // Envoyer l'email de test
+    try {
+      const msg = {
+        to: testEmail,
+        from: {
+          email: fromEmail,
+          name: body.fromName || fromName,
+        },
+        subject: `[TEST] ${subject}`,
+        text: `[TEST] ${personalizedText}`,
+        html: personalizedHtml,
+        categories: ["test", "campaign-preview"],
+      };
+
+      await sgMail.send(msg);
+      console.log(`Test email sent successfully to ${testEmail}`);
+
       return NextResponse.json({
         success: true,
         message: `Email de test envoyé à ${testEmail}`,
       });
-    } else {
+    } catch (sendError: unknown) {
+      console.error("SendGrid error:", sendError);
+      const errorMessage = sendError instanceof Error ? sendError.message : "Erreur inconnue";
+      
+      // Vérifier si c'est une erreur d'authentification
+      if (errorMessage.includes("Unauthorized") || errorMessage.includes("401")) {
+        return NextResponse.json(
+          { error: "Clé API SendGrid invalide ou expirée" },
+          { status: 500 }
+        );
+      }
+      
+      // Vérifier si c'est une erreur de sender non vérifié
+      if (errorMessage.includes("sender") || errorMessage.includes("verified")) {
+        return NextResponse.json(
+          { error: "L'adresse d'expédition n'est pas vérifiée dans SendGrid" },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
-        { error: "Échec de l'envoi de l'email de test" },
+        { error: `Échec de l'envoi: ${errorMessage}` },
         { status: 500 }
       );
     }

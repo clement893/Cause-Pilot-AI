@@ -127,21 +127,21 @@ export default function DashboardPage() {
     : 1;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar />
-      <main className="flex-1 p-8">
+      <main className="ml-64 p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+            <p className="text-gray-400 mt-1">
               Vue d&apos;ensemble de votre activité philanthropique
             </p>
           </div>
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
             Actualiser
@@ -152,7 +152,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600">Chargement du dashboard...</p>
+              <p className="text-gray-400">Chargement du dashboard...</p>
             </div>
           </div>
         ) : data ? (
@@ -160,7 +160,7 @@ export default function DashboardPage() {
             {/* KPIs Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Donateurs */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                     <Users className="w-6 h-6 text-purple-600" />
@@ -178,17 +178,17 @@ export default function DashboardPage() {
                     {Math.abs(data.kpis.donorGrowth)}%
                   </span>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900">
+                <h3 className="text-3xl font-bold text-white">
                   {data.kpis.totalDonors.toLocaleString()}
                 </h3>
-                <p className="text-gray-600 text-sm mt-1">Donateurs totaux</p>
+                <p className="text-gray-400 text-sm mt-1">Donateurs totaux</p>
                 <p className="text-purple-600 text-xs mt-2">
                   +{data.kpis.newDonorsThisMonth} ce mois
                 </p>
               </div>
 
               {/* Dons ce mois */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                     <DollarSign className="w-6 h-6 text-green-600" />
@@ -206,42 +206,42 @@ export default function DashboardPage() {
                     {Math.abs(data.kpis.donationGrowth)}%
                   </span>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900">
+                <h3 className="text-3xl font-bold text-white">
                   {formatCurrency(data.kpis.donationsThisMonth)}
                 </h3>
-                <p className="text-gray-600 text-sm mt-1">Dons ce mois</p>
+                <p className="text-gray-400 text-sm mt-1">Dons ce mois</p>
                 <p className="text-green-600 text-xs mt-2">
                   {formatCurrency(data.kpis.donationsThisYear)} cette année
                 </p>
               </div>
 
               {/* Campagnes actives */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                     <Target className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900">
+                <h3 className="text-3xl font-bold text-white">
                   {data.kpis.activeCampaigns}
                 </h3>
-                <p className="text-gray-600 text-sm mt-1">Campagnes actives</p>
+                <p className="text-gray-400 text-sm mt-1">Campagnes actives</p>
                 <p className="text-blue-600 text-xs mt-2">
                   {data.kpis.totalCampaigns} au total
                 </p>
               </div>
 
               {/* Don moyen */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
                     <Heart className="w-6 h-6 text-pink-600" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900">
+                <h3 className="text-3xl font-bold text-white">
                   {formatCurrency(data.kpis.averageDonation)}
                 </h3>
-                <p className="text-gray-600 text-sm mt-1">Don moyen</p>
+                <p className="text-gray-400 text-sm mt-1">Don moyen</p>
                 <p className="text-pink-600 text-xs mt-2">
                   {data.kpis.recurringDonations} dons récurrents
                 </p>
@@ -251,9 +251,9 @@ export default function DashboardPage() {
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Graphique des dons */}
-              <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="lg:col-span-2 bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-white">
                     Évolution des dons
                   </h2>
                   <Link
@@ -279,7 +279,7 @@ export default function DashboardPage() {
                             {month.count} dons
                           </div>
                         </div>
-                        <span className="text-xs text-gray-500 mt-2 truncate w-full text-center">
+                        <span className="text-xs text-gray-400 mt-2 truncate w-full text-center">
                           {month.month}
                         </span>
                       </div>
@@ -289,57 +289,57 @@ export default function DashboardPage() {
               </div>
 
               {/* Actions rapides */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">
                   Actions rapides
                 </h2>
                 <div className="space-y-3">
                   <Link
                     href="/donors/new"
-                    className="flex items-center gap-3 p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors group"
+                    className="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
                   >
                     <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <UserPlus className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Nouveau donateur</p>
-                      <p className="text-xs text-gray-500">Ajouter un contact</p>
+                      <p className="font-medium text-white">Nouveau donateur</p>
+                      <p className="text-xs text-gray-400">Ajouter un contact</p>
                     </div>
                   </Link>
                   <Link
                     href="/forms/new"
-                    className="flex items-center gap-3 p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group"
+                    className="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
                   >
                     <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <PlusCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Formulaire de don</p>
-                      <p className="text-xs text-gray-500">Créer un formulaire</p>
+                      <p className="font-medium text-white">Formulaire de don</p>
+                      <p className="text-xs text-gray-400">Créer un formulaire</p>
                     </div>
                   </Link>
                   <Link
                     href="/campaigns/new"
-                    className="flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
+                    className="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
                   >
                     <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Megaphone className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Nouvelle campagne</p>
-                      <p className="text-xs text-gray-500">Lancer une collecte</p>
+                      <p className="font-medium text-white">Nouvelle campagne</p>
+                      <p className="text-xs text-gray-400">Lancer une collecte</p>
                     </div>
                   </Link>
                   <Link
                     href="/copilot"
-                    className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 rounded-lg transition-colors group"
+                    className="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
                   >
                     <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Bot className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Copilote IA</p>
-                      <p className="text-xs text-gray-500">Poser une question</p>
+                      <p className="font-medium text-white">Copilote IA</p>
+                      <p className="text-xs text-gray-400">Poser une question</p>
                     </div>
                   </Link>
                 </div>
@@ -349,9 +349,9 @@ export default function DashboardPage() {
             {/* Bottom Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
               {/* Dons récents */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-white">
                     Dons récents
                   </h2>
                   <Link
@@ -365,17 +365,17 @@ export default function DashboardPage() {
                   {data.recent.donations.slice(0, 5).map((donation) => (
                     <div
                       key={donation.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-slate-800 rounded-lg"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                           <DollarSign className="w-5 h-5 text-green-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-white">
                             {donation.isAnonymous ? "Donateur anonyme" : donation.donorName}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-400">
                             {formatDate(donation.date)}
                             {donation.isRecurring && (
                               <span className="ml-2 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">
@@ -391,7 +391,7 @@ export default function DashboardPage() {
                     </div>
                   ))}
                   {data.recent.donations.length === 0 && (
-                    <p className="text-center text-gray-500 py-8">
+                    <p className="text-center text-gray-400 py-8">
                       Aucun don récent
                     </p>
                   )}
@@ -399,9 +399,9 @@ export default function DashboardPage() {
               </div>
 
               {/* Campagnes en cours */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-white">
                     Campagnes en cours
                   </h2>
                   <Link
@@ -416,26 +416,26 @@ export default function DashboardPage() {
                     <Link
                       key={campaign.id}
                       href={`/campaigns/${campaign.id}`}
-                      className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      className="block p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-medium text-gray-900">{campaign.name}</h3>
-                        <span className="text-sm text-gray-600">
+                        <h3 className="font-medium text-white">{campaign.name}</h3>
+                        <span className="text-sm text-gray-400">
                           {campaign.donorCount} donateurs
                         </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                      <div className="w-full bg-slate-700 rounded-full h-2 mb-2">
                         <div
                           className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all"
                           style={{ width: `${Math.min(campaign.progress, 100)}%` }}
                         ></div>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">
+                        <span className="text-gray-300">
                           {formatCurrency(campaign.totalRaised)} collectés
                         </span>
                         {campaign.goalAmount && (
-                          <span className="text-gray-500">
+                          <span className="text-gray-400">
                             Objectif: {formatCurrency(campaign.goalAmount)}
                           </span>
                         )}
@@ -445,7 +445,7 @@ export default function DashboardPage() {
                   {data.recent.campaigns.length === 0 && (
                     <div className="text-center py-8">
                       <Target className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-gray-500">Aucune campagne active</p>
+                      <p className="text-gray-400">Aucune campagne active</p>
                       <Link
                         href="/campaigns/new"
                         className="text-purple-600 hover:text-purple-700 text-sm font-medium mt-2 inline-block"
@@ -459,9 +459,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Nouveaux donateurs */}
-            <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="mt-8 bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-white">
                   Nouveaux donateurs
                 </h2>
                 <Link
@@ -476,7 +476,7 @@ export default function DashboardPage() {
                   <Link
                     key={donor.id}
                     href={`/donors/${donor.id}`}
-                    className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-center"
+                    className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors text-center"
                   >
                     <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
                       <span className="text-purple-600 font-semibold">
@@ -484,10 +484,10 @@ export default function DashboardPage() {
                         {donor.lastName?.[0]}
                       </span>
                     </div>
-                    <p className="font-medium text-gray-900 truncate">
+                    <p className="font-medium text-white truncate">
                       {donor.firstName} {donor.lastName}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">{donor.email}</p>
+                    <p className="text-xs text-gray-400 truncate">{donor.email}</p>
                     <p className="text-sm text-green-600 font-medium mt-1">
                       {formatCurrency(donor.totalDonations)}
                     </p>
@@ -496,7 +496,7 @@ export default function DashboardPage() {
                 {data.recent.donors.length === 0 && (
                   <div className="col-span-5 text-center py-8">
                     <Users className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                    <p className="text-gray-500">Aucun nouveau donateur</p>
+                    <p className="text-gray-400">Aucun nouveau donateur</p>
                   </div>
                 )}
               </div>
@@ -504,7 +504,7 @@ export default function DashboardPage() {
           </>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-500">Erreur lors du chargement des données</p>
+            <p className="text-gray-400">Erreur lors du chargement des données</p>
             <button
               onClick={handleRefresh}
               className="mt-4 text-purple-600 hover:text-purple-700 font-medium"

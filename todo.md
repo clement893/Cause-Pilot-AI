@@ -222,3 +222,13 @@
 ### Phase 4 - Déploiement
 - [x] Tester le build
 - [x] Push sur GitHub
+
+
+## Page Liste Campagnes Email
+
+### Fonctionnalités
+- [x] Afficher toutes les campagnes (brouillons et envoyées)
+- [x] Filtres par statut (Brouillon, Envoyé, Planifié)
+- [x] Actions: Continuer brouillon, Voir résultats
+- [x] Statistiques rapides (taux ouverture, clics)
+- [x] Améliorer page détail/résultats campagne

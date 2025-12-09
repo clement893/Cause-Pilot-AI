@@ -417,3 +417,12 @@
 - [x] Intégrer CausePilot dans la page de création de formulaire
 - [x] Intégrer CausePilot dans la page d'édition de formulaire
 - [x] Ajouter widget d'analyse sur la page détail formulaire
+
+
+## Campagnes - Éléments liés
+
+- [x] Afficher les formulaires liés à la campagne
+- [x] Afficher les campagnes courriels liées
+- [x] Afficher les campagnes médias sociaux liées (pas de modèle Social dans le schéma)
+- [x] Afficher la liste des donateurs de la campagne
+- [x] Mettre à jour l'API campagnes pour inclure les relations

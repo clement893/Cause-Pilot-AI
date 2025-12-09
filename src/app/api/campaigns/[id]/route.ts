@@ -17,7 +17,7 @@ export async function GET(
         },
         donors: {
           orderBy: { totalDonated: "desc" },
-          take: 10,
+          take: 50,
         },
         forms: true,
         updates: {
@@ -38,6 +38,76 @@ export async function GET(
         },
       },
     });
+
+    // Récupérer les formulaires liés avec leurs détails
+    const linkedForms = await prisma.donationForm.findMany({
+      where: {
+        id: {
+          in: campaign?.forms.map(f => f.formId) || []
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        formType: true,
+        status: true,
+        totalCollected: true,
+        donationCount: true,
+      }
+    });
+
+    // Récupérer les campagnes emails liées (par nom de campagne)
+    const linkedEmailCampaigns = await prisma.emailCampaign.findMany({
+      where: {
+        OR: [
+          { name: { contains: campaign?.name || '' } },
+          { tags: { has: campaign?.slug || '' } },
+        ]
+      },
+      select: {
+        id: true,
+        name: true,
+        subject: true,
+        status: true,
+        sentAt: true,
+        totalRecipients: true,
+        openCount: true,
+        clickCount: true,
+        openRate: true,
+        clickRate: true,
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+    });
+
+    // Récupérer les donateurs avec leurs informations complètes
+    const donorIds = campaign?.donors.map(d => d.donorId) || [];
+    const donorsDetails = await prisma.donor.findMany({
+      where: {
+        id: { in: donorIds }
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        totalDonated: true,
+        donationCount: true,
+        status: true,
+        segment: true,
+      }
+    });
+
+    // Combiner les données des donateurs
+    const donorsWithDetails = campaign?.donors.map(cd => {
+      const donor = donorsDetails.find(d => d.id === cd.donorId);
+      return {
+        ...cd,
+        donor,
+      };
+    }) || [];
 
     if (!campaign) {
       return NextResponse.json(
@@ -66,6 +136,9 @@ export async function GET(
       ...campaign,
       progress,
       daysRemaining,
+      linkedForms,
+      linkedEmailCampaigns,
+      donorsWithDetails,
     });
   } catch (error) {
     console.error("Error fetching campaign:", error);

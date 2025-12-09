@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
+import CausePilotWidget from "@/components/CausePilotWidget";
 import {
   Users,
   DollarSign,
@@ -157,6 +158,22 @@ export default function DashboardPage() {
           </div>
         ) : data ? (
           <>
+            {/* CausePilot Widget */}
+            <div className="mb-8">
+              <CausePilotWidget
+                stats={{
+                  totalDonors: data.kpis.totalDonors,
+                  newDonorsThisMonth: data.kpis.newDonorsThisMonth,
+                  donorGrowth: data.kpis.donorGrowth,
+                  totalDonations: data.kpis.totalDonations,
+                  donationsThisMonth: data.kpis.donationsThisMonth,
+                  donationGrowth: data.kpis.donationGrowth,
+                  activeCampaigns: data.kpis.activeCampaigns,
+                  averageDonation: data.kpis.averageDonation,
+                }}
+              />
+            </div>
+
             {/* KPIs Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Donateurs */}

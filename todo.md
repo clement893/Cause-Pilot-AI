@@ -370,3 +370,27 @@
 - [ ] Vérification consentement avant envoi email
 - [ ] Lien de désabonnement dans les emails
 - [x] Journal des accès aux données (ConsentHistory)
+
+
+## CausePilot - Assistant IA Fundraiser
+
+### Phase 1 - API Backend
+- [x] Créer l'API chat avec contexte intelligent
+- [x] Intégrer le LLM pour les réponses
+- [x] Ajouter le contexte des données utilisateur
+
+### Phase 2 - Composant Chat
+- [x] Créer le composant chat flottant
+- [x] Design moderne avec avatar CausePilot
+- [x] Historique des conversations
+- [x] Suggestions de questions rapides
+
+### Phase 3 - Intégration Dashboard
+- [x] Widget CausePilot sur le tableau de bord
+- [x] Conseils personnalisés basés sur les métriques
+- [x] Alertes et recommandations proactives
+
+### Phase 4 - Contexte Intelligent
+- [x] Contexte adapté selon la page (campagnes, donateurs, etc.)
+- [x] Suggestions d'actions pertinentes
+- [x] Aide à la création de campagnes

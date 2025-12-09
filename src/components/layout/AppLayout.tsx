@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+import CausePilotChat from "../CausePilotChat";
 import Link from "next/link";
 
 interface AppLayoutProps {
   children: React.ReactNode;
   title?: string;
   breadcrumbs?: { name: string; href?: string }[];
+  currentPage?: string;
 }
 
-export default function AppLayout({ children, title, breadcrumbs }: AppLayoutProps) {
+export default function AppLayout({ children, title, breadcrumbs, currentPage = "dashboard" }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
@@ -90,6 +92,9 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
           {children}
         </main>
       </div>
+
+      {/* CausePilot Chat */}
+      <CausePilotChat currentPage={currentPage} />
     </div>
   );
 }

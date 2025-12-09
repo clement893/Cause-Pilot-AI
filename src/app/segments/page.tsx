@@ -37,7 +37,7 @@ interface Segment {
 export default function SegmentsPage() {
   const [segments, setSegments] = useState<Segment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  // Modal de création géré par la page /segments/new
 
   const fetchSegments = async () => {
     try {

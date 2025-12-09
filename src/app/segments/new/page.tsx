@@ -9,7 +9,6 @@ import {
   Plus,
   Trash2,
   Save,
-  Users,
   Zap,
   Layers,
 } from "lucide-react";

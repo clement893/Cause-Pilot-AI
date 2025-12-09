@@ -12,10 +12,8 @@ import {
   Target,
   Mail,
   FileText,
-  AlertTriangle,
   Info,
   Heart,
-  Megaphone,
 } from "lucide-react";
 
 interface Notification {

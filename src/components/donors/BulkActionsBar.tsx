@@ -11,7 +11,6 @@ import {
   ChevronDown,
   CheckCircle,
   Loader2,
-  ListPlus,
 } from "lucide-react";
 
 interface BulkActionsBarProps {
@@ -69,7 +68,7 @@ export default function BulkActionsBar({
       } else {
         setResult({ success: false, message: data.error || "Erreur" });
       }
-    } catch (error) {
+    } catch {
       setResult({ success: false, message: "Erreur de connexion" });
     } finally {
       setLoading(false);

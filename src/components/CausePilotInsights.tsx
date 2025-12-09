@@ -8,7 +8,6 @@ import {
   TrendingUp,
   Clock,
   Target,
-  Users,
   ChevronRight,
   RefreshCw,
   Lightbulb,
@@ -290,7 +289,7 @@ export default function CausePilotInsights() {
           <>
             {data.predictions.upgradeCandidates.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-400">Aucune opportunité d'upgrade détectée</p>
+                <p className="text-gray-400">Aucune opportunité d&apos;upgrade détectée</p>
               </div>
             ) : (
               data.predictions.upgradeCandidates.map((donor) => (

@@ -196,3 +196,29 @@
 ### Phase 3 - Tests et Déploiement
 - [ ] Tester l'envoi d'emails
 - [ ] Push sur GitHub
+
+## Révision Flow Campagne Email
+
+### Phase 1 - API Backend
+- [x] Créer API assistance IA pour rédaction email
+- [x] Créer API envoi test email
+- [x] Créer API récupération segments donateurs
+
+### Phase 2 - Interface Wizard Multi-étapes
+- [x] Étape 1: Configuration (nom, sujet, expéditeur)
+- [x] Étape 2: Rédaction avec assistant IA
+- [x] Étape 3: Sélection segments/donateurs
+- [x] Étape 4: Prévisualisation
+- [x] Étape 5: Test et envoi
+
+### Phase 3 - Fonctionnalités
+- [x] Composant éditeur email avec IA
+- [x] Sélecteur de segments avec compteur
+- [x] Prévisualisation email responsive
+- [x] Envoi test à adresse personnalisée
+- [x] Sauvegarde brouillon automatique
+- [x] Page résultats campagne (existante)
+
+### Phase 4 - Déploiement
+- [ ] Tester le build
+- [ ] Push sur GitHub

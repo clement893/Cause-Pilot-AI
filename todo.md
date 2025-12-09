@@ -343,30 +343,30 @@
 ## Gestion des Consentements RGPD
 
 ### Phase 1 - Modèle de données
-- [ ] Vérifier/créer le modèle Consent existant
-- [ ] Ajouter les types de consentement (email, téléphone, courrier, données)
-- [ ] Historique des modifications de consentement
-- [ ] Date d'expiration des consentements
+- [x] Vérifier/créer le modèle Consent existant
+- [x] Ajouter les types de consentement (email, téléphone, courrier, données)
+- [x] Historique des modifications de consentement (ConsentHistory)
+- [x] Date d'expiration des consentements
 
 ### Phase 2 - APIs
-- [ ] API CRUD consentements par donateur
+- [x] API CRUD consentements par donateur (/api/donors/[id]/consent)
 - [ ] API mise à jour en masse des consentements
-- [ ] API export des consentements (audit)
-- [ ] API centre de préférences public
+- [x] API export des consentements (audit) (/api/admin/consent-report)
+- [x] API centre de préférences public (/api/preferences/[token])
 
 ### Phase 3 - Interface Administration
 - [ ] Section consentements dans fiche donateur
-- [ ] Page rapport des consentements
-- [ ] Filtres par type de consentement
-- [ ] Export pour audit RGPD
+- [x] Page rapport des consentements (/admin/consent)
+- [x] Filtres par type de consentement
+- [x] Export pour audit RGPD (CSV)
 
 ### Phase 4 - Centre de Préférences Public
-- [ ] Page publique de gestion des préférences
-- [ ] Lien unique par donateur (token)
-- [ ] Formulaire de mise à jour des préférences
-- [ ] Confirmation des modifications
+- [x] Page publique de gestion des préférences (/preferences/[token])
+- [x] Lien unique par donateur (token HMAC)
+- [x] Formulaire de mise à jour des préférences
+- [x] Confirmation des modifications
 
 ### Phase 5 - Intégration
 - [ ] Vérification consentement avant envoi email
 - [ ] Lien de désabonnement dans les emails
-- [ ] Journal des accès aux données
+- [x] Journal des accès aux données (ConsentHistory)

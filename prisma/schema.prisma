@@ -101,6 +101,7 @@ model Donor {
   customFields    DonorCustomField[]
   communications  Communication[]
   submissions     DonationSubmission[]
+  consentHistory  ConsentHistory[]
 
   @@index([email])
   @@index([lastName, firstName])
@@ -1813,3 +1814,36 @@ model EmailEvent {
   @@index([email])
 }
 
+
+
+// ============================================
+// GESTION DES CONSENTEMENTS RGPD
+// ============================================
+
+model ConsentHistory {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  
+  // Relation avec le donateur
+  donorId     String
+  donor       Donor    @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  
+  // Type de changement
+  consentType String   // "update", "opt_in", "opt_out", "initial"
+  
+  // Valeurs avant/après (JSON)
+  previousValue String?
+  newValue      String
+  
+  // Source du changement
+  source      String   // "admin", "preference_center", "email_link", "import", "api"
+  reason      String?  // Raison du changement (optionnel)
+  
+  // Informations de traçabilité
+  ipAddress   String?
+  userAgent   String?
+  userId      Int?     // ID de l'admin qui a fait le changement (si applicable)
+  
+  @@index([donorId])
+  @@index([createdAt])
+}

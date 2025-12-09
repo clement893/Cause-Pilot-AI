@@ -44,7 +44,7 @@ export interface CampaignMilestone {
 
 export interface CampaignDonor {
   id: string;
-  totalDonations: number;
+  totalDonated: number;
   donationCount: number;
   firstDonationDate?: string;
   lastDonationDate?: string;

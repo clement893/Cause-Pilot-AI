@@ -16,7 +16,7 @@ export async function GET(
           orderBy: { sortOrder: "asc" },
         },
         donors: {
-          orderBy: { totalDonations: "desc" },
+          orderBy: { totalDonated: "desc" },
           take: 50,
         },
         forms: true,

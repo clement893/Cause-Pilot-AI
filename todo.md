@@ -405,4 +405,4 @@
 - [x] Intégrer données emails (taux, meilleures campagnes)
 - [x] Intégrer données P2P (collecteurs, performances)
 - [x] Mettre à jour le prompt système avec contexte enrichi
-- [ ] Tester les réponses personnalisées
+- [x] Tester les réponses personnalisées

@@ -87,9 +87,12 @@ async function collectFullContext() {
       prisma.donation.findMany({
         orderBy: { donationDate: "desc" },
         take: 10,
-        include: {
+        select: {
+          id: true,
+          amount: true,
+          donationDate: true,
+          campaignName: true,
           donor: { select: { firstName: true, lastName: true } },
-          campaign: { select: { name: true } },
         },
       }),
       prisma.donation.groupBy({
@@ -227,7 +230,7 @@ async function collectFullContext() {
           amount: d.amount,
           date: d.donationDate,
           donor: d.donor ? `${d.donor.firstName} ${d.donor.lastName}` : "Anonyme",
-          campaign: d.campaign?.name || "Don général",
+          campaign: d.campaignName || "Don général",
         })),
         yearlyStats: donationStats,
       },

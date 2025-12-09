@@ -406,3 +406,14 @@
 - [x] Intégrer données P2P (collecteurs, performances)
 - [x] Mettre à jour le prompt système avec contexte enrichi
 - [x] Tester les réponses personnalisées
+
+
+## CausePilot - Assistance IA Formulaires
+
+- [x] Créer API d'assistance IA pour formulaires (/api/forms/ai-assist)
+- [x] Aide à la création: suggestions montants, textes, configurations
+- [x] Aide contextuelle: suggestions en temps réel pendant l'édition
+- [x] Analyse des performances: conseils basés sur taux de conversion
+- [x] Intégrer CausePilot dans la page de création de formulaire
+- [x] Intégrer CausePilot dans la page d'édition de formulaire
+- [x] Ajouter widget d'analyse sur la page détail formulaire

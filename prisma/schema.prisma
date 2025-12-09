@@ -1523,3 +1523,244 @@ enum LeaderboardType {
   POINTS            // Par points de gamification
   TEAM              // Classement des équipes
 }
+
+
+// ============================================
+// MODULE ADMINISTRATION
+// ============================================
+
+model Permission {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Identifiant unique de la permission
+  code        String   @unique  // ex: "donors.create", "campaigns.delete"
+  name        String             // ex: "Créer des donateurs"
+  description String?
+  
+  // Catégorie/Module
+  module      String             // ex: "donors", "campaigns", "analytics"
+  
+  // Relations
+  rolePermissions RolePermission[]
+
+  @@index([module])
+  @@index([code])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String   @unique  // ex: "Administrateur", "Gestionnaire"
+  description String?
+  isSystem    Boolean  @default(false)  // Rôles système non modifiables
+  isActive    Boolean  @default(true)
+  
+  // Couleur pour l'UI
+  color       String?  @default("#6366f1")
+  
+  // Relations
+  permissions RolePermission[]
+  userRoles   UserRoleAssignment[]
+
+  @@index([name])
+  @@index([isActive])
+}
+
+model RolePermission {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+
+  roleId       String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+model UserRoleAssignment {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      Int
+  roleId      String
+  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  // Dates de validité (optionnel)
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  // Qui a assigné ce rôle
+  assignedBy  Int?
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  // Qui a fait l'action
+  userId      Int?
+  userName    String?
+  userEmail   String?
+  
+  // Quelle action
+  action      AuditAction
+  module      String        // ex: "donors", "campaigns"
+  entityType  String        // ex: "Donor", "Campaign"
+  entityId    String?
+  
+  // Détails de l'action
+  description String
+  oldValue    String?       // JSON des anciennes valeurs
+  newValue    String?       // JSON des nouvelles valeurs
+  
+  // Contexte
+  ipAddress   String?
+  userAgent   String?
+  
+  // Métadonnées
+  metadata    String?       // JSON pour données additionnelles
+
+  @@index([userId])
+  @@index([action])
+  @@index([module])
+  @@index([entityType])
+  @@index([createdAt])
+}
+
+enum AuditAction {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  EXPORT
+  IMPORT
+  SEND_EMAIL
+  PERMISSION_CHANGE
+  SETTINGS_CHANGE
+}
+
+model SystemSetting {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Clé unique du paramètre
+  key         String   @unique  // ex: "org.name", "email.sender"
+  value       String             // Valeur (peut être JSON)
+  
+  // Métadonnées
+  category    String             // ex: "organization", "email", "security"
+  label       String             // Label pour l'UI
+  description String?
+  dataType    SettingDataType    // Type de données
+  
+  // Validation
+  isRequired  Boolean  @default(false)
+  options     String?  // JSON pour les options (select)
+  
+  // Sécurité
+  isSecret    Boolean  @default(false)  // Masquer la valeur
+  isReadOnly  Boolean  @default(false)  // Non modifiable via UI
+
+  @@index([category])
+  @@index([key])
+}
+
+enum SettingDataType {
+  STRING
+  NUMBER
+  BOOLEAN
+  JSON
+  EMAIL
+  URL
+  COLOR
+  SELECT
+}
+
+model Integration {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Identifiant de l'intégration
+  provider    String   @unique  // ex: "stripe", "mailchimp", "salesforce"
+  name        String             // ex: "Stripe Payments"
+  description String?
+  category    IntegrationCategory
+  
+  // État
+  isEnabled   Boolean  @default(false)
+  isConfigured Boolean @default(false)
+  
+  // Configuration (chiffré en production)
+  config      String?  // JSON des paramètres
+  
+  // Dernière synchronisation
+  lastSyncAt  DateTime?
+  lastSyncStatus String?
+  
+  // Métadonnées
+  logoUrl     String?
+  docsUrl     String?
+  webhookUrl  String?
+
+  @@index([provider])
+  @@index([category])
+  @@index([isEnabled])
+}
+
+enum IntegrationCategory {
+  PAYMENT
+  EMAIL
+  CRM
+  ACCOUNTING
+  SOCIAL
+  ANALYTICS
+  OTHER
+}
+
+model Invitation {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  email       String
+  roleId      String
+  
+  // Token unique pour l'invitation
+  token       String   @unique
+  
+  // État
+  status      InvitationStatus @default(PENDING)
+  acceptedAt  DateTime?
+  
+  // Qui a envoyé l'invitation
+  invitedBy   Int
+  invitedByName String?
+
+  @@index([email])
+  @@index([token])
+  @@index([status])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}

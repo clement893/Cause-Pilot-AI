@@ -217,7 +217,6 @@ export async function GET() {
     const nonRecurringCount = await prisma.donor.count({
       where: {
         status: "ACTIVE",
-        isRecurring: false,
         donationCount: { gte: 2 },
       },
     });
@@ -235,7 +234,13 @@ export async function GET() {
     // 6. Insights globaux
     const totalDonors = await prisma.donor.count();
     const activeDonors = await prisma.donor.count({ where: { status: "ACTIVE" } });
-    const recurringDonors = await prisma.donor.count({ where: { isRecurring: true } });
+    // Compter les donateurs avec au moins un don récurrent
+    const recurringDonorIds = await prisma.donation.findMany({
+      where: { isRecurring: true },
+      select: { donorId: true },
+      distinct: ['donorId'],
+    });
+    const recurringDonors = recurringDonorIds.length;
     
     const insights = {
       healthScore: Math.round(

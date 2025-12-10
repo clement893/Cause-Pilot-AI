@@ -52,12 +52,12 @@ export async function POST(request: NextRequest) {
         
         await Promise.all(
           donorsForTag.map(async (donor) => {
-            const currentTags = donor.tags ? donor.tags.split(",").map(t => t.trim()) : [];
+            const currentTags = donor.tags || [];
             if (!currentTags.includes(params.tag)) {
               currentTags.push(params.tag);
               await prisma.donor.update({
                 where: { id: donor.id },
-                data: { tags: currentTags.join(", ") },
+                data: { tags: currentTags },
               });
             }
           })

@@ -77,7 +77,6 @@ export async function GET() {
         donationCount: { gte: 3 },
         totalDonations: { gte: 100, lt: 1000 },
         lastDonationDate: { gte: threeMonthsAgo },
-        isRecurring: false,
       },
       select: {
         id: true,

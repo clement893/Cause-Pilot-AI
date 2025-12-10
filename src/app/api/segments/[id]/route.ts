@@ -81,7 +81,6 @@ export async function GET(
       avgDonation: donors.length > 0
         ? donors.reduce((sum, d) => sum + d.totalDonations, 0) / donors.length
         : 0,
-      recurringCount: donors.filter((d) => d.isRecurring).length,
     };
 
     return NextResponse.json({

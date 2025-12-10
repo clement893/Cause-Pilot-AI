@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
         // Ajouter à une liste de diffusion
         const existingSubscriptions = await prisma.mailingListSubscriber.findMany({
           where: {
-            mailingListId: params.mailingListId,
+            listId: params.listId,
             donorId: { in: donorIds },
           },
           select: { donorId: true },
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
             data: donors
               .filter(d => d.email)
               .map(d => ({
-                mailingListId: params.mailingListId,
+                listId: params.listId,
                 donorId: d.id,
                 email: d.email!,
                 status: "ACTIVE",

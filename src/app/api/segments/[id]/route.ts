@@ -21,7 +21,17 @@ export async function GET(
     }
 
     // Récupérer les donateurs du segment
-    let donors = [];
+    let donors: Array<{
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string | null;
+      totalDonations: number;
+      donationCount: number;
+      lastDonationDate: Date | null;
+      segment: string | null;
+      status: string;
+    }> = [];
     if (segment.type === "DYNAMIC" && segment.rules) {
       const rules = JSON.parse(segment.rules);
       const where = buildWhereClause(rules);
@@ -36,7 +46,6 @@ export async function GET(
           donationCount: true,
           lastDonationDate: true,
           segment: true,
-          isRecurring: true,
           status: true,
         },
         orderBy: { totalDonations: "desc" },
@@ -59,7 +68,6 @@ export async function GET(
           donationCount: true,
           lastDonationDate: true,
           segment: true,
-          isRecurring: true,
           status: true,
         },
         orderBy: { totalDonations: "desc" },

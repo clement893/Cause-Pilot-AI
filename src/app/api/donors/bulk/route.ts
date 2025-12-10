@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
         // Supprimer les donateurs (soft delete via status)
         await prisma.donor.updateMany({
           where: { id: { in: donorIds } },
-          data: { status: "ARCHIVED" },
+          data: { status: "INACTIVE" },
         });
         result = {
           success: true,

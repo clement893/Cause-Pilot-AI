@@ -178,14 +178,14 @@ export async function POST(request: NextRequest) {
             phone: true,
             address: true,
             city: true,
-            province: true,
+            state: true,
             postalCode: true,
             totalDonations: true,
             donationCount: true,
             lastDonationDate: true,
             segment: true,
             status: true,
-            isRecurring: true,
+            
           },
         });
 

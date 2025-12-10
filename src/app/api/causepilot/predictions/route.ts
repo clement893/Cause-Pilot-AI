@@ -250,7 +250,7 @@ export async function GET() {
       ),
       recurringRate: totalDonors > 0 ? (recurringDonors / totalDonors) * 100 : 0,
       retentionRate: totalDonors > 0 ? (activeDonors / totalDonors) * 100 : 0,
-      avgDonation,
+      avgDonation: avgAmount,
       medianDonation: medianAmount,
     };
 

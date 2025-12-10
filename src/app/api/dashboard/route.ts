@@ -31,9 +31,13 @@ export async function GET() {
     const activeDonors = await prisma.donor.count({
       where: { status: "ACTIVE" },
     });
-    const recurringDonorsCount = await prisma.donor.count({
+    // Compter les donateurs avec au moins un don récurrent
+    const recurringDonorIds = await prisma.donation.findMany({
       where: { isRecurring: true },
+      select: { donorId: true },
+      distinct: ['donorId'],
     });
+    const recurringDonorsCount = recurringDonorIds.length;
 
     // Donateurs inactifs (pas de don depuis 6 mois mais ont déjà donné)
     const inactiveDonors = await prisma.donor.count({

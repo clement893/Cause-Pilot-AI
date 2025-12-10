@@ -78,12 +78,11 @@ export async function POST(request: NextRequest) {
         
         await Promise.all(
           donorsForTagRemoval.map(async (donor) => {
-            if (donor.tags) {
-              const currentTags = donor.tags.split(",").map(t => t.trim());
-              const newTags = currentTags.filter(t => t !== params.tag);
+            if (donor.tags && donor.tags.length > 0) {
+              const newTags = donor.tags.filter(t => t !== params.tag);
               await prisma.donor.update({
                 where: { id: donor.id },
-                data: { tags: newTags.join(", ") },
+                data: { tags: newTags },
               });
             }
           })

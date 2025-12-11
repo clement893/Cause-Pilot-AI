@@ -60,6 +60,11 @@ export interface Donor {
   lastDonationDate?: string;
   firstDonationDate?: string;
   
+  // Scoring prédictif
+  potentialScore?: number;
+  churnRiskScore?: number;
+  scoreUpdatedAt?: string;
+  
   // Notes
   notes?: string;
   source?: string;
@@ -129,6 +134,11 @@ export interface DonorSearchFilters {
   createdBefore?: string;
   hasEmailConsent?: boolean;
   tags?: string[];
+  // Scoring prédictif
+  minPotentialScore?: number;
+  maxPotentialScore?: number;
+  minChurnRiskScore?: number;
+  maxChurnRiskScore?: number;
   page?: number;
   limit?: number;
   sortBy?: string;

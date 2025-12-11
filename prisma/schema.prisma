@@ -78,6 +78,11 @@ model Donor {
   lastDonationDate  DateTime?
   firstDonationDate DateTime?
 
+  // Scoring prédictif
+  potentialScore    Int?     // Score de potentiel major gift (1-100)
+  churnRiskScore    Int?     // Score de risque de churn (1-100)
+  scoreUpdatedAt    DateTime? // Date de dernière mise à jour des scores
+
   // Notes et commentaires
   notes       String?
   source      String?  // Comment le donateur a été acquis

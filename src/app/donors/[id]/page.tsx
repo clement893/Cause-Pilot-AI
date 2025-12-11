@@ -67,6 +67,8 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"profile" | "donations" | "activity" | "communications">("profile");
   const [loadingDonations, setLoadingDonations] = useState(false);
+  const [scores, setScores] = useState<{ potentialScore: number | null; churnRiskScore: number | null } | null>(null);
+  const [loadingScores, setLoadingScores] = useState(false);
 
   useEffect(() => {
     const fetchDonor = async () => {
@@ -98,6 +100,29 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
       fetchActivities();
     }
   }, [activeTab]);
+
+  // Récupérer les scores prédictifs
+  useEffect(() => {
+    const fetchScores = async () => {
+      if (!id) return;
+      setLoadingScores(true);
+      try {
+        const response = await fetch(`/api/donors/scoring?donorId=${id}&recalculate=true`);
+        if (response.ok) {
+          const data = await response.json();
+          setScores({
+            potentialScore: data.potentialScore,
+            churnRiskScore: data.churnRiskScore,
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching scores:", err);
+      } finally {
+        setLoadingScores(false);
+      }
+    };
+    fetchScores();
+  }, [id]);
 
   const fetchDonations = async () => {
     setLoadingDonations(true);
@@ -164,6 +189,34 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
     if (score >= 70) return "bg-green-500";
     if (score >= 40) return "bg-yellow-500";
     return "bg-red-500";
+  };
+
+  const getPotentialColor = (score: number | null) => {
+    if (!score) return "bg-slate-500";
+    if (score >= 70) return "bg-emerald-500";
+    if (score >= 40) return "bg-amber-500";
+    return "bg-slate-500";
+  };
+
+  const getChurnRiskColor = (score: number | null) => {
+    if (!score) return "bg-slate-500";
+    if (score >= 70) return "bg-red-500";
+    if (score >= 40) return "bg-orange-500";
+    return "bg-green-500";
+  };
+
+  const getPotentialLabel = (score: number | null) => {
+    if (!score) return "Non calculé";
+    if (score >= 70) return "Haut potentiel";
+    if (score >= 40) return "Potentiel moyen";
+    return "Potentiel faible";
+  };
+
+  const getChurnRiskLabel = (score: number | null) => {
+    if (!score) return "Non calculé";
+    if (score >= 70) return "Risque élevé";
+    if (score >= 40) return "Risque modéré";
+    return "Risque faible";
   };
 
   if (loading) {
@@ -253,6 +306,79 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Scoring Prédictif */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {/* Score de Potentiel Major Gift */}
+        <Card className="bg-slate-900 border-slate-800 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-emerald-500/20 rounded-lg">
+                <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">Potentiel Major Gift</p>
+                <p className="text-xs text-gray-400">Probabilité de don majeur</p>
+              </div>
+            </div>
+            <div className="text-right">
+              {loadingScores ? (
+                <div className="animate-pulse bg-slate-700 h-8 w-16 rounded"></div>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold text-white">{scores?.potentialScore || 0}</p>
+                  <Badge variant={scores?.potentialScore && scores.potentialScore >= 70 ? "success" : scores?.potentialScore && scores.potentialScore >= 40 ? "warning" : "default"} className="text-xs">
+                    {getPotentialLabel(scores?.potentialScore || null)}
+                  </Badge>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+            <div 
+              className={`h-full ${getPotentialColor(scores?.potentialScore || null)} transition-all duration-500`}
+              style={{ width: `${scores?.potentialScore || 0}%` }}
+            />
+          </div>
+        </Card>
+
+        {/* Score de Risque de Churn */}
+        <Card className="bg-slate-900 border-slate-800 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-red-500/20 rounded-lg">
+                <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">Risque de Churn</p>
+                <p className="text-xs text-gray-400">Probabilité d&apos;attrition</p>
+              </div>
+            </div>
+            <div className="text-right">
+              {loadingScores ? (
+                <div className="animate-pulse bg-slate-700 h-8 w-16 rounded"></div>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold text-white">{scores?.churnRiskScore || 0}</p>
+                  <Badge variant={scores?.churnRiskScore && scores.churnRiskScore >= 70 ? "danger" : scores?.churnRiskScore && scores.churnRiskScore >= 40 ? "warning" : "success"} className="text-xs">
+                    {getChurnRiskLabel(scores?.churnRiskScore || null)}
+                  </Badge>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+            <div 
+              className={`h-full ${getChurnRiskColor(scores?.churnRiskScore || null)} transition-all duration-500`}
+              style={{ width: `${scores?.churnRiskScore || 0}%` }}
+            />
+          </div>
+        </Card>
       </div>
 
       {/* Quick Stats Bar */}

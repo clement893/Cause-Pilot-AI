@@ -130,6 +130,32 @@ export async function POST(request: NextRequest) {
       });
     }
     
+    // Filtres de score de potentiel
+    if (body.minPotentialScore !== undefined) {
+      conditions.push({
+        potentialScore: { gte: body.minPotentialScore },
+      });
+    }
+    
+    if (body.maxPotentialScore !== undefined) {
+      conditions.push({
+        potentialScore: { lte: body.maxPotentialScore },
+      });
+    }
+    
+    // Filtres de score de risque de churn
+    if (body.minChurnRiskScore !== undefined) {
+      conditions.push({
+        churnRiskScore: { gte: body.minChurnRiskScore },
+      });
+    }
+    
+    if (body.maxChurnRiskScore !== undefined) {
+      conditions.push({
+        churnRiskScore: { lte: body.maxChurnRiskScore },
+      });
+    }
+    
     // Combiner les conditions
     const where: Prisma.DonorWhereInput = conditions.length > 0
       ? { AND: conditions }

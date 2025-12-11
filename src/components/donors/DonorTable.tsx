@@ -85,6 +85,22 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Dernier Don
             </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <span className="flex items-center gap-1">
+                <svg className="w-3 h-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                Potentiel
+              </span>
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <span className="flex items-center gap-1">
+                <svg className="w-3 h-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Risque
+              </span>
+            </th>
             <th scope="col" className="relative px-6 py-3">
               <span className="sr-only">Actions</span>
             </th>
@@ -131,6 +147,52 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
                 {donor.lastDonationDate
                   ? new Date(donor.lastDonationDate).toLocaleDateString("fr-CA")
                   : "-"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {donor.potentialScore ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full transition-all ${
+                          donor.potentialScore >= 70 ? "bg-emerald-500" :
+                          donor.potentialScore >= 40 ? "bg-amber-500" : "bg-slate-500"
+                        }`}
+                        style={{ width: `${donor.potentialScore}%` }}
+                      />
+                    </div>
+                    <span className={`text-xs font-medium ${
+                      donor.potentialScore >= 70 ? "text-emerald-400" :
+                      donor.potentialScore >= 40 ? "text-amber-400" : "text-slate-400"
+                    }`}>
+                      {donor.potentialScore}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-gray-500">-</span>
+                )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {donor.churnRiskScore ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full transition-all ${
+                          donor.churnRiskScore >= 70 ? "bg-red-500" :
+                          donor.churnRiskScore >= 40 ? "bg-orange-500" : "bg-green-500"
+                        }`}
+                        style={{ width: `${donor.churnRiskScore}%` }}
+                      />
+                    </div>
+                    <span className={`text-xs font-medium ${
+                      donor.churnRiskScore >= 70 ? "text-red-400" :
+                      donor.churnRiskScore >= 40 ? "text-orange-400" : "text-green-400"
+                    }`}>
+                      {donor.churnRiskScore}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-gray-500">-</span>
+                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex items-center justify-end gap-2">

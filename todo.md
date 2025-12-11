@@ -711,3 +711,11 @@
 - [ ] API CRUD pour les automatisations
 - [ ] API exécution manuelle d'une automatisation
 - [ ] API historique d'exécution
+
+
+## Scoring Prédictif des Donateurs
+- [x] Ajouter champs potentialScore et churnRiskScore au schéma Donor
+- [x] Créer API de calcul des scores prédictifs
+- [x] Ajouter indicateurs visuels (badges/jauges) sur fiche donateur
+- [x] Ajouter filtres par score dans la liste des donateurs
+- [ ] Tester et déployer

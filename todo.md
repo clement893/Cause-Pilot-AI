@@ -696,3 +696,18 @@
 - [ ] Configurer DATABASE_URL pour Railway
 - [ ] Tester avec données réelles
 - [ ] Push sur GitHub
+
+
+## Module Gestion des Automatisations
+
+### Phase 1 - Interface Utilisateur
+- [ ] Page liste des automatisations avec filtres et recherche
+- [ ] Formulaire de création d'automatisation avec déclencheurs
+- [ ] Éditeur d'actions (email, notification, tag, etc.)
+- [ ] Activation/désactivation des automatisations
+- [ ] Historique d'exécution des automatisations
+
+### Phase 2 - APIs
+- [ ] API CRUD pour les automatisations
+- [ ] API exécution manuelle d'une automatisation
+- [ ] API historique d'exécution

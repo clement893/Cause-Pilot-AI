@@ -128,8 +128,8 @@ export async function POST(request: NextRequest) {
       data: {
         donorId: donor.id,
         consentType: "EMAIL",
-        previousValue: donor.consentEmail,
-        newValue: false,
+        previousValue: String(donor.consentEmail),
+        newValue: "false",
         changedBy: "DONOR_SELF_SERVICE",
         reason: reason || "Désabonnement via lien email",
         ipAddress: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown",

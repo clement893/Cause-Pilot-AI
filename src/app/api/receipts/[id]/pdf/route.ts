@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { renderToBuffer } from "@react-pdf/renderer";
-import { TaxReceiptDocument } from "@/lib/receipt-pdf";
-import React, { ReactElement } from "react";
-import { DocumentProps } from "@react-pdf/renderer";
 
 // GET - Générer et télécharger le PDF du reçu
 export async function GET(
@@ -37,6 +33,11 @@ export async function GET(
     }
 
     // Récupérer les paramètres de l'organisation
+    // Import dynamique pour éviter les problèmes SSR
+    const { renderToBuffer } = await import("@react-pdf/renderer");
+    const { TaxReceiptDocument } = await import("@/lib/receipt-pdf");
+    const React = (await import("react")).default;
+
     const orgSettings = await prisma.organizationSettings.findFirst();
 
     // Préparer les données pour le PDF
@@ -71,7 +72,8 @@ export async function GET(
 
     // Générer le PDF
     const pdfBuffer = await renderToBuffer(
-      React.createElement(TaxReceiptDocument, { data: receiptData }) as unknown as ReactElement<DocumentProps>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      React.createElement(TaxReceiptDocument, { data: receiptData }) as any
     );
 
     // Mettre à jour le statut si c'est un téléchargement

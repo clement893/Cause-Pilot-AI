@@ -1,9 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { renderToBuffer } from "@react-pdf/renderer";
-import { TaxReceiptDocument } from "@/lib/receipt-pdf";
 import { sendEmail } from "@/lib/sendgrid";
-import React, { ReactElement } from "react";
-import { DocumentProps } from "@react-pdf/renderer";
 
 interface GenerateReceiptOptions {
   donationId: string;
@@ -152,6 +148,11 @@ async function sendReceiptEmail(receiptId: string): Promise<boolean> {
 
   const orgSettings = await prisma.organizationSettings.findFirst();
 
+  // Import dynamique pour éviter les problèmes SSR
+  const { renderToBuffer } = await import("@react-pdf/renderer");
+  const { TaxReceiptDocument } = await import("@/lib/receipt-pdf");
+  const React = (await import("react")).default;
+
   // Préparer les données pour le PDF
   const receiptData = {
     receiptNumber: receipt.receiptNumber,
@@ -184,7 +185,8 @@ async function sendReceiptEmail(receiptId: string): Promise<boolean> {
 
   // Générer le PDF
   const pdfBuffer = await renderToBuffer(
-    React.createElement(TaxReceiptDocument, { data: receiptData }) as unknown as ReactElement<DocumentProps>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    React.createElement(TaxReceiptDocument, { data: receiptData }) as any
   );
 
   // Formater le montant

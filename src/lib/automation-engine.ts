@@ -296,7 +296,8 @@ async function notifyTeam(
   // Créer une notification
   await prisma.notification.create({
     data: {
-      type: "SYSTEM_INFO",
+      type: "SYSTEM_ALERT",
+      category: "SYSTEM",
       title: "Automatisation",
       message,
       priority: "MEDIUM",

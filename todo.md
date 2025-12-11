@@ -564,3 +564,135 @@
 ### Phase 5 - Déploiement
 - [x] Tester le build
 - [x] Push sur GitHub
+
+
+
+## Formulaires Intelligents - Montants Dynamiques
+
+### Phase 1 - Détection du donateur
+- [x] API de détection par email
+- [x] Détection par cookie de session
+- [x] Récupération de l'historique du donateur
+
+### Phase 2 - Calcul des montants dynamiques
+- [x] Algorithme: dernier don + 10-20%
+- [x] Montants suggérés basés sur l'historique
+- [x] Fallback sur montants par défaut si nouveau donateur
+
+### Phase 3 - Formulaire personnalisé
+- [x] Afficher montants personnalisés
+- [x] Message de bienvenue personnalisé ("Bonjour [Prénom]")
+- [x] Indicateur de donateur reconnu
+
+### Phase 4 - Pré-remplissage
+- [x] Pré-remplir nom, prénom, email
+- [x] Pré-remplir adresse si connue
+- [x] Option de modifier les informations
+
+### Phase 5 - Déploiement
+- [x] Tester le build
+- [x] Push sur GitHub
+
+
+## Système d'Automatisations
+
+### Phase 1 - Modèles de données
+- [x] Modèle Automation (workflow)
+- [x] Modèle AutomationTrigger (déclencheur)
+- [x] Modèle AutomationAction (action à exécuter)
+- [x] Modèle AutomationExecution (historique)
+
+### Phase 2 - Triggers prédéfinis
+- [x] Bienvenue nouveau donateur (après 1er don)
+- [x] Anniversaire de don (1 an après)
+- [x] Relance donateur inactif (X mois sans don)
+- [x] Remerciement post-don (après chaque don)
+- [x] Proposition upgrade récurrent (après X dons ponctuels)
+- [x] Anniversaire du donateur
+- [x] Campagne atteint objectif
+
+### Phase 3 - Interface de gestion
+- [x] Liste des automatisations
+- [x] Page de création/édition
+- [x] Interface visuelle type workflow
+- [x] Templates prédéfinis
+- [x] Activation/désactivation
+
+### Phase 4 - Moteur d'exécution
+- [x] Cron job pour vérifier les triggers
+- [x] Exécution des actions (email, notification)
+- [x] Historique des exécutions
+- [x] Gestion des erreurs
+
+### Phase 5 - Déploiement
+- [x] Tester le build
+- [x] Push sur GitHub
+
+
+## Rapports Conseil d'Administration
+
+### Phase 1 - API de génération de rapports
+- [ ] Créer API /api/reports avec données agrégées
+- [ ] Rapport mensuel (dons, donateurs, campagnes)
+- [ ] Rapport annuel avec comparaison Y/Y
+- [ ] Métriques clés pour CA (croissance, rétention, LTV)
+
+### Phase 2 - Génération PDF
+- [ ] Template PDF professionnel pour rapports
+- [ ] Graphiques intégrés (barres, lignes, camemberts)
+- [ ] Mise en page prête pour présentation
+- [ ] Export en un clic
+
+### Phase 3 - Interface de gestion
+- [ ] Page /reports avec liste des rapports
+- [ ] Génération de rapports personnalisés
+- [ ] Prévisualisation avant export
+- [ ] Historique des rapports générés
+
+### Phase 4 - Envoi automatique
+- [ ] Configuration des destinataires CA
+- [ ] Planification envoi mensuel/trimestriel
+- [ ] Email avec rapport PDF en pièce jointe
+- [ ] Résumé exécutif dans le corps de l'email
+
+### Phase 5 - Déploiement
+- [ ] Tester le build
+- [ ] Push sur GitHub
+
+
+## Module Rapports pour le Conseil d'Administration
+
+### Phase 1 - API Backend
+- [x] Créer API génération de rapports (/api/reports)
+- [x] Implémenter les métriques de dons (total, moyenne, récurrent vs unique)
+- [x] Implémenter les métriques donateurs (nouveaux, fidèles, inactifs)
+- [x] Implémenter la comparaison année sur année (Y/Y)
+- [x] Implémenter les tendances mensuelles
+- [x] Générer les points saillants automatiquement
+- [x] Générer les recommandations automatiquement
+
+### Phase 2 - Génération PDF
+- [x] Créer API génération PDF (/api/reports/pdf)
+- [x] Implémenter le design professionnel du PDF
+- [x] Ajouter les graphiques et tableaux
+- [x] Inclure la comparaison Y/Y dans le PDF
+
+### Phase 3 - Envoi par Email
+- [x] Créer API envoi rapport (/api/reports/send)
+- [x] Implémenter la gestion des destinataires
+- [x] Intégrer avec SendGrid pour l'envoi
+
+### Phase 4 - Interface Utilisateur
+- [x] Créer la page /reports
+- [x] Implémenter les sélecteurs de période (mensuel, trimestriel, annuel)
+- [x] Afficher le résumé exécutif avec KPIs
+- [x] Afficher les graphiques de tendances
+- [x] Afficher le top donateurs
+- [x] Bouton téléchargement PDF
+- [x] Modal envoi au CA avec gestion des destinataires
+
+### Phase 5 - Déploiement
+- [x] Corriger les erreurs TypeScript
+- [ ] Configurer DATABASE_URL pour Railway
+- [ ] Tester avec données réelles
+- [ ] Push sur GitHub

@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { renderToBuffer } from "@react-pdf/renderer";
-import { TaxReceiptDocument } from "@/lib/receipt-pdf";
 import { sendEmail } from "@/lib/sendgrid";
-import React, { ReactElement } from "react";
-import { DocumentProps } from "@react-pdf/renderer";
 
 // POST - Envoyer le reçu par email
 export async function POST(
@@ -48,6 +44,11 @@ export async function POST(
       );
     }
 
+    // Import dynamique pour éviter les problèmes SSR
+    const { renderToBuffer } = await import("@react-pdf/renderer");
+    const { TaxReceiptDocument } = await import("@/lib/receipt-pdf");
+    const React = (await import("react")).default;
+
     // Récupérer les paramètres de l'organisation
     const orgSettings = await prisma.organizationSettings.findFirst();
 
@@ -83,7 +84,8 @@ export async function POST(
 
     // Générer le PDF
     const pdfBuffer = await renderToBuffer(
-      React.createElement(TaxReceiptDocument, { data: receiptData }) as unknown as ReactElement<DocumentProps>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      React.createElement(TaxReceiptDocument, { data: receiptData }) as any
     );
 
     // Formater le montant

@@ -1,9 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  // Disable static page generation for error pages to avoid Html import issue
-  experimental: {
-    // This helps with Railway deployment
+  // Exclude @react-pdf/renderer from SSR to avoid Html import issue
+  serverExternalPackages: ["@react-pdf/renderer"],
+  webpack: (config, { isServer }) => {
+    // Handle @react-pdf/renderer for server-side rendering
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push({
+        "@react-pdf/renderer": "commonjs @react-pdf/renderer",
+      });
+    }
+    return config;
   },
 };
 

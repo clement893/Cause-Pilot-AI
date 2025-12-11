@@ -102,6 +102,7 @@ model Donor {
   communications  Communication[]
   submissions     DonationSubmission[]
   consentHistory  ConsentHistory[]
+  taxReceipts     TaxReceipt[]
 
   @@index([email])
   @@index([lastName, firstName])
@@ -173,6 +174,7 @@ model Donation {
   donor       Donor  @relation(fields: [donorId], references: [id], onDelete: Cascade)
   recordedById Int?
   recordedBy   User?  @relation("RecordedBy", fields: [recordedById], references: [id])
+  taxReceipts  TaxReceipt[]
 
   @@index([donorId])
   @@index([donationDate])
@@ -2035,4 +2037,119 @@ model DonorSegmentMembership {
   @@unique([donorId, segmentId])
   @@index([donorId])
   @@index([segmentId])
+}
+
+
+// ============================================
+// MODULE REÇUS FISCAUX
+// ============================================
+
+model TaxReceipt {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Numéro de reçu séquentiel (format: YYYY-NNNNNN)
+  receiptNumber String  @unique
+  year          Int
+  sequenceNumber Int
+  
+  // Informations du don
+  donationId    String
+  donation      Donation @relation(fields: [donationId], references: [id])
+  
+  // Informations du donateur (snapshot au moment de l'émission)
+  donorId       String
+  donor         Donor    @relation(fields: [donorId], references: [id])
+  donorName     String
+  donorAddress  String?
+  donorEmail    String?
+  
+  // Montant et date
+  amount        Float
+  donationDate  DateTime
+  issueDate     DateTime @default(now())
+  
+  // Type de reçu
+  receiptType   ReceiptType @default(SINGLE)
+  country       String      @default("CA") // CA = Canada, FR = France
+  
+  // Fichier PDF
+  pdfUrl        String?
+  pdfKey        String?
+  
+  // Statut
+  status        ReceiptStatus @default(GENERATED)
+  sentAt        DateTime?
+  sentTo        String?
+  
+  // Annulation
+  voidedAt      DateTime?
+  voidedBy      Int?
+  voidReason    String?
+  replacedById  String?
+  
+  @@index([donorId])
+  @@index([donationId])
+  @@index([year, sequenceNumber])
+  @@index([receiptNumber])
+  @@index([status])
+}
+
+enum ReceiptType {
+  SINGLE      // Reçu pour un don unique
+  ANNUAL      // Reçu annuel consolidé
+  REPLACEMENT // Reçu de remplacement
+}
+
+enum ReceiptStatus {
+  GENERATED   // Généré mais pas encore envoyé
+  SENT        // Envoyé par email
+  DOWNLOADED  // Téléchargé par le donateur
+  VOIDED      // Annulé
+}
+
+// Paramètres de l'organisation pour les reçus fiscaux
+model OrganizationSettings {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Informations légales
+  organizationName    String
+  legalName           String?
+  charityNumber       String?   // Numéro d'organisme de bienfaisance (Canada)
+  siret               String?   // Numéro SIRET (France)
+  rna                 String?   // Numéro RNA (France)
+  
+  // Adresse
+  address             String?
+  address2            String?
+  city                String?
+  state               String?
+  postalCode          String?
+  country             String    @default("CA")
+  
+  // Contact
+  phone               String?
+  email               String?
+  website             String?
+  
+  // Logo pour les reçus
+  logoUrl             String?
+  
+  // Signature autorisée
+  authorizedSignatory String?
+  signatureUrl        String?
+  
+  // Paramètres des reçus
+  receiptPrefix       String    @default("")  // Préfixe optionnel pour les numéros
+  autoSendReceipts    Boolean   @default(true)
+  receiptEmailSubject String?
+  receiptEmailBody    String?
+  
+  // Seuil minimum pour émettre un reçu (certains pays ont un minimum)
+  minimumReceiptAmount Float    @default(0)
+  
+  @@index([charityNumber])
 }

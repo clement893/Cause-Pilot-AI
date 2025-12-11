@@ -474,3 +474,31 @@
 - [x] Recommandation de montant par donateur
 - [x] Suggestions de campagnes à créer
 - [x] Alertes proactives dans le chat
+
+
+## Reçus Fiscaux Automatisés
+
+### Phase 1 - Modèle de données
+- [x] Créer modèle TaxReceipt dans Prisma
+- [x] Ajouter numérotation séquentielle légale
+- [x] Configurer les paramètres organisation (nom, adresse, numéro charité)
+
+### Phase 2 - Génération PDF
+- [x] Créer template PDF conforme Canada
+- [x] Créer template PDF conforme France
+- [x] API génération de reçu PDF
+- [x] Stockage des reçus (S3)
+
+### Phase 3 - Envoi automatique
+- [x] Envoyer reçu par email après don
+- [x] Template email avec reçu en pièce jointe
+- [x] Option de désactiver l'envoi auto
+
+### Phase 4 - Interface donateur
+- [x] Afficher les reçus dans la fiche donateur
+- [x] Téléchargement des reçus PDF
+- [x] Historique des reçus émis
+
+### Phase 5 - Déploiement
+- [ ] Tester le build
+- [ ] Push sur GitHub

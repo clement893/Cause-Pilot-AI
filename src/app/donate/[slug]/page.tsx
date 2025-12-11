@@ -625,11 +625,11 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                   {form.collectEmployer && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Employeur {form.requireEmployer && "*"}
+                        Employeur
                       </label>
                       <input
                         type="text"
-                        required={form.requireEmployer}
+                        required={false}
                         value={donorInfo.employer}
                         onChange={(e) => setDonorInfo({ ...donorInfo, employer: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"

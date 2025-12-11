@@ -168,7 +168,7 @@ export default function UnsubscribePage() {
             Annuler
           </Button>
           <Button
-            variant="destructive"
+            variant="danger"
             className="flex-1 bg-red-600 hover:bg-red-700"
             onClick={handleUnsubscribe}
             disabled={processing}

@@ -187,7 +187,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
       case "DOWNLOADED":
         return <Badge variant="info">Téléchargé</Badge>;
       case "VOIDED":
-        return <Badge variant="destructive">Annulé</Badge>;
+        return <Badge variant="danger">Annulé</Badge>;
       default:
         return <Badge variant="warning">Généré</Badge>;
     }

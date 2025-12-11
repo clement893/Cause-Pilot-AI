@@ -106,10 +106,10 @@ export default function UnsubscribePage() {
           </div>
           <h1 className="text-xl font-semibold text-white mb-2">Désabonnement confirmé</h1>
           <p className="text-slate-400 mb-4">
-            Vous ne recevrez plus d'emails de notre part à l'adresse {donor?.email}.
+            Vous ne recevrez plus d&apos;emails de notre part à l&apos;adresse {donor?.email}.
           </p>
           <p className="text-sm text-slate-500">
-            Si vous changez d'avis, vous pouvez vous réabonner en nous contactant directement.
+            Si vous changez d&apos;avis, vous pouvez vous réabonner en nous contactant directement.
           </p>
         </Card>
       </div>
@@ -136,7 +136,7 @@ export default function UnsubscribePage() {
               <p className="font-medium mb-1">Attention</p>
               <p className="text-slate-400">
                 En vous désabonnant, vous ne recevrez plus nos newsletters, mises à jour sur nos projets, 
-                et informations sur l'impact de vos dons.
+                et informations sur l&apos;impact de vos dons.
               </p>
             </div>
           </div>
@@ -152,8 +152,8 @@ export default function UnsubscribePage() {
             className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
           >
             <option value="">Sélectionnez une raison...</option>
-            <option value="too_many">Je reçois trop d'emails</option>
-            <option value="not_relevant">Le contenu n'est pas pertinent</option>
+            <option value="too_many">Je reçois trop d&apos;emails</option>
+            <option value="not_relevant">Le contenu n&apos;est pas pertinent</option>
             <option value="never_signed_up">Je ne me suis jamais inscrit</option>
             <option value="other">Autre raison</option>
           </select>

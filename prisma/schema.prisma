@@ -2198,7 +2198,7 @@ model Automation {
   triggerType TriggerType
   triggerConfig Json?
   
-  actions     AutomationAction[]
+  actions     AutomationStep[]
   
   totalExecutions Int @default(0)
   successfulExecutions Int @default(0)
@@ -2215,7 +2215,7 @@ model Automation {
   @@index([triggerType])
 }
 
-model AutomationAction {
+model AutomationStep {
   id           String   @id @default(cuid())
   automationId String
   automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
@@ -2229,8 +2229,8 @@ model AutomationAction {
   conditionValue String?
   
   parentActionId String?
-  parentAction   AutomationAction? @relation("ActionChildren", fields: [parentActionId], references: [id])
-  childActions   AutomationAction[] @relation("ActionChildren")
+  parentAction   AutomationStep? @relation("ActionChildren", fields: [parentActionId], references: [id])
+  childActions   AutomationStep[] @relation("ActionChildren")
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

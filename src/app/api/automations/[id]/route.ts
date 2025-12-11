@@ -48,7 +48,7 @@ export async function PUT(
 
     // Supprimer les anciennes actions si de nouvelles sont fournies
     if (actions) {
-      await prisma.automationAction.deleteMany({
+      await prisma.automationStep.deleteMany({
         where: { automationId: id },
       });
     }

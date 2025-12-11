@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { TaxReceiptDocument } from "@/lib/receipt-pdf";
-import React from "react";
+import React, { ReactElement } from "react";
+import { DocumentProps } from "@react-pdf/renderer";
 
 // GET - Générer et télécharger le PDF du reçu
 export async function GET(
@@ -70,7 +71,7 @@ export async function GET(
 
     // Générer le PDF
     const pdfBuffer = await renderToBuffer(
-      React.createElement(TaxReceiptDocument, { data: receiptData })
+      React.createElement(TaxReceiptDocument, { data: receiptData }) as unknown as ReactElement<DocumentProps>
     );
 
     // Mettre à jour le statut si c'est un téléchargement

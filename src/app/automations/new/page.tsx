@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Sidebar from "@/components/layout/Sidebar";
 import { 
   ArrowLeft, 
   Plus, 
@@ -52,11 +53,11 @@ const TRIGGER_OPTIONS = [
 ];
 
 const ACTION_OPTIONS = [
-  { value: "SEND_EMAIL", label: "Envoyer un email", icon: Mail, color: "bg-blue-100 text-blue-600" },
-  { value: "WAIT", label: "Attendre", icon: Clock, color: "bg-yellow-100 text-yellow-600" },
-  { value: "ADD_TAG", label: "Ajouter un tag", icon: Tag, color: "bg-green-100 text-green-600" },
-  { value: "REMOVE_TAG", label: "Retirer un tag", icon: Tag, color: "bg-red-100 text-red-600" },
-  { value: "NOTIFY_TEAM", label: "Notifier l'équipe", icon: Bell, color: "bg-purple-100 text-purple-600" },
+  { value: "SEND_EMAIL", label: "Envoyer un email", icon: Mail, color: "bg-blue-500/20 text-blue-400" },
+  { value: "WAIT", label: "Attendre", icon: Clock, color: "bg-yellow-500/20 text-yellow-400" },
+  { value: "ADD_TAG", label: "Ajouter un tag", icon: Tag, color: "bg-green-500/20 text-green-400" },
+  { value: "REMOVE_TAG", label: "Retirer un tag", icon: Tag, color: "bg-red-500/20 text-red-400" },
+  { value: "NOTIFY_TEAM", label: "Notifier l'équipe", icon: Bell, color: "bg-purple-500/20 text-purple-400" },
 ];
 
 export default function NewAutomationPage() {
@@ -152,21 +153,6 @@ export default function NewAutomationPage() {
     setActions(updated);
   };
 
-  const moveAction = (index: number, direction: "up" | "down") => {
-    if (
-      (direction === "up" && index === 0) ||
-      (direction === "down" && index === actions.length - 1)
-    ) {
-      return;
-    }
-
-    const updated = [...actions];
-    const newIndex = direction === "up" ? index - 1 : index + 1;
-    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
-    updated.forEach((a, i) => (a.order = i + 1));
-    setActions(updated);
-  };
-
   const handleSave = async (status: "DRAFT" | "ACTIVE") => {
     if (!name || !triggerType || actions.length === 0) {
       alert("Veuillez remplir tous les champs requis");
@@ -207,450 +193,452 @@ export default function NewAutomationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen bg-slate-950">
+        <Sidebar />
+        <main className="ml-64 p-8 flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/automations"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                {step === "template" ? "Nouvelle automatisation" : name || "Configuration"}
-              </h1>
-              <p className="text-sm text-gray-500">
-                {step === "template"
-                  ? "Choisissez un template ou créez de zéro"
-                  : "Configurez votre workflow"}
-              </p>
-            </div>
+    <div className="min-h-screen bg-slate-950">
+      <Sidebar />
+      <main className="ml-64 p-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link
+            href="/automations"
+            className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-gray-400 hover:text-white"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-white">
+              {step === "template" ? "Nouvelle automatisation" : name || "Configuration"}
+            </h1>
+            <p className="text-gray-400">
+              {step === "template"
+                ? "Choisissez un template ou créez de zéro"
+                : "Configurez votre workflow"}
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Étape 1: Choix du template */}
-        {step === "template" && (
-          <div>
-            {/* Créer de zéro */}
-            <button
-              onClick={startFromScratch}
-              className="w-full mb-8 p-6 bg-white rounded-xl border-2 border-dashed border-gray-300 hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
-            >
-              <div className="flex items-center justify-center gap-3">
-                <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
-                  <Plus className="w-6 h-6 text-indigo-600" />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-gray-900">Créer de zéro</p>
-                  <p className="text-sm text-gray-500">
-                    Configurez chaque étape manuellement
-                  </p>
-                </div>
-              </div>
-            </button>
-
-            {/* Filtres par catégorie */}
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <div className="max-w-5xl">
+          {/* Étape 1: Choix du template */}
+          {step === "template" && (
+            <div>
+              {/* Créer de zéro */}
               <button
-                onClick={() => setSelectedCategory("all")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100 border"
-                }`}
+                onClick={startFromScratch}
+                className="w-full mb-8 p-6 bg-slate-900 rounded-xl border-2 border-dashed border-slate-700 hover:border-purple-500 hover:bg-slate-800 transition-colors group"
               >
-                Tous
+                <div className="flex items-center justify-center gap-3">
+                  <div className="p-3 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
+                    <Plus className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold text-white">Créer de zéro</p>
+                    <p className="text-sm text-gray-400">
+                      Configurez chaque étape manuellement
+                    </p>
+                  </div>
+                </div>
               </button>
-              {categories.map((cat) => (
+
+              {/* Filtres par catégorie */}
+              <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
                 <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => setSelectedCategory("all")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                    selectedCategory === cat.id
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-100 border"
+                    selectedCategory === "all"
+                      ? "bg-purple-600 text-white"
+                      : "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
                   }`}
                 >
-                  {cat.name}
+                  Tous
                 </button>
-              ))}
-            </div>
-
-            {/* Templates */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredTemplates.map((template) => (
-                <button
-                  key={template.id}
-                  onClick={() => selectTemplate(template)}
-                  className="p-6 bg-white rounded-xl border hover:border-indigo-500 hover:shadow-md transition-all text-left group"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="text-4xl">{template.icon}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600">
-                          {template.name}
-                        </h3>
-                        <Sparkles className="w-4 h-4 text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {template.description}
-                      </p>
-                      <div className="flex items-center gap-2 mt-3">
-                        <span className="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600">
-                          {template.actions.length} action{template.actions.length > 1 ? "s" : ""}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Étape 2: Configuration */}
-        {step === "configure" && (
-          <div className="space-y-6">
-            {/* Informations générales */}
-            <div className="bg-white rounded-xl border p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Informations générales
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nom de l&apos;automatisation *
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="Ex: Bienvenue nouveau donateur"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={2}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="Décrivez ce que fait cette automatisation..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Déclencheur */}
-            <div className="bg-white rounded-xl border p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Déclencheur
-              </h2>
-              <p className="text-sm text-gray-500 mb-4">
-                Quand cette automatisation doit-elle se déclencher ?
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {TRIGGER_OPTIONS.map((trigger) => (
+                {categories.map((cat) => (
                   <button
-                    key={trigger.value}
-                    onClick={() => setTriggerType(trigger.value)}
-                    className={`p-4 rounded-lg border-2 text-left transition-all ${
-                      triggerType === trigger.value
-                        ? "border-indigo-500 bg-indigo-50"
-                        : "border-gray-200 hover:border-gray-300"
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                      selectedCategory === cat.id
+                        ? "bg-purple-600 text-white"
+                        : "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{trigger.icon}</span>
-                      <div>
-                        <p className="font-medium text-gray-900">{trigger.label}</p>
-                        <p className="text-xs text-gray-500">{trigger.description}</p>
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+
+              {/* Templates */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    onClick={() => selectTemplate(template)}
+                    className="p-6 bg-slate-900 rounded-xl border border-slate-800 hover:border-purple-500 hover:bg-slate-800 transition-all text-left group"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="text-4xl">{template.icon}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-white group-hover:text-purple-400">
+                            {template.name}
+                          </h3>
+                          <Sparkles className="w-4 h-4 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {template.description}
+                        </p>
+                        <div className="flex items-center gap-2 mt-3">
+                          <span className="px-2 py-1 bg-slate-800 rounded text-xs text-gray-400">
+                            {template.actions.length} action{template.actions.length > 1 ? "s" : ""}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </button>
                 ))}
               </div>
-
-              {/* Configuration spécifique au trigger */}
-              {triggerType === "INACTIVE_DONOR" && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nombre de jours d&apos;inactivité
-                  </label>
-                  <input
-                    type="number"
-                    value={(triggerConfig.inactiveDays as number) || 180}
-                    onChange={(e) =>
-                      setTriggerConfig({ ...triggerConfig, inactiveDays: parseInt(e.target.value) })
-                    }
-                    className="w-32 px-4 py-2 border rounded-lg"
-                    min={30}
-                  />
-                </div>
-              )}
-
-              {triggerType === "UPGRADE_OPPORTUNITY" && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nombre minimum de dons ponctuels
-                  </label>
-                  <input
-                    type="number"
-                    value={(triggerConfig.minDonations as number) || 3}
-                    onChange={(e) =>
-                      setTriggerConfig({ ...triggerConfig, minDonations: parseInt(e.target.value) })
-                    }
-                    className="w-32 px-4 py-2 border rounded-lg"
-                    min={1}
-                  />
-                </div>
-              )}
             </div>
+          )}
 
-            {/* Actions */}
-            <div className="bg-white rounded-xl border p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Actions
-              </h2>
-              <p className="text-sm text-gray-500 mb-4">
-                Que doit faire cette automatisation ?
-              </p>
+          {/* Étape 2: Configuration */}
+          {step === "configure" && (
+            <div className="space-y-6">
+              {/* Informations générales */}
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">
+                  Informations générales
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      Nom de l&apos;automatisation *
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="Ex: Bienvenue nouveau donateur"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={2}
+                      className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="Décrivez ce que fait cette automatisation..."
+                    />
+                  </div>
+                </div>
+              </div>
 
-              {/* Liste des actions */}
-              <div className="space-y-3 mb-6">
-                {actions.map((action, index) => {
-                  const actionOption = ACTION_OPTIONS.find((a) => a.value === action.actionType);
-                  const Icon = actionOption?.icon || Mail;
-                  const isExpanded = expandedAction === index;
-
-                  return (
-                    <div
-                      key={index}
-                      className="border rounded-lg overflow-hidden"
+              {/* Déclencheur */}
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">
+                  Déclencheur
+                </h2>
+                <p className="text-sm text-gray-400 mb-4">
+                  Quand cette automatisation doit-elle se déclencher ?
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {TRIGGER_OPTIONS.map((trigger) => (
+                    <button
+                      key={trigger.value}
+                      onClick={() => setTriggerType(trigger.value)}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${
+                        triggerType === trigger.value
+                          ? "border-purple-500 bg-purple-500/10"
+                          : "border-slate-700 hover:border-slate-600 bg-slate-800"
+                      }`}
                     >
-                      <div
-                        className="flex items-center gap-3 p-4 bg-gray-50 cursor-pointer"
-                        onClick={() => setExpandedAction(isExpanded ? null : index)}
-                      >
-                        <GripVertical className="w-5 h-5 text-gray-400" />
-                        <span className="text-sm font-medium text-gray-500 w-6">
-                          {index + 1}.
-                        </span>
-                        <div className={`p-2 rounded-lg ${actionOption?.color}`}>
-                          <Icon className="w-4 h-4" />
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{trigger.icon}</span>
+                        <div>
+                          <p className="font-medium text-white">{trigger.label}</p>
+                          <p className="text-xs text-gray-400">{trigger.description}</p>
                         </div>
-                        <span className="font-medium text-gray-900 flex-1">
-                          {actionOption?.label}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeAction(index);
-                          }}
-                          className="p-1 text-gray-400 hover:text-red-600"
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Configuration spécifique au trigger */}
+                {triggerType === "INACTIVE_DONOR" && (
+                  <div className="mt-4 p-4 bg-slate-800 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Nombre de jours d&apos;inactivité
+                    </label>
+                    <input
+                      type="number"
+                      value={(triggerConfig.inactiveDays as number) || 180}
+                      onChange={(e) =>
+                        setTriggerConfig({ ...triggerConfig, inactiveDays: parseInt(e.target.value) })
+                      }
+                      className="w-32 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+                      min={30}
+                    />
+                  </div>
+                )}
+
+                {triggerType === "UPGRADE_OPPORTUNITY" && (
+                  <div className="mt-4 p-4 bg-slate-800 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Nombre minimum de dons ponctuels
+                    </label>
+                    <input
+                      type="number"
+                      value={(triggerConfig.minDonations as number) || 3}
+                      onChange={(e) =>
+                        setTriggerConfig({ ...triggerConfig, minDonations: parseInt(e.target.value) })
+                      }
+                      className="w-32 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+                      min={1}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">
+                  Actions
+                </h2>
+                <p className="text-sm text-gray-400 mb-4">
+                  Que doit faire cette automatisation ?
+                </p>
+
+                {/* Liste des actions */}
+                <div className="space-y-3 mb-6">
+                  {actions.map((action, index) => {
+                    const actionOption = ACTION_OPTIONS.find((a) => a.value === action.actionType);
+                    const Icon = actionOption?.icon || Mail;
+                    const isExpanded = expandedAction === index;
+
+                    return (
+                      <div
+                        key={index}
+                        className="border border-slate-700 rounded-lg overflow-hidden"
+                      >
+                        <div
+                          className="flex items-center gap-3 p-4 bg-slate-800 cursor-pointer"
+                          onClick={() => setExpandedAction(isExpanded ? null : index)}
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        {isExpanded ? (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
-                        ) : (
-                          <ChevronRight className="w-5 h-5 text-gray-400" />
+                          <GripVertical className="w-5 h-5 text-gray-500" />
+                          <span className="text-sm font-medium text-gray-400 w-6">
+                            {index + 1}.
+                          </span>
+                          <div className={`p-2 rounded-lg ${actionOption?.color}`}>
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <span className="font-medium text-white flex-1">
+                            {actionOption?.label}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeAction(index);
+                            }}
+                            className="p-1 text-gray-500 hover:text-red-400"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          {isExpanded ? (
+                            <ChevronDown className="w-5 h-5 text-gray-500" />
+                          ) : (
+                            <ChevronRight className="w-5 h-5 text-gray-500" />
+                          )}
+                        </div>
+
+                        {isExpanded && (
+                          <div className="p-4 border-t border-slate-700 bg-slate-850">
+                            {action.actionType === "SEND_EMAIL" && (
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                                    Sujet de l&apos;email
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={(action.config.subject as string) || ""}
+                                    onChange={(e) =>
+                                      updateAction(index, { ...action.config, subject: e.target.value })
+                                    }
+                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                                    placeholder="Ex: Bienvenue {{firstName}} !"
+                                  />
+                                  <p className="mt-1 text-xs text-gray-500">
+                                    Variables: {"{{firstName}}"}, {"{{lastName}}"}, {"{{fullName}}"}, {"{{email}}"}
+                                  </p>
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                                    Contenu de l&apos;email (HTML)
+                                  </label>
+                                  <textarea
+                                    value={(action.config.body as string) || ""}
+                                    onChange={(e) =>
+                                      updateAction(index, { ...action.config, body: e.target.value })
+                                    }
+                                    rows={8}
+                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg font-mono text-sm text-white"
+                                    placeholder="<h1>Bonjour {{firstName}} !</h1>..."
+                                  />
+                                </div>
+                              </div>
+                            )}
+
+                            {action.actionType === "WAIT" && (
+                              <div className="flex items-center gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                                    Jours
+                                  </label>
+                                  <input
+                                    type="number"
+                                    value={(action.config.days as number) || 0}
+                                    onChange={(e) =>
+                                      updateAction(index, { ...action.config, days: parseInt(e.target.value) })
+                                    }
+                                    className="w-24 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                                    min={0}
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                                    Heures
+                                  </label>
+                                  <input
+                                    type="number"
+                                    value={(action.config.hours as number) || 0}
+                                    onChange={(e) =>
+                                      updateAction(index, { ...action.config, hours: parseInt(e.target.value) })
+                                    }
+                                    className="w-24 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                                    min={0}
+                                    max={23}
+                                  />
+                                </div>
+                              </div>
+                            )}
+
+                            {(action.actionType === "ADD_TAG" || action.actionType === "REMOVE_TAG") && (
+                              <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">
+                                  Tag
+                                </label>
+                                <input
+                                  type="text"
+                                  value={(action.config.tag as string) || ""}
+                                  onChange={(e) =>
+                                    updateAction(index, { ...action.config, tag: e.target.value })
+                                  }
+                                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                                  placeholder="Ex: nouveau_donateur"
+                                />
+                              </div>
+                            )}
+
+                            {action.actionType === "NOTIFY_TEAM" && (
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                                    Message
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={(action.config.message as string) || ""}
+                                    onChange={(e) =>
+                                      updateAction(index, { ...action.config, message: e.target.value })
+                                    }
+                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                                    placeholder="Ex: Nouveau don de {{fullName}}"
+                                  />
+                                </div>
+                                <label className="flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={(action.config.notifyOwner as boolean) || false}
+                                    onChange={(e) =>
+                                      updateAction(index, { ...action.config, notifyOwner: e.target.checked })
+                                    }
+                                    className="rounded bg-slate-700 border-slate-600"
+                                  />
+                                  <span className="text-sm text-gray-300">
+                                    Notifier le propriétaire
+                                  </span>
+                                </label>
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
+                    );
+                  })}
+                </div>
 
-                      {isExpanded && (
-                        <div className="p-4 border-t">
-                          {action.actionType === "SEND_EMAIL" && (
-                            <div className="space-y-4">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Sujet de l&apos;email
-                                </label>
-                                <input
-                                  type="text"
-                                  value={(action.config.subject as string) || ""}
-                                  onChange={(e) =>
-                                    updateAction(index, { ...action.config, subject: e.target.value })
-                                  }
-                                  className="w-full px-4 py-2 border rounded-lg"
-                                  placeholder="Ex: Bienvenue {{firstName}} !"
-                                />
-                                <p className="mt-1 text-xs text-gray-500">
-                                  Variables: {"{{firstName}}"}, {"{{lastName}}"}, {"{{fullName}}"}, {"{{email}}"}
-                                </p>
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Contenu de l&apos;email (HTML)
-                                </label>
-                                <textarea
-                                  value={(action.config.body as string) || ""}
-                                  onChange={(e) =>
-                                    updateAction(index, { ...action.config, body: e.target.value })
-                                  }
-                                  rows={8}
-                                  className="w-full px-4 py-2 border rounded-lg font-mono text-sm"
-                                  placeholder="<h1>Bonjour {{firstName}} !</h1>..."
-                                />
-                              </div>
-                            </div>
-                          )}
-
-                          {action.actionType === "WAIT" && (
-                            <div className="flex items-center gap-4">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Jours
-                                </label>
-                                <input
-                                  type="number"
-                                  value={(action.config.days as number) || 0}
-                                  onChange={(e) =>
-                                    updateAction(index, { ...action.config, days: parseInt(e.target.value) })
-                                  }
-                                  className="w-24 px-4 py-2 border rounded-lg"
-                                  min={0}
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Heures
-                                </label>
-                                <input
-                                  type="number"
-                                  value={(action.config.hours as number) || 0}
-                                  onChange={(e) =>
-                                    updateAction(index, { ...action.config, hours: parseInt(e.target.value) })
-                                  }
-                                  className="w-24 px-4 py-2 border rounded-lg"
-                                  min={0}
-                                  max={23}
-                                />
-                              </div>
-                            </div>
-                          )}
-
-                          {(action.actionType === "ADD_TAG" || action.actionType === "REMOVE_TAG") && (
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Tag
-                              </label>
-                              <input
-                                type="text"
-                                value={(action.config.tag as string) || ""}
-                                onChange={(e) =>
-                                  updateAction(index, { ...action.config, tag: e.target.value })
-                                }
-                                className="w-full px-4 py-2 border rounded-lg"
-                                placeholder="Ex: nouveau_donateur"
-                              />
-                            </div>
-                          )}
-
-                          {action.actionType === "NOTIFY_TEAM" && (
-                            <div className="space-y-4">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Message
-                                </label>
-                                <input
-                                  type="text"
-                                  value={(action.config.message as string) || ""}
-                                  onChange={(e) =>
-                                    updateAction(index, { ...action.config, message: e.target.value })
-                                  }
-                                  className="w-full px-4 py-2 border rounded-lg"
-                                  placeholder="Ex: Nouveau don de {{fullName}}"
-                                />
-                              </div>
-                              <label className="flex items-center gap-2">
-                                <input
-                                  type="checkbox"
-                                  checked={(action.config.notifyOwner as boolean) || false}
-                                  onChange={(e) =>
-                                    updateAction(index, { ...action.config, notifyOwner: e.target.checked })
-                                  }
-                                  className="rounded"
-                                />
-                                <span className="text-sm text-gray-700">
-                                  Notifier le propriétaire
-                                </span>
-                              </label>
-                            </div>
-                          )}
+                {/* Ajouter une action */}
+                <div className="flex flex-wrap gap-2">
+                  {ACTION_OPTIONS.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <button
+                        key={action.value}
+                        onClick={() => addAction(action.value)}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors"
+                      >
+                        <div className={`p-1 rounded ${action.color}`}>
+                          <Icon className="w-4 h-4" />
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                        <span className="text-sm font-medium text-gray-300">
+                          {action.label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Ajouter une action */}
-              <div className="flex flex-wrap gap-2">
-                {ACTION_OPTIONS.map((action) => {
-                  const Icon = action.icon;
-                  return (
-                    <button
-                      key={action.value}
-                      onClick={() => addAction(action.value)}
-                      className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className={`p-1 rounded ${action.color}`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">
-                        {action.label}
-                      </span>
-                    </button>
-                  );
-                })}
+              {/* Boutons de sauvegarde */}
+              <div className="flex items-center justify-between bg-slate-900 rounded-xl border border-slate-800 p-6">
+                <button
+                  onClick={() => setStep("template")}
+                  className="px-4 py-2 text-gray-400 hover:bg-slate-800 rounded-lg transition-colors"
+                >
+                  Retour aux templates
+                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleSave("DRAFT")}
+                    disabled={saving}
+                    className="px-6 py-2 border border-slate-700 text-gray-300 rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
+                  >
+                    Enregistrer comme brouillon
+                  </button>
+                  <button
+                    onClick={() => handleSave("ACTIVE")}
+                    disabled={saving || !name || !triggerType || actions.length === 0}
+                    className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                  >
+                    {saving ? "Enregistrement..." : "Activer l'automatisation"}
+                  </button>
+                </div>
               </div>
             </div>
-
-            {/* Boutons de sauvegarde */}
-            <div className="flex items-center justify-between bg-white rounded-xl border p-6">
-              <button
-                onClick={() => setStep("template")}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                Retour aux templates
-              </button>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => handleSave("DRAFT")}
-                  disabled={saving}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-                >
-                  Enregistrer comme brouillon
-                </button>
-                <button
-                  onClick={() => handleSave("ACTIVE")}
-                  disabled={saving || !name || !triggerType || actions.length === 0}
-                  className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                >
-                  {saving ? "Enregistrement..." : "Activer l'automatisation"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

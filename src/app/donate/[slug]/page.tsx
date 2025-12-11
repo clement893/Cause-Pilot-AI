@@ -441,7 +441,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                         }`}
                         style={selectedAmount === amount ? { 
                           backgroundColor: form.primaryColor,
-                          ringColor: form.primaryColor,
+                          outlineColor: form.primaryColor,
                         } : isRecommended ? {
                           borderColor: form.primaryColor,
                           borderWidth: "2px",

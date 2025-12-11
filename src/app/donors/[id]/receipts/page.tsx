@@ -522,7 +522,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
                       {formatDate(receipt.issueDate)}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
-                      <Badge variant="destructive">Annulé</Badge>
+                      <Badge variant="danger">Annulé</Badge>
                     </td>
                   </tr>
                 ))}

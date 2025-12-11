@@ -729,3 +729,22 @@
 - [x] Page de gestion des segments intelligents
 - [x] Intégrer les segments dans la liste des donateurs
 - [ ] Tester et déployer
+
+
+## Conformité RGPD - Emails
+
+### Phase 1 - Vérification Consentement
+- [x] Modifier l'API d'envoi de campagne email pour vérifier le consentement
+- [x] Filtrer automatiquement les donateurs sans consentement email
+- [x] Afficher un avertissement si des donateurs sont exclus
+
+### Phase 2 - Lien de Désabonnement
+- [x] Créer API de désabonnement (/api/unsubscribe/[token])
+- [x] Générer un token unique par donateur
+- [x] Ajouter le lien de désabonnement dans tous les templates email
+- [x] Page de confirmation de désabonnement
+
+### Phase 3 - Section Consentements Fiche Donateur
+- [x] Ajouter section consentements dans la page détail donateur
+- [x] Afficher l'historique des modifications de consentement
+- [x] Permettre la modification des consentements

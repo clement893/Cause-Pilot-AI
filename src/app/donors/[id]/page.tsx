@@ -543,35 +543,87 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
 
           {/* Right Column - Stats & Quick Info */}
           <div className="space-y-6">
-            {/* Consent Status */}
+            {/* Consent Status - RGPD Compliance */}
             <Card className="bg-slate-900 border-slate-800">
-              <h3 className="text-lg font-semibold text-white mb-4">Consentements</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Consentements RGPD
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-indigo-400 hover:text-indigo-300"
+                  onClick={() => {
+                    // Toggle consent edit mode
+                    const newConsent = !donor.consentEmail;
+                    fetch(`/api/donors/${id}/consent`, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        consentEmail: newConsent,
+                        consentPhone: donor.consentPhone,
+                        consentMail: donor.consentMail,
+                      }),
+                    }).then(() => window.location.reload());
+                  }}
+                >
+                  Modifier
+                </Button>
+              </div>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-300">Email</span>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-sm text-gray-300">Email marketing</span>
+                  </div>
                   {donor.consentEmail ? (
-                    <Badge variant="success">Autorisé</Badge>
+                    <Badge variant="success" className="bg-green-500/20 text-green-400">Autorisé</Badge>
                   ) : (
-                    <Badge variant="default">Non autorisé</Badge>
+                    <Badge variant="default" className="bg-red-500/20 text-red-400">Non autorisé</Badge>
                   )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-300">Téléphone</span>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    <span className="text-sm text-gray-300">Téléphone</span>
+                  </div>
                   {donor.consentPhone ? (
-                    <Badge variant="success">Autorisé</Badge>
+                    <Badge variant="success" className="bg-green-500/20 text-green-400">Autorisé</Badge>
                   ) : (
-                    <Badge variant="default">Non autorisé</Badge>
+                    <Badge variant="default" className="bg-red-500/20 text-red-400">Non autorisé</Badge>
                   )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-300">Courrier</span>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
+                    </svg>
+                    <span className="text-sm text-gray-300">Courrier postal</span>
+                  </div>
                   {donor.consentMail ? (
-                    <Badge variant="success">Autorisé</Badge>
+                    <Badge variant="success" className="bg-green-500/20 text-green-400">Autorisé</Badge>
                   ) : (
-                    <Badge variant="default">Non autorisé</Badge>
+                    <Badge variant="default" className="bg-red-500/20 text-red-400">Non autorisé</Badge>
                   )}
                 </div>
               </div>
+              {donor.consentDate && (
+                <p className="text-xs text-gray-500 mt-3">
+                  Dernier consentement: {new Date(donor.consentDate).toLocaleDateString("fr-CA")}
+                </p>
+              )}
+              {donor.optOutDate && (
+                <p className="text-xs text-red-400 mt-1">
+                  Désabonnement: {new Date(donor.optOutDate).toLocaleDateString("fr-CA")}
+                </p>
+              )}
             </Card>
 
             {/* Tags & Segment */}

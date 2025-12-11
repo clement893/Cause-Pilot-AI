@@ -1,10 +1,19 @@
 import DOMPurify from "isomorphic-dompurify";
 
+// Type pour la configuration DOMPurify
+type DOMPurifyConfig = {
+  ALLOWED_TAGS?: string[];
+  ALLOWED_ATTR?: string[];
+  ALLOW_DATA_ATTR?: boolean;
+  FORBID_TAGS?: string[];
+  FORBID_ATTR?: string[];
+};
+
 /**
  * Configuration par défaut pour DOMPurify
  * Permet uniquement les balises et attributs HTML sûrs
  */
-const DEFAULT_CONFIG: DOMPurify.Config = {
+const DEFAULT_CONFIG: DOMPurifyConfig = {
   ALLOWED_TAGS: [
     "a", "b", "br", "div", "em", "h1", "h2", "h3", "h4", "h5", "h6",
     "i", "li", "ol", "p", "span", "strong", "u", "ul", "table", "thead",
@@ -22,7 +31,7 @@ const DEFAULT_CONFIG: DOMPurify.Config = {
 /**
  * Configuration stricte - texte uniquement
  */
-const STRICT_CONFIG: DOMPurify.Config = {
+const STRICT_CONFIG: DOMPurifyConfig = {
   ALLOWED_TAGS: [],
   ALLOWED_ATTR: [],
 };
@@ -30,7 +39,7 @@ const STRICT_CONFIG: DOMPurify.Config = {
 /**
  * Configuration pour les emails - HTML limité
  */
-const EMAIL_CONFIG: DOMPurify.Config = {
+const EMAIL_CONFIG: DOMPurifyConfig = {
   ALLOWED_TAGS: [
     "a", "b", "br", "div", "em", "h1", "h2", "h3", "h4", "h5", "h6",
     "i", "li", "ol", "p", "span", "strong", "u", "ul", "table", "thead",

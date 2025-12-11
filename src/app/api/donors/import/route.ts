@@ -267,7 +267,7 @@ export async function POST(request: NextRequest) {
     if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
       // Parser Excel avec ExcelJS
       const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(Buffer.from(buffer));
+      await workbook.xlsx.load(new Uint8Array(buffer) as Buffer);
       const worksheet = workbook.worksheets[0];
       
       if (worksheet) {

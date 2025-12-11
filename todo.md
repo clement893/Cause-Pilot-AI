@@ -719,3 +719,13 @@
 - [x] Ajouter indicateurs visuels (badges/jauges) sur fiche donateur
 - [x] Ajouter filtres par score dans la liste des donateurs
 - [ ] Tester et déployer
+
+
+## Segmentation Intelligente
+- [x] Créer API de segmentation intelligente avec calcul automatique
+- [x] Segment "À risque de churn" automatique
+- [x] Segment "Potentiel upgrade" automatique  
+- [x] Segment "Donateurs majeurs potentiels" automatique
+- [x] Page de gestion des segments intelligents
+- [x] Intégrer les segments dans la liste des donateurs
+- [ ] Tester et déployer

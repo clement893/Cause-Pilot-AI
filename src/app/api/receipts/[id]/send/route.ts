@@ -152,9 +152,9 @@ export async function POST(
       ],
     });
 
-    if (!emailResult.success) {
+    if (!emailResult) {
       return NextResponse.json(
-        { error: "Erreur lors de l'envoi de l'email", details: emailResult.error },
+        { error: "Erreur lors de l'envoi de l'email" },
         { status: 500 }
       );
     }

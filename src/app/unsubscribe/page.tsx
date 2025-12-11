@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button, Card } from "@/components/ui";
 import { CheckCircle, XCircle, Mail, AlertTriangle } from "lucide-react";
@@ -12,7 +12,7 @@ interface DonorInfo {
   isSubscribed: boolean;
 }
 
-export default function UnsubscribePage() {
+function UnsubscribeContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email");
@@ -31,6 +31,7 @@ export default function UnsubscribePage() {
       setError("Lien de désabonnement invalide");
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, email]);
 
   const verifyToken = async () => {
@@ -46,7 +47,7 @@ export default function UnsubscribePage() {
       } else {
         setError(data.error || "Lien de désabonnement invalide");
       }
-    } catch (err) {
+    } catch {
       setError("Erreur lors de la vérification du lien");
     } finally {
       setLoading(false);
@@ -68,7 +69,7 @@ export default function UnsubscribePage() {
       } else {
         setError(data.error || "Erreur lors du désabonnement");
       }
-    } catch (err) {
+    } catch {
       setError("Erreur lors du désabonnement");
     } finally {
       setProcessing(false);
@@ -182,5 +183,17 @@ export default function UnsubscribePage() {
         </p>
       </Card>
     </div>
+  );
+}
+
+export default function UnsubscribePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-500"></div>
+      </div>
+    }>
+      <UnsubscribeContent />
+    </Suspense>
   );
 }

@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     // Create audit log
     await prisma.auditLog.create({
       data: {
-        action: "UNSUBSCRIBE",
+        action: "UPDATE",
         module: "marketing",
         entityType: "Donor",
         entityId: donor.id,

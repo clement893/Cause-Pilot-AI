@@ -1,6 +1,7 @@
 "use client";
 
 import { EmailBlock, TextBlock, HeadingBlock, ImageBlock, ButtonBlock, DividerBlock, SpacerBlock, SocialBlock, FooterBlock, ColumnsBlock } from "@/lib/email-editor/types";
+import { sanitizeEmailHTML } from "@/lib/sanitize";
 
 interface BlockItemProps {
   block: EmailBlock;
@@ -43,7 +44,7 @@ function TextBlockPreview({ block, padding, backgroundColor, textAlign }: { bloc
   return (
     <div 
       style={{ padding, backgroundColor, textAlign: textAlign as React.CSSProperties["textAlign"], fontSize, color, lineHeight: 1.6 }}
-      dangerouslySetInnerHTML={{ __html: block.content }}
+      dangerouslySetInnerHTML={{ __html: sanitizeEmailHTML(block.content) }}
     />
   );
 }

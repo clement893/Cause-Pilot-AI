@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppLayout from "@/components/layout/AppLayout";
+import { sanitizeEmailHTML } from "@/lib/sanitize";
 import {
   Mail,
   ArrowLeft,
@@ -534,11 +535,11 @@ export default function CampaignDetailPage({ params }: { params: Promise<{ id: s
                   <div className="p-6">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: campaign.htmlContent
+                        __html: sanitizeEmailHTML(campaign.htmlContent
                           .replace(/{{firstName}}/g, "Jean")
                           .replace(/{{lastName}}/g, "Dupont")
                           .replace(/{{email}}/g, "jean.dupont@exemple.com")
-                          .replace(/{{date}}/g, new Date().toLocaleDateString("fr-CA")),
+                          .replace(/{{date}}/g, new Date().toLocaleDateString("fr-CA"))),
                       }}
                     />
                   </div>

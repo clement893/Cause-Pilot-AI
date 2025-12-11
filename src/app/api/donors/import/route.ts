@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import Papa from "papaparse";
 
 // Mapping des colonnes françaises vers les champs de la base de données
@@ -265,11 +265,31 @@ export async function POST(request: NextRequest) {
 
     // Parser le fichier selon son format
     if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
-      // Parser Excel
-      const workbook = XLSX.read(buffer, { type: "buffer" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+      // Parser Excel avec ExcelJS
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(Buffer.from(buffer));
+      const worksheet = workbook.worksheets[0];
+      
+      if (worksheet) {
+        const headers: string[] = [];
+        worksheet.getRow(1).eachCell((cell, colNumber) => {
+          headers[colNumber - 1] = String(cell.value || '').trim();
+        });
+        
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1) return; // Skip header row
+          const rowData: ImportRow = {};
+          row.eachCell((cell, colNumber) => {
+            const header = headers[colNumber - 1];
+            if (header) {
+              rowData[header] = cell.value as string | number | boolean | null;
+            }
+          });
+          if (Object.keys(rowData).length > 0) {
+            rows.push(rowData);
+          }
+        });
+      }
     } else if (filename.endsWith(".csv")) {
       // Parser CSV
       const text = new TextDecoder("utf-8").decode(buffer);

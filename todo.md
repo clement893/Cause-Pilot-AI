@@ -748,3 +748,28 @@
 - [x] Ajouter section consentements dans la page détail donateur
 - [x] Afficher l'historique des modifications de consentement
 - [x] Permettre la modification des consentements
+
+
+## Corrections de Sécurité (Audit)
+
+### Phase 1 - Authentification
+- [x] Créer middleware d'authentification Next.js
+- [x] Protéger toutes les routes API sensibles
+- [x] Vérifier les sessions utilisateur
+
+### Phase 2 - Dépendances et Headers
+- [x] Remplacer xlsx par exceljs
+- [x] Ajouter headers de sécurité (X-Frame-Options, CSP, etc.)
+
+### Phase 3 - Rate Limiting et CSRF
+- [x] Implémenter rate limiting sur les APIs
+- [x] Ajouter protection CSRF
+
+### Phase 4 - XSS et Secrets
+- [x] Sanitizer les contenus HTML avec DOMPurify
+- [ ] Supprimer les valeurs par défaut des secrets
+
+### Phase 5 - Cookies et Route Seed
+- [x] Ajouter flag Secure aux cookies (via middleware)
+- [x] Désactiver route /api/seed en production
+- [ ] Améliorer la validation des entrées avec Zod

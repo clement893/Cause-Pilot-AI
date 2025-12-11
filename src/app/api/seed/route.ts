@@ -1,7 +1,26 @@
 import { NextResponse } from "next/server";
 import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency } from "@prisma/client";
+import { withRateLimit, RATE_LIMITS, getClientIP } from "@/lib/rate-limit";
 
 const prisma = new PrismaClient();
+
+// Vérification de sécurité pour la route seed
+function checkSeedAccess(request: Request): { allowed: boolean; error?: string } {
+  // Désactiver en production sauf si explicitement autorisé
+  if (process.env.NODE_ENV === "production") {
+    const seedSecret = process.env.SEED_SECRET;
+    const providedSecret = request.headers.get("x-seed-secret");
+    
+    if (!seedSecret || seedSecret !== providedSecret) {
+      return {
+        allowed: false,
+        error: "Seed route is disabled in production. Set SEED_SECRET env and provide x-seed-secret header."
+      };
+    }
+  }
+  
+  return { allowed: true };
+}
 
 // Données québécoises réalistes
 const firstNames = [
@@ -123,7 +142,25 @@ function generateDonations(): { total: number; count: number; average: number; h
   return { total, count, average, highest, lastDate, firstDate };
 }
 
-export async function POST() {
+export async function POST(request: Request) {
+  // Vérifier l'accès en production
+  const accessCheck = checkSeedAccess(request);
+  if (!accessCheck.allowed) {
+    return NextResponse.json(
+      { success: false, error: accessCheck.error },
+      { status: 403 }
+    );
+  }
+
+  // Appliquer le rate limiting (1 requête par heure)
+  const { allowed, headers } = withRateLimit(request, RATE_LIMITS.seed);
+  if (!allowed) {
+    return NextResponse.json(
+      { success: false, error: "Rate limit exceeded. Try again later." },
+      { status: 429, headers }
+    );
+  }
+
   try {
     // Supprimer les données existantes dans le bon ordre
     await prisma.communication.deleteMany();

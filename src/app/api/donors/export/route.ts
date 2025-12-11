@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import Papa from "papaparse";
 
 // GET - Exporter les donateurs en CSV ou Excel
@@ -106,18 +106,37 @@ export async function GET(request: NextRequest) {
     const filename = `donateurs_export_${new Date().toISOString().split("T")[0]}`;
 
     if (format === "xlsx") {
-      // Export Excel
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Donateurs");
+      // Export Excel avec ExcelJS
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Donateurs");
 
-      // Ajuster la largeur des colonnes
-      const colWidths = Object.keys(exportData[0] || {}).map((key) => ({
-        wch: Math.max(key.length, 15),
-      }));
-      worksheet["!cols"] = colWidths;
+      // Ajouter les en-têtes
+      if (exportData.length > 0) {
+        const headers = Object.keys(exportData[0]);
+        worksheet.addRow(headers);
+        
+        // Style des en-têtes
+        const headerRow = worksheet.getRow(1);
+        headerRow.font = { bold: true };
+        headerRow.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' }
+        };
 
-      const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+        // Ajouter les données
+        exportData.forEach((row) => {
+          worksheet.addRow(Object.values(row));
+        });
+
+        // Ajuster la largeur des colonnes
+        headers.forEach((header, index) => {
+          const column = worksheet.getColumn(index + 1);
+          column.width = Math.max(header.length + 2, 15);
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
 
       return new NextResponse(buffer, {
         headers: {

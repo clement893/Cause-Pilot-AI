@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/layout/AppLayout";
+import { sanitizeEmailHTML } from "@/lib/sanitize";
 import {
   Mail,
   FileText,
@@ -861,11 +862,11 @@ export default function NewCampaignPage() {
                   {formData.htmlContent ? (
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: formData.htmlContent
+                        __html: sanitizeEmailHTML(formData.htmlContent
                           .replace(/{{firstName}}/g, "Jean")
                           .replace(/{{lastName}}/g, "Dupont")
                           .replace(/{{email}}/g, "jean.dupont@exemple.com")
-                          .replace(/{{date}}/g, new Date().toLocaleDateString("fr-CA")),
+                          .replace(/{{date}}/g, new Date().toLocaleDateString("fr-CA"))),
                       }}
                     />
                   ) : (

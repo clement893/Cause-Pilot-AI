@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import AppLayout from "@/components/layout/AppLayout";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 interface Message {
   id: string;
@@ -202,7 +203,7 @@ Posez-moi une question ou cliquez sur une suggestion ci-dessous pour commencer !
                   {message.role === "assistant" ? (
                     <div
                       className="prose prose-invert prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHTML(renderMarkdown(message.content)) }}
                     />
                   ) : (
                     <p>{message.content}</p>

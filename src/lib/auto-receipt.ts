@@ -228,7 +228,7 @@ async function sendReceiptEmail(receiptId: string): Promise<boolean> {
     ],
   });
 
-  if (emailResult.success) {
+  if (emailResult) {
     await prisma.taxReceipt.update({
       where: { id: receiptId },
       data: {

@@ -439,16 +439,25 @@ export async function GET(request: NextRequest) {
   const filename = `template_import_donateurs`;
 
   if (format === "xlsx") {
-    const worksheet = XLSX.utils.json_to_sheet(templateData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Template");
+    
+    // Ajouter les en-têtes
+    const headers = Object.keys(templateData[0]);
+    worksheet.addRow(headers);
+    
+    // Ajouter les données
+    templateData.forEach(row => {
+      worksheet.addRow(Object.values(row));
+    });
+    
+    // Ajuster la largeur des colonnes
+    headers.forEach((header, index) => {
+      const column = worksheet.getColumn(index + 1);
+      column.width = Math.max(header.length + 2, 15);
+    });
 
-    const colWidths = Object.keys(templateData[0]).map((key) => ({
-      wch: Math.max(key.length + 2, 15),
-    }));
-    worksheet["!cols"] = colWidths;
-
-    const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+    const buffer = await workbook.xlsx.writeBuffer();
 
     return new NextResponse(buffer, {
       headers: {

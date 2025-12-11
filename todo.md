@@ -500,5 +500,32 @@
 - [x] Historique des reçus émis
 
 ### Phase 5 - Déploiement
-- [ ] Tester le build
-- [ ] Push sur GitHub
+- [x] Tester le build
+- [x] Push sur GitHub
+
+
+## Formulaires Intelligents - Montants Dynamiques
+
+### Phase 1 - Détection du donateur
+- [x] API de détection par email
+- [x] Détection par cookie de session
+- [x] Récupération de l'historique du donateur
+
+### Phase 2 - Calcul des montants dynamiques
+- [x] Algorithme: dernier don + 10-20%
+- [x] Montants suggérés basés sur l'historique
+- [x] Fallback sur montants par défaut si nouveau donateur
+
+### Phase 3 - Formulaire personnalisé
+- [x] Afficher montants personnalisés
+- [x] Message de bienvenue personnalisé ("Bonjour [Prénom]")
+- [x] Indicateur de donateur reconnu
+
+### Phase 4 - Pré-remplissage
+- [x] Pré-remplir nom, prénom, email
+- [x] Pré-remplir adresse si connue
+- [x] Option de modifier les informations
+
+### Phase 5 - Déploiement
+- [x] Tester le build
+- [x] Push sur GitHub

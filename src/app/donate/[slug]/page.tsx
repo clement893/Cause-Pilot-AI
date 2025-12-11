@@ -1,33 +1,38 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useCallback } from "react";
 import Link from "next/link";
 import { DonationForm, FORM_TYPE_LABELS } from "@/types/form";
 
-interface DonationData {
-  formId: string;
-  amount: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
-  employer?: string;
-  comment?: string;
-  isRecurring?: boolean;
-  recurringFrequency?: string;
-  dedicationType?: string;
-  dedicateeName?: string;
-  dedicateeEmail?: string;
-  dedicateeMessage?: string;
-  notifyDedicatee?: boolean;
-  isAnonymous?: boolean;
-  consentEmail?: boolean;
-  consentNewsletter?: boolean;
+interface PersonalizedData {
+  isRecognized: boolean;
+  donor: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+  } | null;
+  suggestedAmounts: number[];
+  recommendedAmount: number | null;
+  lastDonation: {
+    amount: number;
+    date: string;
+    campaignName?: string;
+  } | null;
+  donorStats: {
+    totalDonations: number;
+    donationCount: number;
+    averageDonation: number;
+    isRecurring: boolean;
+  } | null;
+  welcomeMessage: string | null;
+  donorToken?: string;
 }
 
 export default function DonatePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -42,6 +47,11 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
   const [step, setStep] = useState<"amount" | "info" | "payment">("amount");
+
+  // Personnalisation
+  const [personalized, setPersonalized] = useState<PersonalizedData | null>(null);
+  const [displayAmounts, setDisplayAmounts] = useState<number[]>([]);
+  const [checkingEmail, setCheckingEmail] = useState(false);
 
   const [donorInfo, setDonorInfo] = useState({
     email: "",
@@ -58,7 +68,6 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
     isAnonymous: false,
     consentEmail: false,
     consentNewsletter: false,
-    // In Memoriam
     dedicationType: "",
     dedicateeName: "",
     dedicateeEmail: "",
@@ -66,9 +75,13 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
     notifyDedicatee: false,
   });
 
+  // Récupérer le token du cookie au chargement
   useEffect(() => {
-    fetchForm();
-  }, [slug]);
+    const donorToken = getCookie("donor_token");
+    if (donorToken && form) {
+      personalizeForm(undefined, donorToken);
+    }
+  }, [form]);
 
   const fetchForm = async () => {
     try {
@@ -79,6 +92,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
           setError("Ce formulaire n'est pas disponible.");
         } else {
           setForm(data);
+          setDisplayAmounts(data.suggestedAmounts);
           if (data.defaultAmount) {
             setSelectedAmount(data.defaultAmount);
           }
@@ -86,11 +100,83 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
       } else {
         setError("Formulaire non trouvé.");
       }
-    } catch (err) {
+    } catch {
       setError("Erreur lors du chargement du formulaire.");
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchForm();
+  }, [slug]);
+
+  // Personnaliser le formulaire pour un donateur reconnu
+  const personalizeForm = useCallback(async (email?: string, token?: string) => {
+    if (!form) return;
+
+    try {
+      const response = await fetch("/api/forms/personalize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formId: form.id,
+          email,
+          donorToken: token,
+        }),
+      });
+
+      if (response.ok) {
+        const data: PersonalizedData = await response.json();
+        setPersonalized(data);
+
+        if (data.isRecognized && data.donor) {
+          // Pré-remplir les informations du donateur
+          setDonorInfo((prev) => ({
+            ...prev,
+            email: data.donor!.email || prev.email,
+            firstName: data.donor!.firstName || prev.firstName,
+            lastName: data.donor!.lastName || prev.lastName,
+            phone: data.donor!.phone || prev.phone,
+            address: data.donor!.address || prev.address,
+            city: data.donor!.city || prev.city,
+            state: data.donor!.state || prev.state,
+            postalCode: data.donor!.postalCode || prev.postalCode,
+            country: data.donor!.country || prev.country,
+          }));
+
+          // Utiliser les montants personnalisés
+          if (data.suggestedAmounts.length > 0) {
+            setDisplayAmounts(data.suggestedAmounts);
+          }
+
+          // Sélectionner le montant recommandé
+          if (data.recommendedAmount) {
+            setSelectedAmount(data.recommendedAmount);
+          }
+
+          // Sauvegarder le token dans un cookie
+          if (data.donorToken) {
+            setCookie("donor_token", data.donorToken, 365);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Erreur personnalisation:", err);
+    }
+  }, [form]);
+
+  // Vérifier l'email pour personnalisation
+  const handleEmailBlur = async () => {
+    if (!donorInfo.email || !form) return;
+
+    // Valider le format email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(donorInfo.email)) return;
+
+    setCheckingEmail(true);
+    await personalizeForm(donorInfo.email);
+    setCheckingEmail(false);
   };
 
   const getAmount = () => {
@@ -112,12 +198,11 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
     setError(null);
 
     try {
-      // Créer une session Stripe Checkout
       const response = await fetch("/api/payments/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: Math.round(amount * 100), // Convertir en cents
+          amount: Math.round(amount * 100),
           formId: form.id,
           donorEmail: donorInfo.email,
           donorFirstName: donorInfo.firstName,
@@ -136,7 +221,6 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
         throw new Error(data.error || "Une erreur est survenue");
       }
 
-      // Rediriger vers Stripe Checkout
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -154,6 +238,14 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
       currency: "CAD",
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("fr-CA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
   };
 
   if (loading) {
@@ -179,7 +271,6 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
 
   if (!form) return null;
 
-  // Page de succès
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: form.primaryColor }}>
@@ -243,7 +334,6 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
             <p className="text-lg opacity-90">{form.description}</p>
           )}
           
-          {/* Barre de progression */}
           {progress !== null && (
             <div className="mt-8 max-w-md mx-auto">
               <div className="flex justify-between text-sm mb-2">
@@ -265,6 +355,29 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
       {/* Formulaire */}
       <div className="max-w-2xl mx-auto px-4 py-8 -mt-8">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* Message de bienvenue personnalisé */}
+          {personalized?.isRecognized && personalized.welcomeMessage && (
+            <div 
+              className="px-6 py-4 flex items-center gap-3"
+              style={{ backgroundColor: form.primaryColor + "10" }}
+            >
+              <div 
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                style={{ backgroundColor: form.primaryColor }}
+              >
+                {personalized.donor?.firstName?.charAt(0) || "?"}
+              </div>
+              <div>
+                <p className="font-medium text-gray-900">{personalized.welcomeMessage}</p>
+                {personalized.lastDonation && (
+                  <p className="text-sm text-gray-600">
+                    Votre dernier don : {formatCurrency(personalized.lastDonation.amount)} le {formatDate(personalized.lastDonation.date)}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Étapes */}
           <div className="flex border-b">
             {["amount", "info", "payment"].map((s, i) => (
@@ -296,28 +409,56 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
             {/* Étape 1: Montant */}
             {step === "amount" && (
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">
                   Choisissez votre montant
                 </h2>
 
+                {/* Indicateur de montant recommandé */}
+                {personalized?.recommendedAmount && (
+                  <p className="text-sm text-gray-600 mb-6">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: form.primaryColor + "20", color: form.primaryColor }}>
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Recommandé pour vous
+                    </span>
+                    {" "}Basé sur votre historique de dons
+                  </p>
+                )}
+
                 {/* Montants suggérés */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                  {form.suggestedAmounts.map((amount) => (
-                    <button
-                      key={amount}
-                      onClick={() => { setSelectedAmount(amount); setCustomAmount(""); }}
-                      className={`py-4 px-4 rounded-lg text-lg font-semibold transition-all ${
-                        selectedAmount === amount
-                          ? "text-white ring-2 ring-offset-2"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                      style={selectedAmount === amount ? { 
-                        backgroundColor: form.primaryColor,
-                      } : {}}
-                    >
-                      {amount} $
-                    </button>
-                  ))}
+                  {displayAmounts.map((amount) => {
+                    const isRecommended = personalized?.recommendedAmount === amount;
+                    return (
+                      <button
+                        key={amount}
+                        onClick={() => { setSelectedAmount(amount); setCustomAmount(""); }}
+                        className={`relative py-4 px-4 rounded-lg text-lg font-semibold transition-all ${
+                          selectedAmount === amount
+                            ? "text-white ring-2 ring-offset-2"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                        style={selectedAmount === amount ? { 
+                          backgroundColor: form.primaryColor,
+                          ringColor: form.primaryColor,
+                        } : isRecommended ? {
+                          borderColor: form.primaryColor,
+                          borderWidth: "2px",
+                        } : {}}
+                      >
+                        {isRecommended && selectedAmount !== amount && (
+                          <span 
+                            className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs"
+                            style={{ backgroundColor: form.primaryColor }}
+                          >
+                            ★
+                          </span>
+                        )}
+                        {amount} $
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Montant personnalisé */}
@@ -335,7 +476,6 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                         value={customAmount}
                         onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(null); }}
                         className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg text-lg focus:ring-2 focus:border-transparent"
-                        style={{ focusRingColor: form.primaryColor } as React.CSSProperties}
                         placeholder={`Minimum ${form.minimumAmount} $`}
                       />
                     </div>
@@ -367,7 +507,46 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                   Vos informations
                 </h2>
 
+                {/* Indicateur de pré-remplissage */}
+                {personalized?.isRecognized && (
+                  <div className="mb-6 p-4 rounded-lg flex items-start gap-3" style={{ backgroundColor: form.primaryColor + "10" }}>
+                    <svg className="w-5 h-5 mt-0.5" style={{ color: form.primaryColor }} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="font-medium text-gray-900">Informations pré-remplies</p>
+                      <p className="text-sm text-gray-600">
+                        Nous avons retrouvé vos informations. Vous pouvez les modifier si nécessaire.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-4">
+                  {/* Email en premier pour la détection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Courriel *</label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        required
+                        value={donorInfo.email}
+                        onChange={(e) => setDonorInfo({ ...donorInfo, email: e.target.value })}
+                        onBlur={handleEmailBlur}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
+                        placeholder="votre@email.com"
+                      />
+                      {checkingEmail && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2" style={{ borderColor: form.primaryColor }}></div>
+                        </div>
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Entrez votre email pour retrouver vos informations
+                    </p>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
@@ -391,22 +570,14 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Courriel *</label>
-                    <input
-                      type="email"
-                      required
-                      value={donorInfo.email}
-                      onChange={(e) => setDonorInfo({ ...donorInfo, email: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
-                    />
-                  </div>
-
                   {form.collectPhone && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Téléphone {form.requirePhone && "*"}
+                      </label>
                       <input
                         type="tel"
+                        required={form.requirePhone}
                         value={donorInfo.phone}
                         onChange={(e) => setDonorInfo({ ...donorInfo, phone: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
@@ -417,9 +588,12 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                   {form.collectAddress && (
                     <>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Adresse {form.requireAddress && "*"}
+                        </label>
                         <input
                           type="text"
+                          required={form.requireAddress}
                           value={donorInfo.address}
                           onChange={(e) => setDonorInfo({ ...donorInfo, address: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
@@ -450,96 +624,58 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
 
                   {form.collectEmployer && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Employeur</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Employeur {form.requireEmployer && "*"}
+                      </label>
                       <input
                         type="text"
+                        required={form.requireEmployer}
                         value={donorInfo.employer}
                         onChange={(e) => setDonorInfo({ ...donorInfo, employer: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
-                        placeholder="Pour les programmes de dons jumelés"
                       />
                     </div>
                   )}
 
                   {form.collectComment && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Message (optionnel)</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Commentaire
+                      </label>
                       <textarea
                         value={donorInfo.comment}
                         onChange={(e) => setDonorInfo({ ...donorInfo, comment: e.target.value })}
                         rows={3}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
-                        placeholder="Laissez un message..."
+                        placeholder="Laissez un message (optionnel)"
                       />
-                    </div>
-                  )}
-
-                  {/* Options de dédicace pour In Memoriam */}
-                  {form.collectDedication && (
-                    <div className="border-t pt-4 mt-4">
-                      <h3 className="text-sm font-medium text-gray-900 mb-3">Faire un don en l&apos;honneur de quelqu&apos;un</h3>
-                      <select
-                        value={donorInfo.dedicationType}
-                        onChange={(e) => setDonorInfo({ ...donorInfo, dedicationType: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3"
-                      >
-                        <option value="">Non, merci</option>
-                        <option value="IN_MEMORY">En mémoire de</option>
-                        <option value="IN_HONOR">En l&apos;honneur de</option>
-                        <option value="TRIBUTE">En hommage à</option>
-                      </select>
-                      
-                      {donorInfo.dedicationType && (
-                        <div className="space-y-3">
-                          <input
-                            type="text"
-                            value={donorInfo.dedicateeName}
-                            onChange={(e) => setDonorInfo({ ...donorInfo, dedicateeName: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                            placeholder="Nom de la personne"
-                          />
-                          <input
-                            type="email"
-                            value={donorInfo.dedicateeEmail}
-                            onChange={(e) => setDonorInfo({ ...donorInfo, dedicateeEmail: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                            placeholder="Courriel pour notification (optionnel)"
-                          />
-                          <label className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={donorInfo.notifyDedicatee}
-                              onChange={(e) => setDonorInfo({ ...donorInfo, notifyDedicatee: e.target.checked })}
-                              className="h-4 w-4 rounded"
-                            />
-                            <span className="text-sm text-gray-700">Envoyer une notification</span>
-                          </label>
-                        </div>
-                      )}
                     </div>
                   )}
 
                   {/* Options */}
-                  <div className="border-t pt-4 mt-4 space-y-3">
-                    {form.allowAnonymous && (
-                      <label className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={donorInfo.isAnonymous}
-                          onChange={(e) => setDonorInfo({ ...donorInfo, isAnonymous: e.target.checked })}
-                          className="h-4 w-4 rounded"
-                        />
-                        <span className="text-sm text-gray-700">Faire un don anonyme</span>
-                      </label>
-                    )}
-                    <label className="flex items-center gap-2">
+                  <div className="space-y-3 pt-4 border-t">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={donorInfo.isAnonymous}
+                        onChange={(e) => setDonorInfo({ ...donorInfo, isAnonymous: e.target.checked })}
+                        className="w-4 h-4 rounded"
+                        style={{ accentColor: form.primaryColor }}
+                      />
+                      <span className="text-sm text-gray-700">Faire un don anonyme</span>
+                    </label>
+
+                    <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={donorInfo.consentEmail}
                         onChange={(e) => setDonorInfo({ ...donorInfo, consentEmail: e.target.checked })}
-                        className="h-4 w-4 rounded"
+                        className="w-4 h-4 rounded"
+                        style={{ accentColor: form.primaryColor }}
                       />
-                      <span className="text-sm text-gray-700">J&apos;accepte de recevoir des communications par courriel</span>
+                      <span className="text-sm text-gray-700">
+                        J&apos;accepte de recevoir des communications par courriel
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -547,18 +683,18 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                 <div className="flex gap-4 mt-8">
                   <button
                     onClick={() => setStep("amount")}
-                    className="flex-1 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Retour
                   </button>
                   <button
                     onClick={() => {
-                      if (donorInfo.email && donorInfo.firstName && donorInfo.lastName) {
-                        setStep("payment");
-                        setError(null);
-                      } else {
+                      if (!donorInfo.email || !donorInfo.firstName || !donorInfo.lastName) {
                         setError("Veuillez remplir tous les champs obligatoires");
+                        return;
                       }
+                      setStep("payment");
+                      setError(null);
                     }}
                     className="flex-1 py-3 text-white rounded-lg transition-colors"
                     style={{ backgroundColor: form.primaryColor }}
@@ -576,7 +712,6 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                   Confirmer votre don
                 </h2>
 
-                {/* Récapitulatif */}
                 <div className="bg-gray-50 rounded-lg p-6 mb-6">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-gray-600">Montant du don</span>
@@ -587,63 +722,73 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                   <div className="border-t pt-4 space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-500">Donateur</span>
-                      <span className="text-gray-900">
-                        {donorInfo.isAnonymous ? "Anonyme" : `${donorInfo.firstName} ${donorInfo.lastName}`}
-                      </span>
+                      <span className="text-gray-900">{donorInfo.firstName} {donorInfo.lastName}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Courriel</span>
                       <span className="text-gray-900">{donorInfo.email}</span>
                     </div>
-                    {donorInfo.dedicationType && (
+                    {form.formType === "RECURRING" && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Dédicace</span>
-                        <span className="text-gray-900">
-                          {donorInfo.dedicationType === "IN_MEMORY" ? "En mémoire de" : 
-                           donorInfo.dedicationType === "IN_HONOR" ? "En l'honneur de" : "En hommage à"} {donorInfo.dedicateeName}
-                        </span>
+                        <span className="text-gray-500">Fréquence</span>
+                        <span className="text-gray-900">Mensuel</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <p className="text-sm text-gray-500 mb-6 text-center">
-                  En cliquant sur &quot;Confirmer le don&quot;, vous acceptez nos conditions d&apos;utilisation.
-                  Un reçu fiscal vous sera envoyé par courriel.
-                </p>
-
                 <div className="flex gap-4">
                   <button
                     onClick={() => setStep("info")}
-                    className="flex-1 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Retour
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={submitting}
-                    className="flex-1 py-3 text-white rounded-lg transition-colors disabled:opacity-50"
+                    className="flex-1 py-3 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     style={{ backgroundColor: form.primaryColor }}
                   >
-                    {submitting ? "Traitement..." : `Confirmer le don de ${formatCurrency(getAmount())}`}
+                    {submitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Traitement...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        Procéder au paiement
+                      </>
+                    )}
                   </button>
                 </div>
+
+                <p className="mt-4 text-xs text-center text-gray-500">
+                  Paiement sécurisé par Stripe. Vos informations sont protégées.
+                </p>
               </div>
             )}
           </div>
         </div>
-
-        {/* Sécurité */}
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            <span>Paiement sécurisé</span>
-          </div>
-          <p>Vos informations sont protégées par un cryptage SSL 256-bit</p>
-        </div>
       </div>
     </div>
   );
+}
+
+// Utilitaires pour les cookies
+function setCookie(name: string, value: string, days: number) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+}
+
+function getCookie(name: string): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop()!.split(";").shift()!);
+  }
+  return null;
 }

@@ -98,7 +98,7 @@ export async function executeAutomation(
       data: {
         status: "COMPLETED",
         completedAt: new Date(),
-        results: results,
+        results: JSON.parse(JSON.stringify(results)),
       },
     });
 

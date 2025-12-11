@@ -146,16 +146,16 @@ async function executeAction(
 
   switch (action.actionType) {
     case "SEND_EMAIL":
-      return await sendEmail(config as EmailConfig, context);
+      return await sendEmail(config as unknown as EmailConfig, context);
 
     case "ADD_TAG":
-      return await addTag(config as TagConfig, context);
+      return await addTag(config as unknown as TagConfig, context);
 
     case "REMOVE_TAG":
-      return await removeTag(config as TagConfig, context);
+      return await removeTag(config as unknown as TagConfig, context);
 
     case "NOTIFY_TEAM":
-      return await notifyTeam(config as NotifyConfig, context);
+      return await notifyTeam(config as unknown as NotifyConfig, context);
 
     case "WAIT":
       return { success: true, message: "Attente planifiée" };

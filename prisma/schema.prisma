@@ -2153,3 +2153,115 @@ model OrganizationSettings {
   
   @@index([charityNumber])
 }
+
+
+// ==================== AUTOMATISATIONS ====================
+
+enum AutomationStatus {
+  ACTIVE
+  PAUSED
+  DRAFT
+  ARCHIVED
+}
+
+enum TriggerType {
+  NEW_DONOR
+  POST_DONATION
+  DONATION_ANNIVERSARY
+  DONOR_BIRTHDAY
+  INACTIVE_DONOR
+  CAMPAIGN_GOAL_REACHED
+  RECURRING_CANCELLED
+  UPGRADE_OPPORTUNITY
+  MANUAL
+  SCHEDULED
+}
+
+enum ActionType {
+  SEND_EMAIL
+  SEND_SMS
+  CREATE_TASK
+  ADD_TAG
+  REMOVE_TAG
+  UPDATE_SEGMENT
+  NOTIFY_TEAM
+  WAIT
+  CONDITION
+}
+
+model Automation {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  status      AutomationStatus @default(DRAFT)
+  
+  triggerType TriggerType
+  triggerConfig Json?
+  
+  actions     AutomationAction[]
+  
+  totalExecutions Int @default(0)
+  successfulExecutions Int @default(0)
+  failedExecutions Int @default(0)
+  lastExecutedAt DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String?
+  
+  executions  AutomationExecution[]
+  
+  @@index([status])
+  @@index([triggerType])
+}
+
+model AutomationAction {
+  id           String   @id @default(cuid())
+  automationId String
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  
+  order        Int
+  actionType   ActionType
+  config       Json
+  
+  conditionField String?
+  conditionOperator String?
+  conditionValue String?
+  
+  parentActionId String?
+  parentAction   AutomationAction? @relation("ActionChildren", fields: [parentActionId], references: [id])
+  childActions   AutomationAction[] @relation("ActionChildren")
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([automationId])
+  @@index([parentActionId])
+}
+
+model AutomationExecution {
+  id           String   @id @default(cuid())
+  automationId String
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  
+  donorId      String?
+  donationId   String?
+  campaignId   String?
+  
+  status       String   @default("PENDING")
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+  
+  results      Json?
+  error        String?  @db.Text
+  
+  actionsExecuted Int @default(0)
+  currentActionOrder Int @default(0)
+  
+  scheduledFor DateTime?
+  
+  @@index([automationId])
+  @@index([donorId])
+  @@index([status])
+  @@index([scheduledFor])
+}

@@ -529,3 +529,38 @@
 ### Phase 5 - Déploiement
 - [x] Tester le build
 - [x] Push sur GitHub
+
+
+## Système d'Automatisations (Workflows)
+
+### Phase 1 - Modèles de données
+- [x] Modèle Automation (workflow)
+- [x] Modèle AutomationTrigger (déclencheur)
+- [x] Modèle AutomationAction (action à exécuter)
+- [x] Modèle AutomationExecution (historique)
+
+### Phase 2 - Triggers prédéfinis
+- [x] Bienvenue nouveau donateur (après 1er don)
+- [x] Anniversaire de don (1 an après)
+- [x] Relance donateur inactif (X mois sans don)
+- [x] Remerciement post-don (après chaque don)
+- [x] Proposition upgrade récurrent (après X dons ponctuels)
+- [x] Anniversaire du donateur
+- [x] Campagne atteint objectif
+
+### Phase 3 - Interface de gestion
+- [x] Liste des automatisations
+- [x] Page de création/édition
+- [x] Interface visuelle type workflow
+- [x] Templates prédéfinis
+- [x] Activation/désactivation
+
+### Phase 4 - Moteur d'exécution
+- [x] Cron job pour vérifier les triggers
+- [x] Exécution des actions (email, notification)
+- [x] Historique des exécutions
+- [x] Gestion des erreurs
+
+### Phase 5 - Déploiement
+- [x] Tester le build
+- [x] Push sur GitHub

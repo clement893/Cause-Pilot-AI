@@ -90,4 +90,4 @@
 - [x] Remplacer couleurs hard-codées par tokens
 - [x] Mettre à jour globals.css pour importer le design system
 - [x] Tester la cohérence visuelle sur toutes les pages
-- [ ] Pousser sur Git
+- [x] Pousser sur Git

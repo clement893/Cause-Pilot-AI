@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import GridLayout, { Layout } from "react-grid-layout";
+import GridLayout from "react-grid-layout";
+import type { Layout as RGLLayout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { Button } from "@/components/ui/button";
@@ -211,7 +212,7 @@ export default function DashboardGrid({
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
 
   // Convertir le layout en format react-grid-layout
-  const gridLayout: Layout[] = useMemo(() => {
+  const gridLayout = useMemo(() => {
     return layout.widgets.map((widget) => ({
       i: widget.id,
       x: widget.x,
@@ -226,7 +227,7 @@ export default function DashboardGrid({
 
   // Gérer le changement de layout
   const handleLayoutChange = useCallback(
-    (newLayout: Layout[]) => {
+    (newLayout: RGLLayout[]) => {
       const updatedWidgets = layout.widgets.map((widget) => {
         const layoutItem = newLayout.find((l) => l.i === widget.id);
         if (layoutItem) {

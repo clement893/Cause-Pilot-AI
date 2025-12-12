@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, isSuperAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 // GET /api/super-admin/users - Liste tous les utilisateurs admin
 export async function GET(request: NextRequest) {
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") || "";
 
     // Construire les filtres
-    const where: any = {};
+    const where: Prisma.AdminUserWhereInput = {};
     
     if (search) {
       where.OR = [

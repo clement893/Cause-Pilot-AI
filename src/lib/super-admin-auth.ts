@@ -142,7 +142,7 @@ export async function logAuditAction(
   entityType: string,
   entityId: string,
   description: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ) {
   try {
     await prisma.adminAuditLog.create({

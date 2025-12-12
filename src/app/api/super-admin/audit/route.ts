@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, isSuperAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 // GET /api/super-admin/audit - Liste des logs d'audit
 export async function GET(request: NextRequest) {
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
     const adminUserId = searchParams.get("adminUserId") || "";
 
     // Construire les filtres
-    const where: any = {};
+    const where: Prisma.AdminAuditLogWhereInput = {};
     
     if (action) {
       where.action = action;

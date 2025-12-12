@@ -19,7 +19,7 @@ interface AuditLog {
   entityType: string;
   entityId: string;
   description: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
   createdAt: string;
   adminUser: {
     id: string;

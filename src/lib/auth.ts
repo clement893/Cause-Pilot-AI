@@ -2,12 +2,27 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./prisma";
+import type { Adapter } from "next-auth/adapters";
 
 // Domaine autorisé pour l'authentification admin
 const ALLOWED_DOMAIN = "nukleo.com";
 
+// Étendre le type Session pour inclure role et status
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string;
+      status?: string;
+    };
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma) as any,
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -23,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       // Vérifier que l'email appartient au domaine autorisé
       if (user.email) {
         const domain = user.email.split("@")[1];
@@ -43,8 +58,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           select: { role: true, status: true },
         });
         if (adminUser) {
-          (session.user as any).role = adminUser.role;
-          (session.user as any).status = adminUser.status;
+          session.user.role = adminUser.role;
+          session.user.status = adminUser.status;
         }
       }
       return session;

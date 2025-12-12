@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, isSuperAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, SuperAdminRole, AdminStatus } from "@prisma/client";
 
 // GET /api/super-admin/users - Liste tous les utilisateurs admin
 export async function GET(request: NextRequest) {
@@ -41,12 +41,12 @@ export async function GET(request: NextRequest) {
       ];
     }
     
-    if (role) {
-      where.role = role;
+    if (role && Object.values(SuperAdminRole).includes(role as SuperAdminRole)) {
+      where.role = role as SuperAdminRole;
     }
     
-    if (status) {
-      where.status = status;
+    if (status && Object.values(AdminStatus).includes(status as AdminStatus)) {
+      where.status = status as AdminStatus;
     }
 
     const [users, total] = await Promise.all([

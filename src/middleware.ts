@@ -93,22 +93,20 @@ export function middleware(request: NextRequest) {
 
   // Vérifier l'authentification pour les routes protégées
   if (isProtectedRoute(pathname)) {
-    // En mode développement, permettre l'accès sans authentification
-    if (process.env.NODE_ENV === 'development') {
-      return NextResponse.next();
-    }
-
-    // Vérifier l'authentification
-    if (!verifyAuthToken(request)) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Unauthorized',
-          message: 'Authentication required to access this resource'
-        },
-        { status: 401 }
-      );
-    }
+    // TEMPORAIRE: Désactiver l'authentification jusqu'à ce qu'un système de login soit implémenté
+    // TODO: Implémenter un vrai système d'authentification (NextAuth, etc.)
+    return NextResponse.next();
+    
+    // Code d'authentification commenté pour référence future:
+    // if (process.env.NODE_ENV === 'development') {
+    //   return NextResponse.next();
+    // }
+    // if (!verifyAuthToken(request)) {
+    //   return NextResponse.json(
+    //     { success: false, error: 'Unauthorized', message: 'Authentication required' },
+    //     { status: 401 }
+    //   );
+    // }
   }
 
   // Ajouter les headers de sécurité

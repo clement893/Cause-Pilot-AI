@@ -48,7 +48,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import Sidebar from "@/components/layout/Sidebar";
+import AppLayout from "@/components/layout/AppLayout";
 
 interface Organization {
   id: string;
@@ -218,15 +218,15 @@ export default function OrganizationDetailPage({
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-background">
-        <Sidebar />
-        <main className="flex-1 p-8">
+      <AppLayout title="Organisation" breadcrumbs={[{ name: "Organisations", href: "/organizations" }, { name: organization?.name || "Détails" }]} currentPage="organizations">
+        
+        <>
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-muted rounded w-1/4"></div>
             <div className="h-64 bg-muted rounded"></div>
           </div>
-        </main>
-      </div>
+        </>
+      </AppLayout>
     );
   }
 
@@ -235,9 +235,9 @@ export default function OrganizationDetailPage({
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <main className="flex-1 p-8">
+    <AppLayout title="Organisation" breadcrumbs={[{ name: "Organisations", href: "/organizations" }, { name: organization?.name || "Détails" }]} currentPage="organizations">
+      
+      <>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -783,7 +783,7 @@ export default function OrganizationDetailPage({
             </div>
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
+      </>
+    </AppLayout>
   );
 }

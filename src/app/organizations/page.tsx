@@ -14,6 +14,7 @@ import {
   XCircle,
   Clock,
 } from "lucide-react";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -50,7 +51,6 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import Sidebar from "@/components/layout/Sidebar";
 
 interface Organization {
   id: string;
@@ -185,293 +185,301 @@ export default function OrganizationsPage() {
   );
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <main className="flex-1 p-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              <Building2 className="h-8 w-8 text-primary" />
-              Organisations
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Gérez vos différentes organisations et associations
-            </p>
-          </div>
+    <AppLayout
+      title="Organisations"
+      breadcrumbs={[{ name: "Organisations" }]}
+      currentPage="organizations"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Building2 className="h-8 w-8 text-purple-400" />
+            Organisations
+          </h1>
+          <p className="text-gray-400 mt-1">
+            Gérez vos différentes organisations et associations
+          </p>
+        </div>
 
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Nouvelle organisation
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-              <DialogHeader>
-                <DialogTitle>Créer une organisation</DialogTitle>
-                <DialogDescription>
-                  Ajoutez une nouvelle organisation à votre compte
-                </DialogDescription>
-              </DialogHeader>
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 bg-purple-600 hover:bg-purple-700">
+              <Plus className="h-4 w-4" />
+              Nouvelle organisation
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px] bg-slate-900 border-slate-700">
+            <DialogHeader>
+              <DialogTitle className="text-white">Créer une organisation</DialogTitle>
+              <DialogDescription className="text-gray-400">
+                Ajoutez une nouvelle organisation à votre compte
+              </DialogDescription>
+            </DialogHeader>
 
-              <div className="space-y-4 py-4">
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-300">Nom de l&apos;organisation *</Label>
+                <Input
+                  id="name"
+                  placeholder="Ma Fondation"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="bg-slate-800 border-slate-700 text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-gray-300">Description</Label>
+                <Textarea
+                  id="description"
+                  placeholder="Description de l'organisation..."
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  className="bg-slate-800 border-slate-700 text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nom de l&apos;organisation *</Label>
+                  <Label htmlFor="email" className="text-gray-300">Email</Label>
                   <Input
-                    id="name"
-                    placeholder="Ma Fondation"
-                    value={formData.name}
+                    id="email"
+                    type="email"
+                    placeholder="contact@fondation.org"
+                    value={formData.email}
                     onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
+                      setFormData({ ...formData, email: e.target.value })
                     }
+                    className="bg-slate-800 border-slate-700 text-white"
                   />
                 </div>
-
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Description de l'organisation..."
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="contact@fondation.org"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Téléphone</Label>
-                    <Input
-                      id="phone"
-                      placeholder="+1 514 555-0100"
-                      value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="website">Site web</Label>
+                  <Label htmlFor="phone" className="text-gray-300">Téléphone</Label>
                   <Input
-                    id="website"
-                    placeholder="https://www.fondation.org"
-                    value={formData.website}
+                    id="phone"
+                    placeholder="+1 514 555-0100"
+                    value={formData.phone}
                     onChange={(e) =>
-                      setFormData({ ...formData, website: e.target.value })
+                      setFormData({ ...formData, phone: e.target.value })
                     }
+                    className="bg-slate-800 border-slate-700 text-white"
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="plan">Plan</Label>
-                  <Select
-                    value={formData.plan}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, plan: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="FREE">Gratuit</SelectItem>
-                      <SelectItem value="STARTER">Starter</SelectItem>
-                      <SelectItem value="PROFESSIONAL">Professionnel</SelectItem>
-                      <SelectItem value="ENTERPRISE">Entreprise</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
 
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCreateOpen(false)}
+              <div className="space-y-2">
+                <Label htmlFor="website" className="text-gray-300">Site web</Label>
+                <Input
+                  id="website"
+                  placeholder="https://www.fondation.org"
+                  value={formData.website}
+                  onChange={(e) =>
+                    setFormData({ ...formData, website: e.target.value })
+                  }
+                  className="bg-slate-800 border-slate-700 text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="plan" className="text-gray-300">Plan</Label>
+                <Select
+                  value={formData.plan}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, plan: value })
+                  }
                 >
-                  Annuler
-                </Button>
-                <Button onClick={handleCreate} disabled={creating}>
-                  {creating ? "Création..." : "Créer"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+                  <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="FREE">Gratuit</SelectItem>
+                    <SelectItem value="STARTER">Starter</SelectItem>
+                    <SelectItem value="PROFESSIONAL">Professionnel</SelectItem>
+                    <SelectItem value="ENTERPRISE">Entreprise</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Rechercher une organisation..."
-              className="pl-10"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* Organizations Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-6 bg-muted rounded w-3/4"></div>
-                  <div className="h-4 bg-muted rounded w-1/2 mt-2"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-20 bg-muted rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : filteredOrganizations.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Aucune organisation
-              </h3>
-              <p className="text-muted-foreground text-center mb-4">
-                {search
-                  ? "Aucune organisation ne correspond à votre recherche"
-                  : "Créez votre première organisation pour commencer"}
-              </p>
-              {!search && (
-                <Button onClick={() => setIsCreateOpen(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Créer une organisation
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredOrganizations.map((org) => (
-              <Card
-                key={org.id}
-                className="hover:border-primary/50 transition-colors cursor-pointer group"
-                onClick={() => router.push(`/organizations/${org.id}`)}
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsCreateOpen(false)}
+                className="border-slate-700 text-gray-300 hover:bg-slate-800"
               >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="h-12 w-12 rounded-lg flex items-center justify-center text-white font-bold text-lg"
-                        style={{ backgroundColor: org.primaryColor }}
-                      >
-                        {org.logoUrl ? (
-                          <img
-                            src={org.logoUrl}
-                            alt={org.name}
-                            className="h-full w-full object-cover rounded-lg"
-                          />
-                        ) : (
-                          org.name.charAt(0).toUpperCase()
-                        )}
-                      </div>
-                      <div>
-                        <CardTitle className="text-lg flex items-center gap-2">
-                          {org.name}
-                          {org.plan === "ENTERPRISE" && (
-                            <Crown className="h-4 w-4 text-amber-400" />
-                          )}
-                        </CardTitle>
-                        <CardDescription className="text-xs">
-                          /{org.slug}
-                        </CardDescription>
-                      </div>
-                    </div>
+                Annuler
+              </Button>
+              <Button onClick={handleCreate} disabled={creating} className="bg-purple-600 hover:bg-purple-700">
+                {creating ? "Création..." : "Créer"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/organizations/${org.id}`);
-                          }}
-                        >
-                          <Settings className="h-4 w-4 mr-2" />
-                          Paramètres
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(org.id);
-                          }}
-                        >
-                          Supprimer
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+      {/* Search */}
+      <div className="mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Rechercher une organisation..."
+            className="pl-10 bg-slate-800 border-slate-700 text-white"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Organizations Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="bg-slate-800/50 border-slate-700 animate-pulse">
+              <CardHeader className="pb-3">
+                <div className="h-6 bg-slate-700 rounded w-3/4"></div>
+                <div className="h-4 bg-slate-700 rounded w-1/2 mt-2"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-20 bg-slate-700 rounded"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : filteredOrganizations.length === 0 ? (
+        <Card className="bg-slate-800/50 border-slate-700">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Building2 className="h-12 w-12 text-gray-500 mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
+              Aucune organisation
+            </h3>
+            <p className="text-gray-400 text-center mb-4">
+              {search
+                ? "Aucune organisation ne correspond à votre recherche"
+                : "Créez votre première organisation pour commencer"}
+            </p>
+            {!search && (
+              <Button onClick={() => setIsCreateOpen(true)} className="bg-purple-600 hover:bg-purple-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Créer une organisation
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredOrganizations.map((org) => (
+            <Card
+              key={org.id}
+              className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-colors cursor-pointer group"
+              onClick={() => router.push(`/organizations/${org.id}`)}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold text-lg"
+                      style={{ backgroundColor: org.primaryColor }}
+                    >
+                      {org.logoUrl ? (
+                        <img
+                          src={org.logoUrl}
+                          alt={org.name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : (
+                        org.name.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    <div>
+                      <CardTitle className="text-white group-hover:text-purple-400 transition-colors">
+                        {org.name}
+                      </CardTitle>
+                      <CardDescription className="text-gray-400">
+                        @{org.slug}
+                      </CardDescription>
+                    </div>
                   </div>
-                </CardHeader>
 
-                <CardContent>
-                  {org.description && (
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {org.description}
-                    </p>
-                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-white">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/organizations/${org.id}`);
+                        }}
+                        className="text-gray-300 hover:text-white hover:bg-slate-700"
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Paramètres
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/organizations/${org.id}?tab=members`);
+                        }}
+                        className="text-gray-300 hover:text-white hover:bg-slate-700"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
+                        Membres
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-slate-700" />
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(org.id);
+                        }}
+                        className="text-red-400 hover:text-red-300 hover:bg-slate-700"
+                      >
+                        Supprimer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardHeader>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {org._count.members} membre
-                        {org._count.members > 1 ? "s" : ""}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        {statusIcons[org.status]}
-                        {org.status === "ACTIVE" ? "Actif" : org.status}
-                      </span>
-                    </div>
+              <CardContent>
+                {org.description && (
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                    {org.description}
+                  </p>
+                )}
 
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {statusIcons[org.status]}
                     <Badge className={planColors[org.plan]}>
-                      {org.plan === "FREE"
-                        ? "Gratuit"
-                        : org.plan === "STARTER"
-                        ? "Starter"
-                        : org.plan === "PROFESSIONAL"
-                        ? "Pro"
-                        : "Enterprise"}
+                      {org.plan === "FREE" && "Gratuit"}
+                      {org.plan === "STARTER" && "Starter"}
+                      {org.plan === "PROFESSIONAL" && "Pro"}
+                      {org.plan === "ENTERPRISE" && (
+                        <>
+                          <Crown className="h-3 w-3 mr-1" />
+                          Enterprise
+                        </>
+                      )}
                     </Badge>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
+
+                  <div className="flex items-center gap-1 text-gray-400 text-sm">
+                    <Users className="h-4 w-4" />
+                    <span>{org._count.members}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </AppLayout>
   );
 }

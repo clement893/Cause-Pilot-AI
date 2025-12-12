@@ -91,3 +91,9 @@
 - [x] Mettre à jour globals.css pour importer le design system
 - [x] Tester la cohérence visuelle sur toutes les pages
 - [x] Pousser sur Git
+
+
+## Bugs à corriger (Phase 8)
+- [ ] Page Organisations: fond blanc au lieu du dark mode
+- [ ] Page Organisations: contenu glisse sous le menu sidebar
+- [ ] Donateurs disparus de la base de données

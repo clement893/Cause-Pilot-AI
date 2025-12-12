@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
-// GET - Liste des utilisateurs
+// GET - Liste des utilisateurs admin
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
     const skip = (page - 1) * limit;
 
-    const where: Record<string, unknown> = {};
+    const where: Prisma.AdminUserWhereInput = {};
 
     if (search) {
       where.OR = [
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (role) {
-      where.role = role;
+      where.role = role as "SUPER_ADMIN" | "ADMIN" | "SUPPORT";
     }
 
     const [users, total] = await Promise.all([
@@ -35,29 +36,17 @@ export async function GET(request: NextRequest) {
           email: true,
           name: true,
           role: true,
+          status: true,
           createdAt: true,
           updatedAt: true,
+          lastLoginAt: true,
         },
       }),
       prisma.adminUser.count({ where }),
     ]);
 
-    // Récupérer les rôles assignés pour chaque utilisateur
-    const userIds = users.map((u) => u.id);
-    const roleAssignments = await prisma.adminUserRoleAssignment.findMany({
-      where: { userId: { in: userIds } },
-      include: { role: true },
-    });
-
-    const usersWithRoles = users.map((user) => ({
-      ...user,
-      assignedRoles: roleAssignments
-        .filter((ra) => ra.userId === user.id)
-        .map((ra) => ra.role),
-    }));
-
     return NextResponse.json({
-      users: usersWithRoles,
+      users,
       pagination: {
         page,
         limit,
@@ -74,11 +63,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Créer un utilisateur (invitation)
+// POST - Créer un utilisateur admin
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name, roleId } = body;
+    const { email, name, role = "ADMIN" } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -99,36 +88,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Créer une invitation
-    const token = crypto.randomUUID();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7); // Expire dans 7 jours
-
-    const invitation = await prisma.invitation.create({
+    // Créer l'utilisateur admin
+    const user = await prisma.adminUser.create({
       data: {
         email,
-        roleId: roleId || "",
-        token,
-        expiresAt,
-        invitedBy: 1, // TODO: Récupérer l'ID de l'utilisateur connecté
-        invitedByName: "Admin",
+        name: name || null,
+        role: role as "SUPER_ADMIN" | "ADMIN" | "SUPPORT",
+        status: "ACTIVE",
       },
     });
 
-    // TODO: Envoyer l'email d'invitation
-
     return NextResponse.json({
-      message: "Invitation envoyée avec succès",
-      invitation: {
-        id: invitation.id,
-        email: invitation.email,
-        expiresAt: invitation.expiresAt,
+      message: "Utilisateur créé avec succès",
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
       },
     });
   } catch (error) {
-    console.error("Error creating invitation:", error);
+    console.error("Error creating user:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la création de l'invitation" },
+      { error: "Erreur lors de la création de l'utilisateur" },
       { status: 500 }
     );
   }

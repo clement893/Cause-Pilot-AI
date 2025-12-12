@@ -8,7 +8,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const userId = parseInt(id);
+    // AdminUser utilise un id de type string (cuid)
+    const userId = id;
 
     const user = await prisma.adminUser.findUnique({
       where: { id: userId },
@@ -29,24 +30,7 @@ export async function GET(
       );
     }
 
-    // Récupérer les rôles assignés
-    const roleAssignments = await prisma.adminUserRoleAssignment.findMany({
-      where: { userId: user.id },
-      include: { role: true },
-    });
-
-    // Récupérer l'historique d'audit
-    const auditLogs = await prisma.auditLog.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      take: 20,
-    });
-
-    return NextResponse.json({
-      ...user,
-      assignedRoles: roleAssignments.map((ra) => ra.role),
-      recentActivity: auditLogs,
-    });
+    return NextResponse.json(user);
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
@@ -63,48 +47,29 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const userId = parseInt(id);
+    const userId = id;
     const body = await request.json();
-    const { name, role, assignedRoleIds } = body;
+    const { name, role, status } = body;
 
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (role !== undefined) updateData.role = role;
+    if (status !== undefined) updateData.status = status;
 
     const user = await prisma.adminUser.update({
       where: { id: userId },
       data: updateData,
     });
 
-    // Mettre à jour les rôles assignés si fournis
-    if (assignedRoleIds !== undefined) {
-      // Supprimer les anciens rôles
-      await prisma.adminUserRoleAssignment.deleteMany({
-        where: { userId },
-      });
-
-      // Ajouter les nouveaux rôles
-      if (assignedRoleIds.length > 0) {
-        await prisma.adminUserRoleAssignment.createMany({
-          data: assignedRoleIds.map((roleId: string) => ({
-            userId,
-            roleId,
-            assignedBy: 1, // TODO: Récupérer l'ID de l'utilisateur connecté
-          })),
-        });
-      }
-    }
-
     // Log d'audit
-    await prisma.auditLog.create({
+    await prisma.adminAuditLog.create({
       data: {
-        userId: 1, // TODO: Récupérer l'ID de l'utilisateur connecté
+        adminUserId: userId,
         action: "UPDATE",
-        module: "admin",
-        entityType: "User",
+        entityType: "AdminUser",
         entityId: id,
         description: `Mise à jour de l'utilisateur ${user.email}`,
-        newValue: JSON.stringify(body),
+        metadata: body,
       },
     });
 
@@ -125,7 +90,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const userId = parseInt(id);
+    const userId = id;
 
     // Vérifier que l'utilisateur existe
     const user = await prisma.adminUser.findUnique({
@@ -139,25 +104,22 @@ export async function DELETE(
       );
     }
 
-    // Supprimer les rôles assignés
-    await prisma.adminUserRoleAssignment.deleteMany({
-      where: { userId },
+    // Désactiver l'utilisateur au lieu de le supprimer
+    await prisma.adminUser.update({
+      where: { id: userId },
+      data: { status: "INACTIVE" },
     });
 
     // Log d'audit
-    await prisma.auditLog.create({
+    await prisma.adminAuditLog.create({
       data: {
-        userId: 1,
+        adminUserId: userId,
         action: "DELETE",
-        module: "admin",
-        entityType: "User",
+        entityType: "AdminUser",
         entityId: id,
-        description: `Suppression de l'utilisateur ${user.email}`,
+        description: `Désactivation de l'utilisateur ${user.email}`,
       },
     });
-
-    // Note: On ne supprime pas vraiment l'utilisateur pour garder l'historique
-    // Dans une vraie application, on marquerait l'utilisateur comme désactivé
 
     return NextResponse.json({ message: "Utilisateur désactivé avec succès" });
   } catch (error) {

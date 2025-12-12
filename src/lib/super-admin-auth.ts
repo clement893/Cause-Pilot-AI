@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "./auth";
+import { auth } from "./auth";
 import { prisma } from "./prisma";
 import { NextResponse } from "next/server";
 
@@ -20,7 +19,7 @@ export interface SuperAdminSession {
  */
 export async function getSuperAdminSession(): Promise<SuperAdminSession | null> {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user?.email) {
       return null;

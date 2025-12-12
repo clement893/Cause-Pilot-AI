@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, isSuperAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, OrganizationStatus, OrganizationPlan } from "@prisma/client";
 
 // GET /api/super-admin/organizations - Liste toutes les organisations
 export async function GET(request: NextRequest) {
@@ -35,12 +35,12 @@ export async function GET(request: NextRequest) {
       ];
     }
     
-    if (status) {
-      where.status = status;
+    if (status && Object.values(OrganizationStatus).includes(status as OrganizationStatus)) {
+      where.status = status as OrganizationStatus;
     }
     
-    if (plan) {
-      where.plan = plan;
+    if (plan && Object.values(OrganizationPlan).includes(plan as OrganizationPlan)) {
+      where.plan = plan as OrganizationPlan;
     }
 
     // Si pas super admin, filtrer par organisations accessibles

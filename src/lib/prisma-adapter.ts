@@ -11,9 +11,10 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
       const user = await prisma.adminUser.create({
         data: {
           email: data.email,
-          name: data.name,
-          image: data.image,
-          emailVerified: data.emailVerified,
+          name: data.name ?? null,
+          image: data.image ?? null,
+          emailVerified: data.emailVerified ?? null,
+          // role et status ont des valeurs par défaut dans le schéma
         },
       });
       return {
@@ -70,14 +71,15 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     },
 
     async updateUser(data) {
+      const updateData: Record<string, unknown> = {};
+      if (data.email !== undefined) updateData.email = data.email;
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.image !== undefined) updateData.image = data.image;
+      if (data.emailVerified !== undefined) updateData.emailVerified = data.emailVerified;
+
       const user = await prisma.adminUser.update({
         where: { id: data.id },
-        data: {
-          email: data.email,
-          name: data.name,
-          image: data.image,
-          emailVerified: data.emailVerified,
-        },
+        data: updateData,
       });
       return {
         id: user.id,
@@ -92,20 +94,20 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
       await prisma.adminUser.delete({ where: { id: userId } });
     },
 
-    async linkAccount(data) {
+    async linkAccount(data: AdapterAccount) {
       await prisma.account.create({
         data: {
           userId: data.userId,
           type: data.type,
           provider: data.provider,
           providerAccountId: data.providerAccountId,
-          refresh_token: data.refresh_token,
-          access_token: data.access_token,
-          expires_at: data.expires_at,
-          token_type: data.token_type,
-          scope: data.scope,
-          id_token: data.id_token,
-          session_state: data.session_state as string | undefined,
+          refresh_token: data.refresh_token ?? null,
+          access_token: data.access_token ?? null,
+          expires_at: data.expires_at ?? null,
+          token_type: data.token_type ?? null,
+          scope: data.scope ?? null,
+          id_token: data.id_token ?? null,
+          session_state: (data.session_state as string) ?? null,
         },
       });
     },

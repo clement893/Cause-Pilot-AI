@@ -1,7 +1,23 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import GridLayout, { Layout as GridLayoutItem } from "react-grid-layout";
+import GridLayout from "react-grid-layout";
+
+// Type défini localement car @types/react-grid-layout n'est pas compatible avec v2
+interface GridLayoutItem {
+  i: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  minW?: number;
+  minH?: number;
+  maxW?: number;
+  maxH?: number;
+  static?: boolean;
+  isDraggable?: boolean;
+  isResizable?: boolean;
+}
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { Button } from "@/components/ui/button";

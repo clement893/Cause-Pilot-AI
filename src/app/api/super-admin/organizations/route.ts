@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, isSuperAdmin } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma, OrganizationStatus, OrganizationPlan } from "@prisma/client";
 
@@ -7,6 +7,8 @@ import { Prisma, OrganizationStatus, OrganizationPlan } from "@prisma/client";
 export async function GET(request: NextRequest) {
   try {
     const session = await auth();
+    
+    console.log("Session:", JSON.stringify(session, null, 2));
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -29,9 +31,9 @@ export async function GET(request: NextRequest) {
     
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
-        { slug: { contains: search, mode: "insensitive" } },
+        { name: { contains: search } },
+        { email: { contains: search } },
+        { slug: { contains: search } },
       ];
     }
     
@@ -43,15 +45,23 @@ export async function GET(request: NextRequest) {
       where.plan = plan as OrganizationPlan;
     }
 
-    // Si pas super admin, filtrer par organisations accessibles
-    const isSuper = await isSuperAdmin(session.user.id);
-    if (!isSuper) {
+    // Pour le super admin, on récupère toutes les organisations
+    // Vérification simplifiée - les utilisateurs @nukleo.com sont super admin
+    const isSuperAdmin = session.user.email?.endsWith("@nukleo.com");
+    
+    console.log("isSuperAdmin:", isSuperAdmin);
+    console.log("User email:", session.user.email);
+    
+    if (!isSuperAdmin) {
+      // Pour les non-super admin, filtrer par organisations accessibles
       const accessibleOrgs = await prisma.adminOrganizationAccess.findMany({
         where: { adminUserId: session.user.id },
         select: { organizationId: true },
       });
       where.id = { in: accessibleOrgs.map((a) => a.organizationId) };
     }
+
+    console.log("Where clause:", JSON.stringify(where, null, 2));
 
     const [organizations, total] = await Promise.all([
       prisma.organization.findMany({
@@ -71,6 +81,9 @@ export async function GET(request: NextRequest) {
       prisma.organization.count({ where }),
     ]);
 
+    console.log("Organizations found:", organizations.length);
+    console.log("Total:", total);
+
     return NextResponse.json({
       success: true,
       data: organizations,
@@ -84,7 +97,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching organizations:", error);
     return NextResponse.json(
-      { success: false, error: "Erreur lors de la récupération des organisations" },
+      { success: false, error: "Erreur lors de la récupération des organisations", details: String(error) },
       { status: 500 }
     );
   }
@@ -102,9 +115,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Seuls les super admins peuvent créer des organisations
-    const isSuper = await isSuperAdmin(session.user.id);
-    if (!isSuper) {
+    // Seuls les utilisateurs @nukleo.com peuvent créer des organisations
+    if (!session.user.email?.endsWith("@nukleo.com")) {
       return NextResponse.json(
         { success: false, error: "Accès refusé" },
         { status: 403 }

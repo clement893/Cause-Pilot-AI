@@ -47,7 +47,7 @@ export default function AutomationsPage() {
     try {
       const res = await fetch("/api/marketing/automations");
       const data = await res.json();
-      setAutomations(data);
+      setAutomations(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching automations:", error);
     } finally {

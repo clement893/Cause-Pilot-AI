@@ -2270,3 +2270,233 @@ model AutomationExecution {
   @@index([status])
   @@index([scheduledFor])
 }
+
+
+// ============================================
+// MODULE MULTI-ORGANISATION
+// ============================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations générales
+  name          String
+  slug          String   @unique
+  description   String?
+  
+  // Branding
+  logoUrl       String?
+  primaryColor  String   @default("#6366f1")
+  secondaryColor String  @default("#8b5cf6")
+  
+  // Informations légales
+  legalName         String?
+  charityNumber     String?   // Numéro d'organisme de bienfaisance
+  taxId             String?
+  
+  // Adresse
+  address       String?
+  city          String?
+  state         String?
+  postalCode    String?
+  country       String   @default("CA")
+  
+  // Contact
+  phone         String?
+  email         String?
+  website       String?
+  
+  // Paramètres
+  timezone      String   @default("America/Toronto")
+  currency      String   @default("CAD")
+  language      String   @default("fr")
+  
+  // Statut
+  status        OrganizationStatus @default(ACTIVE)
+  plan          OrganizationPlan   @default(FREE)
+  
+  // Limites du plan
+  maxUsers      Int      @default(5)
+  maxDonors     Int      @default(1000)
+  maxCampaigns  Int      @default(10)
+  
+  // Relations
+  members       OrganizationMember[]
+  dashboardLayouts DashboardLayout[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING
+}
+
+enum OrganizationPlan {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+model OrganizationMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Rôle dans l'organisation
+  role      OrganizationRole @default(MEMBER)
+  
+  // Permissions spécifiques (override du rôle)
+  permissions String[]
+  
+  // Statut
+  status    MemberStatus @default(ACTIVE)
+  invitedAt DateTime?
+  joinedAt  DateTime?
+  
+  // Relations
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         Int
+  
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+enum OrganizationRole {
+  OWNER       // Propriétaire - tous les droits
+  ADMIN       // Administrateur - gestion complète
+  MANAGER     // Manager - gestion des données
+  ANALYST     // Analyste - lecture et rapports
+  MEMBER      // Membre - accès de base
+  VIEWER      // Viewer - lecture seule
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+  INVITED
+  SUSPENDED
+}
+
+// ============================================
+// MODULE TABLEAU DE BORD PERSONNALISABLE
+// ============================================
+
+model DashboardLayout {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Informations
+  name          String
+  description   String?
+  isDefault     Boolean  @default(false)
+  isShared      Boolean  @default(false)
+  
+  // Configuration de la grille (JSON)
+  // Format: { widgets: [{ id, type, x, y, w, h, config }] }
+  layout        Json
+  
+  // Paramètres globaux
+  columns       Int      @default(12)
+  rowHeight     Int      @default(100)
+  
+  // Relations
+  userId        Int
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId])
+}
+
+model DashboardWidget {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Type de widget
+  widgetType    WidgetType
+  
+  // Configuration spécifique au widget (JSON)
+  config        Json?
+  
+  // Titre personnalisé
+  title         String?
+  
+  // Taille par défaut
+  defaultWidth  Int      @default(4)
+  defaultHeight Int      @default(2)
+  minWidth      Int      @default(2)
+  minHeight     Int      @default(1)
+  maxWidth      Int?
+  maxHeight     Int?
+  
+  // Statut
+  isActive      Boolean  @default(true)
+  isSystem      Boolean  @default(false)  // Widgets système non supprimables
+  
+  // Catégorie pour le menu
+  category      WidgetCategory @default(GENERAL)
+  
+  // Icône et couleur
+  icon          String?
+  color         String?
+
+  @@index([widgetType])
+  @@index([category])
+}
+
+enum WidgetType {
+  // Statistiques
+  STAT_TOTAL_DONATIONS
+  STAT_DONOR_COUNT
+  STAT_AVERAGE_DONATION
+  STAT_MONTHLY_REVENUE
+  STAT_CONVERSION_RATE
+  STAT_RETENTION_RATE
+  
+  // Graphiques
+  CHART_DONATIONS_OVER_TIME
+  CHART_DONATIONS_BY_TYPE
+  CHART_DONATIONS_BY_CAMPAIGN
+  CHART_DONOR_SEGMENTS
+  CHART_GEOGRAPHIC_DISTRIBUTION
+  CHART_RECURRING_VS_ONETIME
+  
+  // Listes
+  LIST_TOP_DONORS
+  LIST_RECENT_DONATIONS
+  LIST_ACTIVE_CAMPAIGNS
+  LIST_UPCOMING_EVENTS
+  LIST_AT_RISK_DONORS
+  
+  // Alertes et notifications
+  ALERT_CHURN_RISK
+  ALERT_GOAL_PROGRESS
+  ALERT_PENDING_TASKS
+  
+  // Autres
+  CALENDAR_EVENTS
+  QUICK_ACTIONS
+  NOTES
+  CUSTOM_EMBED
+}
+
+enum WidgetCategory {
+  GENERAL
+  DONATIONS
+  DONORS
+  CAMPAIGNS
+  ANALYTICS
+  ALERTS
+  TOOLS
+}

@@ -83,7 +83,7 @@ function NewAutomationContent() {
     try {
       const res = await fetch("/api/marketing/templates?isActive=true");
       const data = await res.json();
-      setTemplates(data);
+      setTemplates(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching templates:", error);
     }

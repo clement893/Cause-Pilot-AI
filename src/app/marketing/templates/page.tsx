@@ -56,7 +56,7 @@ export default function TemplatesPage() {
 
       const res = await fetch(`/api/marketing/templates?${params}`);
       const data = await res.json();
-      setTemplates(data);
+      setTemplates(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching templates:", error);
     } finally {

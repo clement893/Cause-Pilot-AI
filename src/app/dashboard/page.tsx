@@ -27,6 +27,7 @@ import {
   Zap,
   ChevronRight,
   X,
+  LayoutGrid,
 } from "lucide-react";
 
 interface Alert {
@@ -256,6 +257,13 @@ export default function DashboardPage() {
                 </button>
               </div>
             )}
+            <Link
+              href="/dashboard/customize"
+              className="flex items-center gap-2 px-4 py-2 bg-primary/20 border border-primary/30 text-primary rounded-lg hover:bg-primary/30 transition-colors"
+            >
+              <LayoutGrid className="w-4 h-4" />
+              Personnaliser
+            </Link>
             <button
               onClick={handleRefresh}
               disabled={refreshing}

@@ -94,6 +94,44 @@
 
 
 ## Bugs à corriger (Phase 8)
-- [ ] Page Organisations: fond blanc au lieu du dark mode
-- [ ] Page Organisations: contenu glisse sous le menu sidebar
-- [ ] Donateurs disparus de la base de données
+- [x] Page Organisations: fond blanc au lieu du dark mode (corrigé avec AppLayout)
+- [x] Page Organisations: contenu glisse sous le menu sidebar (corrigé avec AppLayout)
+- [x] Donateurs disparus: problème de middleware auth (désactivé temporairement)
+
+
+## Phase 9 - Espace Admin avec Auth Google (nukleo.com) ✅
+### Authentification
+- [x] Installer NextAuth.js avec provider Google
+- [x] Configurer la restriction au domaine nukleo.com
+- [x] Créer la page de connexion admin (/super-admin/login)
+- [x] Middleware de protection des routes /super-admin
+
+### Modèles de données
+- [x] Créer/mettre à jour le modèle AdminUser
+- [x] Ajouter les relations Organization <-> AdminUser
+- [x] Créer le modèle de permissions/rôles admin
+- [x] Créer AdminAuditLog pour l'historique des actions
+- [x] Créer AdminOrganizationAccess pour les accès
+
+### APIs Administration
+- [x] API GET/POST/PUT/DELETE /api/super-admin/organizations
+- [x] API GET/POST/PUT/DELETE /api/super-admin/users
+- [x] API statistiques globales /api/super-admin/stats
+- [x] API audit logs /api/super-admin/audit
+
+### Pages Administration
+- [x] Dashboard super-admin avec statistiques globales
+- [x] Page liste des organisations avec filtres
+- [x] Page détail organisation avec utilisateurs
+- [x] Page gestion des utilisateurs admin
+- [x] Page audit logs
+- [x] Page configuration plateforme (paramètres)
+
+### Système de permissions
+- [x] Implémenter les rôles (SUPER_ADMIN, ADMIN, MANAGER, VIEWER)
+- [x] Filtrer les données par organisation pour les non super-admin
+- [x] Audit log des actions admin
+
+### À configurer
+- [ ] Ajouter GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET sur Railway
+- [ ] Configurer l'URL de callback OAuth dans Google Cloud Console

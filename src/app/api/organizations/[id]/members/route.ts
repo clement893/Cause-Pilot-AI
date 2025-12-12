@@ -12,21 +12,14 @@ export async function GET(
     const members = await prisma.organizationMember.findMany({
       where: { organizationId: id },
       orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: { id: true, firstName: true, lastName: true, email: true },
+        },
+      },
     });
 
-    // Récupérer les informations des utilisateurs
-    const userIds = members.map((m) => m.userId);
-    const users = await prisma.adminUser.findMany({
-      where: { id: { in: userIds } },
-      select: { id: true, name: true, email: true },
-    });
-
-    const membersWithUsers = members.map((member) => ({
-      ...member,
-      user: users.find((u) => u.id === member.userId),
-    }));
-
-    return NextResponse.json(membersWithUsers);
+    return NextResponse.json(members);
   } catch (error) {
     console.error("Error fetching members:", error);
     return NextResponse.json(
@@ -102,7 +95,6 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
     const body = await request.json();
 
     const member = await prisma.organizationMember.update({

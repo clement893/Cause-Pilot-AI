@@ -12,14 +12,21 @@ export async function GET(
     const members = await prisma.organizationMember.findMany({
       where: { organizationId: id },
       orderBy: { createdAt: "desc" },
-      include: {
-        user: {
-          select: { id: true, firstName: true, lastName: true, email: true },
-        },
-      },
     });
 
-    return NextResponse.json(members);
+    // Récupérer les informations des utilisateurs séparément
+    const userIds = members.map((m) => m.userId);
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, name: true, email: true },
+    });
+
+    const membersWithUsers = members.map((member) => ({
+      ...member,
+      user: users.find((u) => u.id === member.userId),
+    }));
+
+    return NextResponse.json(membersWithUsers);
   } catch (error) {
     console.error("Error fetching members:", error);
     return NextResponse.json(

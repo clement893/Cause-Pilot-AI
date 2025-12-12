@@ -183,21 +183,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        action: "SEND_EMAIL",
-        module: "marketing",
-        entityType: "Email",
-        entityId: campaignId || "manual",
-        description: `${result.success} email(s) envoyé(s), ${result.failed} échec(s)`,
-        metadata: JSON.stringify({
-          recipientCount: recipients.length,
-          templateId,
-          campaignId,
-        }),
-      },
-    });
+    // TODO: Audit log - modèle à créer
+    // await prisma.auditLog.create({
+    //   data: {
+    //     action: "SEND_EMAIL",
+    //     module: "marketing",
+    //     entityType: "Email",
+    //     entityId: campaignId || "manual",
+    //     description: `${result.success} email(s) envoyé(s), ${result.failed} échec(s)`,
+    //     metadata: JSON.stringify({
+    //       recipientCount: recipients.length,
+    //       templateId,
+    //       campaignId,
+    //     }),
+    //   },
+    // });
 
     return NextResponse.json({
       success: true,

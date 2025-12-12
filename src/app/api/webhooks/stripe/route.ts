@@ -198,22 +198,22 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     });
   }
 
-  // Create audit log
-  await prisma.auditLog.create({
-    data: {
-      action: "CREATE",
-      module: "donations",
-      entityType: "Donation",
-      entityId: donation.id,
-      description: `Nouveau don de ${amountInDollars}$ via Stripe`,
-      metadata: JSON.stringify({
-        sessionId,
-        donorEmail: customer_email,
-        formId,
-        campaignId,
-      }),
-    },
-  });
+  // TODO: Audit log - modèle à créer
+  // await prisma.auditLog.create({
+  //   data: {
+  //     action: "CREATE",
+  //     module: "donations",
+  //     entityType: "Donation",
+  //     entityId: donation.id,
+  //     description: `Nouveau don de ${amountInDollars}$ via Stripe`,
+  //     metadata: JSON.stringify({
+  //       sessionId,
+  //       donorEmail: customer_email,
+  //       formId,
+  //       campaignId,
+  //     }),
+  //   },
+  // });
 
   console.log(`Donation recorded: ${donation.id} - ${amountInDollars}$`);
 

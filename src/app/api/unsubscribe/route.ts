@@ -136,17 +136,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        action: "UPDATE",
-        module: "marketing",
-        entityType: "Donor",
-        entityId: donor.id,
-        description: `Désabonnement email pour ${email}`,
-        metadata: JSON.stringify({ reason }),
-      },
-    });
+    // TODO: Audit log - modèle à créer
+    // await prisma.auditLog.create({
+    //   data: {
+    //     action: "UPDATE",
+    //     module: "marketing",
+    //     entityType: "Donor",
+    //     entityId: donor.id,
+    //     description: `Désabonnement email pour ${email}`,
+    //     metadata: JSON.stringify({ reason }),
+    //   },
+    // });
 
     return NextResponse.json({
       success: true,

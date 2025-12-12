@@ -229,7 +229,7 @@ export default function DashboardGrid({
 
   // Gérer le changement de layout
   const handleLayoutChange = useCallback(
-    (newLayout: LayoutItem[]) => {
+    (newLayout: ReactGridLayout.Layout[]) => {
       const updatedWidgets = layout.widgets.map((widget) => {
         const layoutItem = newLayout.find((l) => l.i === widget.id);
         if (layoutItem) {

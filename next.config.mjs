@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   // Exclude packages from SSR bundling
-  serverExternalPackages: ["@react-pdf/renderer", "@prisma/client", "prisma"],
+  serverExternalPackages: ["@react-pdf/renderer"],
   webpack: (config, { isServer }) => {
     // Handle @react-pdf/renderer for server-side rendering
     if (isServer) {

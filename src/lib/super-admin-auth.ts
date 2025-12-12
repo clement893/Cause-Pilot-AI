@@ -77,7 +77,7 @@ export async function getSuperAdminSession(): Promise<SuperAdminSession | null> 
       user: {
         id: adminUser.id,
         email: adminUser.email,
-        name: adminUser.name,
+        name: adminUser.name || adminUser.email.split("@")[0],
         role: adminUser.role,
       },
     };

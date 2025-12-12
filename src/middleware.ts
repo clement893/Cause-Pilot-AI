@@ -25,6 +25,7 @@ const protectedRoutes = [
   '/api/automations',
   '/api/notifications',
   '/api/receipts',
+  '/api/super-admin',
 ];
 
 // Vérifier si la route est publique

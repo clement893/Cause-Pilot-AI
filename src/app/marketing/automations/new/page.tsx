@@ -152,25 +152,25 @@ function NewAutomationContent() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-white">Nouvelle automatisation</h1>
-            <p className="text-muted-foreground text-sm">Configurez un workflow automatique</p>
+            <p className="text-gray-400 text-sm">Configurez un workflow automatique</p>
           </div>
         </div>
 
         {/* Step 1: Basic Info */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-4">
           <h2 className="font-semibold text-white flex items-center gap-2">
-            <Zap className="w-5 h-5 text-accent" />
+            <Zap className="w-5 h-5 text-pink-400" />
             Informations générales
           </h2>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Nom de l&apos;automatisation *
             </label>
             <input
@@ -178,12 +178,12 @@ function NewAutomationContent() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Ex: Email de bienvenue"
-              className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Description
             </label>
             <textarea
@@ -191,15 +191,15 @@ function NewAutomationContent() {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Décrivez le but de cette automatisation..."
               rows={2}
-              className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
             />
           </div>
         </div>
 
         {/* Step 2: Trigger */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-4">
           <h2 className="font-semibold text-white">Déclencheur</h2>
-          <p className="text-sm text-muted-foreground">Quand cette automatisation doit-elle se déclencher ?</p>
+          <p className="text-sm text-gray-400">Quand cette automatisation doit-elle se déclencher ?</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {TRIGGERS.map((trigger) => (
@@ -209,24 +209,24 @@ function NewAutomationContent() {
                 onClick={() => setFormData({ ...formData, triggerType: trigger.value })}
                 className={`p-4 rounded-lg border text-left transition-colors ${
                   formData.triggerType === trigger.value
-                    ? "border-accent bg-accent/10"
-                    : "border-border hover:border-border"
+                    ? "border-pink-500 bg-pink-500/10"
+                    : "border-slate-700 hover:border-slate-600"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <trigger.icon className={`w-5 h-5 ${formData.triggerType === trigger.value ? "text-accent" : "text-muted-foreground"}`} />
+                  <trigger.icon className={`w-5 h-5 ${formData.triggerType === trigger.value ? "text-pink-400" : "text-gray-400"}`} />
                   <span className="font-medium text-white">{trigger.label}</span>
                 </div>
-                <p className="text-xs text-muted-foreground">{trigger.description}</p>
+                <p className="text-xs text-gray-400">{trigger.description}</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Step 3: Action */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-4">
           <h2 className="font-semibold text-white">Action</h2>
-          <p className="text-sm text-muted-foreground">Que doit faire cette automatisation ?</p>
+          <p className="text-sm text-gray-400">Que doit faire cette automatisation ?</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {ACTIONS.map((action) => (
@@ -236,21 +236,21 @@ function NewAutomationContent() {
                 onClick={() => setFormData({ ...formData, actionType: action.value })}
                 className={`p-4 rounded-lg border text-left transition-colors ${
                   formData.actionType === action.value
-                    ? "border-accent bg-accent/10"
-                    : "border-border hover:border-border"
+                    ? "border-pink-500 bg-pink-500/10"
+                    : "border-slate-700 hover:border-slate-600"
                 }`}
               >
                 <div className="font-medium text-white">{action.label}</div>
-                <p className="text-xs text-muted-foreground mt-1">{action.description}</p>
+                <p className="text-xs text-gray-400 mt-1">{action.description}</p>
               </button>
             ))}
           </div>
 
           {/* Action Config */}
           {formData.actionType === "SEND_EMAIL" && (
-            <div className="mt-4 p-4 bg-surface-primary rounded-lg space-y-4">
+            <div className="mt-4 p-4 bg-slate-900 rounded-lg space-y-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Template email
                 </label>
                 <select
@@ -261,7 +261,7 @@ function NewAutomationContent() {
                       actionConfig: { ...formData.actionConfig, templateId: e.target.value },
                     })
                   }
-                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                 >
                   <option value="">Sélectionner un template</option>
                   {templates.map((template) => (
@@ -275,8 +275,8 @@ function NewAutomationContent() {
           )}
 
           {(formData.actionType === "ADD_TAG" || formData.actionType === "REMOVE_TAG") && (
-            <div className="mt-4 p-4 bg-surface-primary rounded-lg">
-              <label className="block text-sm font-medium text-foreground mb-2">
+            <div className="mt-4 p-4 bg-slate-900 rounded-lg">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Nom du tag
               </label>
               <input
@@ -289,14 +289,14 @@ function NewAutomationContent() {
                   })
                 }
                 placeholder="Ex: nouveau-donateur"
-                className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
             </div>
           )}
 
           {formData.actionType === "UPDATE_SEGMENT" && (
-            <div className="mt-4 p-4 bg-surface-primary rounded-lg">
-              <label className="block text-sm font-medium text-foreground mb-2">
+            <div className="mt-4 p-4 bg-slate-900 rounded-lg">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Nouveau segment
               </label>
               <input
@@ -309,16 +309,16 @@ function NewAutomationContent() {
                   })
                 }
                 placeholder="Ex: Donateurs actifs"
-                className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
             </div>
           )}
         </div>
 
         {/* Step 4: Timing */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-4">
           <h2 className="font-semibold text-white flex items-center gap-2">
-            <Clock className="w-5 h-5 text-accent" />
+            <Clock className="w-5 h-5 text-pink-400" />
             Délai
           </h2>
 
@@ -330,8 +330,8 @@ function NewAutomationContent() {
                 onClick={() => setFormData({ ...formData, delayType: delay.value })}
                 className={`p-3 rounded-lg border text-center transition-colors ${
                   formData.delayType === delay.value
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-border text-muted-foreground hover:border-border"
+                    ? "border-pink-500 bg-pink-500/10 text-pink-400"
+                    : "border-slate-700 text-gray-400 hover:border-slate-600"
                 }`}
               >
                 {delay.label}
@@ -341,7 +341,7 @@ function NewAutomationContent() {
 
           {formData.delayType !== "IMMEDIATE" && (
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Durée du délai
               </label>
               <input
@@ -349,19 +349,19 @@ function NewAutomationContent() {
                 min="1"
                 value={formData.delayMinutes}
                 onChange={(e) => setFormData({ ...formData, delayMinutes: parseInt(e.target.value) || 0 })}
-                className="w-32 px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                className="w-32 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
               />
             </div>
           )}
         </div>
 
         {/* Step 5: Limits */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-4">
           <h2 className="font-semibold text-white">Limites (optionnel)</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Exécutions max par donateur
               </label>
               <input
@@ -375,11 +375,11 @@ function NewAutomationContent() {
                   })
                 }
                 placeholder="Illimité"
-                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Délai entre exécutions (heures)
               </label>
               <input
@@ -393,7 +393,7 @@ function NewAutomationContent() {
                   })
                 }
                 placeholder="Aucun"
-                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
               />
             </div>
           </div>
@@ -407,9 +407,9 @@ function NewAutomationContent() {
               id="isActive"
               checked={formData.isActive}
               onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-              className="w-4 h-4 rounded border-border bg-surface-primary text-accent focus:ring-pink-500"
+              className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-pink-500 focus:ring-pink-500"
             />
-            <label htmlFor="isActive" className="text-sm text-foreground">
+            <label htmlFor="isActive" className="text-sm text-gray-300">
               Activer immédiatement
             </label>
           </div>
@@ -430,7 +430,7 @@ function NewAutomationContent() {
 
 export default function NewAutomationPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div></div>}>
       <NewAutomationContent />
     </Suspense>
   );

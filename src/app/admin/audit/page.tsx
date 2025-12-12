@@ -68,18 +68,18 @@ export default function AuditPage() {
 
   const getActionIcon = (action: string) => {
     switch (action) {
-      case "CREATE": return <Edit className="w-4 h-4 text-success-light" />;
-      case "UPDATE": return <Edit className="w-4 h-4 text-info-light" />;
-      case "DELETE": return <Trash2 className="w-4 h-4 text-error-light" />;
-      case "READ": return <Eye className="w-4 h-4 text-muted-foreground" />;
-      case "LOGIN": return <LogIn className="w-4 h-4 text-success-light" />;
-      case "LOGOUT": return <LogOut className="w-4 h-4 text-warning" />;
-      case "EXPORT": return <Download className="w-4 h-4 text-brand-light" />;
-      case "IMPORT": return <Upload className="w-4 h-4 text-brand-light" />;
-      case "SEND_EMAIL": return <Mail className="w-4 h-4 text-info-light" />;
-      case "PERMISSION_CHANGE": return <Shield className="w-4 h-4 text-warning" />;
-      case "SETTINGS_CHANGE": return <Settings className="w-4 h-4 text-warning" />;
-      default: return <FileText className="w-4 h-4 text-muted-foreground" />;
+      case "CREATE": return <Edit className="w-4 h-4 text-green-400" />;
+      case "UPDATE": return <Edit className="w-4 h-4 text-blue-400" />;
+      case "DELETE": return <Trash2 className="w-4 h-4 text-red-400" />;
+      case "READ": return <Eye className="w-4 h-4 text-gray-400" />;
+      case "LOGIN": return <LogIn className="w-4 h-4 text-green-400" />;
+      case "LOGOUT": return <LogOut className="w-4 h-4 text-amber-400" />;
+      case "EXPORT": return <Download className="w-4 h-4 text-purple-400" />;
+      case "IMPORT": return <Upload className="w-4 h-4 text-purple-400" />;
+      case "SEND_EMAIL": return <Mail className="w-4 h-4 text-blue-400" />;
+      case "PERMISSION_CHANGE": return <Shield className="w-4 h-4 text-amber-400" />;
+      case "SETTINGS_CHANGE": return <Settings className="w-4 h-4 text-amber-400" />;
+      default: return <FileText className="w-4 h-4 text-gray-400" />;
     }
   };
 
@@ -102,16 +102,16 @@ export default function AuditPage() {
 
   const getActionColor = (action: string) => {
     switch (action) {
-      case "CREATE": return "bg-success/20 text-success-light";
-      case "UPDATE": return "bg-info/20 text-info-light";
-      case "DELETE": return "bg-error/20 text-error-light";
-      case "LOGIN": return "bg-success/20 text-success-light";
-      case "LOGOUT": return "bg-amber-500/20 text-warning";
+      case "CREATE": return "bg-green-500/20 text-green-400";
+      case "UPDATE": return "bg-blue-500/20 text-blue-400";
+      case "DELETE": return "bg-red-500/20 text-red-400";
+      case "LOGIN": return "bg-green-500/20 text-green-400";
+      case "LOGOUT": return "bg-amber-500/20 text-amber-400";
       case "EXPORT":
-      case "IMPORT": return "bg-brand/20 text-brand-light";
+      case "IMPORT": return "bg-purple-500/20 text-purple-400";
       case "PERMISSION_CHANGE":
-      case "SETTINGS_CHANGE": return "bg-amber-500/20 text-warning";
-      default: return "bg-muted/20 text-muted-foreground";
+      case "SETTINGS_CHANGE": return "bg-amber-500/20 text-amber-400";
+      default: return "bg-gray-500/20 text-gray-400";
     }
   };
 
@@ -127,31 +127,31 @@ export default function AuditPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
         <div className="p-8">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+            <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
               <Link href="/admin" className="hover:text-white">Administration</Link>
               <span>/</span>
               <span className="text-white">Journal d&apos;audit</span>
             </div>
             <h1 className="text-3xl font-bold text-white">Journal d&apos;audit</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Historique de toutes les actions effectuées dans le système
             </p>
           </div>
 
           {/* Filters */}
-          <div className="bg-surface-primary rounded-xl p-4 border border-border mb-6">
+          <div className="bg-slate-900 rounded-xl p-4 border border-slate-800 mb-6">
             <div className="flex flex-wrap gap-4">
               <select
                 value={filters.action}
                 onChange={(e) => setFilters({ ...filters, action: e.target.value })}
-                className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-brand"
+                className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
               >
                 <option value="">Toutes les actions</option>
                 <option value="CREATE">Création</option>
@@ -168,7 +168,7 @@ export default function AuditPage() {
               <select
                 value={filters.module}
                 onChange={(e) => setFilters({ ...filters, module: e.target.value })}
-                className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-brand"
+                className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
               >
                 <option value="">Tous les modules</option>
                 <option value="donors">Donateurs</option>
@@ -181,25 +181,25 @@ export default function AuditPage() {
               </select>
 
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-muted-foreground" />
+                <Calendar className="w-5 h-5 text-gray-400" />
                 <input
                   type="date"
                   value={filters.startDate}
                   onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                  className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-brand"
+                  className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                 />
-                <span className="text-muted-foreground">à</span>
+                <span className="text-gray-400">à</span>
                 <input
                   type="date"
                   value={filters.endDate}
                   onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                  className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-brand"
+                  className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                 />
               </div>
 
               <button
                 onClick={() => setFilters({ action: "", module: "", startDate: "", endDate: "" })}
-                className="px-4 py-2 text-muted-foreground hover:text-white transition-colors"
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
               >
                 Réinitialiser
               </button>
@@ -207,45 +207,45 @@ export default function AuditPage() {
           </div>
 
           {/* Logs Table */}
-          <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
+          <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Date</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Utilisateur</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Action</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Module</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Description</th>
+                  <tr className="border-b border-slate-800">
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Date</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Utilisateur</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Action</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Module</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                      <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
                         Chargement...
                       </td>
                     </tr>
                   ) : logs.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                      <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
                         Aucune entrée dans le journal
                       </td>
                     </tr>
                   ) : (
                     logs.map((log) => (
-                      <tr key={log.id} className="border-b border-border hover:bg-surface-secondary/50">
-                        <td className="px-6 py-4 text-muted-foreground text-sm whitespace-nowrap">
+                      <tr key={log.id} className="border-b border-slate-800 hover:bg-slate-800/50">
+                        <td className="px-6 py-4 text-gray-400 text-sm whitespace-nowrap">
                           {new Date(log.createdAt).toLocaleString("fr-FR")}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center">
-                              <User className="w-4 h-4 text-brand-light" />
+                            <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                              <User className="w-4 h-4 text-purple-400" />
                             </div>
                             <div>
                               <p className="text-white text-sm">{log.userName || "Système"}</p>
-                              <p className="text-xs text-text-tertiary">{log.userEmail || "-"}</p>
+                              <p className="text-xs text-gray-500">{log.userEmail || "-"}</p>
                             </div>
                           </div>
                         </td>
@@ -258,16 +258,16 @@ export default function AuditPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-muted-foreground text-sm">
+                          <span className="text-gray-400 text-sm">
                             {moduleLabels[log.module] || log.module}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-foreground text-sm max-w-md truncate">
+                          <p className="text-gray-300 text-sm max-w-md truncate">
                             {log.description}
                           </p>
                           {log.entityId && (
-                            <p className="text-xs text-text-tertiary">
+                            <p className="text-xs text-gray-500">
                               {log.entityType} #{log.entityId}
                             </p>
                           )}
@@ -280,25 +280,25 @@ export default function AuditPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-border">
-              <p className="text-sm text-muted-foreground">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800">
+              <p className="text-sm text-gray-400">
                 {total} entrée{total > 1 ? "s" : ""} au total
               </p>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <span className="text-muted-foreground">
+                <span className="text-gray-400">
                   Page {page} sur {totalPages}
                 </span>
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

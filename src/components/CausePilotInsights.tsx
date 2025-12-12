@@ -104,19 +104,19 @@ export default function CausePilotInsights() {
   };
 
   const getHealthScoreColor = (score: number) => {
-    if (score >= 70) return "text-success-light";
-    if (score >= 50) return "text-warning";
-    return "text-error-light";
+    if (score >= 70) return "text-green-400";
+    if (score >= 50) return "text-amber-400";
+    return "text-red-400";
   };
 
   const getRiskLevelColor = (level: string) => {
     switch (level) {
       case "HIGH":
-        return "bg-error/20 text-error-light";
+        return "bg-red-500/20 text-red-400";
       case "MEDIUM":
-        return "bg-amber-500/20 text-warning";
+        return "bg-amber-500/20 text-amber-400";
       default:
-        return "bg-success/20 text-success-light";
+        return "bg-green-500/20 text-green-400";
     }
   };
 
@@ -124,12 +124,12 @@ export default function CausePilotInsights() {
     return (
       <div className="bg-gradient-to-br from-slate-900 to-purple-900/30 rounded-xl border border-purple-700/50 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-brand/20 rounded-lg flex items-center justify-center">
-            <Brain className="w-5 h-5 text-brand-light animate-pulse" />
+          <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+            <Brain className="w-5 h-5 text-purple-400 animate-pulse" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-white">CausePilot Insights</h2>
-            <p className="text-sm text-muted-foreground">Analyse en cours...</p>
+            <p className="text-sm text-gray-400">Analyse en cours...</p>
           </div>
         </div>
         <div className="flex items-center justify-center h-48">
@@ -148,58 +148,58 @@ export default function CausePilotInsights() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-brand/20 rounded-lg flex items-center justify-center">
-            <Brain className="w-5 h-5 text-brand-light" />
+          <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+            <Brain className="w-5 h-5 text-purple-400" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-white">CausePilot Insights</h2>
-            <p className="text-sm text-muted-foreground">Prédictions et suggestions IA</p>
+            <p className="text-sm text-gray-400">Prédictions et suggestions IA</p>
           </div>
         </div>
         <button
           onClick={fetchPredictions}
-          className="p-2 bg-surface-secondary border border-border rounded-lg hover:bg-surface-tertiary transition-colors"
+          className="p-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors"
         >
-          <RefreshCw className="w-4 h-4 text-muted-foreground" />
+          <RefreshCw className="w-4 h-4 text-gray-400" />
         </button>
       </div>
 
       {/* Health Score */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-surface-secondary/50 rounded-lg p-4 text-center">
+        <div className="bg-slate-800/50 rounded-lg p-4 text-center">
           <p className={`text-3xl font-bold ${getHealthScoreColor(data.insights.healthScore)}`}>
             {data.insights.healthScore}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Score santé</p>
+          <p className="text-xs text-gray-400 mt-1">Score santé</p>
         </div>
-        <div className="bg-surface-secondary/50 rounded-lg p-4 text-center">
-          <p className="text-2xl font-bold text-brand-light">
+        <div className="bg-slate-800/50 rounded-lg p-4 text-center">
+          <p className="text-2xl font-bold text-purple-400">
             {data.insights.recurringRate.toFixed(1)}%
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Taux récurrent</p>
+          <p className="text-xs text-gray-400 mt-1">Taux récurrent</p>
         </div>
-        <div className="bg-surface-secondary/50 rounded-lg p-4 text-center">
-          <p className="text-2xl font-bold text-info-light">
+        <div className="bg-slate-800/50 rounded-lg p-4 text-center">
+          <p className="text-2xl font-bold text-blue-400">
             {data.insights.retentionRate.toFixed(1)}%
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Rétention</p>
+          <p className="text-xs text-gray-400 mt-1">Rétention</p>
         </div>
-        <div className="bg-surface-secondary/50 rounded-lg p-4 text-center">
-          <p className="text-2xl font-bold text-success-light">
+        <div className="bg-slate-800/50 rounded-lg p-4 text-center">
+          <p className="text-2xl font-bold text-green-400">
             {formatCurrency(data.insights.avgDonation)}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Don moyen</p>
+          <p className="text-xs text-gray-400 mt-1">Don moyen</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4 border-b border-border pb-2">
+      <div className="flex gap-2 mb-4 border-b border-slate-700 pb-2">
         <button
           onClick={() => setActiveTab("risks")}
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
             activeTab === "risks"
-              ? "bg-error/20 text-error-light"
-              : "text-muted-foreground hover:text-white"
+              ? "bg-red-500/20 text-red-400"
+              : "text-gray-400 hover:text-white"
           }`}
         >
           <AlertTriangle className="w-4 h-4" />
@@ -209,8 +209,8 @@ export default function CausePilotInsights() {
           onClick={() => setActiveTab("opportunities")}
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
             activeTab === "opportunities"
-              ? "bg-success/20 text-success-light"
-              : "text-muted-foreground hover:text-white"
+              ? "bg-green-500/20 text-green-400"
+              : "text-gray-400 hover:text-white"
           }`}
         >
           <TrendingUp className="w-4 h-4" />
@@ -220,8 +220,8 @@ export default function CausePilotInsights() {
           onClick={() => setActiveTab("timing")}
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
             activeTab === "timing"
-              ? "bg-info/20 text-info-light"
-              : "text-muted-foreground hover:text-white"
+              ? "bg-blue-500/20 text-blue-400"
+              : "text-gray-400 hover:text-white"
           }`}
         >
           <Clock className="w-4 h-4" />
@@ -231,8 +231,8 @@ export default function CausePilotInsights() {
           onClick={() => setActiveTab("campaigns")}
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
             activeTab === "campaigns"
-              ? "bg-brand/20 text-brand-light"
-              : "text-muted-foreground hover:text-white"
+              ? "bg-purple-500/20 text-purple-400"
+              : "text-gray-400 hover:text-white"
           }`}
         >
           <Target className="w-4 h-4" />
@@ -246,20 +246,20 @@ export default function CausePilotInsights() {
           <>
             {data.predictions.atRiskDonors.length === 0 ? (
               <div className="text-center py-8">
-                <div className="w-12 h-12 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Sparkles className="w-6 h-6 text-success-light" />
+                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Sparkles className="w-6 h-6 text-green-400" />
                 </div>
-                <p className="text-muted-foreground">Aucun donateur à risque détecté</p>
+                <p className="text-gray-400">Aucun donateur à risque détecté</p>
               </div>
             ) : (
               data.predictions.atRiskDonors.map((donor) => (
                 <Link
                   key={donor.id}
                   href={`/donors/${donor.id}`}
-                  className="flex items-center justify-between p-3 bg-surface-secondary/50 rounded-lg hover:bg-surface-secondary transition-colors"
+                  className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-surface-tertiary rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
                       <span className="text-sm font-medium text-white">
                         {donor.firstName[0]}{donor.lastName[0]}
                       </span>
@@ -268,7 +268,7 @@ export default function CausePilotInsights() {
                       <p className="font-medium text-white">
                         {donor.firstName} {donor.lastName}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-400">
                         {formatCurrency(donor.totalDonated)} • Inactif depuis {donor.daysSinceLastDonation}j
                       </p>
                     </div>
@@ -277,7 +277,7 @@ export default function CausePilotInsights() {
                     <span className={`px-2 py-1 rounded-full text-xs ${getRiskLevelColor(donor.riskLevel)}`}>
                       Risque {donor.riskScore}%
                     </span>
-                    <ChevronRight className="w-4 h-4 text-text-tertiary" />
+                    <ChevronRight className="w-4 h-4 text-gray-500" />
                   </div>
                 </Link>
               ))
@@ -289,33 +289,33 @@ export default function CausePilotInsights() {
           <>
             {data.predictions.upgradeCandidates.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">Aucune opportunité d&apos;upgrade détectée</p>
+                <p className="text-gray-400">Aucune opportunité d&apos;upgrade détectée</p>
               </div>
             ) : (
               data.predictions.upgradeCandidates.map((donor) => (
                 <Link
                   key={donor.id}
                   href={`/donors/${donor.id}`}
-                  className="flex items-center justify-between p-3 bg-surface-secondary/50 rounded-lg hover:bg-surface-secondary transition-colors"
+                  className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center">
-                      <ArrowUpRight className="w-5 h-5 text-success-light" />
+                    <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                      <ArrowUpRight className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
                       <p className="font-medium text-white">
                         {donor.firstName} {donor.lastName}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-400">
                         Don moyen: {formatCurrency(donor.avgDonation)}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-success-light">
+                    <p className="text-sm font-medium text-green-400">
                       {formatCurrency(donor.suggestedRecurringAmount)}/mois
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-400">
                       = {formatCurrency(donor.potentialAnnualValue)}/an
                     </p>
                   </div>
@@ -327,54 +327,54 @@ export default function CausePilotInsights() {
 
         {activeTab === "timing" && (
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-surface-secondary/50 rounded-lg p-4">
+            <div className="bg-slate-800/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Calendar className="w-4 h-4 text-info-light" />
+                <Calendar className="w-4 h-4 text-blue-400" />
                 <h4 className="font-medium text-white">Meilleurs jours</h4>
               </div>
               <div className="space-y-2">
                 {data.timing.bestDays.map((day, index) => (
                   <div key={day.day} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 bg-info/20 rounded-full flex items-center justify-center text-xs text-info-light">
+                      <span className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-xs text-blue-400">
                         {index + 1}
                       </span>
-                      <span className="text-foreground">{day.day}</span>
+                      <span className="text-gray-300">{day.day}</span>
                     </div>
-                    <span className="text-sm text-muted-foreground">{day.count} dons</span>
+                    <span className="text-sm text-gray-400">{day.count} dons</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="bg-surface-secondary/50 rounded-lg p-4">
+            <div className="bg-slate-800/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Clock className="w-4 h-4 text-brand-light" />
+                <Clock className="w-4 h-4 text-purple-400" />
                 <h4 className="font-medium text-white">Meilleures heures</h4>
               </div>
               <div className="space-y-2">
                 {data.timing.bestHours.map((hour, index) => (
                   <div key={hour.hour} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 bg-brand/20 rounded-full flex items-center justify-center text-xs text-brand-light">
+                      <span className="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-xs text-purple-400">
                         {index + 1}
                       </span>
-                      <span className="text-foreground">{hour.hour}</span>
+                      <span className="text-gray-300">{hour.hour}</span>
                     </div>
-                    <span className="text-sm text-muted-foreground">{hour.count} dons</span>
+                    <span className="text-sm text-gray-400">{hour.count} dons</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="col-span-2 bg-surface-secondary/50 rounded-lg p-4">
+            <div className="col-span-2 bg-slate-800/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-3">
-                <DollarSign className="w-4 h-4 text-success-light" />
+                <DollarSign className="w-4 h-4 text-green-400" />
                 <h4 className="font-medium text-white">Montants suggérés</h4>
               </div>
               <div className="flex flex-wrap gap-2">
                 {data.recommendations.suggestedAmounts.map((amount) => (
                   <span
                     key={amount}
-                    className="px-3 py-1 bg-success/20 text-success-light rounded-full text-sm"
+                    className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm"
                   >
                     {formatCurrency(amount)}
                   </span>
@@ -388,34 +388,34 @@ export default function CausePilotInsights() {
           <>
             {data.recommendations.campaignSuggestions.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">Aucune campagne suggérée pour le moment</p>
+                <p className="text-gray-400">Aucune campagne suggérée pour le moment</p>
               </div>
             ) : (
               data.recommendations.campaignSuggestions.map((campaign, index) => (
                 <div
                   key={index}
-                  className="p-4 bg-surface-secondary/50 rounded-lg border-l-4"
+                  className="p-4 bg-slate-800/50 rounded-lg border-l-4"
                   style={{
                     borderColor: campaign.priority === "HIGH" ? "#EF4444" : "#8B5CF6",
                   }}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <Lightbulb className="w-5 h-5 text-warning" />
+                      <Lightbulb className="w-5 h-5 text-amber-400" />
                       <h4 className="font-medium text-white">{campaign.title}</h4>
                     </div>
                     <span
                       className={`px-2 py-0.5 rounded-full text-xs ${
                         campaign.priority === "HIGH"
-                          ? "bg-error/20 text-error-light"
-                          : "bg-brand/20 text-brand-light"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-purple-500/20 text-purple-400"
                       }`}
                     >
                       {campaign.priority === "HIGH" ? "Prioritaire" : "Suggéré"}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{campaign.description}</p>
-                  <div className="flex items-center gap-2 text-xs text-success-light">
+                  <p className="text-sm text-gray-400 mb-2">{campaign.description}</p>
+                  <div className="flex items-center gap-2 text-xs text-green-400">
                     <Zap className="w-3 h-3" />
                     {campaign.potentialImpact}
                   </div>
@@ -427,10 +427,10 @@ export default function CausePilotInsights() {
       </div>
 
       {/* CTA */}
-      <div className="mt-4 pt-4 border-t border-border">
+      <div className="mt-4 pt-4 border-t border-slate-700">
         <Link
           href="/causepilot"
-          className="flex items-center justify-center gap-2 w-full py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors"
+          className="flex items-center justify-center gap-2 w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
         >
           <Sparkles className="w-4 h-4" />
           Discuter avec CausePilot

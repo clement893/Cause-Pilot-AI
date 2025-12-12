@@ -48,13 +48,13 @@ export default function NewDonorPage() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white">Nouveau donateur</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-gray-400">
             Ajoutez un nouveau donateur à votre base
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 bg-error/20/50 border border-error text-red-300 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}

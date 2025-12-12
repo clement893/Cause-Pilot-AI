@@ -113,17 +113,17 @@ export default function P2PPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":
-        return "bg-success/20 text-success-light border-green-500/30";
+        return "bg-green-500/20 text-green-400 border-green-500/30";
       case "PENDING":
-        return "bg-warning/20 text-yellow-400 border-yellow-500/30";
+        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
       case "APPROVED":
-        return "bg-info/20 text-info-light border-blue-500/30";
+        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
       case "COMPLETED":
-        return "bg-brand/20 text-brand-light border-brand/30";
+        return "bg-purple-500/20 text-purple-400 border-purple-500/30";
       case "PAUSED":
         return "bg-orange-500/20 text-orange-400 border-orange-500/30";
       default:
-        return "bg-muted/20 text-muted-foreground border-gray-500/30";
+        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     }
   };
 
@@ -174,7 +174,7 @@ export default function P2PPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-white">Campagnes Peer-to-Peer</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Gérez les pages de collecte individuelles et les équipes
             </p>
           </div>
@@ -190,47 +190,47 @@ export default function P2PPage() {
         {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <Users className="w-4 h-4" />
                 <span className="text-xs">Fundraisers</span>
               </div>
               <p className="text-2xl font-bold text-white">{stats.totalFundraisers}</p>
-              <p className="text-xs text-success-light">{stats.activeFundraisers} actifs</p>
+              <p className="text-xs text-green-400">{stats.activeFundraisers} actifs</p>
             </div>
 
-            <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <UserPlus className="w-4 h-4" />
                 <span className="text-xs">Équipes</span>
               </div>
               <p className="text-2xl font-bold text-white">{stats.totalTeams}</p>
             </div>
 
-            <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <Target className="w-4 h-4" />
                 <span className="text-xs">Total collecté</span>
               </div>
-              <p className="text-2xl font-bold text-success-light">
+              <p className="text-2xl font-bold text-green-400">
                 {stats.totalRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
               </p>
             </div>
 
-            <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-xs">Donateurs</span>
               </div>
-              <p className="text-2xl font-bold text-brand-light">{stats.totalDonors}</p>
+              <p className="text-2xl font-bold text-purple-400">{stats.totalDonors}</p>
             </div>
 
-            <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-2 text-gray-400 mb-2">
                 <Award className="w-4 h-4" />
                 <span className="text-xs">Don moyen</span>
               </div>
-              <p className="text-2xl font-bold text-accent">
+              <p className="text-2xl font-bold text-pink-400">
                 {stats.totalDonors > 0
                   ? (stats.totalRaised / stats.totalDonors).toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })
                   : "0 $"}
@@ -240,13 +240,13 @@ export default function P2PPage() {
         )}
 
         {/* Tabs */}
-        <div className="flex items-center gap-4 border-b border-border">
+        <div className="flex items-center gap-4 border-b border-slate-700">
           <button
             onClick={() => setActiveTab("fundraisers")}
             className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors ${
               activeTab === "fundraisers"
-                ? "border-accent text-accent"
-                : "border-transparent text-muted-foreground hover:text-white"
+                ? "border-pink-500 text-pink-400"
+                : "border-transparent text-gray-400 hover:text-white"
             }`}
           >
             <Users className="w-4 h-4" />
@@ -256,8 +256,8 @@ export default function P2PPage() {
             onClick={() => setActiveTab("teams")}
             className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors ${
               activeTab === "teams"
-                ? "border-accent text-accent"
-                : "border-transparent text-muted-foreground hover:text-white"
+                ? "border-pink-500 text-pink-400"
+                : "border-transparent text-gray-400 hover:text-white"
             }`}
           >
             <Trophy className="w-4 h-4" />
@@ -268,21 +268,21 @@ export default function P2PPage() {
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Rechercher..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-muted-foreground" />
+            <Filter className="w-5 h-5 text-gray-400" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+              className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
             >
               <option value="">Tous les statuts</option>
               <option value="PENDING">En attente</option>
@@ -297,15 +297,15 @@ export default function P2PPage() {
         {/* Content */}
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
           </div>
         ) : activeTab === "fundraisers" ? (
-          <div className="bg-surface-secondary/50 rounded-xl border border-border overflow-hidden">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
             {filteredFundraisers.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="text-left text-muted-foreground text-sm border-b border-border">
+                    <tr className="text-left text-gray-400 text-sm border-b border-slate-700">
                       <th className="px-6 py-4 font-medium">Fundraiser</th>
                       <th className="px-6 py-4 font-medium">Campagne</th>
                       <th className="px-6 py-4 font-medium">Objectif</th>
@@ -322,7 +322,7 @@ export default function P2PPage() {
                         : 0;
 
                       return (
-                        <tr key={fundraiser.id} className="hover:bg-surface-tertiary/30 transition-colors">
+                        <tr key={fundraiser.id} className="hover:bg-slate-700/30 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white font-medium">
@@ -340,14 +340,14 @@ export default function P2PPage() {
                                 <p className="font-medium text-white">
                                   {fundraiser.firstName} {fundraiser.lastName}
                                 </p>
-                                <p className="text-sm text-muted-foreground">{fundraiser.email}</p>
+                                <p className="text-sm text-gray-400">{fundraiser.email}</p>
                               </div>
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <p className="text-white">{fundraiser.campaign?.name || "-"}</p>
                             {fundraiser.team && (
-                              <p className="text-xs text-brand-light">Équipe: {fundraiser.team.name}</p>
+                              <p className="text-xs text-purple-400">Équipe: {fundraiser.team.name}</p>
                             )}
                           </td>
                           <td className="px-6 py-4 text-white">
@@ -355,12 +355,12 @@ export default function P2PPage() {
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <p className="text-success-light font-medium">
+                              <p className="text-green-400 font-medium">
                                 {fundraiser.totalRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
                               </p>
-                              <div className="w-24 h-1.5 bg-surface-tertiary rounded-full mt-1">
+                              <div className="w-24 h-1.5 bg-slate-700 rounded-full mt-1">
                                 <div
-                                  className="h-full bg-success rounded-full"
+                                  className="h-full bg-green-500 rounded-full"
                                   style={{ width: `${progress}%` }}
                                 />
                               </div>
@@ -377,14 +377,14 @@ export default function P2PPage() {
                             <div className="flex items-center gap-2">
                               <Link
                                 href={`/p2p/fundraisers/${fundraiser.id}`}
-                                className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
+                                className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
                               >
                                 <Eye className="w-4 h-4" />
                               </Link>
                               <Link
                                 href={`/fundraise/${fundraiser.slug}`}
                                 target="_blank"
-                                className="p-2 text-muted-foreground hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
+                                className="p-2 text-gray-400 hover:text-pink-400 hover:bg-pink-500/10 rounded-lg transition-colors"
                                 title="Voir la page publique"
                               >
                                 <Target className="w-4 h-4" />
@@ -399,12 +399,12 @@ export default function P2PPage() {
               </div>
             ) : (
               <div className="text-center py-16">
-                <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <Users className="w-12 h-12 mx-auto text-gray-600 mb-4" />
                 <h3 className="text-lg font-medium text-white mb-2">Aucun fundraiser</h3>
-                <p className="text-muted-foreground mb-4">Commencez par créer une page de collecte P2P</p>
+                <p className="text-gray-400 mb-4">Commencez par créer une page de collecte P2P</p>
                 <Link
                   href="/p2p/new"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-pink-600 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Créer une page
@@ -424,7 +424,7 @@ export default function P2PPage() {
                   <Link
                     key={team.id}
                     href={`/p2p/teams/${team.id}`}
-                    className="p-6 bg-surface-secondary/50 rounded-xl border border-border hover:border-accent/50 transition-colors"
+                    className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-pink-500/50 transition-colors"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-white">{team.name}</h3>
@@ -436,10 +436,10 @@ export default function P2PPage() {
                     <div className="space-y-3">
                       <div>
                         <div className="flex justify-between text-sm mb-1">
-                          <span className="text-muted-foreground">Progression</span>
+                          <span className="text-gray-400">Progression</span>
                           <span className="text-white">{progress.toFixed(0)}%</span>
                         </div>
-                        <div className="h-2 bg-surface-tertiary rounded-full">
+                        <div className="h-2 bg-slate-700 rounded-full">
                           <div
                             className="h-full bg-gradient-to-r from-pink-500 to-purple-600 rounded-full"
                             style={{ width: `${progress}%` }}
@@ -448,21 +448,21 @@ export default function P2PPage() {
                       </div>
 
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Collecté</span>
-                        <span className="text-success-light font-medium">
+                        <span className="text-gray-400">Collecté</span>
+                        <span className="text-green-400 font-medium">
                           {team.totalRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
                         </span>
                       </div>
 
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Objectif</span>
+                        <span className="text-gray-400">Objectif</span>
                         <span className="text-white">
                           {team.goalAmount.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
                         </span>
                       </div>
 
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Membres</span>
+                        <span className="text-gray-400">Membres</span>
                         <span className="text-white">{team._count?.members || team.memberCount}</span>
                       </div>
                     </div>
@@ -471,9 +471,9 @@ export default function P2PPage() {
               })
             ) : (
               <div className="col-span-full text-center py-16">
-                <Trophy className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <Trophy className="w-12 h-12 mx-auto text-gray-600 mb-4" />
                 <h3 className="text-lg font-medium text-white mb-2">Aucune équipe</h3>
-                <p className="text-muted-foreground">Les équipes apparaîtront ici</p>
+                <p className="text-gray-400">Les équipes apparaîtront ici</p>
               </div>
             )}
           </div>

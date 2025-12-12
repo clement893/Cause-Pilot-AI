@@ -146,20 +146,20 @@ export default function NewSegmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar />
       <main className="ml-64 p-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link
             href="/segments"
-            className="p-2 bg-surface-secondary border border-border rounded-lg hover:bg-surface-tertiary transition-colors"
+            className="p-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-foreground" />
+            <ArrowLeft className="w-5 h-5 text-gray-300" />
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-white">Nouveau segment</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Créez un segment pour cibler vos donateurs
             </p>
           </div>
@@ -167,14 +167,14 @@ export default function NewSegmentPage() {
 
         <form onSubmit={handleSubmit} className="max-w-4xl">
           {/* Informations de base */}
-          <div className="bg-surface-primary rounded-xl border border-border p-6 mb-6">
+          <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
             <h2 className="text-lg font-semibold text-white mb-4">
               Informations générales
             </h2>
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Nom du segment *
                 </label>
                 <input
@@ -182,13 +182,13 @@ export default function NewSegmentPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Ex: Donateurs majeurs"
-                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Couleur
                 </label>
                 <div className="flex items-center gap-2">
@@ -208,7 +208,7 @@ export default function NewSegmentPage() {
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Description
               </label>
               <textarea
@@ -216,13 +216,13 @@ export default function NewSegmentPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description optionnelle du segment..."
                 rows={2}
-                className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
           </div>
 
           {/* Type de segment */}
-          <div className="bg-surface-primary rounded-xl border border-border p-6 mb-6">
+          <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
             <h2 className="text-lg font-semibold text-white mb-4">
               Type de segment
             </h2>
@@ -233,20 +233,20 @@ export default function NewSegmentPage() {
                 onClick={() => setType("DYNAMIC")}
                 className={`p-4 rounded-lg border-2 text-left transition-colors ${
                   type === "DYNAMIC"
-                    ? "border-brand bg-brand/10"
-                    : "border-border hover:border-border"
+                    ? "border-purple-500 bg-purple-500/10"
+                    : "border-slate-700 hover:border-slate-600"
                 }`}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-brand/20 rounded-lg flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-brand-light" />
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-purple-400" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Dynamique</p>
-                    <p className="text-xs text-muted-foreground">Mise à jour automatique</p>
+                    <p className="text-xs text-gray-400">Mise à jour automatique</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-400">
                   Les donateurs sont automatiquement ajoutés ou retirés selon les règles définies.
                 </p>
               </button>
@@ -256,20 +256,20 @@ export default function NewSegmentPage() {
                 onClick={() => setType("STATIC")}
                 className={`p-4 rounded-lg border-2 text-left transition-colors ${
                   type === "STATIC"
-                    ? "border-brand bg-brand/10"
-                    : "border-border hover:border-border"
+                    ? "border-purple-500 bg-purple-500/10"
+                    : "border-slate-700 hover:border-slate-600"
                 }`}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-info/20 rounded-lg flex items-center justify-center">
-                    <Layers className="w-5 h-5 text-info-light" />
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <Layers className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Statique</p>
-                    <p className="text-xs text-muted-foreground">Liste manuelle</p>
+                    <p className="text-xs text-gray-400">Liste manuelle</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-400">
                   Vous ajoutez manuellement les donateurs à ce segment.
                 </p>
               </button>
@@ -278,17 +278,17 @@ export default function NewSegmentPage() {
 
           {/* Règles (pour segments dynamiques) */}
           {type === "DYNAMIC" && (
-            <div className="bg-surface-primary rounded-xl border border-border p-6 mb-6">
+            <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-white">
                   Règles de segmentation
                 </h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Combiner avec</span>
+                  <span className="text-sm text-gray-400">Combiner avec</span>
                   <select
                     value={logicOperator}
                     onChange={(e) => setLogicOperator(e.target.value as "AND" | "OR")}
-                    className="px-3 py-1 bg-surface-secondary border border-border rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
                     <option value="AND">ET (toutes les conditions)</option>
                     <option value="OR">OU (au moins une condition)</option>
@@ -305,10 +305,10 @@ export default function NewSegmentPage() {
                   return (
                     <div
                       key={rule.id}
-                      className="flex items-center gap-4 p-4 bg-surface-secondary rounded-lg"
+                      className="flex items-center gap-4 p-4 bg-slate-800 rounded-lg"
                     >
                       {index > 0 && (
-                        <span className="text-sm text-brand-light font-medium w-8">
+                        <span className="text-sm text-purple-400 font-medium w-8">
                           {logicOperator}
                         </span>
                       )}
@@ -318,7 +318,7 @@ export default function NewSegmentPage() {
                       <select
                         value={rule.field}
                         onChange={(e) => updateRule(rule.id, { field: e.target.value, operator: "equals", value: "" })}
-                        className="flex-1 px-3 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                       >
                         {FIELDS.map((field) => (
                           <option key={field.value} value={field.value}>
@@ -331,7 +331,7 @@ export default function NewSegmentPage() {
                       <select
                         value={rule.operator}
                         onChange={(e) => updateRule(rule.id, { operator: e.target.value })}
-                        className="flex-1 px-3 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                       >
                         {operators.map((op) => (
                           <option key={op.value} value={op.value}>
@@ -347,7 +347,7 @@ export default function NewSegmentPage() {
                             <select
                               value={rule.value}
                               onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-                              className="flex-1 px-3 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                             >
                               <option value="">Sélectionner...</option>
                               {options.map((opt) => (
@@ -366,7 +366,7 @@ export default function NewSegmentPage() {
                                   : e.target.value 
                               })}
                               placeholder={fieldType === "date" ? "Nombre de jours" : "Valeur"}
-                              className="flex-1 px-3 py-2 bg-surface-tertiary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
                             />
                           )}
                         </>
@@ -377,7 +377,7 @@ export default function NewSegmentPage() {
                         type="button"
                         onClick={() => removeRule(rule.id)}
                         disabled={rules.length === 1}
-                        className="p-2 text-muted-foreground hover:text-error-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="p-2 text-gray-400 hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -389,7 +389,7 @@ export default function NewSegmentPage() {
               <button
                 type="button"
                 onClick={addRule}
-                className="mt-4 flex items-center gap-2 px-4 py-2 bg-surface-secondary border border-dashed border-border text-muted-foreground rounded-lg hover:border-brand hover:text-brand-light transition-colors"
+                className="mt-4 flex items-center gap-2 px-4 py-2 bg-slate-800 border border-dashed border-slate-600 text-gray-400 rounded-lg hover:border-purple-500 hover:text-purple-400 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Ajouter une condition
@@ -401,14 +401,14 @@ export default function NewSegmentPage() {
           <div className="flex items-center justify-end gap-4">
             <Link
               href="/segments"
-              className="px-6 py-2 bg-surface-secondary border border-border text-foreground rounded-lg hover:bg-surface-tertiary transition-colors"
+              className="px-6 py-2 bg-slate-800 border border-slate-700 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors"
             >
               Annuler
             </Link>
             <button
               type="submit"
               disabled={saving || !name.trim()}
-              className="flex items-center gap-2 px-6 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? (
                 <>

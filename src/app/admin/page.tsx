@@ -68,7 +68,7 @@ export default function AdminPage() {
       icon: Users,
       stat: stats.users,
       statLabel: "utilisateurs",
-      color: "bg-info",
+      color: "bg-blue-500",
     },
     {
       title: "Rôles & Permissions",
@@ -77,7 +77,7 @@ export default function AdminPage() {
       icon: Shield,
       stat: stats.roles,
       statLabel: "rôles",
-      color: "bg-brand",
+      color: "bg-purple-500",
     },
     {
       title: "Paramètres",
@@ -86,7 +86,7 @@ export default function AdminPage() {
       icon: Settings,
       stat: null,
       statLabel: null,
-      color: "bg-muted",
+      color: "bg-gray-500",
     },
     {
       title: "Journal d'audit",
@@ -104,7 +104,7 @@ export default function AdminPage() {
       icon: Plug,
       stat: stats.integrations,
       statLabel: "actives",
-      color: "bg-success",
+      color: "bg-green-500",
     },
   ];
 
@@ -116,7 +116,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
@@ -124,65 +124,65 @@ export default function AdminPage() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Administration</h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-400">
               Gérez les utilisateurs, les rôles, les permissions et les paramètres système
             </p>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-surface-primary rounded-xl p-6 border border-border">
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-info/20 rounded-lg">
-                  <Users className="w-6 h-6 text-info-light" />
+                <div className="p-3 bg-blue-500/20 rounded-lg">
+                  <Users className="w-6 h-6 text-blue-400" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {loading ? "..." : stats.users}
                   </p>
-                  <p className="text-sm text-muted-foreground">Utilisateurs</p>
+                  <p className="text-sm text-gray-400">Utilisateurs</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-primary rounded-xl p-6 border border-border">
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-brand/20 rounded-lg">
-                  <Shield className="w-6 h-6 text-brand-light" />
+                <div className="p-3 bg-purple-500/20 rounded-lg">
+                  <Shield className="w-6 h-6 text-purple-400" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {loading ? "..." : stats.roles}
                   </p>
-                  <p className="text-sm text-muted-foreground">Rôles</p>
+                  <p className="text-sm text-gray-400">Rôles</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-primary rounded-xl p-6 border border-border">
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-success/20 rounded-lg">
-                  <Plug className="w-6 h-6 text-success-light" />
+                <div className="p-3 bg-green-500/20 rounded-lg">
+                  <Plug className="w-6 h-6 text-green-400" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {loading ? "..." : stats.integrations}
                   </p>
-                  <p className="text-sm text-muted-foreground">Intégrations actives</p>
+                  <p className="text-sm text-gray-400">Intégrations actives</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-primary rounded-xl p-6 border border-border">
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-amber-500/20 rounded-lg">
-                  <FileText className="w-6 h-6 text-warning" />
+                  <FileText className="w-6 h-6 text-amber-400" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {loading ? "..." : stats.auditLogs}
                   </p>
-                  <p className="text-sm text-muted-foreground">Logs d&apos;audit</p>
+                  <p className="text-sm text-gray-400">Logs d&apos;audit</p>
                 </div>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function AdminPage() {
               <Link
                 key={module.href}
                 href={module.href}
-                className="bg-surface-primary rounded-xl p-6 border border-border hover:border-brand/50 transition-all group"
+                className="bg-slate-900 rounded-xl p-6 border border-slate-800 hover:border-purple-500/50 transition-all group"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className={`p-3 ${module.color} rounded-lg`}>
@@ -206,12 +206,12 @@ export default function AdminPage() {
                     </span>
                   )}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-brand-light transition-colors">
+                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-purple-400 transition-colors">
                   {module.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">{module.description}</p>
+                <p className="text-sm text-gray-400">{module.description}</p>
                 {module.statLabel && (
-                  <p className="text-xs text-text-tertiary mt-2">{module.statLabel}</p>
+                  <p className="text-xs text-gray-500 mt-2">{module.statLabel}</p>
                 )}
               </Link>
             ))}
@@ -220,59 +220,59 @@ export default function AdminPage() {
           {/* Quick Actions & Security */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Quick Actions */}
-            <div className="bg-surface-primary rounded-xl p-6 border border-border">
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
               <h3 className="text-lg font-semibold text-white mb-4">Actions rapides</h3>
               <div className="space-y-3">
                 {quickActions.map((action) => (
                   <Link
                     key={action.href}
                     href={action.href}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-surface-secondary/50 hover:bg-surface-secondary transition-colors"
+                    className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
                   >
-                    <action.icon className="w-5 h-5 text-brand-light" />
-                    <span className="text-foreground">{action.label}</span>
+                    <action.icon className="w-5 h-5 text-purple-400" />
+                    <span className="text-gray-300">{action.label}</span>
                   </Link>
                 ))}
               </div>
             </div>
 
             {/* Security Status */}
-            <div className="bg-surface-primary rounded-xl p-6 border border-border">
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
               <h3 className="text-lg font-semibold text-white mb-4">Sécurité</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-surface-secondary/50">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
                   <div className="flex items-center gap-3">
-                    <Lock className="w-5 h-5 text-success-light" />
-                    <span className="text-foreground">Authentification</span>
+                    <Lock className="w-5 h-5 text-green-400" />
+                    <span className="text-gray-300">Authentification</span>
                   </div>
-                  <span className="px-2 py-1 text-xs bg-success/20 text-success-light rounded">
+                  <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
                     Activée
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-surface-secondary/50">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
                   <div className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-warning" />
-                    <span className="text-foreground">2FA</span>
+                    <Shield className="w-5 h-5 text-amber-400" />
+                    <span className="text-gray-300">2FA</span>
                   </div>
-                  <span className="px-2 py-1 text-xs bg-amber-500/20 text-warning rounded">
+                  <span className="px-2 py-1 text-xs bg-amber-500/20 text-amber-400 rounded">
                     Optionnel
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-surface-secondary/50">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
                   <div className="flex items-center gap-3">
-                    <Database className="w-5 h-5 text-success-light" />
-                    <span className="text-foreground">Chiffrement données</span>
+                    <Database className="w-5 h-5 text-green-400" />
+                    <span className="text-gray-300">Chiffrement données</span>
                   </div>
-                  <span className="px-2 py-1 text-xs bg-success/20 text-success-light rounded">
+                  <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
                     AES-256
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-surface-secondary/50">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
                   <div className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-success-light" />
-                    <span className="text-foreground">Journal d&apos;audit</span>
+                    <FileText className="w-5 h-5 text-green-400" />
+                    <span className="text-gray-300">Journal d&apos;audit</span>
                   </div>
-                  <span className="px-2 py-1 text-xs bg-success/20 text-success-light rounded">
+                  <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
                     Actif
                   </span>
                 </div>

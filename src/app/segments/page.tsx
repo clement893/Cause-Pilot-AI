@@ -78,11 +78,11 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-  red: { bg: "bg-error/20", text: "text-error-light", border: "border-red-500/30" },
-  amber: { bg: "bg-amber-500/20", text: "text-warning", border: "border-amber-500/30" },
-  emerald: { bg: "bg-success/20", text: "text-success-light", border: "border-emerald-500/30" },
-  blue: { bg: "bg-info/20", text: "text-info-light", border: "border-blue-500/30" },
-  purple: { bg: "bg-brand/20", text: "text-brand-light", border: "border-brand/30" },
+  red: { bg: "bg-red-500/20", text: "text-red-400", border: "border-red-500/30" },
+  amber: { bg: "bg-amber-500/20", text: "text-amber-400", border: "border-amber-500/30" },
+  emerald: { bg: "bg-emerald-500/20", text: "text-emerald-400", border: "border-emerald-500/30" },
+  blue: { bg: "bg-blue-500/20", text: "text-blue-400", border: "border-blue-500/30" },
+  purple: { bg: "bg-purple-500/20", text: "text-purple-400", border: "border-purple-500/30" },
   cyan: { bg: "bg-cyan-500/20", text: "text-cyan-400", border: "border-cyan-500/30" },
 };
 
@@ -261,28 +261,28 @@ export default function SegmentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar />
       <main className="ml-64 p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Segments</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Segments intelligents et manuels pour cibler vos donateurs
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => { fetchSegments(); fetchSmartSegments(); }}
-              className="flex items-center gap-2 px-4 py-2 bg-surface-secondary border border-border text-foreground rounded-lg hover:bg-surface-tertiary transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               Actualiser
             </button>
             <Link
               href="/segments/new"
-              className="flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
               <Plus className="w-4 h-4" />
               Nouveau segment
@@ -296,14 +296,14 @@ export default function SegmentsPage() {
             onClick={() => setActiveTab("smart")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
               activeTab === "smart"
-                ? "bg-brand text-white"
-                : "bg-surface-secondary text-muted-foreground hover:bg-surface-tertiary"
+                ? "bg-purple-600 text-white"
+                : "bg-slate-800 text-gray-400 hover:bg-slate-700"
             }`}
           >
             <Brain className="w-4 h-4" />
             Segments Intelligents
             {smartSegments.length > 0 && (
-              <span className="px-2 py-0.5 bg-brand/30 rounded-full text-xs">
+              <span className="px-2 py-0.5 bg-purple-500/30 rounded-full text-xs">
                 {smartSegments.length}
               </span>
             )}
@@ -312,14 +312,14 @@ export default function SegmentsPage() {
             onClick={() => setActiveTab("manual")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
               activeTab === "manual"
-                ? "bg-brand text-white"
-                : "bg-surface-secondary text-muted-foreground hover:bg-surface-tertiary"
+                ? "bg-purple-600 text-white"
+                : "bg-slate-800 text-gray-400 hover:bg-slate-700"
             }`}
           >
             <Layers className="w-4 h-4" />
             Segments Manuels
             {segments.length > 0 && (
-              <span className="px-2 py-0.5 bg-surface-elevated/50 rounded-full text-xs">
+              <span className="px-2 py-0.5 bg-slate-600/50 rounded-full text-xs">
                 {segments.length}
               </span>
             )}
@@ -335,35 +335,35 @@ export default function SegmentsPage() {
             {/* Smart Segments Stats */}
             {smartStats && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-surface-primary border border-border rounded-xl p-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-info/20 rounded-lg">
-                      <Users className="w-5 h-5 text-info-light" />
+                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                      <Users className="w-5 h-5 text-blue-400" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Donateurs</p>
+                      <p className="text-sm text-gray-400">Total Donateurs</p>
                       <p className="text-2xl font-bold text-white">{smartStats.totalDonors}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-surface-primary border border-border rounded-xl p-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-success/20 rounded-lg">
-                      <Target className="w-5 h-5 text-success-light" />
+                    <div className="p-2 bg-emerald-500/20 rounded-lg">
+                      <Target className="w-5 h-5 text-emerald-400" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Donateurs Segmentés</p>
+                      <p className="text-sm text-gray-400">Donateurs Segmentés</p>
                       <p className="text-2xl font-bold text-white">{smartStats.segmentedDonors}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-surface-primary border border-border rounded-xl p-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-brand/20 rounded-lg">
-                      <BarChart3 className="w-5 h-5 text-brand-light" />
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                      <BarChart3 className="w-5 h-5 text-purple-400" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Segments Actifs</p>
+                      <p className="text-sm text-gray-400">Segments Actifs</p>
                       <p className="text-2xl font-bold text-white">{smartStats.totalSegments}</p>
                     </div>
                   </div>
@@ -378,7 +378,7 @@ export default function SegmentsPage() {
                 return (
                   <div
                     key={segment.id}
-                    className={`bg-surface-primary border ${colors.border} rounded-xl overflow-hidden hover:border-opacity-60 transition-all cursor-pointer`}
+                    className={`bg-slate-900 border ${colors.border} rounded-xl overflow-hidden hover:border-opacity-60 transition-all cursor-pointer`}
                     onClick={() => setSelectedSegment(selectedSegment?.id === segment.id ? null : segment)}
                   >
                     {/* Segment Header */}
@@ -390,46 +390,46 @@ export default function SegmentsPage() {
                           </div>
                           <div>
                             <h3 className="text-lg font-semibold text-white">{segment.name}</h3>
-                            <p className="text-sm text-muted-foreground">{segment.description}</p>
+                            <p className="text-sm text-gray-400">{segment.description}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-1 bg-brand/20 text-brand-light text-xs rounded-full flex items-center gap-1">
+                          <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full flex items-center gap-1">
                             <Brain className="w-3 h-3" />
                             IA
                           </span>
-                          <ChevronRight className={`w-5 h-5 text-text-tertiary transition-transform ${selectedSegment?.id === segment.id ? "rotate-90" : ""}`} />
+                          <ChevronRight className={`w-5 h-5 text-gray-500 transition-transform ${selectedSegment?.id === segment.id ? "rotate-90" : ""}`} />
                         </div>
                       </div>
 
                       {/* Segment Stats */}
                       <div className="grid grid-cols-3 gap-4 mb-4">
-                        <div className="bg-surface-secondary/50 rounded-lg p-3">
-                          <p className="text-xs text-text-tertiary mb-1">Donateurs</p>
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <p className="text-xs text-gray-500 mb-1">Donateurs</p>
                           <p className="text-xl font-bold text-white">{segment.donorCount}</p>
                         </div>
-                        <div className="bg-surface-secondary/50 rounded-lg p-3">
-                          <p className="text-xs text-text-tertiary mb-1">Valeur Totale</p>
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <p className="text-xs text-gray-500 mb-1">Valeur Totale</p>
                           <p className="text-xl font-bold text-white">{formatCurrency(segment.totalValue)}</p>
                         </div>
-                        <div className="bg-surface-secondary/50 rounded-lg p-3">
-                          <p className="text-xs text-text-tertiary mb-1">Don Moyen</p>
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <p className="text-xs text-gray-500 mb-1">Don Moyen</p>
                           <p className="text-xl font-bold text-white">{formatCurrency(segment.avgDonation)}</p>
                         </div>
                       </div>
 
                       {/* Criteria */}
-                      <div className="bg-surface-secondary/30 rounded-lg p-3">
-                        <p className="text-xs text-text-tertiary mb-1">Critères de segmentation</p>
-                        <p className="text-sm text-foreground">{segment.criteria}</p>
+                      <div className="bg-slate-800/30 rounded-lg p-3">
+                        <p className="text-xs text-gray-500 mb-1">Critères de segmentation</p>
+                        <p className="text-sm text-gray-300">{segment.criteria}</p>
                       </div>
                     </div>
 
                     {/* Expanded Donor List */}
                     {selectedSegment?.id === segment.id && (
-                      <div className="border-t border-border p-6">
+                      <div className="border-t border-slate-800 p-6">
                         <div className="flex items-center justify-between mb-4">
-                          <h4 className="text-sm font-medium text-foreground">
+                          <h4 className="text-sm font-medium text-gray-300">
                             Donateurs dans ce segment ({segment.donors.length} affichés)
                           </h4>
                           <div className="flex gap-2">
@@ -439,7 +439,7 @@ export default function SegmentsPage() {
                                 handleTagDonors(segment.id, segment.donors.map(d => d.id));
                               }}
                               disabled={tagLoading}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-brand hover:bg-brand-dark text-white text-sm rounded-lg transition-colors disabled:opacity-50"
+                              className="flex items-center gap-2 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
                             >
                               {tagLoading ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -451,7 +451,7 @@ export default function SegmentsPage() {
                             <Link
                               href={`/marketing/campaigns/new?segment=${segment.id}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-surface-tertiary hover:bg-surface-elevated text-white text-sm rounded-lg transition-colors"
+                              className="flex items-center gap-2 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors"
                             >
                               <Mail className="w-4 h-4" />
                               Créer campagne
@@ -465,7 +465,7 @@ export default function SegmentsPage() {
                               key={donor.id}
                               href={`/donors/${donor.id}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="flex items-center justify-between p-3 bg-surface-secondary/50 rounded-lg hover:bg-surface-secondary transition-colors"
+                              className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
@@ -477,31 +477,31 @@ export default function SegmentsPage() {
                                   <p className="text-sm font-medium text-white">
                                     {donor.firstName} {donor.lastName}
                                     {taggingDonors.includes(donor.id) && (
-                                      <CheckCircle className="w-4 h-4 text-success-light inline ml-2" />
+                                      <CheckCircle className="w-4 h-4 text-green-400 inline ml-2" />
                                     )}
                                   </p>
-                                  <p className="text-xs text-muted-foreground">{donor.email || "Pas d'email"}</p>
+                                  <p className="text-xs text-gray-400">{donor.email || "Pas d'email"}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-4 text-right">
                                 <div>
                                   <p className="text-sm font-medium text-white">{formatCurrency(donor.totalDonations)}</p>
-                                  <p className="text-xs text-muted-foreground">{donor.donationCount} dons</p>
+                                  <p className="text-xs text-gray-400">{donor.donationCount} dons</p>
                                 </div>
                                 {donor.potentialScore && (
                                   <div className={`px-2 py-1 rounded text-xs font-medium ${
-                                    donor.potentialScore >= 70 ? "bg-success/20 text-success-light" :
-                                    donor.potentialScore >= 40 ? "bg-amber-500/20 text-warning" :
-                                    "bg-muted/20 text-slate-400"
+                                    donor.potentialScore >= 70 ? "bg-emerald-500/20 text-emerald-400" :
+                                    donor.potentialScore >= 40 ? "bg-amber-500/20 text-amber-400" :
+                                    "bg-slate-500/20 text-slate-400"
                                   }`}>
                                     {donor.potentialScore}
                                   </div>
                                 )}
                                 {donor.churnRiskScore && (
                                   <div className={`px-2 py-1 rounded text-xs font-medium ${
-                                    donor.churnRiskScore >= 70 ? "bg-error/20 text-error-light" :
+                                    donor.churnRiskScore >= 70 ? "bg-red-500/20 text-red-400" :
                                     donor.churnRiskScore >= 40 ? "bg-orange-500/20 text-orange-400" :
-                                    "bg-success/20 text-success-light"
+                                    "bg-green-500/20 text-green-400"
                                   }`}>
                                     {donor.churnRiskScore}
                                   </div>
@@ -512,7 +512,7 @@ export default function SegmentsPage() {
                         </div>
 
                         {segment.donorCount > 20 && (
-                          <p className="text-xs text-text-tertiary mt-3 text-center">
+                          <p className="text-xs text-gray-500 mt-3 text-center">
                             {segment.donorCount - 20} donateurs supplémentaires non affichés
                           </p>
                         )}
@@ -524,43 +524,43 @@ export default function SegmentsPage() {
             </div>
 
             {/* Actions recommandées */}
-            <div className="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-brand/20 rounded-xl p-6">
+            <div className="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-purple-500/20 rounded-xl p-6">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-brand-light" />
+                <Sparkles className="w-5 h-5 text-purple-400" />
                 Actions recommandées par l&apos;IA
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {smartSegments.find(s => s.id === "churn-risk")?.donorCount ? (
-                  <div className="bg-surface-primary/50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-error-light mb-2">
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-red-400 mb-2">
                       <AlertTriangle className="w-4 h-4" />
                       <span className="text-sm font-medium">Priorité haute</span>
                     </div>
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-gray-300">
                       {smartSegments.find(s => s.id === "churn-risk")?.donorCount} donateurs à risque de churn. 
                       Lancez une campagne de réengagement.
                     </p>
                   </div>
                 ) : null}
                 {smartSegments.find(s => s.id === "major-gift-potential")?.donorCount ? (
-                  <div className="bg-surface-primary/50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-success-light mb-2">
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-emerald-400 mb-2">
                       <Star className="w-4 h-4" />
                       <span className="text-sm font-medium">Opportunité</span>
                     </div>
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-gray-300">
                       {smartSegments.find(s => s.id === "major-gift-potential")?.donorCount} donateurs majeurs potentiels. 
                       Planifiez des rencontres personnalisées.
                     </p>
                   </div>
                 ) : null}
                 {smartSegments.find(s => s.id === "new-to-retain")?.donorCount ? (
-                  <div className="bg-surface-primary/50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-info-light mb-2">
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-blue-400 mb-2">
                       <UserPlus className="w-4 h-4" />
                       <span className="text-sm font-medium">Fidélisation</span>
                     </div>
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-gray-300">
                       {smartSegments.find(s => s.id === "new-to-retain")?.donorCount} nouveaux donateurs à fidéliser. 
                       Envoyez une série de bienvenue.
                     </p>
@@ -577,7 +577,7 @@ export default function SegmentsPage() {
                 {segments.map((segment) => (
                   <div
                     key={segment.id}
-                    className="bg-surface-primary rounded-xl border border-border p-6 hover:border-border transition-colors"
+                    className="bg-slate-900 rounded-xl border border-slate-700 p-6 hover:border-slate-600 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
@@ -601,7 +601,7 @@ export default function SegmentsPage() {
                               {getTypeLabel(segment.type)}
                             </span>
                             {segment.isSystem && (
-                              <span className="px-2 py-0.5 bg-gray-700 text-muted-foreground text-xs rounded-full">
+                              <span className="px-2 py-0.5 bg-gray-700 text-gray-400 text-xs rounded-full">
                                 Système
                               </span>
                             )}
@@ -611,32 +611,32 @@ export default function SegmentsPage() {
                     </div>
 
                     {segment.description && (
-                      <p className="text-sm text-muted-foreground mb-4">{segment.description}</p>
+                      <p className="text-sm text-gray-400 mb-4">{segment.description}</p>
                     )}
 
                     <div className="grid grid-cols-3 gap-4 mb-4">
                       <div>
                         <p className="text-2xl font-bold text-white">{segment.donorCount}</p>
-                        <p className="text-xs text-muted-foreground">Donateurs</p>
+                        <p className="text-xs text-gray-400">Donateurs</p>
                       </div>
                       <div>
-                        <p className="text-lg font-semibold text-success-light">
+                        <p className="text-lg font-semibold text-green-400">
                           {formatCurrency(segment.totalValue)}
                         </p>
-                        <p className="text-xs text-muted-foreground">Total</p>
+                        <p className="text-xs text-gray-400">Total</p>
                       </div>
                       <div>
-                        <p className="text-lg font-semibold text-brand-light">
+                        <p className="text-lg font-semibold text-purple-400">
                           {formatCurrency(segment.avgDonation)}
                         </p>
-                        <p className="text-xs text-muted-foreground">Moyenne</p>
+                        <p className="text-xs text-gray-400">Moyenne</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-4 border-t border-border">
+                    <div className="flex items-center gap-2 pt-4 border-t border-slate-700">
                       <Link
                         href={`/segments/${segment.id}`}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors text-sm"
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors text-sm"
                       >
                         <Eye className="w-4 h-4" />
                         Voir
@@ -645,13 +645,13 @@ export default function SegmentsPage() {
                         <>
                           <Link
                             href={`/segments/${segment.id}/edit`}
-                            className="flex items-center justify-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors text-sm"
+                            className="flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors text-sm"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => deleteSegment(segment.id)}
-                            className="flex items-center justify-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-error/20/50 text-foreground hover:text-error-light rounded-lg transition-colors text-sm"
+                            className="flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-red-900/50 text-gray-300 hover:text-red-400 rounded-lg transition-colors text-sm"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -662,17 +662,17 @@ export default function SegmentsPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-surface-primary rounded-xl border border-border p-12 text-center mb-8">
-                <Filter className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <div className="bg-slate-900 rounded-xl border border-slate-700 p-12 text-center mb-8">
+                <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">
                   Aucun segment manuel créé
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-gray-400 mb-6">
                   Créez des segments manuels pour cibler vos communications et actions
                 </p>
                 <Link
                   href="/segments/new"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
                   <Plus className="w-5 h-5" />
                   Créer mon premier segment
@@ -683,14 +683,14 @@ export default function SegmentsPage() {
             {/* Segments suggérés */}
             <div className="bg-gradient-to-br from-slate-900 to-purple-900/30 rounded-xl border border-purple-700/50 p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-brand/20 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-brand-light" />
+                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-white">
                     Segments suggérés
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-400">
                     Cliquez pour créer automatiquement
                   </p>
                 </div>
@@ -706,8 +706,8 @@ export default function SegmentsPage() {
                       disabled={exists}
                       className={`p-4 rounded-lg border text-left transition-colors ${
                         exists
-                          ? "bg-surface-secondary/50 border-border opacity-50 cursor-not-allowed"
-                          : "bg-surface-secondary/50 border-border hover:border-brand hover:bg-surface-secondary"
+                          ? "bg-slate-800/50 border-slate-700 opacity-50 cursor-not-allowed"
+                          : "bg-slate-800/50 border-slate-700 hover:border-purple-500 hover:bg-slate-800"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -718,13 +718,13 @@ export default function SegmentsPage() {
                           <Users className="w-4 h-4" style={{ color: segment.color }} />
                         </div>
                         {exists ? (
-                          <span className="text-xs text-success-light">Créé</span>
+                          <span className="text-xs text-green-400">Créé</span>
                         ) : (
-                          <ChevronRight className="w-4 h-4 text-text-tertiary" />
+                          <ChevronRight className="w-4 h-4 text-gray-500" />
                         )}
                       </div>
                       <p className="font-medium text-white text-sm">{segment.name}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{segment.description}</p>
+                      <p className="text-xs text-gray-400 mt-1">{segment.description}</p>
                     </button>
                   );
                 })}

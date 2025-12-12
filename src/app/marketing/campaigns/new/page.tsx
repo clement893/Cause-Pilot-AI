@@ -384,14 +384,14 @@ export default function NewCampaignPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white">Nouvelle campagne email</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Créez votre campagne avec l&apos;assistance de l&apos;IA
             </p>
           </div>
           <button
             onClick={handleSaveDraft}
             disabled={saving || !formData.name}
-            className="flex items-center gap-2 px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Sauvegarder brouillon
@@ -406,10 +406,10 @@ export default function NewCampaignPage() {
                 onClick={() => setStep(s.num)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
                   step === s.num
-                    ? "bg-accent/20 text-accent"
+                    ? "bg-pink-500/20 text-pink-400"
                     : step > s.num
-                    ? "bg-success/20 text-success-light"
-                    : "bg-surface-secondary text-muted-foreground hover:bg-surface-tertiary"
+                    ? "bg-green-500/20 text-green-400"
+                    : "bg-slate-800 text-gray-400 hover:bg-slate-700"
                 }`}
               >
                 {step > s.num ? (
@@ -420,25 +420,25 @@ export default function NewCampaignPage() {
                 <span className="hidden md:inline text-sm">{s.label}</span>
               </button>
               {i < steps.length - 1 && (
-                <div className={`w-6 h-0.5 mx-1 ${step > s.num ? "bg-success" : "bg-surface-tertiary"}`} />
+                <div className={`w-6 h-0.5 mx-1 ${step > s.num ? "bg-green-500" : "bg-slate-700"}`} />
               )}
             </div>
           ))}
         </div>
 
         {/* Form Content */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-8">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-8">
           {/* Step 1: Configuration */}
           {step === 1 && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Mail className="w-5 h-5 text-accent" />
+                <Mail className="w-5 h-5 text-pink-400" />
                 Configuration de la campagne
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Nom de la campagne *
                   </label>
                   <input
@@ -446,18 +446,18 @@ export default function NewCampaignPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Ex: Newsletter de décembre"
-                    className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Type de campagne
                   </label>
                   <select
                     value={formData.campaignType}
                     onChange={(e) => setFormData({ ...formData, campaignType: e.target.value })}
-                    className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                   >
                     <option value="ONE_TIME">Ponctuel</option>
                     <option value="RECURRING">Récurrent</option>
@@ -467,7 +467,7 @@ export default function NewCampaignPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Objet de l&apos;email *
                 </label>
                 <input
@@ -475,12 +475,12 @@ export default function NewCampaignPage() {
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="Ex: Votre soutien fait la différence"
-                  className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Texte de prévisualisation
                 </label>
                 <input
@@ -489,13 +489,13 @@ export default function NewCampaignPage() {
                   onChange={(e) => setFormData({ ...formData, preheader: e.target.value })}
                   placeholder="Texte affiché après l'objet dans la boîte de réception"
                   maxLength={100}
-                  className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
-                <p className="text-xs text-text-tertiary mt-1">{formData.preheader.length}/100 caractères</p>
+                <p className="text-xs text-gray-500 mt-1">{formData.preheader.length}/100 caractères</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Description (contexte pour l&apos;IA)
                 </label>
                 <textarea
@@ -503,24 +503,24 @@ export default function NewCampaignPage() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Décrivez l'objectif de cette campagne pour aider l'IA à générer un contenu pertinent..."
                   rows={3}
-                  className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Nom de l&apos;expéditeur
                   </label>
                   <input
                     type="text"
                     value={formData.fromName}
                     onChange={(e) => setFormData({ ...formData, fromName: e.target.value })}
-                    className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Email de réponse
                   </label>
                   <input
@@ -528,14 +528,14 @@ export default function NewCampaignPage() {
                     value={formData.replyTo}
                     onChange={(e) => setFormData({ ...formData, replyTo: e.target.value })}
                     placeholder="reponse@exemple.com"
-                    className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                   />
                 </div>
               </div>
 
               {/* Template Selection */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Template de base (optionnel)
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -544,11 +544,11 @@ export default function NewCampaignPage() {
                     onClick={() => setFormData({ ...formData, templateId: "" })}
                     className={`p-4 rounded-lg border text-left transition-colors ${
                       !formData.templateId
-                        ? "border-accent bg-accent/10"
-                        : "border-border hover:border-border"
+                        ? "border-pink-500 bg-pink-500/10"
+                        : "border-slate-700 hover:border-slate-600"
                     }`}
                   >
-                    <Sparkles className="w-6 h-6 text-accent mb-2" />
+                    <Sparkles className="w-6 h-6 text-pink-400 mb-2" />
                     <div className="font-medium text-white text-sm">Générer avec IA</div>
                   </button>
 
@@ -567,11 +567,11 @@ export default function NewCampaignPage() {
                       }
                       className={`p-4 rounded-lg border text-left transition-colors ${
                         formData.templateId === template.id
-                          ? "border-accent bg-accent/10"
-                          : "border-border hover:border-border"
+                          ? "border-pink-500 bg-pink-500/10"
+                          : "border-slate-700 hover:border-slate-600"
                       }`}
                     >
-                      <FileText className="w-6 h-6 text-brand-light mb-2" />
+                      <FileText className="w-6 h-6 text-purple-400 mb-2" />
                       <div className="font-medium text-white text-sm truncate">{template.name}</div>
                     </button>
                   ))}
@@ -584,19 +584,19 @@ export default function NewCampaignPage() {
           {step === 2 && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-accent" />
+                <Sparkles className="w-5 h-5 text-pink-400" />
                 Rédaction assistée par IA
               </h2>
 
               {/* AI Controls */}
-              <div className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-xl p-6 border border-accent/20">
+              <div className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-xl p-6 border border-pink-500/20">
                 <div className="flex flex-wrap items-center gap-4 mb-4">
                   <div>
-                    <label className="block text-xs text-muted-foreground mb-1">Ton</label>
+                    <label className="block text-xs text-gray-400 mb-1">Ton</label>
                     <select
                       value={formData.aiTone}
                       onChange={(e) => setFormData({ ...formData, aiTone: e.target.value as typeof formData.aiTone })}
-                      className="px-3 py-2 bg-surface-primary border border-border rounded-lg text-white text-sm focus:outline-none focus:border-accent"
+                      className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:border-pink-500"
                     >
                       <option value="professional">Professionnel</option>
                       <option value="friendly">Chaleureux</option>
@@ -606,13 +606,13 @@ export default function NewCampaignPage() {
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-xs text-muted-foreground mb-1">Contexte additionnel</label>
+                    <label className="block text-xs text-gray-400 mb-1">Contexte additionnel</label>
                     <input
                       type="text"
                       value={formData.aiContext}
                       onChange={(e) => setFormData({ ...formData, aiContext: e.target.value })}
                       placeholder="Ex: Campagne de fin d'année, urgence humanitaire..."
-                      className="w-full px-3 py-2 bg-surface-primary border border-border rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-accent"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-pink-500"
                     />
                   </div>
                 </div>
@@ -634,7 +634,7 @@ export default function NewCampaignPage() {
                   <button
                     onClick={handleAIImprove}
                     disabled={aiLoading || !formData.htmlContent}
-                    className="flex items-center gap-2 px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Améliorer
@@ -644,20 +644,20 @@ export default function NewCampaignPage() {
 
               {/* Subject */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Objet de l&apos;email
                 </label>
                 <input
                   type="text"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               {/* HTML Content Editor */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Contenu HTML
                 </label>
                 <textarea
@@ -665,16 +665,16 @@ export default function NewCampaignPage() {
                   onChange={(e) => setFormData({ ...formData, htmlContent: e.target.value })}
                   placeholder="Le contenu HTML de votre email sera généré ici..."
                   rows={15}
-                  className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent font-mono text-sm"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 font-mono text-sm"
                 />
-                <p className="text-xs text-text-tertiary mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   Variables disponibles: {"{{firstName}}"}, {"{{lastName}}"}, {"{{email}}"}, {"{{date}}"}
                 </p>
               </div>
 
               {/* Text Content */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Version texte (fallback)
                 </label>
                 <textarea
@@ -682,7 +682,7 @@ export default function NewCampaignPage() {
                   onChange={(e) => setFormData({ ...formData, textContent: e.target.value })}
                   placeholder="Version texte brut pour les clients email qui ne supportent pas le HTML..."
                   rows={6}
-                  className="w-full px-4 py-3 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
             </div>
@@ -692,32 +692,32 @@ export default function NewCampaignPage() {
           {step === 3 && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Users className="w-5 h-5 text-accent" />
+                <Users className="w-5 h-5 text-pink-400" />
                 Sélection des destinataires
               </h2>
 
               {segmentsData && (
                 <>
                   {/* Summary */}
-                  <div className="bg-surface-primary rounded-lg p-4 flex items-center justify-between">
+                  <div className="bg-slate-900 rounded-lg p-4 flex items-center justify-between">
                     <div>
-                      <p className="text-muted-foreground text-sm">Destinataires sélectionnés</p>
+                      <p className="text-gray-400 text-sm">Destinataires sélectionnés</p>
                       <p className="text-2xl font-bold text-white">{getSelectedRecipientsCount().toLocaleString()}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-muted-foreground text-sm">Total éligible</p>
-                      <p className="text-lg text-foreground">{segmentsData.totalEligible.toLocaleString()}</p>
+                      <p className="text-gray-400 text-sm">Total éligible</p>
+                      <p className="text-lg text-gray-300">{segmentsData.totalEligible.toLocaleString()}</p>
                     </div>
                   </div>
 
                   {/* Predefined Segments */}
-                  <div className="border border-border rounded-lg overflow-hidden">
+                  <div className="border border-slate-700 rounded-lg overflow-hidden">
                     <button
                       onClick={() => setExpandedSections({ ...expandedSections, predefined: !expandedSections.predefined })}
-                      className="w-full flex items-center justify-between p-4 bg-surface-secondary hover:bg-surface-tertiary"
+                      className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700"
                     >
                       <span className="font-medium text-white">Segments prédéfinis</span>
-                      {expandedSections.predefined ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                      {expandedSections.predefined ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
                     </button>
                     {expandedSections.predefined && (
                       <div className="p-4 space-y-2">
@@ -726,8 +726,8 @@ export default function NewCampaignPage() {
                             key={segment.id}
                             className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
                               formData.selectedSegments.includes(segment.id)
-                                ? "bg-accent/20 border border-accent"
-                                : "bg-surface-secondary border border-border hover:border-border"
+                                ? "bg-pink-500/20 border border-pink-500"
+                                : "bg-slate-800 border border-slate-700 hover:border-slate-600"
                             }`}
                           >
                             <div className="flex items-center gap-3">
@@ -735,16 +735,16 @@ export default function NewCampaignPage() {
                                 type="checkbox"
                                 checked={formData.selectedSegments.includes(segment.id)}
                                 onChange={() => toggleSegment(segment.id)}
-                                className="w-4 h-4 rounded border-border text-accent focus:ring-pink-500"
+                                className="w-4 h-4 rounded border-slate-600 text-pink-500 focus:ring-pink-500"
                               />
                               <div>
                                 <p className="text-white font-medium">{segment.name}</p>
                                 {segment.description && (
-                                  <p className="text-muted-foreground text-sm">{segment.description}</p>
+                                  <p className="text-gray-400 text-sm">{segment.description}</p>
                                 )}
                               </div>
                             </div>
-                            <span className="text-muted-foreground text-sm">{segment.count.toLocaleString()}</span>
+                            <span className="text-gray-400 text-sm">{segment.count.toLocaleString()}</span>
                           </label>
                         ))}
                       </div>
@@ -753,13 +753,13 @@ export default function NewCampaignPage() {
 
                   {/* Custom Segments */}
                   {segmentsData.segments.length > 0 && (
-                    <div className="border border-border rounded-lg overflow-hidden">
+                    <div className="border border-slate-700 rounded-lg overflow-hidden">
                       <button
                         onClick={() => setExpandedSections({ ...expandedSections, segments: !expandedSections.segments })}
-                        className="w-full flex items-center justify-between p-4 bg-surface-secondary hover:bg-surface-tertiary"
+                        className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700"
                       >
                         <span className="font-medium text-white">Segments personnalisés</span>
-                        {expandedSections.segments ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                        {expandedSections.segments ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
                       </button>
                       {expandedSections.segments && (
                         <div className="p-4 grid grid-cols-2 gap-2">
@@ -768,8 +768,8 @@ export default function NewCampaignPage() {
                               key={segment.id}
                               className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
                                 formData.selectedSegments.includes(segment.id)
-                                  ? "bg-accent/20 border border-accent"
-                                  : "bg-surface-secondary border border-border hover:border-border"
+                                  ? "bg-pink-500/20 border border-pink-500"
+                                  : "bg-slate-800 border border-slate-700 hover:border-slate-600"
                               }`}
                             >
                               <div className="flex items-center gap-2">
@@ -777,11 +777,11 @@ export default function NewCampaignPage() {
                                   type="checkbox"
                                   checked={formData.selectedSegments.includes(segment.id)}
                                   onChange={() => toggleSegment(segment.id)}
-                                  className="w-4 h-4 rounded border-border text-accent focus:ring-pink-500"
+                                  className="w-4 h-4 rounded border-slate-600 text-pink-500 focus:ring-pink-500"
                                 />
                                 <span className="text-white text-sm">{segment.name}</span>
                               </div>
-                              <span className="text-muted-foreground text-xs">{segment.count}</span>
+                              <span className="text-gray-400 text-xs">{segment.count}</span>
                             </label>
                           ))}
                         </div>
@@ -791,13 +791,13 @@ export default function NewCampaignPage() {
 
                   {/* Tags */}
                   {segmentsData.tags.length > 0 && (
-                    <div className="border border-border rounded-lg overflow-hidden">
+                    <div className="border border-slate-700 rounded-lg overflow-hidden">
                       <button
                         onClick={() => setExpandedSections({ ...expandedSections, tags: !expandedSections.tags })}
-                        className="w-full flex items-center justify-between p-4 bg-surface-secondary hover:bg-surface-tertiary"
+                        className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700"
                       >
                         <span className="font-medium text-white">Par tags</span>
-                        {expandedSections.tags ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                        {expandedSections.tags ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
                       </button>
                       {expandedSections.tags && (
                         <div className="p-4 flex flex-wrap gap-2">
@@ -807,8 +807,8 @@ export default function NewCampaignPage() {
                               onClick={() => toggleSegment(tag.id)}
                               className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                                 formData.selectedSegments.includes(tag.id)
-                                  ? "bg-accent text-white"
-                                  : "bg-surface-tertiary text-foreground hover:bg-surface-elevated"
+                                  ? "bg-pink-500 text-white"
+                                  : "bg-slate-700 text-gray-300 hover:bg-slate-600"
                               }`}
                             >
                               {tag.name} ({tag.count})
@@ -823,8 +823,8 @@ export default function NewCampaignPage() {
 
               {!segmentsData && (
                 <div className="text-center py-8">
-                  <Loader2 className="w-8 h-8 text-muted-foreground animate-spin mx-auto mb-2" />
-                  <p className="text-muted-foreground">Chargement des segments...</p>
+                  <Loader2 className="w-8 h-8 text-gray-400 animate-spin mx-auto mb-2" />
+                  <p className="text-gray-400">Chargement des segments...</p>
                 </div>
               )}
             </div>
@@ -834,7 +834,7 @@ export default function NewCampaignPage() {
           {step === 4 && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Eye className="w-5 h-5 text-accent" />
+                <Eye className="w-5 h-5 text-pink-400" />
                 Prévisualisation
               </h2>
 
@@ -843,17 +843,17 @@ export default function NewCampaignPage() {
                 {/* Email Header Preview */}
                 <div className="bg-gray-100 p-4 border-b">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">
                       {formData.fromName?.[0] || "C"}
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">{formData.fromName || "CausePilotAI"}</p>
-                      <p className="text-sm text-text-tertiary">{formData.fromEmail}</p>
+                      <p className="font-medium text-gray-900">{formData.fromName || "CausePilotAI"}</p>
+                      <p className="text-sm text-gray-500">{formData.fromEmail}</p>
                     </div>
                   </div>
-                  <p className="font-semibold text-foreground">{formData.subject || "Sans objet"}</p>
+                  <p className="font-semibold text-gray-900">{formData.subject || "Sans objet"}</p>
                   {formData.preheader && (
-                    <p className="text-sm text-text-tertiary truncate">{formData.preheader}</p>
+                    <p className="text-sm text-gray-500 truncate">{formData.preheader}</p>
                   )}
                 </div>
 
@@ -870,7 +870,7 @@ export default function NewCampaignPage() {
                       }}
                     />
                   ) : (
-                    <div className="text-center py-12 text-muted-foreground">
+                    <div className="text-center py-12 text-gray-400">
                       <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
                       <p>Aucun contenu à prévisualiser</p>
                       <p className="text-sm">Retournez à l&apos;étape de rédaction pour créer votre email</p>
@@ -880,25 +880,25 @@ export default function NewCampaignPage() {
               </div>
 
               {/* Preview Info */}
-              <div className="bg-surface-primary rounded-lg p-4">
+              <div className="bg-slate-900 rounded-lg p-4">
                 <h3 className="font-medium text-white mb-2">Récapitulatif</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
-                    <p className="text-muted-foreground">Destinataires</p>
+                    <p className="text-gray-400">Destinataires</p>
                     <p className="text-white font-medium">{getSelectedRecipientsCount().toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Expéditeur</p>
+                    <p className="text-gray-400">Expéditeur</p>
                     <p className="text-white font-medium">{formData.fromName}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Type</p>
+                    <p className="text-gray-400">Type</p>
                     <p className="text-white font-medium">
                       {formData.campaignType === "ONE_TIME" ? "Ponctuel" : formData.campaignType === "RECURRING" ? "Récurrent" : "Automatisé"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Statut</p>
+                    <p className="text-gray-400">Statut</p>
                     <p className="text-yellow-400 font-medium">Brouillon</p>
                   </div>
                 </div>
@@ -910,14 +910,14 @@ export default function NewCampaignPage() {
           {step === 5 && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Send className="w-5 h-5 text-accent" />
+                <Send className="w-5 h-5 text-pink-400" />
                 Test et envoi
               </h2>
 
               {/* Test Email */}
-              <div className="bg-surface-primary rounded-lg p-6">
+              <div className="bg-slate-900 rounded-lg p-6">
                 <h3 className="font-medium text-white mb-4 flex items-center gap-2">
-                  <TestTube className="w-5 h-5 text-info-light" />
+                  <TestTube className="w-5 h-5 text-blue-400" />
                   Envoyer un email de test
                 </h3>
                 <div className="flex gap-3">
@@ -926,7 +926,7 @@ export default function NewCampaignPage() {
                     value={testEmail}
                     onChange={(e) => setTestEmail(e.target.value)}
                     placeholder="votre@email.com"
-                    className="flex-1 px-4 py-3 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                   />
                   <button
                     onClick={handleSendTest}
@@ -942,7 +942,7 @@ export default function NewCampaignPage() {
                   </button>
                 </div>
                 {testResult && (
-                  <div className={`mt-3 p-3 rounded-lg flex items-center gap-2 ${testResult.success ? "bg-success/20 text-success-light" : "bg-error/20 text-error-light"}`}>
+                  <div className={`mt-3 p-3 rounded-lg flex items-center gap-2 ${testResult.success ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
                     {testResult.success ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
                     {testResult.message}
                   </div>
@@ -950,28 +950,28 @@ export default function NewCampaignPage() {
               </div>
 
               {/* Campaign Summary */}
-              <div className="bg-surface-primary rounded-lg p-6">
+              <div className="bg-slate-900 rounded-lg p-6">
                 <h3 className="font-medium text-white mb-4">Récapitulatif de la campagne</h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground">Nom</span>
+                  <div className="flex justify-between py-2 border-b border-slate-700">
+                    <span className="text-gray-400">Nom</span>
                     <span className="text-white">{formData.name || "-"}</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground">Objet</span>
+                  <div className="flex justify-between py-2 border-b border-slate-700">
+                    <span className="text-gray-400">Objet</span>
                     <span className="text-white">{formData.subject || "-"}</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground">Expéditeur</span>
+                  <div className="flex justify-between py-2 border-b border-slate-700">
+                    <span className="text-gray-400">Expéditeur</span>
                     <span className="text-white">{formData.fromName} &lt;{formData.fromEmail}&gt;</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground">Destinataires</span>
+                  <div className="flex justify-between py-2 border-b border-slate-700">
+                    <span className="text-gray-400">Destinataires</span>
                     <span className="text-white font-medium">{getSelectedRecipientsCount().toLocaleString()} contacts</span>
                   </div>
                   <div className="flex justify-between py-2">
-                    <span className="text-muted-foreground">Statut</span>
-                    <span className={`px-2 py-0.5 rounded text-sm ${savedCampaignId ? "bg-success/20 text-success-light" : "bg-warning/20 text-yellow-400"}`}>
+                    <span className="text-gray-400">Statut</span>
+                    <span className={`px-2 py-0.5 rounded text-sm ${savedCampaignId ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"}`}>
                       {savedCampaignId ? "Sauvegardé" : "Non sauvegardé"}
                     </span>
                   </div>
@@ -983,7 +983,7 @@ export default function NewCampaignPage() {
                 <button
                   onClick={handleSaveDraft}
                   disabled={saving}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-slate-700 text-white rounded-lg hover:bg-slate-600 disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                   Sauvegarder comme brouillon
@@ -1006,11 +1006,11 @@ export default function NewCampaignPage() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-border">
+          <div className="flex justify-between mt-8 pt-6 border-t border-slate-700">
             <button
               onClick={() => setStep(step - 1)}
               disabled={step === 1}
-              className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ArrowLeft className="w-4 h-4" />
               Précédent
@@ -1020,7 +1020,7 @@ export default function NewCampaignPage() {
               <button
                 onClick={() => setStep(step + 1)}
                 disabled={!canProceed()}
-                className="flex items-center gap-2 px-6 py-2 bg-accent text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Suivant
                 <ArrowRight className="w-4 h-4" />

@@ -15,7 +15,7 @@ export default function NewFormPage() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white">Nouveau formulaire</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Créez un nouveau formulaire de don</p>
+          <p className="mt-1 text-sm text-gray-400">Créez un nouveau formulaire de don</p>
         </div>
 
         <FormBuilder mode="create" />

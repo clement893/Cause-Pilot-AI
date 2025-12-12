@@ -32,9 +32,9 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="h-10 bg-surface-tertiary rounded mb-4" />
+        <div className="h-10 bg-slate-700 rounded mb-4" />
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-16 bg-surface-secondary rounded mb-2" />
+          <div key={i} className="h-16 bg-slate-800 rounded mb-2" />
         ))}
       </div>
     );
@@ -42,12 +42,12 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
 
   if (donors.length === 0) {
     return (
-      <div className="text-center py-12 bg-surface-secondary rounded-lg">
-        <svg className="mx-auto h-12 w-12 text-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="text-center py-12 bg-slate-800 rounded-lg">
+        <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
         <h3 className="mt-2 text-sm font-semibold text-white">Aucun donateur</h3>
-        <p className="mt-1 text-sm text-muted-foreground">Commencez par ajouter votre premier donateur.</p>
+        <p className="mt-1 text-sm text-gray-400">Commencez par ajouter votre premier donateur.</p>
         <div className="mt-6">
           <Link href="/donors/new">
             <Button variant="primary">
@@ -65,37 +65,37 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-slate-700">
-        <thead className="bg-surface-secondary">
+        <thead className="bg-slate-800">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Donateur
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Contact
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Statut
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Total Dons
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Nb Dons
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               Dernier Don
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3 text-success-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 Potentiel
               </span>
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3 text-error-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 Risque
@@ -106,9 +106,9 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
             </th>
           </tr>
         </thead>
-        <tbody className="bg-surface-primary divide-y divide-slate-700">
+        <tbody className="bg-slate-900 divide-y divide-slate-700">
           {donors.map((donor) => (
-            <tr key={donor.id} className="hover:bg-surface-secondary transition-colors">
+            <tr key={donor.id} className="hover:bg-slate-800 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   <div className="flex-shrink-0 h-10 w-10">
@@ -123,14 +123,14 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
                       {donor.firstName} {donor.lastName}
                     </Link>
                     {donor.employer && (
-                      <div className="text-sm text-muted-foreground">{donor.employer}</div>
+                      <div className="text-sm text-gray-400">{donor.employer}</div>
                     )}
                   </div>
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-200">{donor.email || "-"}</div>
-                <div className="text-sm text-muted-foreground">{donor.phone || "-"}</div>
+                <div className="text-sm text-gray-400">{donor.phone || "-"}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <Badge variant={statusColors[donor.status]}>
@@ -140,10 +140,10 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                 {new Intl.NumberFormat("fr-CA", { style: "currency", currency: "CAD" }).format(donor.totalDonations)}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                 {donor.donationCount}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                 {donor.lastDonationDate
                   ? new Date(donor.lastDonationDate).toLocaleDateString("fr-CA")
                   : "-"}
@@ -151,47 +151,47 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
               <td className="px-6 py-4 whitespace-nowrap">
                 {donor.potentialScore ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-12 h-2 bg-surface-tertiary rounded-full overflow-hidden">
+                    <div className="w-12 h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div 
                         className={`h-full transition-all ${
-                          donor.potentialScore >= 70 ? "bg-success" :
-                          donor.potentialScore >= 40 ? "bg-amber-500" : "bg-muted"
+                          donor.potentialScore >= 70 ? "bg-emerald-500" :
+                          donor.potentialScore >= 40 ? "bg-amber-500" : "bg-slate-500"
                         }`}
                         style={{ width: `${donor.potentialScore}%` }}
                       />
                     </div>
                     <span className={`text-xs font-medium ${
-                      donor.potentialScore >= 70 ? "text-success-light" :
-                      donor.potentialScore >= 40 ? "text-warning" : "text-slate-400"
+                      donor.potentialScore >= 70 ? "text-emerald-400" :
+                      donor.potentialScore >= 40 ? "text-amber-400" : "text-slate-400"
                     }`}>
                       {donor.potentialScore}
                     </span>
                   </div>
                 ) : (
-                  <span className="text-xs text-text-tertiary">-</span>
+                  <span className="text-xs text-gray-500">-</span>
                 )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {donor.churnRiskScore ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-12 h-2 bg-surface-tertiary rounded-full overflow-hidden">
+                    <div className="w-12 h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div 
                         className={`h-full transition-all ${
-                          donor.churnRiskScore >= 70 ? "bg-error" :
-                          donor.churnRiskScore >= 40 ? "bg-orange-500" : "bg-success"
+                          donor.churnRiskScore >= 70 ? "bg-red-500" :
+                          donor.churnRiskScore >= 40 ? "bg-orange-500" : "bg-green-500"
                         }`}
                         style={{ width: `${donor.churnRiskScore}%` }}
                       />
                     </div>
                     <span className={`text-xs font-medium ${
-                      donor.churnRiskScore >= 70 ? "text-error-light" :
-                      donor.churnRiskScore >= 40 ? "text-orange-400" : "text-success-light"
+                      donor.churnRiskScore >= 70 ? "text-red-400" :
+                      donor.churnRiskScore >= 40 ? "text-orange-400" : "text-green-400"
                     }`}>
                       {donor.churnRiskScore}
                     </span>
                   </div>
                 ) : (
-                  <span className="text-xs text-text-tertiary">-</span>
+                  <span className="text-xs text-gray-500">-</span>
                 )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -211,7 +211,7 @@ export function DonorTable({ donors, onDelete, loading }: DonorTableProps) {
                       variant="ghost"
                       size="sm"
                       onClick={() => onDelete(donor.id)}
-                      className="text-error-light hover:text-red-300 hover:bg-error/20/30"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
                     >
                       Supprimer
                     </Button>

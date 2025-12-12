@@ -116,13 +116,13 @@ export default function NewTemplatePage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
+              className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
               <h1 className="text-2xl font-bold text-white">Nouveau template email</h1>
-              <p className="text-muted-foreground text-sm">Créez un modèle réutilisable</p>
+              <p className="text-gray-400 text-sm">Créez un modèle réutilisable</p>
             </div>
           </div>
 
@@ -130,7 +130,7 @@ export default function NewTemplatePage() {
             <button
               type="button"
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
             >
               {showPreview ? <Code className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               {showPreview ? "Éditeur" : "Aperçu"}
@@ -149,14 +149,14 @@ export default function NewTemplatePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Form */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-4">
+            <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-4">
               <h2 className="font-semibold text-white flex items-center gap-2">
-                <FileText className="w-5 h-5 text-accent" />
+                <FileText className="w-5 h-5 text-pink-400" />
                 Informations
               </h2>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Nom du template *
                 </label>
                 <input
@@ -164,12 +164,12 @@ export default function NewTemplatePage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Ex: Email de bienvenue"
-                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Description
                 </label>
                 <textarea
@@ -177,18 +177,18 @@ export default function NewTemplatePage() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Description du template..."
                   rows={2}
-                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Catégorie
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                 >
                   {CATEGORIES.map((cat) => (
                     <option key={cat.value} value={cat.value}>
@@ -199,7 +199,7 @@ export default function NewTemplatePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Objet de l&apos;email *
                 </label>
                 <input
@@ -207,12 +207,12 @@ export default function NewTemplatePage() {
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="Ex: Bienvenue chez nous, {{firstName}} !"
-                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Texte de prévisualisation
                 </label>
                 <input
@@ -220,12 +220,12 @@ export default function NewTemplatePage() {
                   value={formData.preheader}
                   onChange={(e) => setFormData({ ...formData, preheader: e.target.value })}
                   placeholder="Texte affiché après l'objet..."
-                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
+                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Couleur principale
                 </label>
                 <div className="flex items-center gap-3">
@@ -239,7 +239,7 @@ export default function NewTemplatePage() {
                     type="text"
                     value={formData.primaryColor}
                     onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                    className="flex-1 px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
+                    className="flex-1 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
                   />
                 </div>
               </div>
@@ -250,25 +250,25 @@ export default function NewTemplatePage() {
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 rounded border-border bg-surface-primary text-accent focus:ring-pink-500"
+                  className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-pink-500 focus:ring-pink-500"
                 />
-                <label htmlFor="isActive" className="text-sm text-foreground">
+                <label htmlFor="isActive" className="text-sm text-gray-300">
                   Template actif (disponible pour les campagnes)
                 </label>
               </div>
             </div>
 
             {/* Variables */}
-            <div className="bg-surface-secondary/50 rounded-xl border border-border p-6">
+            <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6">
               <h3 className="font-semibold text-white mb-3">Variables disponibles</h3>
               <div className="flex flex-wrap gap-2">
                 {formData.variables.map((v) => (
-                  <code key={v} className="px-2 py-1 bg-surface-tertiary rounded text-sm text-accent">
+                  <code key={v} className="px-2 py-1 bg-slate-700 rounded text-sm text-pink-400">
                     {`{{${v}}}`}
                   </code>
                 ))}
               </div>
-              <p className="text-xs text-text-tertiary mt-3">
+              <p className="text-xs text-gray-500 mt-3">
                 Utilisez ces variables dans votre template pour personnaliser les emails.
               </p>
             </div>
@@ -276,7 +276,7 @@ export default function NewTemplatePage() {
 
           {/* Right Column - Editor/Preview */}
           <div className="lg:col-span-2">
-            <div className="bg-surface-secondary/50 rounded-xl border border-border overflow-hidden">
+            <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
               {showPreview ? (
                 <div className="p-4">
                   <div className="bg-white rounded-lg overflow-hidden">
@@ -296,13 +296,13 @@ export default function NewTemplatePage() {
                 </div>
               ) : (
                 <div className="p-4">
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Contenu HTML
                   </label>
                   <textarea
                     value={formData.htmlContent}
                     onChange={(e) => setFormData({ ...formData, htmlContent: e.target.value })}
-                    className="w-full h-[600px] px-4 py-3 bg-surface-primary border border-border rounded-lg text-white font-mono text-sm focus:outline-none focus:border-accent"
+                    className="w-full h-[600px] px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-sm focus:outline-none focus:border-pink-500"
                     spellCheck={false}
                   />
                 </div>

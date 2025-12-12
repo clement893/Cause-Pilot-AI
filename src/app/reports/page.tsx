@@ -276,7 +276,7 @@ export default function ReportsPage() {
         {/* Notification */}
         {notification && (
           <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
-            notification.type === "success" ? "bg-success/20/90 text-green-100" : "bg-error/20/90 text-red-100"
+            notification.type === "success" ? "bg-green-900/90 text-green-100" : "bg-red-900/90 text-red-100"
           }`}>
             {notification.message}
           </div>
@@ -286,7 +286,7 @@ export default function ReportsPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Rapports pour le CA</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Générez et partagez des rapports professionnels pour votre Conseil d&apos;Administration
             </p>
           </div>
@@ -352,9 +352,9 @@ export default function ReportsPage() {
               <Card variant="dark">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Collecté</p>
+                    <p className="text-sm text-gray-400">Total Collecté</p>
                     <p className="text-2xl font-bold text-white">{formatCurrency(report.summary?.totalRaised || 0)}</p>
-                    <p className={`text-sm ${(report.yearOverYear?.growthRate || 0) >= 0 ? "text-success-light" : "text-error-light"}`}>
+                    <p className={`text-sm ${(report.yearOverYear?.growthRate || 0) >= 0 ? "text-green-400" : "text-red-400"}`}>
                       {(report.yearOverYear?.growthRate || 0) >= 0 ? <TrendingUp className="inline h-4 w-4" /> : <TrendingDown className="inline h-4 w-4" />}
                       {" "}{formatPercent(report.yearOverYear?.growthRate || 0)} vs N-1
                     </p>
@@ -367,37 +367,37 @@ export default function ReportsPage() {
               <Card variant="dark">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Nombre de Dons</p>
+                    <p className="text-sm text-gray-400">Nombre de Dons</p>
                     <p className="text-2xl font-bold text-white">{report.summary.totalDonations}</p>
-                    <p className={`text-sm ${report.yearOverYear.donorGrowthRate >= 0 ? "text-success-light" : "text-error-light"}`}>
+                    <p className={`text-sm ${report.yearOverYear.donorGrowthRate >= 0 ? "text-green-400" : "text-red-400"}`}>
                       {formatPercent(report.yearOverYear.donorGrowthRate)} vs N-1
                     </p>
                   </div>
-                  <div className="h-12 w-12 bg-success/20/50 rounded-full flex items-center justify-center">
-                    <BarChart3 className="h-6 w-6 text-success-light" />
+                  <div className="h-12 w-12 bg-green-900/50 rounded-full flex items-center justify-center">
+                    <BarChart3 className="h-6 w-6 text-green-400" />
                   </div>
                 </div>
               </Card>
               <Card variant="dark">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Donateurs Actifs</p>
+                    <p className="text-sm text-gray-400">Donateurs Actifs</p>
                     <p className="text-2xl font-bold text-white">{report.summary.totalDonors}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       dont {report.summary.newDonors} nouveaux
                     </p>
                   </div>
                   <div className="h-12 w-12 bg-purple-900/50 rounded-full flex items-center justify-center">
-                    <Users className="h-6 w-6 text-brand-light" />
+                    <Users className="h-6 w-6 text-purple-400" />
                   </div>
                 </div>
               </Card>
               <Card variant="dark">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Taux de Rétention</p>
+                    <p className="text-sm text-gray-400">Taux de Rétention</p>
                     <p className="text-2xl font-bold text-white">{report.summary.retentionRate.toFixed(1)}%</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       Don moyen: {formatCurrency(report.summary.averageDonation)}
                     </p>
                   </div>
@@ -410,7 +410,7 @@ export default function ReportsPage() {
 
             {/* Tabs */}
             <div className="mb-6">
-              <div className="flex gap-2 border-b border-border">
+              <div className="flex gap-2 border-b border-slate-700">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
@@ -418,7 +418,7 @@ export default function ReportsPage() {
                     className={`px-4 py-2 text-sm font-medium transition-colors ${
                       activeTab === tab.id
                         ? "text-indigo-400 border-b-2 border-indigo-400"
-                        : "text-muted-foreground hover:text-white"
+                        : "text-gray-400 hover:text-white"
                     }`}
                   >
                     {tab.label}
@@ -448,7 +448,7 @@ export default function ReportsPage() {
                     <h3 className="text-lg font-semibold mb-4 text-white">Recommandations</h3>
                     <div className="space-y-3">
                       {report.recommendations.map((rec, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-warning/20/30 rounded-lg border-l-4 border-amber-500">
+                        <div key={index} className="flex items-start gap-3 p-3 bg-amber-900/30 rounded-lg border-l-4 border-amber-500">
                           <p className="text-amber-200">• {rec}</p>
                         </div>
                       ))}
@@ -462,27 +462,27 @@ export default function ReportsPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-border">
-                          <th className="text-left py-3 px-4 font-medium text-muted-foreground">Métrique</th>
-                          <th className="text-right py-3 px-4 font-medium text-muted-foreground">{year}</th>
-                          <th className="text-right py-3 px-4 font-medium text-muted-foreground">{year - 1}</th>
-                          <th className="text-right py-3 px-4 font-medium text-muted-foreground">Variation</th>
+                        <tr className="border-b border-slate-700">
+                          <th className="text-left py-3 px-4 font-medium text-gray-400">Métrique</th>
+                          <th className="text-right py-3 px-4 font-medium text-gray-400">{year}</th>
+                          <th className="text-right py-3 px-4 font-medium text-gray-400">{year - 1}</th>
+                          <th className="text-right py-3 px-4 font-medium text-gray-400">Variation</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="border-b border-border">
+                        <tr className="border-b border-slate-800">
                           <td className="py-3 px-4 text-white">Total Collecté</td>
                           <td className="text-right py-3 px-4 font-medium text-white">{formatCurrency(report.yearOverYear.currentPeriod.totalAmount)}</td>
-                          <td className="text-right py-3 px-4 text-muted-foreground">{formatCurrency(report.yearOverYear.previousPeriod.totalAmount)}</td>
-                          <td className={`text-right py-3 px-4 font-medium ${report.yearOverYear.growthRate >= 0 ? "text-success-light" : "text-error-light"}`}>
+                          <td className="text-right py-3 px-4 text-gray-400">{formatCurrency(report.yearOverYear.previousPeriod.totalAmount)}</td>
+                          <td className={`text-right py-3 px-4 font-medium ${report.yearOverYear.growthRate >= 0 ? "text-green-400" : "text-red-400"}`}>
                             {formatPercent(report.yearOverYear.growthRate)}
                           </td>
                         </tr>
-                        <tr className="border-b border-border">
+                        <tr className="border-b border-slate-800">
                           <td className="py-3 px-4 text-white">Nombre de Dons</td>
                           <td className="text-right py-3 px-4 font-medium text-white">{report.yearOverYear.currentPeriod.donationCount}</td>
-                          <td className="text-right py-3 px-4 text-muted-foreground">{report.yearOverYear.previousPeriod.donationCount}</td>
-                          <td className={`text-right py-3 px-4 font-medium ${report.yearOverYear.donorGrowthRate >= 0 ? "text-success-light" : "text-error-light"}`}>
+                          <td className="text-right py-3 px-4 text-gray-400">{report.yearOverYear.previousPeriod.donationCount}</td>
+                          <td className={`text-right py-3 px-4 font-medium ${report.yearOverYear.donorGrowthRate >= 0 ? "text-green-400" : "text-red-400"}`}>
                             {formatPercent(report.yearOverYear.donorGrowthRate)}
                           </td>
                         </tr>
@@ -496,16 +496,16 @@ export default function ReportsPage() {
             {activeTab === "trends" && (
               <Card variant="dark">
                 <h3 className="text-lg font-semibold mb-4 text-white">Évolution Mensuelle</h3>
-                <p className="text-muted-foreground text-sm mb-4">Comparaison des montants collectés par mois</p>
+                <p className="text-gray-400 text-sm mb-4">Comparaison des montants collectés par mois</p>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-border">
-                        <th className="text-left py-3 px-4 font-medium text-muted-foreground">Mois</th>
-                        <th className="text-right py-3 px-4 font-medium text-muted-foreground">{year}</th>
-                        <th className="text-right py-3 px-4 font-medium text-muted-foreground">{year - 1}</th>
-                        <th className="text-right py-3 px-4 font-medium text-muted-foreground">Nb Dons</th>
-                        <th className="text-left py-3 px-4 font-medium text-muted-foreground">Progression</th>
+                      <tr className="border-b border-slate-700">
+                        <th className="text-left py-3 px-4 font-medium text-gray-400">Mois</th>
+                        <th className="text-right py-3 px-4 font-medium text-gray-400">{year}</th>
+                        <th className="text-right py-3 px-4 font-medium text-gray-400">{year - 1}</th>
+                        <th className="text-right py-3 px-4 font-medium text-gray-400">Nb Dons</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-400">Progression</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -513,13 +513,13 @@ export default function ReportsPage() {
                         const maxAmount = Math.max(...report.monthlyTrends.map(t => t.amount));
                         const percentage = maxAmount > 0 ? (trend.amount / maxAmount) * 100 : 0;
                         return (
-                          <tr key={index} className="border-b border-border">
+                          <tr key={index} className="border-b border-slate-800">
                             <td className="py-3 px-4 text-white">{trend.month}</td>
                             <td className="text-right py-3 px-4 font-medium text-white">{formatCurrency(trend.amount)}</td>
-                            <td className="text-right py-3 px-4 text-muted-foreground">{formatCurrency(trend.previousYearAmount)}</td>
+                            <td className="text-right py-3 px-4 text-gray-400">{formatCurrency(trend.previousYearAmount)}</td>
                             <td className="text-right py-3 px-4 text-white">{trend.count}</td>
                             <td className="py-3 px-4">
-                              <div className="w-full bg-surface-tertiary rounded-full h-2">
+                              <div className="w-full bg-slate-700 rounded-full h-2">
                                 <div 
                                   className="bg-indigo-500 h-2 rounded-full" 
                                   style={{ width: `${percentage}%` }}
@@ -540,30 +540,30 @@ export default function ReportsPage() {
                 <Card variant="dark">
                   <h3 className="text-lg font-semibold mb-4 text-white">Santé de la Base Donateurs</h3>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center py-2 border-b border-border">
-                      <span className="text-muted-foreground">Donateurs actifs</span>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-700">
+                      <span className="text-gray-400">Donateurs actifs</span>
                       <span className="font-bold text-white">{report.donorMetrics.totalDonors}</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border">
-                      <span className="text-muted-foreground">Nouveaux donateurs</span>
-                      <span className="font-bold text-success-light">{report.donorMetrics.newDonors}</span>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-700">
+                      <span className="text-gray-400">Nouveaux donateurs</span>
+                      <span className="font-bold text-green-400">{report.donorMetrics.newDonors}</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border">
-                      <span className="text-muted-foreground">Donateurs fidèles</span>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-700">
+                      <span className="text-gray-400">Donateurs fidèles</span>
                       <span className="font-bold text-white">{report.donorMetrics.returningDonors}</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border">
-                      <span className="text-muted-foreground">Donateurs inactifs</span>
-                      <span className="font-bold text-error-light">{report.donorMetrics.lapsedDonors}</span>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-700">
+                      <span className="text-gray-400">Donateurs inactifs</span>
+                      <span className="font-bold text-red-400">{report.donorMetrics.lapsedDonors}</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border">
-                      <span className="text-muted-foreground">Taux de rétention</span>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-700">
+                      <span className="text-gray-400">Taux de rétention</span>
                       <Badge variant={report.donorMetrics.retentionRate >= 50 ? "success" : "warning"}>
                         {report.donorMetrics.retentionRate.toFixed(1)}%
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center py-2">
-                      <span className="text-muted-foreground">Valeur vie moyenne</span>
+                      <span className="text-gray-400">Valeur vie moyenne</span>
                       <span className="font-bold text-white">{formatCurrency(report.donorMetrics.averageLifetimeValue)}</span>
                     </div>
                   </div>
@@ -573,14 +573,14 @@ export default function ReportsPage() {
                   <h3 className="text-lg font-semibold mb-4 text-white">Top 10 Donateurs</h3>
                   <div className="space-y-3">
                     {report.topDonors.map((donor, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <div key={index} className="flex items-center justify-between py-2 border-b border-slate-800 last:border-0">
                         <div className="flex items-center gap-3">
                           <div className="h-8 w-8 bg-indigo-900/50 rounded-full flex items-center justify-center text-indigo-400 font-bold text-sm">
                             {index + 1}
                           </div>
                           <div>
                             <p className="font-medium text-white">{donor.name}</p>
-                            <p className="text-sm text-muted-foreground">{donor.donationCount} don(s)</p>
+                            <p className="text-sm text-gray-400">{donor.donationCount} don(s)</p>
                           </div>
                         </div>
                         <span className="font-bold text-white">{formatCurrency(donor.totalAmount)}</span>
@@ -595,15 +595,15 @@ export default function ReportsPage() {
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
                   <Card variant="dark">
-                    <p className="text-sm text-muted-foreground">Campagnes Actives</p>
+                    <p className="text-sm text-gray-400">Campagnes Actives</p>
                     <p className="text-3xl font-bold text-white">{report.campaignMetrics.activeCampaigns}</p>
                   </Card>
                   <Card variant="dark">
-                    <p className="text-sm text-muted-foreground">Campagnes Terminées</p>
+                    <p className="text-sm text-gray-400">Campagnes Terminées</p>
                     <p className="text-3xl font-bold text-white">{report.campaignMetrics.completedCampaigns}</p>
                   </Card>
                   <Card variant="dark">
-                    <p className="text-sm text-muted-foreground">Atteinte Moyenne des Objectifs</p>
+                    <p className="text-sm text-gray-400">Atteinte Moyenne des Objectifs</p>
                     <p className="text-3xl font-bold text-white">{report.campaignMetrics.averageGoalCompletion.toFixed(0)}%</p>
                   </Card>
                 </div>
@@ -613,24 +613,24 @@ export default function ReportsPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-border">
-                          <th className="text-left py-3 px-4 font-medium text-muted-foreground">Campagne</th>
-                          <th className="text-right py-3 px-4 font-medium text-muted-foreground">Collecté</th>
-                          <th className="text-right py-3 px-4 font-medium text-muted-foreground">Objectif</th>
-                          <th className="text-left py-3 px-4 font-medium text-muted-foreground">Progression</th>
+                        <tr className="border-b border-slate-700">
+                          <th className="text-left py-3 px-4 font-medium text-gray-400">Campagne</th>
+                          <th className="text-right py-3 px-4 font-medium text-gray-400">Collecté</th>
+                          <th className="text-right py-3 px-4 font-medium text-gray-400">Objectif</th>
+                          <th className="text-left py-3 px-4 font-medium text-gray-400">Progression</th>
                         </tr>
                       </thead>
                       <tbody>
                         {report.campaignMetrics.topCampaigns.map((campaign, index) => (
-                          <tr key={index} className="border-b border-border">
+                          <tr key={index} className="border-b border-slate-800">
                             <td className="py-3 px-4 font-medium text-white">{campaign.name}</td>
                             <td className="text-right py-3 px-4 text-white">{formatCurrency(campaign.raised)}</td>
-                            <td className="text-right py-3 px-4 text-muted-foreground">{formatCurrency(campaign.goal)}</td>
+                            <td className="text-right py-3 px-4 text-gray-400">{formatCurrency(campaign.goal)}</td>
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-surface-tertiary rounded-full h-2">
+                                <div className="flex-1 bg-slate-700 rounded-full h-2">
                                   <div 
-                                    className={`h-2 rounded-full ${campaign.percentage >= 100 ? "bg-success" : "bg-indigo-500"}`}
+                                    className={`h-2 rounded-full ${campaign.percentage >= 100 ? "bg-green-500" : "bg-indigo-500"}`}
                                     style={{ width: `${Math.min(campaign.percentage, 100)}%` }}
                                   />
                                 </div>
@@ -650,8 +650,8 @@ export default function ReportsPage() {
           </>
         ) : (
           <Card variant="dark" className="py-20 text-center">
-            <FileText className="h-12 w-12 text-text-tertiary mx-auto mb-4" />
-            <p className="text-muted-foreground">Sélectionnez une période pour générer un rapport</p>
+            <FileText className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+            <p className="text-gray-400">Sélectionnez une période pour générer un rapport</p>
           </Card>
         )}
 
@@ -664,12 +664,12 @@ export default function ReportsPage() {
           variant="dark"
         >
           <div className="space-y-4">
-            <p className="text-muted-foreground text-sm">
+            <p className="text-gray-400 text-sm">
               Le rapport sera envoyé par email avec le PDF en pièce jointe.
             </p>
             
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground">Destinataires</label>
+              <label className="block text-sm font-medium text-gray-300">Destinataires</label>
               {recipients.map((recipient, index) => (
                 <div key={index} className="flex gap-2">
                   <Input

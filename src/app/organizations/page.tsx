@@ -68,16 +68,16 @@ interface Organization {
 }
 
 const planColors: Record<string, string> = {
-  FREE: "bg-muted/20 text-foreground",
-  STARTER: "bg-info/20 text-blue-300",
-  PROFESSIONAL: "bg-brand/20 text-purple-300",
+  FREE: "bg-gray-500/20 text-gray-300",
+  STARTER: "bg-blue-500/20 text-blue-300",
+  PROFESSIONAL: "bg-purple-500/20 text-purple-300",
   ENTERPRISE: "bg-amber-500/20 text-amber-300",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
-  ACTIVE: <CheckCircle className="h-4 w-4 text-success-light" />,
-  INACTIVE: <XCircle className="h-4 w-4 text-muted-foreground" />,
-  SUSPENDED: <XCircle className="h-4 w-4 text-error-light" />,
+  ACTIVE: <CheckCircle className="h-4 w-4 text-green-400" />,
+  INACTIVE: <XCircle className="h-4 w-4 text-gray-400" />,
+  SUSPENDED: <XCircle className="h-4 w-4 text-red-400" />,
   PENDING: <Clock className="h-4 w-4 text-yellow-400" />,
 };
 
@@ -391,7 +391,7 @@ export default function OrganizationsPage() {
                         <CardTitle className="text-lg flex items-center gap-2">
                           {org.name}
                           {org.plan === "ENTERPRISE" && (
-                            <Crown className="h-4 w-4 text-warning" />
+                            <Crown className="h-4 w-4 text-amber-400" />
                           )}
                         </CardTitle>
                         <CardDescription className="text-xs">

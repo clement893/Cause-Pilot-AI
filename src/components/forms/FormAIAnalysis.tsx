@@ -56,17 +56,17 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-success-light";
+    if (score >= 80) return "text-green-400";
     if (score >= 60) return "text-yellow-400";
-    return "text-error-light";
+    return "text-red-400";
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "bg-error/20/50 border-error text-red-300";
+      case "high": return "bg-red-900/50 border-red-700 text-red-300";
       case "medium": return "bg-yellow-900/50 border-yellow-700 text-yellow-300";
-      case "low": return "bg-success/20/50 border-success text-green-300";
-      default: return "bg-surface-tertiary text-foreground";
+      case "low": return "bg-green-900/50 border-green-700 text-green-300";
+      default: return "bg-slate-700 text-gray-300";
     }
   };
 
@@ -78,7 +78,7 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
         </div>
         <div>
           <h3 className="text-lg font-semibold text-white">Analyse CausePilot</h3>
-          <p className="text-sm text-muted-foreground">Obtenez des insights IA pour optimiser &quot;{formName}&quot;</p>
+          <p className="text-sm text-gray-400">Obtenez des insights IA pour optimiser &quot;{formName}&quot;</p>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
           className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-colors ${
             activeAnalysis === "performance" 
               ? "bg-indigo-600 text-white" 
-              : "bg-surface-secondary text-foreground hover:bg-surface-tertiary"
+              : "bg-slate-800 text-gray-300 hover:bg-slate-700"
           }`}
         >
           {loading && activeAnalysis === "performance" ? (
@@ -105,8 +105,8 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
           disabled={loading}
           className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-colors ${
             activeAnalysis === "conversion" 
-              ? "bg-brand text-white" 
-              : "bg-surface-secondary text-foreground hover:bg-surface-tertiary"
+              ? "bg-purple-600 text-white" 
+              : "bg-slate-800 text-gray-300 hover:bg-slate-700"
           }`}
         >
           {loading && activeAnalysis === "conversion" ? (
@@ -123,18 +123,18 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
         <div className="space-y-4">
           {/* Score global */}
           {analysis.overallScore !== undefined && (
-            <div className="bg-surface-secondary/50 rounded-lg p-4">
+            <div className="bg-slate-800/50 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Score global</span>
+                <span className="text-sm text-gray-400">Score global</span>
                 <span className={`text-3xl font-bold ${getScoreColor(analysis.overallScore)}`}>
                   {analysis.overallScore}/100
                 </span>
               </div>
-              <div className="w-full bg-surface-tertiary rounded-full h-2">
+              <div className="w-full bg-slate-700 rounded-full h-2">
                 <div 
                   className={`h-2 rounded-full transition-all ${
-                    analysis.overallScore >= 80 ? "bg-success" :
-                    analysis.overallScore >= 60 ? "bg-warning" : "bg-error"
+                    analysis.overallScore >= 80 ? "bg-green-500" :
+                    analysis.overallScore >= 60 ? "bg-yellow-500" : "bg-red-500"
                   }`}
                   style={{ width: `${analysis.overallScore}%` }}
                 />
@@ -144,10 +144,10 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
 
           {/* Points forts */}
           {analysis.strengths && analysis.strengths.length > 0 && (
-            <div className="bg-success/20/20 border border-success/50 rounded-lg p-4">
+            <div className="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="w-5 h-5 text-success-light" />
-                <span className="text-sm font-medium text-success-light">Points forts</span>
+                <CheckCircle className="w-5 h-5 text-green-400" />
+                <span className="text-sm font-medium text-green-400">Points forts</span>
               </div>
               <ul className="space-y-1">
                 {analysis.strengths.map((strength, i) => (
@@ -159,10 +159,10 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
 
           {/* Points faibles */}
           {analysis.weaknesses && analysis.weaknesses.length > 0 && (
-            <div className="bg-error/20/20 border border-error/50 rounded-lg p-4">
+            <div className="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-5 h-5 text-error-light" />
-                <span className="text-sm font-medium text-error-light">Points à améliorer</span>
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+                <span className="text-sm font-medium text-red-400">Points à améliorer</span>
               </div>
               <ul className="space-y-1">
                 {analysis.weaknesses.map((weakness, i) => (
@@ -175,7 +175,7 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
           {/* Recommandations */}
           {analysis.recommendations && analysis.recommendations.length > 0 && (
             <div className="space-y-2">
-              <span className="text-sm font-medium text-foreground">Recommandations</span>
+              <span className="text-sm font-medium text-gray-300">Recommandations</span>
               {analysis.recommendations.map((rec, i) => (
                 <div key={i} className={`border rounded-lg p-3 ${getPriorityColor(rec.priority)}`}>
                   <div className="flex items-center gap-2 mb-1">
@@ -193,18 +193,18 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
 
           {/* Analyse de conversion */}
           {analysis.currentConversionAnalysis && (
-            <div className="bg-surface-secondary/50 rounded-lg p-4">
-              <span className="text-sm font-medium text-foreground">Analyse du taux de conversion</span>
-              <p className="text-sm text-muted-foreground mt-1">{analysis.currentConversionAnalysis}</p>
+            <div className="bg-slate-800/50 rounded-lg p-4">
+              <span className="text-sm font-medium text-gray-300">Analyse du taux de conversion</span>
+              <p className="text-sm text-gray-400 mt-1">{analysis.currentConversionAnalysis}</p>
             </div>
           )}
 
           {/* Quick wins */}
           {analysis.quickWins && analysis.quickWins.length > 0 && (
-            <div className="bg-warning/20/20 border border-warning/50 rounded-lg p-4">
+            <div className="bg-amber-900/20 border border-amber-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Lightbulb className="w-5 h-5 text-warning" />
-                <span className="text-sm font-medium text-warning">Gains rapides</span>
+                <Lightbulb className="w-5 h-5 text-amber-400" />
+                <span className="text-sm font-medium text-amber-400">Gains rapides</span>
               </div>
               <ul className="space-y-1">
                 {analysis.quickWins.map((win, i) => (
@@ -217,7 +217,7 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
           {/* Changements stratégiques */}
           {analysis.strategicChanges && analysis.strategicChanges.length > 0 && (
             <div className="bg-purple-900/20 border border-purple-700/50 rounded-lg p-4">
-              <span className="text-sm font-medium text-brand-light">Changements stratégiques</span>
+              <span className="text-sm font-medium text-purple-400">Changements stratégiques</span>
               <ul className="space-y-1 mt-2">
                 {analysis.strategicChanges.map((change, i) => (
                   <li key={i} className="text-sm text-purple-200">• {change}</li>
@@ -228,8 +228,8 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
 
           {/* Idées de tests */}
           {analysis.testingIdeas && analysis.testingIdeas.length > 0 && (
-            <div className="bg-info/20/20 border border-info/50 rounded-lg p-4">
-              <span className="text-sm font-medium text-info-light">Idées de tests A/B</span>
+            <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
+              <span className="text-sm font-medium text-blue-400">Idées de tests A/B</span>
               <ul className="space-y-1 mt-2">
                 {analysis.testingIdeas.map((idea, i) => (
                   <li key={i} className="text-sm text-blue-200">• {idea}</li>
@@ -240,17 +240,17 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
 
           {/* Amélioration attendue */}
           {analysis.expectedImprovement && (
-            <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-success/50 rounded-lg p-4">
-              <span className="text-sm font-medium text-success-light">📈 Amélioration potentielle</span>
+            <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700/50 rounded-lg p-4">
+              <span className="text-sm font-medium text-green-400">📈 Amélioration potentielle</span>
               <p className="text-sm text-green-200 mt-1">{analysis.expectedImprovement}</p>
             </div>
           )}
 
           {/* Benchmark */}
           {analysis.benchmarkComparison && (
-            <div className="bg-surface-secondary/50 rounded-lg p-4">
-              <span className="text-sm font-medium text-foreground">Comparaison aux benchmarks</span>
-              <p className="text-sm text-muted-foreground mt-1">{analysis.benchmarkComparison}</p>
+            <div className="bg-slate-800/50 rounded-lg p-4">
+              <span className="text-sm font-medium text-gray-300">Comparaison aux benchmarks</span>
+              <p className="text-sm text-gray-400 mt-1">{analysis.benchmarkComparison}</p>
             </div>
           )}
         </div>
@@ -258,7 +258,7 @@ export default function FormAIAnalysis({ formId, formName }: FormAIAnalysisProps
 
       {/* État initial */}
       {!analysis && !loading && (
-        <div className="text-center py-6 text-muted-foreground">
+        <div className="text-center py-6 text-gray-400">
           <p className="text-sm">Cliquez sur un bouton pour lancer l&apos;analyse IA de votre formulaire</p>
         </div>
       )}

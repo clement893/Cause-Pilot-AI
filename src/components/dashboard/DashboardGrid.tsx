@@ -211,7 +211,7 @@ export default function DashboardGrid({
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
 
   // Convertir le layout en format react-grid-layout
-  const gridLayout = useMemo(() => {
+  const gridLayout: Layout[] = useMemo(() => {
     return layout.widgets.map((widget) => ({
       i: widget.id,
       x: widget.x,

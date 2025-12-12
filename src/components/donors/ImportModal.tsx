@@ -247,9 +247,9 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-error-light bg-error/20";
+    if (score >= 80) return "text-red-400 bg-red-500/20";
     if (score >= 60) return "text-orange-400 bg-orange-500/20";
-    return "text-yellow-400 bg-warning/20";
+    return "text-yellow-400 bg-yellow-500/20";
   };
 
   const getScoreLabel = (score: number) => {
@@ -267,16 +267,16 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
       />
 
       {/* Modal */}
-      <div className="relative bg-surface-primary rounded-xl border border-border w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-slate-900 rounded-xl border border-slate-700 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div>
             <h2 className="text-xl font-semibold text-white">
               {step === "upload" && "Importer des donateurs"}
               {step === "duplicates" && "Doublons détectés"}
               {step === "result" && "Résultat de l'import"}
             </h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-gray-400 mt-1">
               {step === "upload" && "Importez vos donateurs depuis un fichier CSV ou Excel"}
               {step === "duplicates" && `${duplicates.length} doublon(s) potentiel(s) trouvé(s)`}
               {step === "result" && "Récapitulatif de l'importation"}
@@ -284,7 +284,7 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
           </div>
           <button
             onClick={handleClose}
-            className="p-2 text-muted-foreground hover:text-white hover:bg-surface-secondary rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -295,24 +295,24 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
           {step === "upload" && (
             <>
               {/* Template Download */}
-              <div className="p-4 bg-surface-secondary/50 rounded-lg border border-border">
+              <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                 <h3 className="text-sm font-medium text-white mb-2">
                   Télécharger un template
                 </h3>
-                <p className="text-sm text-muted-foreground mb-3">
+                <p className="text-sm text-gray-400 mb-3">
                   Utilisez notre template pour vous assurer que vos données sont formatées correctement.
                 </p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => downloadTemplate("csv")}
-                    className="flex items-center gap-2 px-3 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors text-sm"
+                    className="flex items-center gap-2 px-3 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors text-sm"
                   >
                     <Download className="w-4 h-4" />
                     Template CSV
                   </button>
                   <button
                     onClick={() => downloadTemplate("xlsx")}
-                    className="flex items-center gap-2 px-3 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors text-sm"
+                    className="flex items-center gap-2 px-3 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors text-sm"
                   >
                     <Download className="w-4 h-4" />
                     Template Excel
@@ -324,10 +324,10 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
               <div
                 className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
                   dragActive
-                    ? "border-accent bg-accent/10"
+                    ? "border-pink-500 bg-pink-500/10"
                     : file
-                    ? "border-green-500 bg-success/10"
-                    : "border-border hover:border-slate-500"
+                    ? "border-green-500 bg-green-500/10"
+                    : "border-slate-600 hover:border-slate-500"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -344,36 +344,36 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
 
                 {file ? (
                   <div className="space-y-3">
-                    <FileSpreadsheet className="w-12 h-12 mx-auto text-success-light" />
+                    <FileSpreadsheet className="w-12 h-12 mx-auto text-green-400" />
                     <div>
                       <p className="text-white font-medium">{file.name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-400">
                         {(file.size / 1024).toFixed(1)} Ko
                       </p>
                     </div>
                     <button
                       onClick={() => setFile(null)}
-                      className="text-sm text-error-light hover:text-red-300"
+                      className="text-sm text-red-400 hover:text-red-300"
                     >
                       Supprimer
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    <Upload className="w-12 h-12 mx-auto text-muted-foreground" />
+                    <Upload className="w-12 h-12 mx-auto text-gray-400" />
                     <div>
                       <p className="text-white">
                         Glissez-déposez votre fichier ici
                       </p>
-                      <p className="text-sm text-muted-foreground">ou</p>
+                      <p className="text-sm text-gray-400">ou</p>
                     </div>
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-pink-600 transition-colors"
+                      className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
                     >
                       Parcourir
                     </button>
-                    <p className="text-xs text-text-tertiary">
+                    <p className="text-xs text-gray-500">
                       Formats acceptés: CSV, XLS, XLSX
                     </p>
                   </div>
@@ -387,11 +387,11 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                     type="checkbox"
                     checked={checkDuplicates}
                     onChange={(e) => setCheckDuplicates(e.target.checked)}
-                    className="w-4 h-4 rounded border-border bg-surface-secondary text-accent focus:ring-pink-500"
+                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-pink-500 focus:ring-pink-500"
                   />
                   <div>
                     <span className="text-white">Vérifier les doublons avant l&apos;import</span>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-400">
                       Détecte les donateurs similaires déjà présents dans la base
                     </p>
                   </div>
@@ -402,11 +402,11 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                     type="checkbox"
                     checked={updateExisting}
                     onChange={(e) => setUpdateExisting(e.target.checked)}
-                    className="w-4 h-4 rounded border-border bg-surface-secondary text-accent focus:ring-pink-500"
+                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-pink-500 focus:ring-pink-500"
                   />
                   <div>
                     <span className="text-white">Mettre à jour les donateurs existants</span>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-400">
                       Si un donateur avec le même email existe, ses informations seront mises à jour
                     </p>
                   </div>
@@ -417,11 +417,11 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                     type="checkbox"
                     checked={skipErrors}
                     onChange={(e) => setSkipErrors(e.target.checked)}
-                    className="w-4 h-4 rounded border-border bg-surface-secondary text-accent focus:ring-pink-500"
+                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-pink-500 focus:ring-pink-500"
                   />
                   <div>
                     <span className="text-white">Ignorer les lignes avec erreurs</span>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-400">
                       Continue l&apos;import même si certaines lignes contiennent des erreurs
                     </p>
                   </div>
@@ -432,12 +432,12 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
 
           {step === "duplicates" && (
             <div className="space-y-4">
-              <div className="p-4 bg-warning/10 border border-yellow-500/30 rounded-lg">
+              <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-yellow-400 font-medium">Doublons potentiels détectés</p>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-gray-400 mt-1">
                       Certains donateurs de votre fichier semblent déjà exister dans la base. 
                       Choisissez l&apos;action à effectuer pour chacun.
                     </p>
@@ -447,26 +447,26 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
 
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {duplicates.map((dup, idx) => (
-                  <div key={idx} className="bg-surface-secondary rounded-lg border border-border overflow-hidden">
+                  <div key={idx} className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
                     <div 
-                      className="p-4 cursor-pointer hover:bg-surface-tertiary/50 transition-colors"
+                      className="p-4 cursor-pointer hover:bg-slate-700/50 transition-colors"
                       onClick={() => setExpandedDuplicate(expandedDuplicate === idx ? null : idx)}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <Users className="w-5 h-5 text-muted-foreground" />
+                          <Users className="w-5 h-5 text-gray-400" />
                           <div>
                             <p className="text-white font-medium">
                               {dup.newDonor.firstName} {dup.newDonor.lastName}
                             </p>
-                            <p className="text-sm text-muted-foreground">{dup.newDonor.email || "Pas d'email"}</p>
+                            <p className="text-sm text-gray-400">{dup.newDonor.email || "Pas d'email"}</p>
                           </div>
-                          <ArrowRight className="w-4 h-4 text-text-tertiary" />
+                          <ArrowRight className="w-4 h-4 text-gray-500" />
                           <div>
                             <p className="text-white font-medium">
                               {dup.duplicates[0].existingDonor.firstName} {dup.duplicates[0].existingDonor.lastName}
                             </p>
-                            <p className="text-sm text-muted-foreground">{dup.duplicates[0].existingDonor.email || "Pas d'email"}</p>
+                            <p className="text-sm text-gray-400">{dup.duplicates[0].existingDonor.email || "Pas d'email"}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -474,21 +474,21 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                             {dup.duplicates[0].score}% - {getScoreLabel(dup.duplicates[0].score)}
                           </span>
                           {expandedDuplicate === idx ? (
-                            <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
                           ) : (
-                            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
                           )}
                         </div>
                       </div>
                     </div>
 
                     {expandedDuplicate === idx && (
-                      <div className="p-4 border-t border-border bg-surface-secondary/50">
+                      <div className="p-4 border-t border-slate-700 bg-slate-800/50">
                         <div className="mb-4">
-                          <p className="text-sm text-muted-foreground mb-2">Correspondances trouvées:</p>
+                          <p className="text-sm text-gray-400 mb-2">Correspondances trouvées:</p>
                           <div className="flex flex-wrap gap-2">
                             {dup.duplicates[0].matches.map((match, mIdx) => (
-                              <span key={mIdx} className="px-2 py-1 bg-surface-tertiary rounded text-xs text-foreground">
+                              <span key={mIdx} className="px-2 py-1 bg-slate-700 rounded text-xs text-gray-300">
                                 {match.field}: {Math.round(match.score * 100)}%
                               </span>
                             ))}
@@ -500,8 +500,8 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                             onClick={() => setDuplicateActions({ ...duplicateActions, [dup.index]: "skip" })}
                             className={`flex-1 px-3 py-2 rounded-lg text-sm transition-colors ${
                               duplicateActions[dup.index] === "skip"
-                                ? "bg-muted text-white"
-                                : "bg-surface-tertiary text-foreground hover:bg-surface-elevated"
+                                ? "bg-gray-500 text-white"
+                                : "bg-slate-700 text-gray-300 hover:bg-slate-600"
                             }`}
                           >
                             Ignorer
@@ -510,8 +510,8 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                             onClick={() => setDuplicateActions({ ...duplicateActions, [dup.index]: "update" })}
                             className={`flex-1 px-3 py-2 rounded-lg text-sm transition-colors ${
                               duplicateActions[dup.index] === "update"
-                                ? "bg-info text-white"
-                                : "bg-surface-tertiary text-foreground hover:bg-surface-elevated"
+                                ? "bg-blue-500 text-white"
+                                : "bg-slate-700 text-gray-300 hover:bg-slate-600"
                             }`}
                           >
                             Mettre à jour
@@ -520,8 +520,8 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                             onClick={() => setDuplicateActions({ ...duplicateActions, [dup.index]: "create" })}
                             className={`flex-1 px-3 py-2 rounded-lg text-sm transition-colors ${
                               duplicateActions[dup.index] === "create"
-                                ? "bg-success text-white"
-                                : "bg-surface-tertiary text-foreground hover:bg-surface-elevated"
+                                ? "bg-green-500 text-white"
+                                : "bg-slate-700 text-gray-300 hover:bg-slate-600"
                             }`}
                           >
                             Créer quand même
@@ -533,8 +533,8 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-surface-secondary rounded-lg">
-                <div className="text-sm text-muted-foreground">
+              <div className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                <div className="text-sm text-gray-400">
                   <span className="text-white font-medium">{Object.values(duplicateActions).filter(a => a === "skip").length}</span> ignoré(s) · 
                   <span className="text-white font-medium ml-1">{Object.values(duplicateActions).filter(a => a === "update").length}</span> mis à jour · 
                   <span className="text-white font-medium ml-1">{Object.values(duplicateActions).filter(a => a === "create").length}</span> créé(s)
@@ -546,7 +546,7 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                       duplicates.forEach(d => { actions[d.index] = "skip"; });
                       setDuplicateActions(actions);
                     }}
-                    className="px-3 py-1 text-xs bg-surface-tertiary text-foreground rounded hover:bg-surface-elevated"
+                    className="px-3 py-1 text-xs bg-slate-700 text-gray-300 rounded hover:bg-slate-600"
                   >
                     Tout ignorer
                   </button>
@@ -556,7 +556,7 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
                       duplicates.forEach(d => { actions[d.index] = "update"; });
                       setDuplicateActions(actions);
                     }}
-                    className="px-3 py-1 text-xs bg-surface-tertiary text-foreground rounded hover:bg-surface-elevated"
+                    className="px-3 py-1 text-xs bg-slate-700 text-gray-300 rounded hover:bg-slate-600"
                   >
                     Tout mettre à jour
                   </button>
@@ -569,38 +569,38 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
             <div
               className={`p-4 rounded-lg border ${
                 result.success
-                  ? "bg-success/10 border-green-500/30"
-                  : "bg-error/10 border-red-500/30"
+                  ? "bg-green-500/10 border-green-500/30"
+                  : "bg-red-500/10 border-red-500/30"
               }`}
             >
               <div className="flex items-start gap-3">
                 {result.success ? (
-                  <CheckCircle className="w-5 h-5 text-success-light flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                 ) : (
-                  <AlertCircle className="w-5 h-5 text-error-light flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1">
-                  <p className={result.success ? "text-success-light" : "text-error-light"}>
+                  <p className={result.success ? "text-green-400" : "text-red-400"}>
                     {result.message}
                   </p>
-                  <div className="mt-2 text-sm text-muted-foreground">
+                  <div className="mt-2 text-sm text-gray-400">
                     <p>✓ {result.created} donateurs créés</p>
                     <p>↻ {result.updated} donateurs mis à jour</p>
                     <p>⊘ {result.skipped} lignes ignorées</p>
                   </div>
                   {result.errors.length > 0 && (
                     <div className="mt-3">
-                      <p className="text-sm text-error-light mb-2">
+                      <p className="text-sm text-red-400 mb-2">
                         Erreurs ({result.errors.length}):
                       </p>
                       <div className="max-h-32 overflow-y-auto space-y-1">
                         {result.errors.slice(0, 10).map((error, index) => (
-                          <p key={index} className="text-xs text-muted-foreground">
+                          <p key={index} className="text-xs text-gray-400">
                             Ligne {error.row}: {error.message}
                           </p>
                         ))}
                         {result.errors.length > 10 && (
-                          <p className="text-xs text-text-tertiary">
+                          <p className="text-xs text-gray-500">
                             ... et {result.errors.length - 10} autres erreurs
                           </p>
                         )}
@@ -614,12 +614,12 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-slate-700">
           {step === "upload" && (
             <>
               <button
                 onClick={handleClose}
-                className="px-4 py-2 text-muted-foreground hover:text-white transition-colors"
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
               >
                 Annuler
               </button>
@@ -652,7 +652,7 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
             <>
               <button
                 onClick={() => setStep("upload")}
-                className="px-4 py-2 text-muted-foreground hover:text-white transition-colors"
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
               >
                 Retour
               </button>
@@ -679,7 +679,7 @@ export function ImportModal({ isOpen, onClose, onSuccess }: ImportModalProps) {
           {step === "result" && (
             <button
               onClick={handleClose}
-              className="px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors"
+              className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
             >
               Fermer
             </button>

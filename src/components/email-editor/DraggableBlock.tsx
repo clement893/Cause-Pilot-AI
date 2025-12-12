@@ -38,7 +38,7 @@ export function DraggableBlock({ block, isSelected, onSelect, onDelete, onDuplic
       onClick={onSelect}
     >
       {/* Poignée de drag et actions */}
-      <div className={`absolute left-0 top-0 bottom-0 w-8 flex flex-col items-center justify-center gap-1 bg-surface-secondary/80 opacity-0 group-hover:opacity-100 transition-opacity ${isDragging ? "opacity-100" : ""}`}>
+      <div className={`absolute left-0 top-0 bottom-0 w-8 flex flex-col items-center justify-center gap-1 bg-slate-800/80 opacity-0 group-hover:opacity-100 transition-opacity ${isDragging ? "opacity-100" : ""}`}>
         <button
           {...attributes}
           {...listeners}
@@ -62,7 +62,7 @@ export function DraggableBlock({ block, isSelected, onSelect, onDelete, onDuplic
             e.stopPropagation();
             onDelete();
           }}
-          className="p-1 text-slate-400 hover:text-error-light"
+          className="p-1 text-slate-400 hover:text-red-400"
           title="Supprimer"
         >
           <Trash2 className="w-3 h-3" />
@@ -76,7 +76,7 @@ export function DraggableBlock({ block, isSelected, onSelect, onDelete, onDuplic
 
       {/* Indicateur de type de bloc */}
       <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="text-xs bg-surface-secondary/80 text-slate-300 px-2 py-0.5 rounded">
+        <span className="text-xs bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">
           {getBlockTypeLabel(block.type)}
         </span>
       </div>

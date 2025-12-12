@@ -131,7 +131,7 @@ export default function SettingsPage() {
               disabled={setting.isReadOnly}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-surface-tertiary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+            <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
           </label>
         );
 
@@ -142,8 +142,8 @@ export default function SettingsPage() {
             value={value}
             onChange={(e) => handleChange(setting.key, e.target.value)}
             disabled={setting.isReadOnly}
-            className={`w-full px-4 py-2 bg-surface-secondary border rounded-lg text-white focus:outline-none focus:border-brand ${
-              isChanged ? "border-brand" : "border-border"
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white focus:outline-none focus:border-purple-500 ${
+              isChanged ? "border-purple-500" : "border-slate-700"
             } ${setting.isReadOnly ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {options.map((opt: string) => (
@@ -160,15 +160,15 @@ export default function SettingsPage() {
               value={value}
               onChange={(e) => handleChange(setting.key, e.target.value)}
               disabled={setting.isReadOnly}
-              className="w-12 h-10 bg-surface-secondary border border-border rounded-lg cursor-pointer"
+              className="w-12 h-10 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer"
             />
             <input
               type="text"
               value={value}
               onChange={(e) => handleChange(setting.key, e.target.value)}
               disabled={setting.isReadOnly}
-              className={`flex-1 px-4 py-2 bg-surface-secondary border rounded-lg text-white focus:outline-none focus:border-brand ${
-                isChanged ? "border-brand" : "border-border"
+              className={`flex-1 px-4 py-2 bg-slate-800 border rounded-lg text-white focus:outline-none focus:border-purple-500 ${
+                isChanged ? "border-purple-500" : "border-slate-700"
               }`}
             />
           </div>
@@ -181,8 +181,8 @@ export default function SettingsPage() {
             value={value}
             onChange={(e) => handleChange(setting.key, e.target.value)}
             disabled={setting.isReadOnly}
-            className={`w-full px-4 py-2 bg-surface-secondary border rounded-lg text-white focus:outline-none focus:border-brand ${
-              isChanged ? "border-brand" : "border-border"
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white focus:outline-none focus:border-purple-500 ${
+              isChanged ? "border-purple-500" : "border-slate-700"
             } ${setting.isReadOnly ? "opacity-50 cursor-not-allowed" : ""}`}
           />
         );
@@ -194,8 +194,8 @@ export default function SettingsPage() {
             onChange={(e) => handleChange(setting.key, e.target.value)}
             disabled={setting.isReadOnly}
             rows={3}
-            className={`w-full px-4 py-2 bg-surface-secondary border rounded-lg text-white font-mono text-sm focus:outline-none focus:border-brand ${
-              isChanged ? "border-brand" : "border-border"
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white font-mono text-sm focus:outline-none focus:border-purple-500 ${
+              isChanged ? "border-purple-500" : "border-slate-700"
             } ${setting.isReadOnly ? "opacity-50 cursor-not-allowed" : ""}`}
           />
         );
@@ -207,8 +207,8 @@ export default function SettingsPage() {
             value={value}
             onChange={(e) => handleChange(setting.key, e.target.value)}
             disabled={setting.isReadOnly}
-            className={`w-full px-4 py-2 bg-surface-secondary border rounded-lg text-white focus:outline-none focus:border-brand ${
-              isChanged ? "border-brand" : "border-border"
+            className={`w-full px-4 py-2 bg-slate-800 border rounded-lg text-white focus:outline-none focus:border-purple-500 ${
+              isChanged ? "border-purple-500" : "border-slate-700"
             } ${setting.isReadOnly ? "opacity-50 cursor-not-allowed" : ""}`}
           />
         );
@@ -216,7 +216,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                 <Link href="/admin" className="hover:text-white">Administration</Link>
                 <span>/</span>
                 <span className="text-white">Paramètres</span>
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50"
                 >
                   <Save className="w-5 h-5" />
                   {saving ? "Enregistrement..." : `Enregistrer (${Object.keys(changes).length})`}
@@ -257,8 +257,8 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Categories Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
-                <div className="p-4 border-b border-border">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                <div className="p-4 border-b border-slate-800">
                   <h2 className="text-lg font-semibold text-white">Catégories</h2>
                 </div>
                 <div className="divide-y divide-slate-800">
@@ -270,8 +270,8 @@ export default function SettingsPage() {
                         onClick={() => setActiveCategory(category)}
                         className={`w-full flex items-center gap-3 p-4 transition-colors ${
                           activeCategory === category
-                            ? "bg-brand/10 border-l-2 border-brand text-white"
-                            : "text-muted-foreground hover:bg-surface-secondary/50 hover:text-white"
+                            ? "bg-purple-500/10 border-l-2 border-purple-500 text-white"
+                            : "text-gray-400 hover:bg-slate-800/50 hover:text-white"
                         }`}
                       >
                         <Icon className="w-5 h-5" />
@@ -285,17 +285,17 @@ export default function SettingsPage() {
 
             {/* Settings Form */}
             <div className="lg:col-span-3">
-              <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
-                <div className="p-4 border-b border-border">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                <div className="p-4 border-b border-slate-800">
                   <h2 className="text-lg font-semibold text-white">
                     {categoryLabels[activeCategory] || activeCategory}
                   </h2>
                 </div>
                 
                 {loading ? (
-                  <div className="p-8 text-center text-muted-foreground">Chargement...</div>
+                  <div className="p-8 text-center text-gray-400">Chargement...</div>
                 ) : !groupedSettings[activeCategory] ? (
-                  <div className="p-8 text-center text-muted-foreground">
+                  <div className="p-8 text-center text-gray-400">
                     <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>Aucun paramètre. Cliquez sur &quot;Initialiser&quot; pour commencer.</p>
                   </div>
@@ -303,13 +303,13 @@ export default function SettingsPage() {
                   <div className="p-6 space-y-6">
                     {groupedSettings[activeCategory].map((setting) => (
                       <div key={setting.key}>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           {setting.label}
-                          {setting.isRequired && <span className="text-error-light ml-1">*</span>}
+                          {setting.isRequired && <span className="text-red-400 ml-1">*</span>}
                         </label>
                         {renderInput(setting)}
                         {setting.description && (
-                          <p className="mt-1 text-xs text-text-tertiary">{setting.description}</p>
+                          <p className="mt-1 text-xs text-gray-500">{setting.description}</p>
                         )}
                       </div>
                     ))}

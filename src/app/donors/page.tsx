@@ -139,7 +139,7 @@ export default function DonorsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">Base Donateurs</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-gray-400">
               Gérez et analysez votre base de donateurs
             </p>
           </div>
@@ -155,7 +155,7 @@ export default function DonorsPage() {
             {/* Import Button */}
             <button
               onClick={() => setShowImportModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-surface-secondary text-white rounded-lg hover:bg-surface-tertiary transition-colors border border-border"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors border border-slate-700"
             >
               <Upload className="w-4 h-4" />
               Importer
@@ -181,7 +181,7 @@ export default function DonorsPage() {
       <SearchFilters onSearch={handleSearch} loading={loading} />
 
       {/* Donors Table */}
-      <Card padding="none" className="bg-surface-primary border-border">
+      <Card padding="none" className="bg-slate-900 border-slate-800">
         <DonorTable donors={donors} onDelete={handleDelete} loading={loading} />
         <Pagination
           currentPage={pagination.page}

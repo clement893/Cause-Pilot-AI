@@ -149,19 +149,19 @@ export default function CampaignsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "SENT":
-        return "bg-success/20 text-success-light border-green-500/30";
+        return "bg-green-500/20 text-green-400 border-green-500/30";
       case "SCHEDULED":
-        return "bg-info/20 text-info-light border-blue-500/30";
+        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
       case "DRAFT":
-        return "bg-warning/20 text-yellow-400 border-yellow-500/30";
+        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
       case "SENDING":
-        return "bg-brand/20 text-brand-light border-brand/30";
+        return "bg-purple-500/20 text-purple-400 border-purple-500/30";
       case "PAUSED":
         return "bg-orange-500/20 text-orange-400 border-orange-500/30";
       case "FAILED":
-        return "bg-error/20 text-error-light border-red-500/30";
+        return "bg-red-500/20 text-red-400 border-red-500/30";
       default:
-        return "bg-muted/20 text-muted-foreground border-gray-500/30";
+        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     }
   };
 
@@ -223,7 +223,7 @@ export default function CampaignsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Campagnes Email</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Gérez vos campagnes email marketing
             </p>
           </div>
@@ -238,29 +238,29 @@ export default function CampaignsPage() {
 
         {/* Stats Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-surface-secondary/50 rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-4">
+            <div className="flex items-center gap-2 text-gray-400 mb-1">
               <Mail className="w-4 h-4" />
               <span className="text-sm">Total</span>
             </div>
             <p className="text-2xl font-bold text-white">{counts.all}</p>
           </div>
-          <div className="bg-surface-secondary/50 rounded-xl border border-border p-4">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-4">
             <div className="flex items-center gap-2 text-yellow-400 mb-1">
               <FileText className="w-4 h-4" />
               <span className="text-sm">Brouillons</span>
             </div>
             <p className="text-2xl font-bold text-white">{counts.draft}</p>
           </div>
-          <div className="bg-surface-secondary/50 rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-success-light mb-1">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-4">
+            <div className="flex items-center gap-2 text-green-400 mb-1">
               <CheckCircle className="w-4 h-4" />
               <span className="text-sm">Envoyées</span>
             </div>
             <p className="text-2xl font-bold text-white">{counts.sent}</p>
           </div>
-          <div className="bg-surface-secondary/50 rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-info-light mb-1">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-4">
+            <div className="flex items-center gap-2 text-blue-400 mb-1">
               <Clock className="w-4 h-4" />
               <span className="text-sm">Planifiées</span>
             </div>
@@ -269,21 +269,21 @@ export default function CampaignsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-border pb-4">
+        <div className="flex flex-wrap gap-2 border-b border-slate-700 pb-4">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                 activeTab === tab.key
-                  ? "bg-accent/20 text-accent border border-accent/30"
-                  : "text-muted-foreground hover:text-white hover:bg-surface-secondary"
+                  ? "bg-pink-500/20 text-pink-400 border border-pink-500/30"
+                  : "text-gray-400 hover:text-white hover:bg-slate-800"
               }`}
             >
               {tab.icon}
               <span>{tab.label}</span>
               <span className={`px-2 py-0.5 rounded-full text-xs ${
-                activeTab === tab.key ? "bg-accent/30" : "bg-surface-tertiary"
+                activeTab === tab.key ? "bg-pink-500/30" : "bg-slate-700"
               }`}>
                 {counts[tab.key]}
               </span>
@@ -293,13 +293,13 @@ export default function CampaignsPage() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Rechercher une campagne..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent"
+            className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-pink-500"
           />
         </div>
 
@@ -307,7 +307,7 @@ export default function CampaignsPage() {
         {loading ? (
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-28 bg-surface-secondary/50 rounded-xl animate-pulse" />
+              <div key={i} className="h-28 bg-slate-800/50 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : filteredCampaigns.length > 0 ? (
@@ -315,7 +315,7 @@ export default function CampaignsPage() {
             {filteredCampaigns.map((campaign) => (
               <div
                 key={campaign.id}
-                className="bg-surface-secondary/50 rounded-xl border border-border p-6 hover:border-border transition-colors cursor-pointer"
+                className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-slate-600 transition-colors cursor-pointer"
                 onClick={() => router.push(`/marketing/campaigns/${campaign.id}`)}
               >
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
@@ -323,16 +323,16 @@ export default function CampaignsPage() {
                   <div className="flex-1">
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${
-                        campaign.status === "DRAFT" ? "bg-warning/20" :
-                        campaign.status === "SENT" ? "bg-success/20" :
-                        campaign.status === "SENDING" ? "bg-brand/20" :
-                        "bg-info/20"
+                        campaign.status === "DRAFT" ? "bg-yellow-500/20" :
+                        campaign.status === "SENT" ? "bg-green-500/20" :
+                        campaign.status === "SENDING" ? "bg-purple-500/20" :
+                        "bg-blue-500/20"
                       }`}>
                         {getStatusIcon(campaign.status)}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 flex-wrap">
-                          <h3 className="text-lg font-semibold text-white hover:text-accent transition-colors">
+                          <h3 className="text-lg font-semibold text-white hover:text-pink-400 transition-colors">
                             {campaign.name}
                           </h3>
                           <span className={`px-2 py-0.5 rounded-full text-xs border ${getStatusColor(campaign.status)}`}>
@@ -341,22 +341,22 @@ export default function CampaignsPage() {
                         </div>
                         
                         {campaign.subject && (
-                          <p className="text-muted-foreground text-sm mt-1">
-                            <span className="text-text-tertiary">Objet:</span> {campaign.subject}
+                          <p className="text-gray-400 text-sm mt-1">
+                            <span className="text-gray-500">Objet:</span> {campaign.subject}
                           </p>
                         )}
                         
-                        <div className="flex items-center gap-4 mt-2 text-sm text-text-tertiary">
+                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                           {campaign.createdAt && (
                             <span>Créé le {formatDate(campaign.createdAt)}</span>
                           )}
                           {campaign.sentAt && (
-                            <span className="text-success-light">
+                            <span className="text-green-400">
                               Envoyé le {formatDate(campaign.sentAt)}
                             </span>
                           )}
                           {campaign.scheduledAt && campaign.status === "SCHEDULED" && (
-                            <span className="text-info-light">
+                            <span className="text-blue-400">
                               Planifié pour le {formatDate(campaign.scheduledAt)}
                             </span>
                           )}
@@ -371,32 +371,32 @@ export default function CampaignsPage() {
                     {(campaign.status === "SENT" || campaign.status === "SENDING") && (
                       <div className="flex items-center gap-4 text-sm">
                         <div className="text-center">
-                          <div className="flex items-center gap-1 text-muted-foreground">
+                          <div className="flex items-center gap-1 text-gray-400">
                             <Users className="w-4 h-4" />
                             <span>{campaign.sentCount || campaign.totalRecipients}</span>
                           </div>
-                          <span className="text-xs text-text-tertiary">Envoyés</span>
+                          <span className="text-xs text-gray-500">Envoyés</span>
                         </div>
                         <div className="text-center">
-                          <div className="flex items-center gap-1 text-info-light">
+                          <div className="flex items-center gap-1 text-blue-400">
                             <Eye className="w-4 h-4" />
                             <span>{campaign.openRate?.toFixed(1) || 0}%</span>
                           </div>
-                          <span className="text-xs text-text-tertiary">Ouvertures</span>
+                          <span className="text-xs text-gray-500">Ouvertures</span>
                         </div>
                         <div className="text-center">
-                          <div className="flex items-center gap-1 text-brand-light">
+                          <div className="flex items-center gap-1 text-purple-400">
                             <MousePointer className="w-4 h-4" />
                             <span>{campaign.clickRate?.toFixed(1) || 0}%</span>
                           </div>
-                          <span className="text-xs text-text-tertiary">Clics</span>
+                          <span className="text-xs text-gray-500">Clics</span>
                         </div>
                       </div>
                     )}
 
                     {/* Recipients count for drafts */}
                     {campaign.status === "DRAFT" && (
-                      <div className="flex items-center gap-1 text-muted-foreground">
+                      <div className="flex items-center gap-1 text-gray-400">
                         <Users className="w-4 h-4" />
                         <span>{campaign._count?.recipients || campaign.totalRecipients || 0} destinataires</span>
                       </div>
@@ -409,7 +409,7 @@ export default function CampaignsPage() {
                         <>
                           <Link
                             href={`/marketing/campaigns/new?edit=${campaign.id}`}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-accent/20 text-accent rounded-lg hover:bg-accent/30 transition-colors text-sm"
+                            className="flex items-center gap-1 px-3 py-1.5 bg-pink-500/20 text-pink-400 rounded-lg hover:bg-pink-500/30 transition-colors text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Edit className="w-4 h-4" />
@@ -417,7 +417,7 @@ export default function CampaignsPage() {
                           </Link>
                           <button
                             onClick={(e) => handleSend(campaign.id, e)}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-success/20 text-success-light rounded-lg hover:bg-success/30 transition-colors text-sm"
+                            className="flex items-center gap-1 px-3 py-1.5 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors text-sm"
                           >
                             <Play className="w-4 h-4" />
                             Envoyer
@@ -429,7 +429,7 @@ export default function CampaignsPage() {
                       {(campaign.status === "SENT" || campaign.status === "SENDING") && (
                         <Link
                           href={`/marketing/campaigns/${campaign.id}`}
-                          className="flex items-center gap-1 px-3 py-1.5 bg-info/20 text-info-light rounded-lg hover:bg-info/30 transition-colors text-sm"
+                          className="flex items-center gap-1 px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors text-sm"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <BarChart3 className="w-4 h-4" />
@@ -441,7 +441,7 @@ export default function CampaignsPage() {
                       <button
                         onClick={(e) => handleDelete(campaign.id, e)}
                         disabled={deletingId === campaign.id}
-                        className="p-2 text-muted-foreground hover:text-error-light hover:bg-error/10 rounded-lg transition-colors"
+                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                       >
                         {deletingId === campaign.id ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -456,15 +456,15 @@ export default function CampaignsPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-surface-secondary/30 rounded-xl border border-border">
-            <Mail className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+          <div className="text-center py-16 bg-slate-800/30 rounded-xl border border-slate-700">
+            <Mail className="w-16 h-16 mx-auto text-gray-600 mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">
               {activeTab === "draft" ? "Aucun brouillon" :
                activeTab === "sent" ? "Aucune campagne envoyée" :
                activeTab === "scheduled" ? "Aucune campagne planifiée" :
                "Aucune campagne trouvée"}
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-gray-400 mb-6">
               {searchTerm
                 ? "Aucune campagne ne correspond à votre recherche"
                 : activeTab === "draft"

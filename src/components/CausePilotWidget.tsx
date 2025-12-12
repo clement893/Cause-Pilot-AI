@@ -138,12 +138,12 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
 
   if (isLoading || !currentTip) {
     return (
-      <div className="bg-gradient-to-r from-pink-500/10 to-purple-600/10 border border-accent/20 rounded-2xl p-6">
+      <div className="bg-gradient-to-r from-pink-500/10 to-purple-600/10 border border-pink-500/20 rounded-2xl p-6">
         <div className="animate-pulse flex items-center gap-4">
-          <div className="w-12 h-12 bg-surface-tertiary rounded-full"></div>
+          <div className="w-12 h-12 bg-slate-700 rounded-full"></div>
           <div className="flex-1">
-            <div className="h-4 bg-surface-tertiary rounded w-3/4 mb-2"></div>
-            <div className="h-3 bg-surface-tertiary rounded w-1/2"></div>
+            <div className="h-4 bg-slate-700 rounded w-3/4 mb-2"></div>
+            <div className="h-3 bg-slate-700 rounded w-1/2"></div>
           </div>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
 
   const priorityColors = {
     high: "from-red-500/20 to-orange-500/20 border-red-500/30",
-    medium: "from-pink-500/10 to-purple-600/10 border-accent/20",
+    medium: "from-pink-500/10 to-purple-600/10 border-pink-500/20",
     low: "from-blue-500/10 to-cyan-500/10 border-blue-500/20",
   };
 
@@ -165,12 +165,12 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
             <h3 className="font-bold text-white flex items-center gap-2">
               CausePilot
               {currentTip.priority === "high" && (
-                <span className="text-xs px-2 py-0.5 bg-error/20 text-error-light rounded-full">
+                <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded-full">
                   Priorité haute
                 </span>
               )}
             </h3>
-            <p className="text-xs text-muted-foreground">Conseil personnalisé</p>
+            <p className="text-xs text-gray-400">Conseil personnalisé</p>
           </div>
         </div>
         {tips.length > 1 && (
@@ -179,7 +179,7 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             title="Conseil suivant"
           >
-            <RefreshCw className="w-4 h-4 text-muted-foreground" />
+            <RefreshCw className="w-4 h-4 text-gray-400" />
           </button>
         )}
       </div>
@@ -189,7 +189,7 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
           <Lightbulb className="w-4 h-4 text-yellow-400" />
           <h4 className="font-semibold text-white">{currentTip.title}</h4>
         </div>
-        <p className="text-sm text-foreground">{currentTip.description}</p>
+        <p className="text-sm text-gray-300">{currentTip.description}</p>
       </div>
 
       <div className="flex items-center justify-between">
@@ -206,7 +206,7 @@ export default function CausePilotWidget({ stats }: CausePilotWidgetProps) {
               key={index}
               onClick={() => setCurrentTipIndex(index)}
               className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentTipIndex ? "bg-accent" : "bg-surface-elevated"
+                index === currentTipIndex ? "bg-pink-500" : "bg-slate-600"
               }`}
             />
           ))}

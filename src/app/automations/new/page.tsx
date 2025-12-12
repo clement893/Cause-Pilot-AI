@@ -53,11 +53,11 @@ const TRIGGER_OPTIONS = [
 ];
 
 const ACTION_OPTIONS = [
-  { value: "SEND_EMAIL", label: "Envoyer un email", icon: Mail, color: "bg-info/20 text-info-light" },
-  { value: "WAIT", label: "Attendre", icon: Clock, color: "bg-warning/20 text-yellow-400" },
-  { value: "ADD_TAG", label: "Ajouter un tag", icon: Tag, color: "bg-success/20 text-success-light" },
-  { value: "REMOVE_TAG", label: "Retirer un tag", icon: Tag, color: "bg-error/20 text-error-light" },
-  { value: "NOTIFY_TEAM", label: "Notifier l'équipe", icon: Bell, color: "bg-brand/20 text-brand-light" },
+  { value: "SEND_EMAIL", label: "Envoyer un email", icon: Mail, color: "bg-blue-500/20 text-blue-400" },
+  { value: "WAIT", label: "Attendre", icon: Clock, color: "bg-yellow-500/20 text-yellow-400" },
+  { value: "ADD_TAG", label: "Ajouter un tag", icon: Tag, color: "bg-green-500/20 text-green-400" },
+  { value: "REMOVE_TAG", label: "Retirer un tag", icon: Tag, color: "bg-red-500/20 text-red-400" },
+  { value: "NOTIFY_TEAM", label: "Notifier l'équipe", icon: Bell, color: "bg-purple-500/20 text-purple-400" },
 ];
 
 export default function NewAutomationPage() {
@@ -193,24 +193,24 @@ export default function NewAutomationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-slate-950">
         <Sidebar />
         <main className="ml-64 p-8 flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar />
       <main className="ml-64 p-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link
             href="/automations"
-            className="p-2 hover:bg-surface-secondary rounded-lg transition-colors text-muted-foreground hover:text-white"
+            className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-gray-400 hover:text-white"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
@@ -218,7 +218,7 @@ export default function NewAutomationPage() {
             <h1 className="text-2xl font-bold text-white">
               {step === "template" ? "Nouvelle automatisation" : name || "Configuration"}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-400">
               {step === "template"
                 ? "Choisissez un template ou créez de zéro"
                 : "Configurez votre workflow"}
@@ -233,15 +233,15 @@ export default function NewAutomationPage() {
               {/* Créer de zéro */}
               <button
                 onClick={startFromScratch}
-                className="w-full mb-8 p-6 bg-surface-primary rounded-xl border-2 border-dashed border-border hover:border-brand hover:bg-surface-secondary transition-colors group"
+                className="w-full mb-8 p-6 bg-slate-900 rounded-xl border-2 border-dashed border-slate-700 hover:border-purple-500 hover:bg-slate-800 transition-colors group"
               >
                 <div className="flex items-center justify-center gap-3">
-                  <div className="p-3 bg-brand/20 rounded-lg group-hover:bg-brand/30 transition-colors">
-                    <Plus className="w-6 h-6 text-brand-light" />
+                  <div className="p-3 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
+                    <Plus className="w-6 h-6 text-purple-400" />
                   </div>
                   <div className="text-left">
                     <p className="font-semibold text-white">Créer de zéro</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       Configurez chaque étape manuellement
                     </p>
                   </div>
@@ -254,8 +254,8 @@ export default function NewAutomationPage() {
                   onClick={() => setSelectedCategory("all")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                     selectedCategory === "all"
-                      ? "bg-brand text-white"
-                      : "bg-surface-secondary text-foreground hover:bg-surface-tertiary border border-border"
+                      ? "bg-purple-600 text-white"
+                      : "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
                   }`}
                 >
                   Tous
@@ -266,8 +266,8 @@ export default function NewAutomationPage() {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                       selectedCategory === cat.id
-                        ? "bg-brand text-white"
-                        : "bg-surface-secondary text-foreground hover:bg-surface-tertiary border border-border"
+                        ? "bg-purple-600 text-white"
+                        : "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
                     }`}
                   >
                     {cat.name}
@@ -281,22 +281,22 @@ export default function NewAutomationPage() {
                   <button
                     key={template.id}
                     onClick={() => selectTemplate(template)}
-                    className="p-6 bg-surface-primary rounded-xl border border-border hover:border-brand hover:bg-surface-secondary transition-all text-left group"
+                    className="p-6 bg-slate-900 rounded-xl border border-slate-800 hover:border-purple-500 hover:bg-slate-800 transition-all text-left group"
                   >
                     <div className="flex items-start gap-4">
                       <div className="text-4xl">{template.icon}</div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-white group-hover:text-brand-light">
+                          <h3 className="font-semibold text-white group-hover:text-purple-400">
                             {template.name}
                           </h3>
-                          <Sparkles className="w-4 h-4 text-brand-light opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <Sparkles className="w-4 h-4 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-sm text-gray-400 mt-1">
                           {template.description}
                         </p>
                         <div className="flex items-center gap-2 mt-3">
-                          <span className="px-2 py-1 bg-surface-secondary rounded text-xs text-muted-foreground">
+                          <span className="px-2 py-1 bg-slate-800 rounded text-xs text-gray-400">
                             {template.actions.length} action{template.actions.length > 1 ? "s" : ""}
                           </span>
                         </div>
@@ -312,32 +312,32 @@ export default function NewAutomationPage() {
           {step === "configure" && (
             <div className="space-y-6">
               {/* Informations générales */}
-              <div className="bg-surface-primary rounded-xl border border-border p-6">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">
                   Informations générales
                 </h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Nom de l&apos;automatisation *
                     </label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="Ex: Bienvenue nouveau donateur"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Description
                     </label>
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={2}
-                      className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="Décrivez ce que fait cette automatisation..."
                     />
                   </div>
@@ -345,11 +345,11 @@ export default function NewAutomationPage() {
               </div>
 
               {/* Déclencheur */}
-              <div className="bg-surface-primary rounded-xl border border-border p-6">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">
                   Déclencheur
                 </h2>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-gray-400 mb-4">
                   Quand cette automatisation doit-elle se déclencher ?
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -359,15 +359,15 @@ export default function NewAutomationPage() {
                       onClick={() => setTriggerType(trigger.value)}
                       className={`p-4 rounded-lg border-2 text-left transition-all ${
                         triggerType === trigger.value
-                          ? "border-brand bg-brand/10"
-                          : "border-border hover:border-border bg-surface-secondary"
+                          ? "border-purple-500 bg-purple-500/10"
+                          : "border-slate-700 hover:border-slate-600 bg-slate-800"
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{trigger.icon}</span>
                         <div>
                           <p className="font-medium text-white">{trigger.label}</p>
-                          <p className="text-xs text-muted-foreground">{trigger.description}</p>
+                          <p className="text-xs text-gray-400">{trigger.description}</p>
                         </div>
                       </div>
                     </button>
@@ -376,8 +376,8 @@ export default function NewAutomationPage() {
 
                 {/* Configuration spécifique au trigger */}
                 {triggerType === "INACTIVE_DONOR" && (
-                  <div className="mt-4 p-4 bg-surface-secondary rounded-lg">
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                  <div className="mt-4 p-4 bg-slate-800 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
                       Nombre de jours d&apos;inactivité
                     </label>
                     <input
@@ -386,15 +386,15 @@ export default function NewAutomationPage() {
                       onChange={(e) =>
                         setTriggerConfig({ ...triggerConfig, inactiveDays: parseInt(e.target.value) })
                       }
-                      className="w-32 px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white"
+                      className="w-32 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
                       min={30}
                     />
                   </div>
                 )}
 
                 {triggerType === "UPGRADE_OPPORTUNITY" && (
-                  <div className="mt-4 p-4 bg-surface-secondary rounded-lg">
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                  <div className="mt-4 p-4 bg-slate-800 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
                       Nombre minimum de dons ponctuels
                     </label>
                     <input
@@ -403,7 +403,7 @@ export default function NewAutomationPage() {
                       onChange={(e) =>
                         setTriggerConfig({ ...triggerConfig, minDonations: parseInt(e.target.value) })
                       }
-                      className="w-32 px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white"
+                      className="w-32 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
                       min={1}
                     />
                   </div>
@@ -411,11 +411,11 @@ export default function NewAutomationPage() {
               </div>
 
               {/* Actions */}
-              <div className="bg-surface-primary rounded-xl border border-border p-6">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">
                   Actions
                 </h2>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-gray-400 mb-4">
                   Que doit faire cette automatisation ?
                 </p>
 
@@ -429,14 +429,14 @@ export default function NewAutomationPage() {
                     return (
                       <div
                         key={index}
-                        className="border border-border rounded-lg overflow-hidden"
+                        className="border border-slate-700 rounded-lg overflow-hidden"
                       >
                         <div
-                          className="flex items-center gap-3 p-4 bg-surface-secondary cursor-pointer"
+                          className="flex items-center gap-3 p-4 bg-slate-800 cursor-pointer"
                           onClick={() => setExpandedAction(isExpanded ? null : index)}
                         >
-                          <GripVertical className="w-5 h-5 text-text-tertiary" />
-                          <span className="text-sm font-medium text-muted-foreground w-6">
+                          <GripVertical className="w-5 h-5 text-gray-500" />
+                          <span className="text-sm font-medium text-gray-400 w-6">
                             {index + 1}.
                           </span>
                           <div className={`p-2 rounded-lg ${actionOption?.color}`}>
@@ -450,23 +450,23 @@ export default function NewAutomationPage() {
                               e.stopPropagation();
                               removeAction(index);
                             }}
-                            className="p-1 text-text-tertiary hover:text-error-light"
+                            className="p-1 text-gray-500 hover:text-red-400"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
                           {isExpanded ? (
-                            <ChevronDown className="w-5 h-5 text-text-tertiary" />
+                            <ChevronDown className="w-5 h-5 text-gray-500" />
                           ) : (
-                            <ChevronRight className="w-5 h-5 text-text-tertiary" />
+                            <ChevronRight className="w-5 h-5 text-gray-500" />
                           )}
                         </div>
 
                         {isExpanded && (
-                          <div className="p-4 border-t border-border bg-slate-850">
+                          <div className="p-4 border-t border-slate-700 bg-slate-850">
                             {action.actionType === "SEND_EMAIL" && (
                               <div className="space-y-4">
                                 <div>
-                                  <label className="block text-sm font-medium text-foreground mb-1">
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
                                     Sujet de l&apos;email
                                   </label>
                                   <input
@@ -475,15 +475,15 @@ export default function NewAutomationPage() {
                                     onChange={(e) =>
                                       updateAction(index, { ...action.config, subject: e.target.value })
                                     }
-                                    className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                                     placeholder="Ex: Bienvenue {{firstName}} !"
                                   />
-                                  <p className="mt-1 text-xs text-text-tertiary">
+                                  <p className="mt-1 text-xs text-gray-500">
                                     Variables: {"{{firstName}}"}, {"{{lastName}}"}, {"{{fullName}}"}, {"{{email}}"}
                                   </p>
                                 </div>
                                 <div>
-                                  <label className="block text-sm font-medium text-foreground mb-1">
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
                                     Contenu de l&apos;email (HTML)
                                   </label>
                                   <textarea
@@ -492,7 +492,7 @@ export default function NewAutomationPage() {
                                       updateAction(index, { ...action.config, body: e.target.value })
                                     }
                                     rows={8}
-                                    className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg font-mono text-sm text-white"
+                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg font-mono text-sm text-white"
                                     placeholder="<h1>Bonjour {{firstName}} !</h1>..."
                                   />
                                 </div>
@@ -502,7 +502,7 @@ export default function NewAutomationPage() {
                             {action.actionType === "WAIT" && (
                               <div className="flex items-center gap-4">
                                 <div>
-                                  <label className="block text-sm font-medium text-foreground mb-1">
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
                                     Jours
                                   </label>
                                   <input
@@ -511,12 +511,12 @@ export default function NewAutomationPage() {
                                     onChange={(e) =>
                                       updateAction(index, { ...action.config, days: parseInt(e.target.value) })
                                     }
-                                    className="w-24 px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                                    className="w-24 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                                     min={0}
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-sm font-medium text-foreground mb-1">
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
                                     Heures
                                   </label>
                                   <input
@@ -525,7 +525,7 @@ export default function NewAutomationPage() {
                                     onChange={(e) =>
                                       updateAction(index, { ...action.config, hours: parseInt(e.target.value) })
                                     }
-                                    className="w-24 px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                                    className="w-24 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                                     min={0}
                                     max={23}
                                   />
@@ -535,7 +535,7 @@ export default function NewAutomationPage() {
 
                             {(action.actionType === "ADD_TAG" || action.actionType === "REMOVE_TAG") && (
                               <div>
-                                <label className="block text-sm font-medium text-foreground mb-1">
+                                <label className="block text-sm font-medium text-gray-300 mb-1">
                                   Tag
                                 </label>
                                 <input
@@ -544,7 +544,7 @@ export default function NewAutomationPage() {
                                   onChange={(e) =>
                                     updateAction(index, { ...action.config, tag: e.target.value })
                                   }
-                                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                                   placeholder="Ex: nouveau_donateur"
                                 />
                               </div>
@@ -553,7 +553,7 @@ export default function NewAutomationPage() {
                             {action.actionType === "NOTIFY_TEAM" && (
                               <div className="space-y-4">
                                 <div>
-                                  <label className="block text-sm font-medium text-foreground mb-1">
+                                  <label className="block text-sm font-medium text-gray-300 mb-1">
                                     Message
                                   </label>
                                   <input
@@ -562,7 +562,7 @@ export default function NewAutomationPage() {
                                     onChange={(e) =>
                                       updateAction(index, { ...action.config, message: e.target.value })
                                     }
-                                    className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                                     placeholder="Ex: Nouveau don de {{fullName}}"
                                   />
                                 </div>
@@ -573,9 +573,9 @@ export default function NewAutomationPage() {
                                     onChange={(e) =>
                                       updateAction(index, { ...action.config, notifyOwner: e.target.checked })
                                     }
-                                    className="rounded bg-surface-tertiary border-border"
+                                    className="rounded bg-slate-700 border-slate-600"
                                   />
-                                  <span className="text-sm text-foreground">
+                                  <span className="text-sm text-gray-300">
                                     Notifier le propriétaire
                                   </span>
                                 </label>
@@ -596,12 +596,12 @@ export default function NewAutomationPage() {
                       <button
                         key={action.value}
                         onClick={() => addAction(action.value)}
-                        className="inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-surface-secondary transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors"
                       >
                         <div className={`p-1 rounded ${action.color}`}>
                           <Icon className="w-4 h-4" />
                         </div>
-                        <span className="text-sm font-medium text-foreground">
+                        <span className="text-sm font-medium text-gray-300">
                           {action.label}
                         </span>
                       </button>
@@ -611,10 +611,10 @@ export default function NewAutomationPage() {
               </div>
 
               {/* Boutons de sauvegarde */}
-              <div className="flex items-center justify-between bg-surface-primary rounded-xl border border-border p-6">
+              <div className="flex items-center justify-between bg-slate-900 rounded-xl border border-slate-800 p-6">
                 <button
                   onClick={() => setStep("template")}
-                  className="px-4 py-2 text-muted-foreground hover:bg-surface-secondary rounded-lg transition-colors"
+                  className="px-4 py-2 text-gray-400 hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   Retour aux templates
                 </button>
@@ -622,14 +622,14 @@ export default function NewAutomationPage() {
                   <button
                     onClick={() => handleSave("DRAFT")}
                     disabled={saving}
-                    className="px-6 py-2 border border-border text-foreground rounded-lg hover:bg-surface-secondary transition-colors disabled:opacity-50"
+                    className="px-6 py-2 border border-slate-700 text-gray-300 rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
                   >
                     Enregistrer comme brouillon
                   </button>
                   <button
                     onClick={() => handleSave("ACTIVE")}
                     disabled={saving || !name || !triggerType || actions.length === 0}
-                    className="px-6 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors disabled:opacity-50"
+                    className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
                   >
                     {saving ? "Enregistrement..." : "Activer l'automatisation"}
                   </button>

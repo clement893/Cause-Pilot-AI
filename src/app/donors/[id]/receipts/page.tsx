@@ -217,7 +217,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
   if (!donor) {
     return (
       <AppLayout breadcrumbs={[{ name: "Base Donateurs", href: "/donors" }, { name: "Erreur" }]}>
-        <Card className="text-center max-w-md mx-auto bg-surface-primary border-border">
+        <Card className="text-center max-w-md mx-auto bg-slate-900 border-slate-800">
           <h3 className="text-lg font-semibold text-white">Donateur non trouvé</h3>
           <div className="mt-4">
             <Link href="/donors">
@@ -248,7 +248,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
             <h1 className="text-2xl font-bold text-white">
               Reçus fiscaux - {donor.firstName} {donor.lastName}
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-gray-400">
               Gérez et envoyez les reçus fiscaux pour ce donateur
             </p>
           </div>
@@ -281,41 +281,41 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="bg-surface-primary border-border">
+        <Card className="bg-slate-900 border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-success/10 rounded-lg">
-              <svg className="w-6 h-6 text-success-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-green-500/10 rounded-lg">
+              <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total des reçus</p>
+              <p className="text-sm text-gray-400">Total des reçus</p>
               <p className="text-2xl font-bold text-white">{activeReceipts.length}</p>
             </div>
           </div>
         </Card>
-        <Card className="bg-surface-primary border-border">
+        <Card className="bg-slate-900 border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-info/10 rounded-lg">
-              <svg className="w-6 h-6 text-info-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-blue-500/10 rounded-lg">
+              <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Montant total</p>
-              <p className="text-2xl font-bold text-success-light">{formatCurrency(totalAmount)}</p>
+              <p className="text-sm text-gray-400">Montant total</p>
+              <p className="text-2xl font-bold text-green-400">{formatCurrency(totalAmount)}</p>
             </div>
           </div>
         </Card>
-        <Card className="bg-surface-primary border-border">
+        <Card className="bg-slate-900 border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-brand/10 rounded-lg">
-              <svg className="w-6 h-6 text-brand-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-3 bg-purple-500/10 rounded-lg">
+              <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Envoyés par email</p>
+              <p className="text-sm text-gray-400">Envoyés par email</p>
               <p className="text-2xl font-bold text-white">
                 {activeReceipts.filter((r) => r.status === "SENT").length}
               </p>
@@ -325,7 +325,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
       </div>
 
       {/* Receipts List */}
-      <Card className="bg-surface-primary border-border">
+      <Card className="bg-slate-900 border-slate-800">
         <h3 className="text-lg font-semibold text-white mb-4">
           Reçus fiscaux ({activeReceipts.length})
         </h3>
@@ -333,7 +333,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
         {activeReceipts.length === 0 ? (
           <div className="text-center py-12">
             <svg
-              className="mx-auto h-12 w-12 text-text-tertiary"
+              className="mx-auto h-12 w-12 text-gray-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -346,7 +346,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
               />
             </svg>
             <h3 className="mt-2 text-sm font-medium text-white">Aucun reçu fiscal</h3>
-            <p className="mt-1 text-sm text-text-tertiary">
+            <p className="mt-1 text-sm text-gray-500">
               Cliquez sur &quot;Générer les reçus manquants&quot; pour créer les reçus.
             </p>
           </div>
@@ -355,44 +355,44 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
             <table className="min-w-full divide-y divide-slate-700">
               <thead>
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     N° Reçu
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Date du don
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Montant
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Campagne
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Statut
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700">
                 {activeReceipts.map((receipt) => (
-                  <tr key={receipt.id} className="hover:bg-surface-secondary/50">
+                  <tr key={receipt.id} className="hover:bg-slate-800/50">
                     <td className="px-4 py-4 whitespace-nowrap">
-                      <span className="text-sm font-mono text-brand-light">
+                      <span className="text-sm font-mono text-purple-400">
                         {receipt.receiptNumber}
                       </span>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-white">
                       {formatDate(receipt.donationDate)}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold text-success-light">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold text-green-400">
                       {formatCurrency(receipt.amount, receipt.country)}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-foreground">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
                       {receipt.donation.campaignName || "-"}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
@@ -401,7 +401,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
                     <td className="px-4 py-4 whitespace-nowrap">
                       {getStatusBadge(receipt.status)}
                       {receipt.sentAt && (
-                        <p className="text-xs text-text-tertiary mt-1">
+                        <p className="text-xs text-gray-500 mt-1">
                           {formatDate(receipt.sentAt)}
                         </p>
                       )}
@@ -457,7 +457,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleVoidReceipt(receipt.id)}
-                          className="text-error-light hover:text-red-300"
+                          className="text-red-400 hover:text-red-300"
                         >
                           <svg
                             className="w-4 h-4"
@@ -485,7 +485,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
 
       {/* Voided Receipts */}
       {voidedReceipts.length > 0 && (
-        <Card className="mt-6 bg-surface-primary border-border">
+        <Card className="mt-6 bg-slate-900 border-slate-800">
           <h3 className="text-lg font-semibold text-white mb-4">
             Reçus annulés ({voidedReceipts.length})
           </h3>
@@ -493,16 +493,16 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
             <table className="min-w-full divide-y divide-slate-700">
               <thead>
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     N° Reçu
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Montant
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Date émission
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Statut
                   </th>
                 </tr>
@@ -511,14 +511,14 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
                 {voidedReceipts.map((receipt) => (
                   <tr key={receipt.id} className="opacity-50">
                     <td className="px-4 py-4 whitespace-nowrap">
-                      <span className="text-sm font-mono text-text-tertiary line-through">
+                      <span className="text-sm font-mono text-gray-500 line-through">
                         {receipt.receiptNumber}
                       </span>
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-text-tertiary line-through">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 line-through">
                       {formatCurrency(receipt.amount, receipt.country)}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-text-tertiary">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(receipt.issueDate)}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
@@ -533,10 +533,10 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
       )}
 
       {/* Info Box */}
-      <Card className="mt-6 bg-info/20/20 border-blue-800">
+      <Card className="mt-6 bg-blue-900/20 border-blue-800">
         <div className="flex items-start gap-3">
           <svg
-            className="w-5 h-5 text-info-light mt-0.5"
+            className="w-5 h-5 text-blue-400 mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

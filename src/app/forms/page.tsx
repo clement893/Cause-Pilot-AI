@@ -86,7 +86,7 @@ export default function FormsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">Formulaires de Don</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Gérez vos formulaires de collecte</p>
+            <p className="mt-1 text-sm text-gray-400">Gérez vos formulaires de collecte</p>
           </div>
           <Link
             href="/forms/new"
@@ -103,26 +103,26 @@ export default function FormsPage() {
       {/* Stats Cards */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-surface-primary rounded-xl border border-border p-6">
-            <p className="text-sm text-muted-foreground mb-1">Total collecté</p>
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+            <p className="text-sm text-gray-400 mb-1">Total collecté</p>
             <p className="text-3xl font-bold text-white">
               {formatCurrency(stats.overview.totalCollected)}
             </p>
           </div>
-          <div className="bg-surface-primary rounded-xl border border-border p-6">
-            <p className="text-sm text-muted-foreground mb-1">Nombre de dons</p>
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+            <p className="text-sm text-gray-400 mb-1">Nombre de dons</p>
             <p className="text-3xl font-bold text-white">
               {stats.overview.totalDonations}
             </p>
           </div>
-          <div className="bg-surface-primary rounded-xl border border-border p-6">
-            <p className="text-sm text-muted-foreground mb-1">Don moyen</p>
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+            <p className="text-sm text-gray-400 mb-1">Don moyen</p>
             <p className="text-3xl font-bold text-white">
               {formatCurrency(stats.overview.averageDonation)}
             </p>
           </div>
-          <div className="bg-surface-primary rounded-xl border border-border p-6">
-            <p className="text-sm text-muted-foreground mb-1">Formulaires actifs</p>
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+            <p className="text-sm text-gray-400 mb-1">Formulaires actifs</p>
             <p className="text-3xl font-bold text-white">
               {stats.overview.publishedForms} / {stats.overview.totalForms}
             </p>
@@ -131,14 +131,14 @@ export default function FormsPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-surface-primary rounded-xl border border-border p-4 mb-6">
+      <div className="bg-slate-900 rounded-xl border border-slate-800 p-4 mb-6">
         <div className="flex flex-wrap items-center gap-4">
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">Type</label>
+            <label className="block text-xs text-gray-400 mb-1">Type</label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as FormType | "")}
-              className="px-3 py-2 bg-surface-secondary border border-border text-white rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:border-accent"
+              className="px-3 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
             >
               <option value="">Tous les types</option>
               {Object.entries(FORM_TYPE_LABELS).map(([value, label]) => (
@@ -147,11 +147,11 @@ export default function FormsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">Statut</label>
+            <label className="block text-xs text-gray-400 mb-1">Statut</label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as FormStatus | "")}
-              className="px-3 py-2 bg-surface-secondary border border-border text-white rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:border-accent"
+              className="px-3 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
             >
               <option value="">Tous les statuts</option>
               {Object.entries(FORM_STATUS_LABELS).map(([value, label]) => (
@@ -162,7 +162,7 @@ export default function FormsPage() {
           {(filterType || filterStatus) && (
             <button
               onClick={() => { setFilterType(""); setFilterStatus(""); }}
-              className="mt-5 text-sm text-accent hover:text-pink-300"
+              className="mt-5 text-sm text-pink-400 hover:text-pink-300"
             >
               Réinitialiser les filtres
             </button>
@@ -177,11 +177,11 @@ export default function FormsPage() {
         </div>
       ) : forms.length === 0 ? (
         <div className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-white">Aucun formulaire</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Commencez par créer votre premier formulaire de don.</p>
+          <p className="mt-1 text-sm text-gray-400">Commencez par créer votre premier formulaire de don.</p>
           <div className="mt-6">
             <Link
               href="/forms/new"

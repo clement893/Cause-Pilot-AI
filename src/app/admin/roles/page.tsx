@@ -176,7 +176,7 @@ export default function RolesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
@@ -184,7 +184,7 @@ export default function RolesPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                 <Link href="/admin" className="hover:text-white">Administration</Link>
                 <span>/</span>
                 <span className="text-white">Rôles & Permissions</span>
@@ -202,7 +202,7 @@ export default function RolesPage() {
               )}
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
               >
                 <Plus className="w-5 h-5" />
                 Nouveau rôle
@@ -213,15 +213,15 @@ export default function RolesPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Roles List */}
             <div className="lg:col-span-1">
-              <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
-                <div className="p-4 border-b border-border">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                <div className="p-4 border-b border-slate-800">
                   <h2 className="text-lg font-semibold text-white">Rôles</h2>
                 </div>
                 <div className="divide-y divide-slate-800">
                   {loading ? (
-                    <div className="p-4 text-center text-muted-foreground">Chargement...</div>
+                    <div className="p-4 text-center text-gray-400">Chargement...</div>
                   ) : roles.length === 0 ? (
-                    <div className="p-4 text-center text-muted-foreground">
+                    <div className="p-4 text-center text-gray-400">
                       Aucun rôle. Cliquez sur &quot;Initialiser les permissions&quot; pour commencer.
                     </div>
                   ) : (
@@ -231,8 +231,8 @@ export default function RolesPage() {
                         onClick={() => handleSelectRole(role)}
                         className={`p-4 cursor-pointer transition-colors ${
                           selectedRole?.id === role.id
-                            ? "bg-brand/10 border-l-2 border-brand"
-                            : "hover:bg-surface-secondary/50"
+                            ? "bg-purple-500/10 border-l-2 border-purple-500"
+                            : "hover:bg-slate-800/50"
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -245,10 +245,10 @@ export default function RolesPage() {
                               <div className="flex items-center gap-2">
                                 <span className="text-white font-medium">{role.name}</span>
                                 {role.isSystem && (
-                                  <Lock className="w-3 h-3 text-text-tertiary" />
+                                  <Lock className="w-3 h-3 text-gray-500" />
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm text-gray-400">
                                 {role.userCount} utilisateur{role.userCount > 1 ? "s" : ""}
                               </p>
                             </div>
@@ -259,7 +259,7 @@ export default function RolesPage() {
                                 e.stopPropagation();
                                 handleDeleteRole(role.id);
                               }}
-                              className="p-1 text-muted-foreground hover:text-error-light transition-colors"
+                              className="p-1 text-gray-400 hover:text-red-400 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -274,8 +274,8 @@ export default function RolesPage() {
 
             {/* Permissions Matrix */}
             <div className="lg:col-span-2">
-              <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
-                <div className="p-4 border-b border-border flex items-center justify-between">
+              <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                <div className="p-4 border-b border-slate-800 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">
                     {selectedRole ? `Permissions - ${selectedRole.name}` : "Sélectionnez un rôle"}
                   </h2>
@@ -283,7 +283,7 @@ export default function RolesPage() {
                     <button
                       onClick={handleUpdatePermissions}
                       disabled={saving}
-                      className="px-4 py-2 bg-brand hover:bg-brand-dark text-white text-sm rounded-lg transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
                     >
                       {saving ? "Enregistrement..." : "Enregistrer"}
                     </button>
@@ -293,7 +293,7 @@ export default function RolesPage() {
                 {selectedRole ? (
                   <div className="p-4 space-y-6 max-h-[600px] overflow-y-auto">
                     {selectedRole.isSystem && (
-                      <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-warning text-sm">
+                      <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm">
                         <Lock className="w-4 h-4 inline mr-2" />
                         Ce rôle système ne peut pas être modifié.
                       </div>
@@ -301,7 +301,7 @@ export default function RolesPage() {
                     
                     {Object.entries(groupedPermissions).map(([module, perms]) => (
                       <div key={module}>
-                        <h3 className="text-sm font-medium text-muted-foreground uppercase mb-3">
+                        <h3 className="text-sm font-medium text-gray-400 uppercase mb-3">
                           {moduleLabels[module] || module}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -314,13 +314,13 @@ export default function RolesPage() {
                                 disabled={selectedRole.isSystem}
                                 className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                                   isSelected
-                                    ? "bg-brand/10 border-brand/50 text-white"
-                                    : "bg-surface-secondary/50 border-border text-muted-foreground hover:border-border"
+                                    ? "bg-purple-500/10 border-purple-500/50 text-white"
+                                    : "bg-slate-800/50 border-slate-700 text-gray-400 hover:border-slate-600"
                                 } ${selectedRole.isSystem ? "cursor-not-allowed opacity-60" : ""}`}
                               >
                                 <div
                                   className={`w-5 h-5 rounded flex items-center justify-center ${
-                                    isSelected ? "bg-brand" : "bg-surface-tertiary"
+                                    isSelected ? "bg-purple-500" : "bg-slate-700"
                                   }`}
                                 >
                                   {isSelected && <Check className="w-3 h-3 text-white" />}
@@ -334,7 +334,7 @@ export default function RolesPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="p-8 text-center text-muted-foreground">
+                  <div className="p-8 text-center text-gray-400">
                     <Shield className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>Sélectionnez un rôle pour voir et modifier ses permissions</p>
                   </div>
@@ -348,63 +348,63 @@ export default function RolesPage() {
       {/* Create Role Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-surface-primary rounded-xl p-6 w-full max-w-lg border border-border max-h-[90vh] overflow-y-auto">
+          <div className="bg-slate-900 rounded-xl p-6 w-full max-w-lg border border-slate-800 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-white mb-4">Créer un nouveau rôle</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">Nom</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nom</label>
                 <input
                   type="text"
                   value={newRole.name}
                   onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
                   placeholder="Ex: Gestionnaire de campagnes"
-                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
                 <textarea
                   value={newRole.description}
                   onChange={(e) => setNewRole({ ...newRole, description: e.target.value })}
                   placeholder="Description du rôle..."
                   rows={2}
-                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">Couleur</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Couleur</label>
                 <input
                   type="color"
                   value={newRole.color}
                   onChange={(e) => setNewRole({ ...newRole, color: e.target.value })}
-                  className="w-full h-10 bg-surface-secondary border border-border rounded-lg cursor-pointer"
+                  className="w-full h-10 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">Permissions</label>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Permissions</label>
                 <div className="max-h-60 overflow-y-auto space-y-4">
                   {Object.entries(groupedPermissions).map(([module, perms]) => (
                     <div key={module}>
-                      <h4 className="text-xs font-medium text-text-tertiary uppercase mb-2">
+                      <h4 className="text-xs font-medium text-gray-500 uppercase mb-2">
                         {moduleLabels[module] || module}
                       </h4>
                       <div className="space-y-1">
                         {perms.map((perm) => (
                           <label
                             key={perm.id}
-                            className="flex items-center gap-2 p-2 rounded hover:bg-surface-secondary cursor-pointer"
+                            className="flex items-center gap-2 p-2 rounded hover:bg-slate-800 cursor-pointer"
                           >
                             <input
                               type="checkbox"
                               checked={selectedPermissions.includes(perm.id)}
                               onChange={() => togglePermission(perm.id)}
-                              className="rounded border-border text-purple-500 focus:ring-purple-500"
+                              className="rounded border-slate-600 text-purple-500 focus:ring-purple-500"
                             />
-                            <span className="text-sm text-foreground">{perm.name}</span>
+                            <span className="text-sm text-gray-300">{perm.name}</span>
                           </label>
                         ))}
                       </div>
@@ -420,14 +420,14 @@ export default function RolesPage() {
                   setShowCreateModal(false);
                   setSelectedPermissions([]);
                 }}
-                className="px-4 py-2 text-muted-foreground hover:text-white transition-colors"
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={handleCreateRole}
                 disabled={!newRole.name || saving}
-                className="px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50"
               >
                 {saving ? "Création..." : "Créer le rôle"}
               </button>

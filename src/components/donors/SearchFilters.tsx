@@ -88,7 +88,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
   };
 
   return (
-    <Card className="mb-6 bg-surface-primary border-border">
+    <Card className="mb-6 bg-slate-900 border-slate-700">
       <form onSubmit={handleSubmit}>
         {/* Barre de recherche principale */}
         <div className="flex gap-4">
@@ -119,11 +119,11 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
         {/* Filtres avancés */}
         {isExpanded && (
-          <div className="mt-6 pt-6 border-t border-border">
+          <div className="mt-6 pt-6 border-t border-slate-700">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Statut */}
               <div>
-                <p className="text-sm font-medium text-foreground mb-2">Statut</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Statut</p>
                 <div className="space-y-2">
                   {statusOptions.map((option) => (
                     <Checkbox
@@ -138,7 +138,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Type de donateur */}
               <div>
-                <p className="text-sm font-medium text-foreground mb-2">Type de donateur</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Type de donateur</p>
                 <div className="space-y-2">
                   {donorTypeOptions.map((option) => (
                     <Checkbox
@@ -153,7 +153,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Montant des dons */}
               <div>
-                <p className="text-sm font-medium text-foreground mb-2">Total des dons</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Total des dons</p>
                 <div className="space-y-2">
                   <Input
                     type="number"
@@ -172,9 +172,9 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Score de Potentiel */}
               <div>
-                <p className="text-sm font-medium text-foreground mb-2">
+                <p className="text-sm font-medium text-gray-300 mb-2">
                   <span className="flex items-center gap-1">
-                    <svg className="w-4 h-4 text-success-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                     Score de Potentiel
@@ -202,21 +202,21 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                   <button
                     type="button"
                     onClick={() => { handleChange("minPotentialScore", 70); handleChange("maxPotentialScore", 100); }}
-                    className="text-xs px-2 py-1 bg-success/20 text-success-light rounded hover:bg-success/30"
+                    className="text-xs px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded hover:bg-emerald-500/30"
                   >
                     Haut (70+)
                   </button>
                   <button
                     type="button"
                     onClick={() => { handleChange("minPotentialScore", 40); handleChange("maxPotentialScore", 69); }}
-                    className="text-xs px-2 py-1 bg-amber-500/20 text-warning rounded hover:bg-amber-500/30"
+                    className="text-xs px-2 py-1 bg-amber-500/20 text-amber-400 rounded hover:bg-amber-500/30"
                   >
                     Moyen (40-69)
                   </button>
                   <button
                     type="button"
                     onClick={() => { handleChange("minPotentialScore", 1); handleChange("maxPotentialScore", 39); }}
-                    className="text-xs px-2 py-1 bg-muted/20 text-slate-400 rounded hover:bg-muted/30"
+                    className="text-xs px-2 py-1 bg-slate-500/20 text-slate-400 rounded hover:bg-slate-500/30"
                   >
                     Faible (&lt;40)
                   </button>
@@ -225,9 +225,9 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {/* Score de Risque Churn */}
               <div>
-                <p className="text-sm font-medium text-foreground mb-2">
+                <p className="text-sm font-medium text-gray-300 mb-2">
                   <span className="flex items-center gap-1">
-                    <svg className="w-4 h-4 text-error-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     Risque de Churn
@@ -255,7 +255,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                   <button
                     type="button"
                     onClick={() => { handleChange("minChurnRiskScore", 70); handleChange("maxChurnRiskScore", 100); }}
-                    className="text-xs px-2 py-1 bg-error/20 text-error-light rounded hover:bg-error/30"
+                    className="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30"
                   >
                     Élevé (70+)
                   </button>
@@ -269,7 +269,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                   <button
                     type="button"
                     onClick={() => { handleChange("minChurnRiskScore", 1); handleChange("maxChurnRiskScore", 39); }}
-                    className="text-xs px-2 py-1 bg-success/20 text-success-light rounded hover:bg-success/30"
+                    className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded hover:bg-green-500/30"
                   >
                     Faible (&lt;40)
                   </button>
@@ -281,7 +281,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
               {/* Tri */}
               <div>
-                <p className="text-sm font-medium text-foreground mb-2">Trier par</p>
+                <p className="text-sm font-medium text-gray-300 mb-2">Trier par</p>
                 <Select
                   value={filters.sortBy}
                   onChange={(e) => handleChange("sortBy", e.target.value)}

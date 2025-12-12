@@ -144,15 +144,15 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":
-        return "bg-success/20 text-success-light border-green-500/30";
+        return "bg-green-500/20 text-green-400 border-green-500/30";
       case "PENDING":
-        return "bg-warning/20 text-yellow-400 border-yellow-500/30";
+        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
       case "APPROVED":
-        return "bg-info/20 text-info-light border-blue-500/30";
+        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
       case "COMPLETED":
-        return "bg-brand/20 text-brand-light border-brand/30";
+        return "bg-purple-500/20 text-purple-400 border-purple-500/30";
       default:
-        return "bg-muted/20 text-muted-foreground border-gray-500/30";
+        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     }
   };
 
@@ -171,17 +171,17 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
   const getActivityIcon = (type: string) => {
     switch (type) {
       case "DONATION_RECEIVED":
-        return <TrendingUp className="w-4 h-4 text-success-light" />;
+        return <TrendingUp className="w-4 h-4 text-green-400" />;
       case "GOAL_REACHED":
         return <Trophy className="w-4 h-4 text-yellow-400" />;
       case "MILESTONE_REACHED":
-        return <Target className="w-4 h-4 text-brand-light" />;
+        return <Target className="w-4 h-4 text-purple-400" />;
       case "BADGE_EARNED":
-        return <Award className="w-4 h-4 text-accent" />;
+        return <Award className="w-4 h-4 text-pink-400" />;
       case "SHARE_SOCIAL":
-        return <Share2 className="w-4 h-4 text-info-light" />;
+        return <Share2 className="w-4 h-4 text-blue-400" />;
       default:
-        return <CheckCircle className="w-4 h-4 text-muted-foreground" />;
+        return <CheckCircle className="w-4 h-4 text-gray-400" />;
     }
   };
 
@@ -189,7 +189,7 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
     return (
       <AppLayout breadcrumbs={[{ name: "Campagnes P2P", href: "/p2p" }]}>
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
         </div>
       </AppLayout>
     );
@@ -200,7 +200,7 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
       <AppLayout breadcrumbs={[{ name: "Campagnes P2P", href: "/p2p" }]}>
         <div className="text-center py-16">
           <h2 className="text-xl font-semibold text-white">Fundraiser non trouvé</h2>
-          <Link href="/p2p" className="text-accent hover:text-pink-300 mt-4 inline-block">
+          <Link href="/p2p" className="text-pink-400 hover:text-pink-300 mt-4 inline-block">
             Retour aux campagnes P2P
           </Link>
         </div>
@@ -221,7 +221,7 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
           <div className="flex items-start gap-4">
             <button
               onClick={() => router.back()}
-              className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
+              className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -250,8 +250,8 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
                     {getStatusLabel(fundraiser.status)}
                   </span>
                 </div>
-                <p className="text-muted-foreground">{fundraiser.title}</p>
-                <div className="flex items-center gap-4 mt-1 text-sm text-text-tertiary">
+                <p className="text-gray-400">{fundraiser.title}</p>
+                <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                   <span className="flex items-center gap-1">
                     <Mail className="w-4 h-4" />
                     {fundraiser.email}
@@ -271,7 +271,7 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
             {fundraiser.status === "PENDING" && (
               <button
                 onClick={() => handleStatusChange("ACTIVE")}
-                className="flex items-center gap-2 px-4 py-2 bg-success/20 text-success-light rounded-lg hover:bg-success/30 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
                 Approuver
@@ -289,7 +289,7 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
             {fundraiser.status === "PAUSED" && (
               <button
                 onClick={() => handleStatusChange("ACTIVE")}
-                className="flex items-center gap-2 px-4 py-2 bg-success/20 text-success-light rounded-lg hover:bg-success/30 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
                 Réactiver
@@ -298,14 +298,14 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
             <Link
               href={`/fundraise/${fundraiser.slug}`}
               target="_blank"
-              className="flex items-center gap-2 px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
               Voir la page
             </Link>
             <button
               onClick={handleDelete}
-              className="p-2 text-muted-foreground hover:text-error-light hover:bg-error/10 rounded-lg transition-colors"
+              className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
             >
               <Trash2 className="w-5 h-5" />
             </button>
@@ -314,8 +314,8 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2 text-gray-400 mb-2">
               <Target className="w-4 h-4" />
               <span className="text-xs">Objectif</span>
             </div>
@@ -324,44 +324,44 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
             </p>
           </div>
 
-          <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2 text-gray-400 mb-2">
               <TrendingUp className="w-4 h-4" />
               <span className="text-xs">Collecté</span>
             </div>
-            <p className="text-xl font-bold text-success-light">
+            <p className="text-xl font-bold text-green-400">
               {fundraiser.totalRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
             </p>
-            <p className="text-xs text-text-tertiary">{fundraiser.progressPercent.toFixed(0)}% de l&apos;objectif</p>
+            <p className="text-xs text-gray-500">{fundraiser.progressPercent.toFixed(0)}% de l&apos;objectif</p>
           </div>
 
-          <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2 text-gray-400 mb-2">
               <Users className="w-4 h-4" />
               <span className="text-xs">Donateurs</span>
             </div>
-            <p className="text-xl font-bold text-brand-light">{fundraiser.donorCount}</p>
+            <p className="text-xl font-bold text-purple-400">{fundraiser.donorCount}</p>
           </div>
 
-          <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2 text-gray-400 mb-2">
               <Award className="w-4 h-4" />
               <span className="text-xs">Points</span>
             </div>
-            <p className="text-xl font-bold text-accent">{fundraiser.points}</p>
-            <p className="text-xs text-text-tertiary">Niveau {fundraiser.level}</p>
+            <p className="text-xl font-bold text-pink-400">{fundraiser.points}</p>
+            <p className="text-xs text-gray-500">Niveau {fundraiser.level}</p>
           </div>
 
-          <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2 text-gray-400 mb-2">
               <Eye className="w-4 h-4" />
               <span className="text-xs">Vues</span>
             </div>
-            <p className="text-xl font-bold text-info-light">{fundraiser.viewCount}</p>
+            <p className="text-xl font-bold text-blue-400">{fundraiser.viewCount}</p>
           </div>
 
-          <div className="p-4 bg-surface-secondary/50 rounded-xl border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
+          <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2 text-gray-400 mb-2">
               <Share2 className="w-4 h-4" />
               <span className="text-xs">Partages</span>
             </div>
@@ -370,29 +370,29 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
         </div>
 
         {/* Progress Bar */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6">
           <div className="flex justify-between mb-2">
-            <span className="text-muted-foreground">Progression vers l&apos;objectif</span>
+            <span className="text-gray-400">Progression vers l&apos;objectif</span>
             <span className="text-white font-medium">{fundraiser.progressPercent.toFixed(1)}%</span>
           </div>
-          <div className="h-4 bg-surface-tertiary rounded-full overflow-hidden">
+          <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-pink-500 to-purple-600 transition-all"
               style={{ width: `${Math.min(fundraiser.progressPercent, 100)}%` }}
             />
           </div>
           <div className="flex justify-between mt-2 text-sm">
-            <span className="text-success-light">
+            <span className="text-green-400">
               {fundraiser.totalRaised.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })} collectés
             </span>
-            <span className="text-muted-foreground">
+            <span className="text-gray-400">
               sur {fundraiser.goalAmount.toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 })}
             </span>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-border">
+        <div className="border-b border-slate-700">
           <nav className="flex gap-4">
             {[
               { id: "overview", label: "Aperçu", icon: User },
@@ -404,8 +404,8 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? "border-accent text-accent"
-                    : "border-transparent text-muted-foreground hover:text-white"
+                    ? "border-pink-500 text-pink-400"
+                    : "border-transparent text-gray-400 hover:text-white"
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -416,38 +416,38 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
         </div>
 
         {/* Tab Content */}
-        <div className="bg-surface-secondary/50 rounded-xl border border-border p-6">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6">
           {activeTab === "overview" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Campagne</h3>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Campagne</h3>
                   <Link
                     href={`/campaigns/${fundraiser.campaign.id}`}
-                    className="text-white hover:text-accent transition-colors"
+                    className="text-white hover:text-pink-400 transition-colors"
                   >
                     {fundraiser.campaign.name}
                   </Link>
                 </div>
                 {fundraiser.team && (
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-2">Équipe</h3>
+                    <h3 className="text-sm font-medium text-gray-400 mb-2">Équipe</h3>
                     <Link
                       href={`/p2p/teams/${fundraiser.team.id}`}
-                      className="text-white hover:text-accent transition-colors"
+                      className="text-white hover:text-pink-400 transition-colors"
                     >
                       {fundraiser.team.name}
                     </Link>
                   </div>
                 )}
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Créé le</h3>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Créé le</h3>
                   <p className="text-white">
                     {new Date(fundraiser.createdAt).toLocaleDateString("fr-CA")}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Don moyen</h3>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Don moyen</h3>
                   <p className="text-white">
                     {fundraiser.averageDonation.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })}
                   </p>
@@ -456,19 +456,19 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
 
               {fundraiser.story && (
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Histoire</h3>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Histoire</h3>
                   <p className="text-white whitespace-pre-wrap">{fundraiser.story}</p>
                 </div>
               )}
 
               {fundraiser.badges.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Badges obtenus</h3>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Badges obtenus</h3>
                   <div className="flex flex-wrap gap-2">
                     {fundraiser.badges.map((badge, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm"
+                        className="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm"
                       >
                         {badge}
                       </span>
@@ -486,27 +486,27 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
                   {fundraiser.donations.map((donation) => (
                     <div
                       key={donation.id}
-                      className="flex items-start justify-between p-4 bg-surface-primary/50 rounded-lg"
+                      className="flex items-start justify-between p-4 bg-slate-900/50 rounded-lg"
                     >
                       <div>
                         <p className="font-medium text-white">
                           {donation.isAnonymous ? "Donateur anonyme" : donation.donorName || "Donateur"}
                         </p>
                         {donation.message && (
-                          <p className="text-sm text-muted-foreground mt-1">&quot;{donation.message}&quot;</p>
+                          <p className="text-sm text-gray-400 mt-1">&quot;{donation.message}&quot;</p>
                         )}
-                        <p className="text-xs text-text-tertiary mt-1">
+                        <p className="text-xs text-gray-500 mt-1">
                           {new Date(donation.createdAt).toLocaleDateString("fr-CA")}
                         </p>
                       </div>
-                      <p className="text-lg font-bold text-success-light">
+                      <p className="text-lg font-bold text-green-400">
                         {donation.amount.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })}
                       </p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-center py-8 text-gray-400">
                   <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>Aucun don reçu pour le moment</p>
                 </div>
@@ -521,17 +521,17 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
                   {fundraiser.activities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="flex items-start gap-3 p-4 bg-surface-primary/50 rounded-lg"
+                      className="flex items-start gap-3 p-4 bg-slate-900/50 rounded-lg"
                     >
-                      <div className="p-2 bg-surface-secondary rounded-lg">
+                      <div className="p-2 bg-slate-800 rounded-lg">
                         {getActivityIcon(activity.activityType)}
                       </div>
                       <div>
                         <p className="font-medium text-white">{activity.title}</p>
                         {activity.description && (
-                          <p className="text-sm text-muted-foreground">{activity.description}</p>
+                          <p className="text-sm text-gray-400">{activity.description}</p>
                         )}
-                        <p className="text-xs text-text-tertiary mt-1">
+                        <p className="text-xs text-gray-500 mt-1">
                           {new Date(activity.createdAt).toLocaleDateString("fr-CA")}
                         </p>
                       </div>
@@ -539,7 +539,7 @@ export default function FundraiserDetailPage({ params }: { params: Promise<{ id:
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-center py-8 text-gray-400">
                   <Clock className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>Aucune activité récente</p>
                 </div>

@@ -21,9 +21,9 @@ export default function OrganizationSelector() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 px-3 py-2 bg-surface-secondary/50 rounded-lg animate-pulse">
-        <div className="w-8 h-8 bg-surface-tertiary rounded-lg"></div>
-        <div className="w-24 h-4 bg-surface-tertiary rounded"></div>
+      <div className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-lg animate-pulse">
+        <div className="w-8 h-8 bg-slate-700 rounded-lg"></div>
+        <div className="w-24 h-4 bg-slate-700 rounded"></div>
       </div>
     );
   }
@@ -32,9 +32,9 @@ export default function OrganizationSelector() {
     return (
       <Link
         href="/organizations"
-        className="flex items-center gap-2 px-3 py-2 bg-brand/20 border border-brand/30 rounded-lg hover:bg-brand/30 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 bg-purple-600/20 border border-purple-500/30 rounded-lg hover:bg-purple-600/30 transition-colors"
       >
-        <svg className="w-5 h-5 text-brand-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
         <span className="text-sm text-purple-300">Créer une organisation</span>
@@ -46,7 +46,7 @@ export default function OrganizationSelector() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 px-3 py-2 bg-surface-secondary/50 border border-border rounded-lg hover:bg-surface-secondary transition-colors min-w-[200px]"
+        className="flex items-center gap-3 px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors min-w-[200px]"
       >
         {/* Logo ou initiale */}
         <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -68,14 +68,14 @@ export default function OrganizationSelector() {
           <p className="text-sm font-medium text-white truncate">
             {currentOrganization?.name || "Sélectionner"}
           </p>
-          <p className="text-xs text-muted-foreground truncate">
+          <p className="text-xs text-gray-400 truncate">
             {currentOrganization?.plan || "Organisation"}
           </p>
         </div>
 
         {/* Chevron */}
         <svg
-          className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -86,9 +86,9 @@ export default function OrganizationSelector() {
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-full bg-surface-secondary border border-border rounded-lg shadow-xl z-50 overflow-hidden">
-          <div className="p-2 border-b border-border">
-            <p className="text-xs font-semibold text-muted-foreground uppercase px-2">
+        <div className="absolute top-full left-0 mt-2 w-full bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 overflow-hidden">
+          <div className="p-2 border-b border-slate-700">
+            <p className="text-xs font-semibold text-gray-400 uppercase px-2">
               Vos organisations
             </p>
           </div>
@@ -101,8 +101,8 @@ export default function OrganizationSelector() {
                   setCurrentOrganization(org);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-surface-tertiary/50 transition-colors ${
-                  currentOrganization?.id === org.id ? "bg-brand/20" : ""
+                className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-700/50 transition-colors ${
+                  currentOrganization?.id === org.id ? "bg-purple-600/20" : ""
                 }`}
               >
                 <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -120,10 +120,10 @@ export default function OrganizationSelector() {
                 </div>
                 <div className="flex-1 text-left">
                   <p className="text-sm font-medium text-white truncate">{org.name}</p>
-                  <p className="text-xs text-muted-foreground">/{org.slug}</p>
+                  <p className="text-xs text-gray-400">/{org.slug}</p>
                 </div>
                 {currentOrganization?.id === org.id && (
-                  <svg className="w-4 h-4 text-brand-light" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 )}
@@ -131,11 +131,11 @@ export default function OrganizationSelector() {
             ))}
           </div>
 
-          <div className="p-2 border-t border-border">
+          <div className="p-2 border-t border-slate-700">
             <Link
               href="/organizations"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:text-white hover:bg-surface-tertiary/50 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

@@ -47,10 +47,10 @@ const TRIGGER_LABELS: Record<string, { label: string; icon: string }> = {
 };
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  ACTIVE: { bg: "bg-success/20", text: "text-success-light", label: "Actif" },
-  PAUSED: { bg: "bg-warning/20", text: "text-yellow-400", label: "En pause" },
-  DRAFT: { bg: "bg-muted/20", text: "text-slate-400", label: "Brouillon" },
-  ARCHIVED: { bg: "bg-error/20", text: "text-error-light", label: "Archivé" },
+  ACTIVE: { bg: "bg-green-500/20", text: "text-green-400", label: "Actif" },
+  PAUSED: { bg: "bg-yellow-500/20", text: "text-yellow-400", label: "En pause" },
+  DRAFT: { bg: "bg-slate-500/20", text: "text-slate-400", label: "Brouillon" },
+  ARCHIVED: { bg: "bg-red-500/20", text: "text-red-400", label: "Archivé" },
 };
 
 export default function AutomationsPage() {
@@ -121,30 +121,30 @@ export default function AutomationsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-slate-950">
         <Sidebar />
         <main className="ml-64 p-8 flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar />
       <main className="ml-64 p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Automatisations</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-400 mt-1">
               Créez des workflows automatisés pour engager vos donateurs
             </p>
           </div>
           <Link
             href="/automations/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
           >
             <Plus className="w-5 h-5" />
             Nouvelle automatisation
@@ -153,47 +153,47 @@ export default function AutomationsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-surface-primary rounded-xl p-6 border border-border">
+          <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-brand/20 rounded-lg">
-                <Zap className="w-6 h-6 text-brand-light" />
+              <div className="p-3 bg-purple-500/20 rounded-lg">
+                <Zap className="w-6 h-6 text-purple-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.total}</p>
-                <p className="text-sm text-muted-foreground">Automatisations</p>
+                <p className="text-sm text-gray-400">Automatisations</p>
               </div>
             </div>
           </div>
-          <div className="bg-surface-primary rounded-xl p-6 border border-border">
+          <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-success/20 rounded-lg">
-                <Play className="w-6 h-6 text-success-light" />
+              <div className="p-3 bg-green-500/20 rounded-lg">
+                <Play className="w-6 h-6 text-green-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.active}</p>
-                <p className="text-sm text-muted-foreground">Actives</p>
+                <p className="text-sm text-gray-400">Actives</p>
               </div>
             </div>
           </div>
-          <div className="bg-surface-primary rounded-xl p-6 border border-border">
+          <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-info/20 rounded-lg">
-                <Mail className="w-6 h-6 text-info-light" />
+              <div className="p-3 bg-blue-500/20 rounded-lg">
+                <Mail className="w-6 h-6 text-blue-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.totalExecutions}</p>
-                <p className="text-sm text-muted-foreground">Exécutions totales</p>
+                <p className="text-sm text-gray-400">Exécutions totales</p>
               </div>
             </div>
           </div>
-          <div className="bg-surface-primary rounded-xl p-6 border border-border">
+          <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-cyan-500/20 rounded-lg">
                 <CheckCircle className="w-6 h-6 text-cyan-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats.successRate.toFixed(0)}%</p>
-                <p className="text-sm text-muted-foreground">Taux de succès</p>
+                <p className="text-sm text-gray-400">Taux de succès</p>
               </div>
             </div>
           </div>
@@ -212,8 +212,8 @@ export default function AutomationsPage() {
               onClick={() => setFilter(f.value)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 filter === f.value
-                  ? "bg-brand text-white"
-                  : "bg-surface-secondary text-foreground hover:bg-surface-tertiary border border-border"
+                  ? "bg-purple-600 text-white"
+                  : "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
               }`}
             >
               {f.label}
@@ -223,17 +223,17 @@ export default function AutomationsPage() {
 
         {/* Liste */}
         {filteredAutomations.length === 0 ? (
-          <div className="bg-surface-primary rounded-xl border border-border p-12 text-center">
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-12 text-center">
             <Zap className="w-12 h-12 text-slate-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-white mb-2">
               Aucune automatisation
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-gray-400 mb-6">
               Créez votre première automatisation pour engager vos donateurs automatiquement
             </p>
             <Link
               href="/automations/new"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
             >
               <Plus className="w-5 h-5" />
               Créer une automatisation
@@ -251,7 +251,7 @@ export default function AutomationsPage() {
               return (
                 <div
                   key={automation.id}
-                  className="bg-surface-primary rounded-xl border border-border p-6 hover:border-border transition-colors"
+                  className="bg-slate-900 rounded-xl border border-slate-800 p-6 hover:border-slate-700 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
@@ -260,7 +260,7 @@ export default function AutomationsPage() {
                         <div className="flex items-center gap-3">
                           <Link
                             href={`/automations/${automation.id}`}
-                            className="text-lg font-semibold text-white hover:text-brand-light transition-colors"
+                            className="text-lg font-semibold text-white hover:text-purple-400 transition-colors"
                           >
                             {automation.name}
                           </Link>
@@ -271,11 +271,11 @@ export default function AutomationsPage() {
                           </span>
                         </div>
                         {automation.description && (
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-sm text-gray-400 mt-1">
                             {automation.description}
                           </p>
                         )}
-                        <div className="flex items-center gap-4 mt-3 text-sm text-text-tertiary">
+                        <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
                           <span className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             {trigger.label}
@@ -285,13 +285,13 @@ export default function AutomationsPage() {
                             {automation.totalExecutions} exécutions
                           </span>
                           {automation.successfulExecutions > 0 && (
-                            <span className="flex items-center gap-1 text-success-light">
+                            <span className="flex items-center gap-1 text-green-400">
                               <CheckCircle className="w-4 h-4" />
                               {automation.successfulExecutions} réussies
                             </span>
                           )}
                           {automation.failedExecutions > 0 && (
-                            <span className="flex items-center gap-1 text-error-light">
+                            <span className="flex items-center gap-1 text-red-400">
                               <XCircle className="w-4 h-4" />
                               {automation.failedExecutions} échouées
                             </span>
@@ -306,8 +306,8 @@ export default function AutomationsPage() {
                           onClick={() => toggleStatus(automation.id, automation.status)}
                           className={`p-2 rounded-lg transition-colors ${
                             automation.status === "ACTIVE"
-                              ? "bg-warning/20 text-yellow-400 hover:bg-warning/30"
-                              : "bg-success/20 text-success-light hover:bg-success/30"
+                              ? "bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30"
+                              : "bg-green-500/20 text-green-400 hover:bg-green-500/30"
                           }`}
                           title={automation.status === "ACTIVE" ? "Mettre en pause" : "Activer"}
                         >
@@ -320,13 +320,13 @@ export default function AutomationsPage() {
                       )}
                       <Link
                         href={`/automations/${automation.id}/edit`}
-                        className="p-2 bg-surface-secondary text-muted-foreground rounded-lg hover:bg-surface-tertiary hover:text-white transition-colors"
+                        className="p-2 bg-slate-800 text-gray-400 rounded-lg hover:bg-slate-700 hover:text-white transition-colors"
                       >
                         <MoreVertical className="w-5 h-5" />
                       </Link>
                       <button
                         onClick={() => deleteAutomation(automation.id)}
-                        className="p-2 bg-error/20 text-error-light rounded-lg hover:bg-error/30 transition-colors"
+                        className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>

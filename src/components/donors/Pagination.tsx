@@ -52,7 +52,7 @@ export function Pagination({ currentPage, totalPages, total, limit, onPageChange
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between border-t border-border bg-surface-primary px-4 py-3 sm:px-6 mt-4 rounded-b-lg">
+    <div className="flex items-center justify-between border-t border-slate-700 bg-slate-900 px-4 py-3 sm:px-6 mt-4 rounded-b-lg">
       <div className="flex flex-1 justify-between sm:hidden">
         <Button
           variant="outline"
@@ -73,7 +73,7 @@ export function Pagination({ currentPage, totalPages, total, limit, onPageChange
       </div>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             Affichage de <span className="font-medium text-white">{startItem}</span> à{" "}
             <span className="font-medium text-white">{endItem}</span> sur{" "}
             <span className="font-medium text-white">{total}</span> résultats
@@ -84,7 +84,7 @@ export function Pagination({ currentPage, totalPages, total, limit, onPageChange
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-muted-foreground ring-1 ring-inset ring-slate-600 hover:bg-surface-secondary focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-slate-600 hover:bg-slate-800 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="sr-only">Précédent</span>
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -100,8 +100,8 @@ export function Pagination({ currentPage, totalPages, total, limit, onPageChange
                   page === currentPage
                     ? "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     : page === "..."
-                    ? "text-muted-foreground ring-1 ring-inset ring-slate-600 cursor-default"
-                    : "text-foreground ring-1 ring-inset ring-slate-600 hover:bg-surface-secondary focus:z-20 focus:outline-offset-0"
+                    ? "text-gray-400 ring-1 ring-inset ring-slate-600 cursor-default"
+                    : "text-gray-300 ring-1 ring-inset ring-slate-600 hover:bg-slate-800 focus:z-20 focus:outline-offset-0"
                 }`}
               >
                 {page}
@@ -110,7 +110,7 @@ export function Pagination({ currentPage, totalPages, total, limit, onPageChange
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-muted-foreground ring-1 ring-inset ring-slate-600 hover:bg-surface-secondary focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-slate-600 hover:bg-slate-800 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="sr-only">Suivant</span>
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

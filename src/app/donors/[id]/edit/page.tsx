@@ -107,13 +107,13 @@ export default function EditDonorPage({ params }: EditDonorPageProps) {
           <h1 className="text-2xl font-bold text-white">
             Modifier {donor?.firstName} {donor?.lastName}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-gray-400">
             Modifiez les informations du donateur
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 bg-error/20/50 border border-error text-red-300 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}

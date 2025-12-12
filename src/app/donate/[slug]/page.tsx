@@ -260,7 +260,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f8fafc" }}>
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-foreground">{error}</h2>
+          <h2 className="text-xl font-semibold text-gray-900">{error}</h2>
           <Link href="/" className="mt-4 text-indigo-600 hover:text-indigo-800">
             Retour à l&apos;accueil
           </Link>
@@ -280,23 +280,23 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-4">Merci pour votre don!</h1>
-          <p className="text-muted-foreground mb-6">{form.thankYouMessage}</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Merci pour votre don!</h1>
+          <p className="text-gray-600 mb-6">{form.thankYouMessage}</p>
           
-          <div className="bg-muted rounded-lg p-4 mb-6 text-left">
-            <p className="text-sm text-text-tertiary mb-1">Montant du don</p>
+          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+            <p className="text-sm text-gray-500 mb-1">Montant du don</p>
             <p className="text-2xl font-bold" style={{ color: form.primaryColor }}>
               {formatCurrency(getAmount())}
             </p>
             {result && (
               <>
-                <p className="text-sm text-text-tertiary mt-3 mb-1">Numéro de reçu</p>
-                <p className="text-sm font-medium text-foreground">{result.receiptNumber}</p>
+                <p className="text-sm text-gray-500 mt-3 mb-1">Numéro de reçu</p>
+                <p className="text-sm font-medium text-gray-900">{result.receiptNumber}</p>
               </>
             )}
           </div>
 
-          <p className="text-sm text-text-tertiary mb-6">
+          <p className="text-sm text-gray-500 mb-6">
             Un reçu fiscal vous sera envoyé par courriel à l&apos;adresse {donorInfo.email}
           </p>
 
@@ -368,9 +368,9 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                 {personalized.donor?.firstName?.charAt(0) || "?"}
               </div>
               <div>
-                <p className="font-medium text-foreground">{personalized.welcomeMessage}</p>
+                <p className="font-medium text-gray-900">{personalized.welcomeMessage}</p>
                 {personalized.lastDonation && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-600">
                     Votre dernier don : {formatCurrency(personalized.lastDonation.amount)} le {formatDate(personalized.lastDonation.date)}
                   </p>
                 )}
@@ -390,7 +390,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                 className={`flex-1 py-4 text-sm font-medium transition-colors ${
                   step === s 
                     ? "text-white" 
-                    : "text-text-tertiary bg-muted"
+                    : "text-gray-500 bg-gray-50"
                 }`}
                 style={step === s ? { backgroundColor: form.primaryColor } : {}}
               >
@@ -409,13 +409,13 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
             {/* Étape 1: Montant */}
             {step === "amount" && (
               <div>
-                <h2 className="text-xl font-semibold text-foreground mb-2">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">
                   Choisissez votre montant
                 </h2>
 
                 {/* Indicateur de montant recommandé */}
                 {personalized?.recommendedAmount && (
-                  <p className="text-sm text-muted-foreground mb-6">
+                  <p className="text-sm text-gray-600 mb-6">
                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: form.primaryColor + "20", color: form.primaryColor }}>
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -468,7 +468,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                       Ou entrez un montant personnalisé
                     </label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary">$</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                       <input
                         type="number"
                         min={form.minimumAmount}
@@ -503,7 +503,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
             {/* Étape 2: Informations */}
             {step === "info" && (
               <div>
-                <h2 className="text-xl font-semibold text-foreground mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">
                   Vos informations
                 </h2>
 
@@ -514,8 +514,8 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <div>
-                      <p className="font-medium text-foreground">Informations pré-remplies</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-medium text-gray-900">Informations pré-remplies</p>
+                      <p className="text-sm text-gray-600">
                         Nous avons retrouvé vos informations. Vous pouvez les modifier si nécessaire.
                       </p>
                     </div>
@@ -542,7 +542,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                         </div>
                       )}
                     </div>
-                    <p className="mt-1 text-xs text-text-tertiary">
+                    <p className="mt-1 text-xs text-gray-500">
                       Entrez votre email pour retrouver vos informations
                     </p>
                   </div>
@@ -683,7 +683,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                 <div className="flex gap-4 mt-8">
                   <button
                     onClick={() => setStep("amount")}
-                    className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-muted transition-colors"
+                    className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Retour
                   </button>
@@ -708,30 +708,30 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
             {/* Étape 3: Confirmation */}
             {step === "payment" && (
               <div>
-                <h2 className="text-xl font-semibold text-foreground mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">
                   Confirmer votre don
                 </h2>
 
-                <div className="bg-muted rounded-lg p-6 mb-6">
+                <div className="bg-gray-50 rounded-lg p-6 mb-6">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-muted-foreground">Montant du don</span>
+                    <span className="text-gray-600">Montant du don</span>
                     <span className="text-2xl font-bold" style={{ color: form.primaryColor }}>
                       {formatCurrency(getAmount())}
                     </span>
                   </div>
                   <div className="border-t pt-4 space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-text-tertiary">Donateur</span>
-                      <span className="text-foreground">{donorInfo.firstName} {donorInfo.lastName}</span>
+                      <span className="text-gray-500">Donateur</span>
+                      <span className="text-gray-900">{donorInfo.firstName} {donorInfo.lastName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-text-tertiary">Courriel</span>
-                      <span className="text-foreground">{donorInfo.email}</span>
+                      <span className="text-gray-500">Courriel</span>
+                      <span className="text-gray-900">{donorInfo.email}</span>
                     </div>
                     {form.formType === "RECURRING" && (
                       <div className="flex justify-between">
-                        <span className="text-text-tertiary">Fréquence</span>
-                        <span className="text-foreground">Mensuel</span>
+                        <span className="text-gray-500">Fréquence</span>
+                        <span className="text-gray-900">Mensuel</span>
                       </div>
                     )}
                   </div>
@@ -740,7 +740,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                 <div className="flex gap-4">
                   <button
                     onClick={() => setStep("info")}
-                    className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-muted transition-colors"
+                    className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Retour
                   </button>
@@ -766,7 +766,7 @@ export default function DonatePage({ params }: { params: Promise<{ slug: string 
                   </button>
                 </div>
 
-                <p className="mt-4 text-xs text-center text-text-tertiary">
+                <p className="mt-4 text-xs text-center text-gray-500">
                   Paiement sécurisé par Stripe. Vos informations sont protégées.
                 </p>
               </div>

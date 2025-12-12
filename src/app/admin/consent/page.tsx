@@ -108,26 +108,26 @@ export default function ConsentReportPage() {
   const getConsentTypeColor = (type: string) => {
     switch (type) {
       case "opt_in":
-        return "text-success-light bg-success/20";
+        return "text-green-400 bg-green-500/20";
       case "opt_out":
-        return "text-error-light bg-error/20";
+        return "text-red-400 bg-red-500/20";
       default:
-        return "text-info-light bg-info/20";
+        return "text-blue-400 bg-blue-500/20";
     }
   };
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-background p-6">
+      <div className="min-h-screen bg-slate-950 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                <Shield className="w-7 h-7 text-accent" />
+                <Shield className="w-7 h-7 text-pink-500" />
                 Rapport des Consentements RGPD
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-gray-400 mt-1">
                 Suivi et audit des consentements pour la conformité légale
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function ConsentReportPage() {
               <button
                 onClick={fetchReport}
                 disabled={loading}
-                className="flex items-center gap-2 px-4 py-2 bg-surface-secondary text-white rounded-lg hover:bg-surface-tertiary transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
                 Actualiser
@@ -151,29 +151,29 @@ export default function ConsentReportPage() {
           </div>
 
           {/* Filtres de date */}
-          <div className="bg-surface-primary rounded-xl border border-border p-4 mb-6">
+          <div className="bg-slate-900 rounded-xl border border-slate-700 p-4 mb-6">
             <div className="flex flex-wrap items-end gap-4">
               <div>
-                <label className="block text-sm text-muted-foreground mb-1">Date début</label>
+                <label className="block text-sm text-gray-400 mb-1">Date début</label>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="px-3 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                  className="px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm text-muted-foreground mb-1">Date fin</label>
+                <label className="block text-sm text-gray-400 mb-1">Date fin</label>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="px-3 py-2 bg-surface-secondary border border-border rounded-lg text-white"
+                  className="px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white"
                 />
               </div>
               <button
                 onClick={fetchReport}
-                className="px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated"
+                className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600"
               >
                 Filtrer
               </button>
@@ -184,7 +184,7 @@ export default function ConsentReportPage() {
                     setEndDate("");
                     fetchReport();
                   }}
-                  className="px-4 py-2 text-muted-foreground hover:text-white"
+                  className="px-4 py-2 text-gray-400 hover:text-white"
                 >
                   Réinitialiser
                 </button>
@@ -194,82 +194,82 @@ export default function ConsentReportPage() {
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <RefreshCw className="w-8 h-8 text-accent animate-spin" />
+              <RefreshCw className="w-8 h-8 text-pink-500 animate-spin" />
             </div>
           ) : report ? (
             <>
               {/* Statistiques globales */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <Users className="w-8 h-8 text-info-light" />
+                    <Users className="w-8 h-8 text-blue-400" />
                     <span className="text-2xl font-bold text-white">
                       {report.summary.totalDonors}
                     </span>
                   </div>
-                  <p className="text-muted-foreground">Total donateurs</p>
+                  <p className="text-gray-400">Total donateurs</p>
                 </div>
 
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <Mail className="w-8 h-8 text-success-light" />
+                    <Mail className="w-8 h-8 text-green-400" />
                     <div className="text-right">
                       <span className="text-2xl font-bold text-white">
                         {report.summary.consentEmail}
                       </span>
-                      <span className="text-sm text-muted-foreground ml-2">
+                      <span className="text-sm text-gray-400 ml-2">
                         ({report.summary.rates.email}%)
                       </span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">Consentement Email</p>
+                  <p className="text-gray-400">Consentement Email</p>
                 </div>
 
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <Phone className="w-8 h-8 text-brand-light" />
+                    <Phone className="w-8 h-8 text-purple-400" />
                     <div className="text-right">
                       <span className="text-2xl font-bold text-white">
                         {report.summary.consentPhone}
                       </span>
-                      <span className="text-sm text-muted-foreground ml-2">
+                      <span className="text-sm text-gray-400 ml-2">
                         ({report.summary.rates.phone}%)
                       </span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">Consentement Téléphone</p>
+                  <p className="text-gray-400">Consentement Téléphone</p>
                 </div>
 
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <FileText className="w-8 h-8 text-orange-400" />
                     <div className="text-right">
                       <span className="text-2xl font-bold text-white">
                         {report.summary.consentMail}
                       </span>
-                      <span className="text-sm text-muted-foreground ml-2">
+                      <span className="text-sm text-gray-400 ml-2">
                         ({report.summary.rates.mail}%)
                       </span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">Consentement Courrier</p>
+                  <p className="text-gray-400">Consentement Courrier</p>
                 </div>
               </div>
 
               {/* Alertes */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center gap-3 mb-2">
-                    <CheckCircle className="w-5 h-5 text-success-light" />
+                    <CheckCircle className="w-5 h-5 text-green-400" />
                     <span className="text-white font-medium">Tous consentements</span>
                   </div>
-                  <p className="text-3xl font-bold text-success-light">
+                  <p className="text-3xl font-bold text-green-400">
                     {report.summary.allConsent}
                   </p>
-                  <p className="text-sm text-muted-foreground">donateurs avec tous les consentements</p>
+                  <p className="text-sm text-gray-400">donateurs avec tous les consentements</p>
                 </div>
 
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center gap-3 mb-2">
                     <AlertTriangle className="w-5 h-5 text-yellow-400" />
                     <span className="text-white font-medium">Aucun consentement</span>
@@ -277,24 +277,24 @@ export default function ConsentReportPage() {
                   <p className="text-3xl font-bold text-yellow-400">
                     {report.summary.noConsent}
                   </p>
-                  <p className="text-sm text-muted-foreground">donateurs sans consentement</p>
+                  <p className="text-sm text-gray-400">donateurs sans consentement</p>
                 </div>
 
-                <div className="bg-surface-primary rounded-xl border border-border p-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
                   <div className="flex items-center gap-3 mb-2">
-                    <TrendingDown className="w-5 h-5 text-error-light" />
+                    <TrendingDown className="w-5 h-5 text-red-400" />
                     <span className="text-white font-medium">Opt-outs récents</span>
                   </div>
-                  <p className="text-3xl font-bold text-error-light">
+                  <p className="text-3xl font-bold text-red-400">
                     {report.summary.recentOptOuts}
                   </p>
-                  <p className="text-sm text-muted-foreground">désinscriptions (30 derniers jours)</p>
+                  <p className="text-sm text-gray-400">désinscriptions (30 derniers jours)</p>
                 </div>
               </div>
 
               {/* Changements par source */}
               {report.changesBySource.length > 0 && (
-                <div className="bg-surface-primary rounded-xl border border-border p-6 mb-6">
+                <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
                   <h2 className="text-lg font-semibold text-white mb-4">
                     Changements par source
                   </h2>
@@ -302,10 +302,10 @@ export default function ConsentReportPage() {
                     {report.changesBySource.map((source) => (
                       <div
                         key={source.source}
-                        className="p-4 bg-surface-secondary rounded-lg text-center"
+                        className="p-4 bg-slate-800 rounded-lg text-center"
                       >
                         <p className="text-2xl font-bold text-white">{source.count}</p>
-                        <p className="text-sm text-muted-foreground">{getSourceLabel(source.source)}</p>
+                        <p className="text-sm text-gray-400">{getSourceLabel(source.source)}</p>
                       </div>
                     ))}
                   </div>
@@ -313,12 +313,12 @@ export default function ConsentReportPage() {
               )}
 
               {/* Historique des changements */}
-              <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
-                <div className="p-6 border-b border-border">
+              <div className="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                <div className="p-6 border-b border-slate-700">
                   <h2 className="text-lg font-semibold text-white">
                     Historique des changements
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-400">
                     100 derniers changements de consentement
                   </p>
                 </div>
@@ -326,37 +326,37 @@ export default function ConsentReportPage() {
                 {report.recentChanges.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead className="bg-surface-secondary">
+                      <thead className="bg-slate-800">
                         <tr>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                             Date
                           </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                             Donateur
                           </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                             Type
                           </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                             Source
                           </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                             Changements
                           </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                             IP
                           </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-700">
                         {report.recentChanges.map((change) => (
-                          <tr key={change.id} className="hover:bg-surface-secondary/50">
-                            <td className="px-4 py-3 text-sm text-foreground">
+                          <tr key={change.id} className="hover:bg-slate-800/50">
+                            <td className="px-4 py-3 text-sm text-gray-300">
                               {new Date(change.createdAt).toLocaleString("fr-CA")}
                             </td>
                             <td className="px-4 py-3">
                               <p className="text-sm text-white">{change.donorName}</p>
-                              <p className="text-xs text-muted-foreground">{change.donorEmail}</p>
+                              <p className="text-xs text-gray-400">{change.donorEmail}</p>
                             </td>
                             <td className="px-4 py-3">
                               <span
@@ -367,29 +367,29 @@ export default function ConsentReportPage() {
                                 {getConsentTypeLabel(change.consentType)}
                               </span>
                             </td>
-                            <td className="px-4 py-3 text-sm text-foreground">
+                            <td className="px-4 py-3 text-sm text-gray-300">
                               {getSourceLabel(change.source)}
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex gap-2 text-xs">
                                 {change.newValue.consentEmail !== change.previousValue?.consentEmail && (
-                                  <span className={change.newValue.consentEmail ? "text-success-light" : "text-error-light"}>
+                                  <span className={change.newValue.consentEmail ? "text-green-400" : "text-red-400"}>
                                     Email: {change.newValue.consentEmail ? "✓" : "✗"}
                                   </span>
                                 )}
                                 {change.newValue.consentPhone !== change.previousValue?.consentPhone && (
-                                  <span className={change.newValue.consentPhone ? "text-success-light" : "text-error-light"}>
+                                  <span className={change.newValue.consentPhone ? "text-green-400" : "text-red-400"}>
                                     Tél: {change.newValue.consentPhone ? "✓" : "✗"}
                                   </span>
                                 )}
                                 {change.newValue.consentMail !== change.previousValue?.consentMail && (
-                                  <span className={change.newValue.consentMail ? "text-success-light" : "text-error-light"}>
+                                  <span className={change.newValue.consentMail ? "text-green-400" : "text-red-400"}>
                                     Courrier: {change.newValue.consentMail ? "✓" : "✗"}
                                   </span>
                                 )}
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-sm text-muted-foreground">
+                            <td className="px-4 py-3 text-sm text-gray-400">
                               {change.ipAddress || "-"}
                             </td>
                           </tr>
@@ -399,14 +399,14 @@ export default function ConsentReportPage() {
                   </div>
                 ) : (
                   <div className="p-12 text-center">
-                    <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Aucun changement de consentement enregistré</p>
+                    <Clock className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-400">Aucun changement de consentement enregistré</p>
                   </div>
                 )}
               </div>
             </>
           ) : (
-            <div className="bg-surface-primary rounded-xl border border-border p-12 text-center">
+            <div className="bg-slate-900 rounded-xl border border-slate-700 p-12 text-center">
               <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
               <p className="text-white">Erreur lors du chargement du rapport</p>
             </div>

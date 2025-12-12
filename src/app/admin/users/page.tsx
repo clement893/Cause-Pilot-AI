@@ -109,16 +109,16 @@ export default function UsersPage() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "ADMIN": return "bg-error/20 text-error-light";
-      case "MANAGER": return "bg-info/20 text-info-light";
-      case "ANALYST": return "bg-success/20 text-success-light";
-      case "VIEWER": return "bg-muted/20 text-muted-foreground";
-      default: return "bg-brand/20 text-brand-light";
+      case "ADMIN": return "bg-red-500/20 text-red-400";
+      case "MANAGER": return "bg-blue-500/20 text-blue-400";
+      case "ANALYST": return "bg-green-500/20 text-green-400";
+      case "VIEWER": return "bg-gray-500/20 text-gray-400";
+      default: return "bg-purple-500/20 text-purple-400";
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
@@ -126,7 +126,7 @@ export default function UsersPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                 <Link href="/admin" className="hover:text-white">Administration</Link>
                 <span>/</span>
                 <span className="text-white">Utilisateurs</span>
@@ -135,7 +135,7 @@ export default function UsersPage() {
             </div>
             <button
               onClick={() => setShowInviteModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
             >
               <UserPlus className="w-5 h-5" />
               Inviter un utilisateur
@@ -143,24 +143,24 @@ export default function UsersPage() {
           </div>
 
           {/* Filters */}
-          <div className="bg-surface-primary rounded-xl p-4 border border-border mb-6">
+          <div className="bg-slate-900 rounded-xl p-4 border border-slate-800 mb-6">
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     placeholder="Rechercher par nom ou email..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand"
+                    className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
                   />
                 </div>
               </div>
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-brand"
+                className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
               >
                 <option value="">Tous les rôles</option>
                 <option value="ADMIN">Administrateur</option>
@@ -173,44 +173,44 @@ export default function UsersPage() {
           </div>
 
           {/* Users Table */}
-          <div className="bg-surface-primary rounded-xl border border-border overflow-hidden">
+          <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Utilisateur</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Rôle système</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Rôles assignés</th>
-                    <th className="text-left px-6 py-4 text-sm font-medium text-muted-foreground">Date d&apos;inscription</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-muted-foreground">Actions</th>
+                  <tr className="border-b border-slate-800">
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Utilisateur</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Rôle système</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Rôles assignés</th>
+                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-400">Date d&apos;inscription</th>
+                    <th className="text-right px-6 py-4 text-sm font-medium text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                      <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
                         Chargement...
                       </td>
                     </tr>
                   ) : users.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                      <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
                         Aucun utilisateur trouvé
                       </td>
                     </tr>
                   ) : (
                     users.map((user) => (
-                      <tr key={user.id} className="border-b border-border hover:bg-surface-secondary/50">
+                      <tr key={user.id} className="border-b border-slate-800 hover:bg-slate-800/50">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center">
-                              <span className="text-brand-light font-medium">
+                            <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                              <span className="text-purple-400 font-medium">
                                 {(user.name || user.email).charAt(0).toUpperCase()}
                               </span>
                             </div>
                             <div>
                               <p className="text-white font-medium">{user.name || "Sans nom"}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                              <p className="text-sm text-gray-400">{user.email}</p>
                             </div>
                           </div>
                         </td>
@@ -232,22 +232,22 @@ export default function UsersPage() {
                                 </span>
                               ))
                             ) : (
-                              <span className="text-text-tertiary text-sm">Aucun</span>
+                              <span className="text-gray-500 text-sm">Aucun</span>
                             )}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-muted-foreground">
+                        <td className="px-6 py-4 text-gray-400">
                           {new Date(user.createdAt).toLocaleDateString("fr-FR")}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-2">
-                            <button className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors">
+                            <button className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors">
+                            <button className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button className="p-2 text-muted-foreground hover:text-error-light hover:bg-surface-tertiary rounded-lg transition-colors">
+                            <button className="p-2 text-gray-400 hover:text-red-400 hover:bg-slate-700 rounded-lg transition-colors">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
@@ -260,25 +260,25 @@ export default function UsersPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-border">
-              <p className="text-sm text-muted-foreground">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800">
+              <p className="text-sm text-gray-400">
                 {total} utilisateur{total > 1 ? "s" : ""} au total
               </p>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <span className="text-muted-foreground">
+                <span className="text-gray-400">
                   Page {page} sur {totalPages}
                 </span>
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -291,12 +291,12 @@ export default function UsersPage() {
       {/* Invite Modal */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-surface-primary rounded-xl p-6 w-full max-w-md border border-border">
+          <div className="bg-slate-900 rounded-xl p-6 w-full max-w-md border border-slate-800">
             <h2 className="text-xl font-bold text-white mb-4">Inviter un utilisateur</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-1">
                   Email
                 </label>
                 <input
@@ -304,18 +304,18 @@ export default function UsersPage() {
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder="email@exemple.com"
-                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-sm font-medium text-gray-400 mb-1">
                   Rôle
                 </label>
                 <select
                   value={inviteRoleId}
                   onChange={(e) => setInviteRoleId(e.target.value)}
-                  className="w-full px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-brand"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                 >
                   <option value="">Sélectionner un rôle</option>
                   {roles.map((role) => (
@@ -330,14 +330,14 @@ export default function UsersPage() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setShowInviteModal(false)}
-                className="px-4 py-2 text-muted-foreground hover:text-white transition-colors"
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={handleInvite}
                 disabled={!inviteEmail || inviting}
-                className="px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50"
               >
                 {inviting ? "Envoi..." : "Envoyer l'invitation"}
               </button>

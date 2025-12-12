@@ -10,7 +10,7 @@ export async function GET(
     const { id } = await params;
     const userId = parseInt(id);
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.adminUser.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -30,7 +30,7 @@ export async function GET(
     }
 
     // Récupérer les rôles assignés
-    const roleAssignments = await prisma.userRoleAssignment.findMany({
+    const roleAssignments = await prisma.adminUserRoleAssignment.findMany({
       where: { userId: user.id },
       include: { role: true },
     });
@@ -71,7 +71,7 @@ export async function PATCH(
     if (name !== undefined) updateData.name = name;
     if (role !== undefined) updateData.role = role;
 
-    const user = await prisma.user.update({
+    const user = await prisma.adminUser.update({
       where: { id: userId },
       data: updateData,
     });
@@ -79,13 +79,13 @@ export async function PATCH(
     // Mettre à jour les rôles assignés si fournis
     if (assignedRoleIds !== undefined) {
       // Supprimer les anciens rôles
-      await prisma.userRoleAssignment.deleteMany({
+      await prisma.adminUserRoleAssignment.deleteMany({
         where: { userId },
       });
 
       // Ajouter les nouveaux rôles
       if (assignedRoleIds.length > 0) {
-        await prisma.userRoleAssignment.createMany({
+        await prisma.adminUserRoleAssignment.createMany({
           data: assignedRoleIds.map((roleId: string) => ({
             userId,
             roleId,
@@ -128,7 +128,7 @@ export async function DELETE(
     const userId = parseInt(id);
 
     // Vérifier que l'utilisateur existe
-    const user = await prisma.user.findUnique({
+    const user = await prisma.adminUser.findUnique({
       where: { id: userId },
     });
 
@@ -140,7 +140,7 @@ export async function DELETE(
     }
 
     // Supprimer les rôles assignés
-    await prisma.userRoleAssignment.deleteMany({
+    await prisma.adminUserRoleAssignment.deleteMany({
       where: { userId },
     });
 

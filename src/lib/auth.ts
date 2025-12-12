@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { CustomPrismaAdapter } from "./prisma-adapter";
 import { prisma } from "./prisma";
-import type { Adapter } from "next-auth/adapters";
 
 // Domaine autorisé pour l'authentification admin
 const ALLOWED_DOMAIN = "nukleo.com";
@@ -22,7 +21,7 @@ declare module "next-auth" {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma) as Adapter,
+  adapter: CustomPrismaAdapter(prisma),
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,

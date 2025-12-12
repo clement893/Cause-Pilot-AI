@@ -16,7 +16,7 @@ export async function GET(
 
     // Récupérer les informations des utilisateurs
     const userIds = members.map((m) => m.userId);
-    const users = await prisma.user.findMany({
+    const users = await prisma.adminUser.findMany({
       where: { id: { in: userIds } },
       select: { id: true, name: true, email: true },
     });

@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     const [users, total] = await Promise.all([
-      prisma.user.findMany({
+      prisma.adminUser.findMany({
         where,
         skip,
         take: limit,
@@ -39,12 +39,12 @@ export async function GET(request: NextRequest) {
           updatedAt: true,
         },
       }),
-      prisma.user.count({ where }),
+      prisma.adminUser.count({ where }),
     ]);
 
     // Récupérer les rôles assignés pour chaque utilisateur
     const userIds = users.map((u) => u.id);
-    const roleAssignments = await prisma.userRoleAssignment.findMany({
+    const roleAssignments = await prisma.adminUserRoleAssignment.findMany({
       where: { userId: { in: userIds } },
       include: { role: true },
     });
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vérifier si l'utilisateur existe déjà
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.adminUser.findUnique({
       where: { email },
     });
 

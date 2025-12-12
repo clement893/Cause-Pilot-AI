@@ -2567,6 +2567,7 @@ model AdminUser {
   
   // Audit
   auditLogs     AdminAuditLog[]
+
 }
 
 enum SuperAdminRole {

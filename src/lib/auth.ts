@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { CustomPrismaAdapter } from "./prisma-adapter";
 import { prisma } from "./prisma";
+import type { AdapterUser } from "next-auth/adapters";
 
 // Domaine autorisé pour l'authentification admin
 const ALLOWED_DOMAIN = "nukleo.com";
@@ -49,11 +50,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
     async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+      // Avec la stratégie "database", user est un AdapterUser
+      const adapterUser = user as AdapterUser;
+      
+      if (session.user && adapterUser) {
+        session.user.id = adapterUser.id;
+        
         // Récupérer le rôle et le statut de l'admin
         const adminUser = await prisma.adminUser.findUnique({
-          where: { id: user.id },
+          where: { id: adapterUser.id },
           select: { role: true, status: true },
         });
         if (adminUser) {
@@ -62,12 +67,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
       return session;
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
     },
   },
   pages: {
@@ -78,20 +77,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user }) {
       // Mettre à jour la date de dernière connexion
       if (user.id) {
-        await prisma.adminUser.update({
-          where: { id: user.id },
-          data: { lastLoginAt: new Date() },
-        });
-        // Log d'audit
-        await prisma.adminAuditLog.create({
-          data: {
-            action: "LOGIN",
-            entityType: "AdminUser",
-            entityId: user.id,
-            description: `Connexion de ${user.email}`,
-            adminUserId: user.id,
-          },
-        });
+        try {
+          await prisma.adminUser.update({
+            where: { id: user.id },
+            data: { lastLoginAt: new Date() },
+          });
+          // Log d'audit
+          await prisma.adminAuditLog.create({
+            data: {
+              action: "LOGIN",
+              entityType: "AdminUser",
+              entityId: user.id,
+              description: `Connexion de ${user.email}`,
+              adminUserId: user.id,
+            },
+          });
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour du login:", error);
+        }
       }
     },
   },

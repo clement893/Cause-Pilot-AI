@@ -241,10 +241,12 @@ export default function DashboardGrid({
   }, [layout.widgets, isEditing]);
 
   // Gérer le changement de layout
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleLayoutChange = useCallback(
-    (newLayout: GridLayoutItem[]) => {
+    (newLayout: any) => {
+      const layoutItems = newLayout as GridLayoutItem[];
       const updatedWidgets = layout.widgets.map((widget) => {
-        const layoutItem = newLayout.find((l) => l.i === widget.id);
+        const layoutItem = layoutItems.find((l) => l.i === widget.id);
         if (layoutItem) {
           return {
             ...widget,

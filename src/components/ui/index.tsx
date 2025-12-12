@@ -15,9 +15,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     
     const variants = {
       primary: "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500",
-      secondary: "bg-slate-700 text-gray-100 hover:bg-slate-600 focus:ring-slate-500",
-      outline: "border border-slate-600 text-gray-200 hover:bg-slate-800 focus:ring-indigo-500",
-      ghost: "text-gray-300 hover:bg-slate-800 focus:ring-slate-500",
+      secondary: "bg-surface-tertiary text-gray-100 hover:bg-surface-elevated focus:ring-slate-500",
+      outline: "border border-border text-gray-200 hover:bg-surface-secondary focus:ring-indigo-500",
+      ghost: "text-foreground hover:bg-surface-secondary focus:ring-slate-500",
       danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     };
     
@@ -59,11 +59,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className = "", label, error, helperText, id, variant = "dark", ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s/g, "-");
     
-    const labelClass = variant === "dark" ? "text-gray-300" : "text-gray-700";
+    const labelClass = variant === "dark" ? "text-foreground" : "text-gray-700";
     const inputClass = variant === "dark" 
-      ? "bg-slate-800 border-slate-600 text-white placeholder-gray-400"
-      : "bg-white border-gray-300 text-gray-900";
-    const helperClass = variant === "dark" ? "text-gray-400" : "text-gray-500";
+      ? "bg-surface-secondary border-border text-white placeholder-gray-400"
+      : "bg-white border-gray-300 text-foreground";
+    const helperClass = variant === "dark" ? "text-muted-foreground" : "text-text-tertiary";
     
     return (
       <div className="w-full">
@@ -80,7 +80,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           } ${className}`}
           {...props}
         />
-        {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-error-light">{error}</p>}
         {helperText && !error && <p className={`mt-1 text-sm ${helperClass}`}>{helperText}</p>}
       </div>
     );
@@ -100,10 +100,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ className = "", label, error, options, id, variant = "dark", ...props }, ref) => {
     const selectId = id || label?.toLowerCase().replace(/\s/g, "-");
     
-    const labelClass = variant === "dark" ? "text-gray-300" : "text-gray-700";
+    const labelClass = variant === "dark" ? "text-foreground" : "text-gray-700";
     const selectClass = variant === "dark" 
-      ? "bg-slate-800 border-slate-600 text-white"
-      : "bg-white border-gray-300 text-gray-900";
+      ? "bg-surface-secondary border-border text-white"
+      : "bg-white border-gray-300 text-foreground";
     
     return (
       <div className="w-full">
@@ -126,7 +126,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ))}
         </select>
-        {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-error-light">{error}</p>}
       </div>
     );
   }
@@ -144,10 +144,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className = "", label, error, id, variant = "dark", ...props }, ref) => {
     const textareaId = id || label?.toLowerCase().replace(/\s/g, "-");
     
-    const labelClass = variant === "dark" ? "text-gray-300" : "text-gray-700";
+    const labelClass = variant === "dark" ? "text-foreground" : "text-gray-700";
     const textareaClass = variant === "dark" 
-      ? "bg-slate-800 border-slate-600 text-white placeholder-gray-400"
-      : "bg-white border-gray-300 text-gray-900";
+      ? "bg-surface-secondary border-border text-white placeholder-gray-400"
+      : "bg-white border-gray-300 text-foreground";
     
     return (
       <div className="w-full">
@@ -164,7 +164,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           } ${className}`}
           {...props}
         />
-        {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-sm text-error-light">{error}</p>}
       </div>
     );
   }
@@ -181,7 +181,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className = "", label, id, variant = "dark", ...props }, ref) => {
     const checkboxId = id || label.toLowerCase().replace(/\s/g, "-");
     
-    const labelClass = variant === "dark" ? "text-gray-300" : "text-gray-700";
+    const labelClass = variant === "dark" ? "text-foreground" : "text-gray-700";
     
     return (
       <div className="flex items-center">
@@ -189,7 +189,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           ref={ref}
           id={checkboxId}
           type="checkbox"
-          className={`h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-600 rounded bg-slate-800 ${className}`}
+          className={`h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-border rounded bg-surface-secondary ${className}`}
           {...props}
         />
         <label htmlFor={checkboxId} className={`ml-2 block text-sm ${labelClass}`}>
@@ -219,9 +219,9 @@ export function Card({ children, className = "", padding = "md", variant = "dark
   
   // Allow className to override default background
   const hasCustomBg = className.includes('bg-');
-  const defaultBg = variant === "dark" ? "bg-slate-900" : "bg-white";
+  const defaultBg = variant === "dark" ? "bg-surface-primary" : "bg-white";
   const bgClass = hasCustomBg ? '' : defaultBg;
-  const borderClass = variant === "dark" ? "border-slate-700" : "border-gray-200";
+  const borderClass = variant === "dark" ? "border-border" : "border-gray-200";
   
   return (
     <div className={`${bgClass} rounded-xl shadow-sm border ${borderClass} ${paddings[padding]} ${className}`}>
@@ -240,11 +240,11 @@ interface BadgeProps {
 
 export function Badge({ children, variant = "default", size = "sm", className = "" }: BadgeProps) {
   const variants = {
-    default: "bg-slate-700 text-gray-200",
-    success: "bg-green-900/50 text-green-300",
+    default: "bg-surface-tertiary text-gray-200",
+    success: "bg-success/20/50 text-green-300",
     warning: "bg-yellow-900/50 text-yellow-300",
-    danger: "bg-red-900/50 text-red-300",
-    info: "bg-blue-900/50 text-blue-300",
+    danger: "bg-error/20/50 text-red-300",
+    info: "bg-info/20/50 text-blue-300",
   };
   
   const sizes = {
@@ -285,9 +285,9 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ title, description, icon, action, variant = "dark" }: EmptyStateProps) {
-  const titleClass = variant === "dark" ? "text-white" : "text-gray-900";
-  const descClass = variant === "dark" ? "text-gray-400" : "text-gray-500";
-  const iconClass = variant === "dark" ? "text-gray-500" : "text-gray-400";
+  const titleClass = variant === "dark" ? "text-white" : "text-foreground";
+  const descClass = variant === "dark" ? "text-muted-foreground" : "text-text-tertiary";
+  const iconClass = variant === "dark" ? "text-text-tertiary" : "text-muted-foreground";
   
   return (
     <div className="text-center py-12">
@@ -319,9 +319,9 @@ export function Modal({ isOpen, onClose, title, children, size = "md", variant =
     xl: "max-w-4xl",
   };
   
-  const bgClass = variant === "dark" ? "bg-slate-900" : "bg-white";
-  const borderClass = variant === "dark" ? "border-slate-700" : "border-gray-200";
-  const titleClass = variant === "dark" ? "text-white" : "text-gray-900";
+  const bgClass = variant === "dark" ? "bg-surface-primary" : "bg-white";
+  const borderClass = variant === "dark" ? "border-border" : "border-gray-200";
+  const titleClass = variant === "dark" ? "text-white" : "text-foreground";
   
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -358,7 +358,7 @@ export function Table({ children, className = "" }: TableProps) {
 
 export function TableHeader({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="bg-slate-800">
+    <thead className="bg-surface-secondary">
       {children}
     </thead>
   );
@@ -366,7 +366,7 @@ export function TableHeader({ children }: { children: React.ReactNode }) {
 
 export function TableBody({ children }: { children: React.ReactNode }) {
   return (
-    <tbody className="divide-y divide-slate-700 bg-slate-900">
+    <tbody className="divide-y divide-slate-700 bg-surface-primary">
       {children}
     </tbody>
   );
@@ -374,7 +374,7 @@ export function TableBody({ children }: { children: React.ReactNode }) {
 
 export function TableRow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <tr className={`hover:bg-slate-800 transition-colors ${className}`}>
+    <tr className={`hover:bg-surface-secondary transition-colors ${className}`}>
       {children}
     </tr>
   );
@@ -382,7 +382,7 @@ export function TableRow({ children, className = "" }: { children: React.ReactNo
 
 export function TableHead({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider ${className}`}>
+    <th className={`px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider ${className}`}>
       {children}
     </th>
   );
@@ -390,7 +390,7 @@ export function TableHead({ children, className = "" }: { children: React.ReactN
 
 export function TableCell({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-300 ${className}`}>
+    <td className={`px-6 py-4 whitespace-nowrap text-sm text-foreground ${className}`}>
       {children}
     </td>
   );
@@ -410,19 +410,19 @@ interface StatsCardProps {
 
 export function StatsCard({ title, value, icon, change, className = "" }: StatsCardProps) {
   return (
-    <Card className={`bg-slate-900 border-slate-700 ${className}`}>
+    <Card className={`bg-surface-primary border-border ${className}`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-gray-400 uppercase tracking-wide">{title}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">{title}</p>
           <p className="text-2xl font-bold text-white mt-1">{value}</p>
           {change && (
-            <p className={`text-xs mt-1 ${change.type === "increase" ? "text-green-400" : "text-red-400"}`}>
+            <p className={`text-xs mt-1 ${change.type === "increase" ? "text-success-light" : "text-error-light"}`}>
               {change.type === "increase" ? "↑" : "↓"} {Math.abs(change.value)}%
             </p>
           )}
         </div>
         {icon && (
-          <div className="p-3 bg-slate-800 rounded-lg text-indigo-400">
+          <div className="p-3 bg-surface-secondary rounded-lg text-indigo-400">
             {icon}
           </div>
         )}

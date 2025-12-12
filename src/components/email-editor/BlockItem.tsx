@@ -33,7 +33,7 @@ export function BlockItem({ block }: BlockItemProps) {
     case "footer":
       return <FooterBlockPreview block={block as FooterBlock} padding={padding} backgroundColor={backgroundColor} textAlign={textAlign} />;
     default:
-      return <div className="p-4 text-gray-400">Bloc inconnu</div>;
+      return <div className="p-4 text-muted-foreground">Bloc inconnu</div>;
   }
 }
 
@@ -76,7 +76,7 @@ function ImageBlockPreview({ block, padding, backgroundColor, textAlign }: { blo
           style={{ maxWidth: "100%", width, height: "auto", display: "block", margin: "0 auto" }}
         />
       ) : (
-        <div className="bg-gray-200 flex items-center justify-center h-32 text-gray-400">
+        <div className="bg-gray-200 flex items-center justify-center h-32 text-muted-foreground">
           Cliquez pour ajouter une image
         </div>
       )}
@@ -140,7 +140,7 @@ function ColumnsBlockPreview({ block, padding, backgroundColor }: { block: Colum
           <div 
             key={col.id} 
             style={{ width: col.width }}
-            className="border border-dashed border-gray-300 min-h-[60px] flex items-center justify-center text-gray-400 text-sm"
+            className="border border-dashed border-gray-300 min-h-[60px] flex items-center justify-center text-muted-foreground text-sm"
           >
             {col.blocks.length > 0 ? (
               <div className="w-full">

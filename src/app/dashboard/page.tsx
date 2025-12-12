@@ -202,27 +202,27 @@ export default function DashboardPage() {
 
   const getAlertIcon = (type: string) => {
     switch (type) {
-      case "warning": return <AlertTriangle className="w-5 h-5 text-amber-400" />;
-      case "success": return <CheckCircle className="w-5 h-5 text-green-400" />;
-      case "error": return <AlertTriangle className="w-5 h-5 text-red-400" />;
-      default: return <Info className="w-5 h-5 text-blue-400" />;
+      case "warning": return <AlertTriangle className="w-5 h-5 text-warning" />;
+      case "success": return <CheckCircle className="w-5 h-5 text-success-light" />;
+      case "error": return <AlertTriangle className="w-5 h-5 text-error-light" />;
+      default: return <Info className="w-5 h-5 text-info-light" />;
     }
   };
 
   const getAlertBg = (type: string) => {
     switch (type) {
-      case "warning": return "bg-amber-900/30 border-amber-700/50";
-      case "success": return "bg-green-900/30 border-green-700/50";
-      case "error": return "bg-red-900/30 border-red-700/50";
-      default: return "bg-blue-900/30 border-blue-700/50";
+      case "warning": return "bg-warning/20/30 border-warning/50";
+      case "success": return "bg-success/20/30 border-success/50";
+      case "error": return "bg-error/20/30 border-error/50";
+      default: return "bg-info/20/30 border-info/50";
     }
   };
 
   const getSuggestionIcon = (type: string) => {
     switch (type) {
-      case "action": return <Zap className="w-5 h-5 text-purple-400" />;
-      case "opportunity": return <Lightbulb className="w-5 h-5 text-amber-400" />;
-      default: return <TrendingUp className="w-5 h-5 text-green-400" />;
+      case "action": return <Zap className="w-5 h-5 text-brand-light" />;
+      case "opportunity": return <Lightbulb className="w-5 h-5 text-warning" />;
+      default: return <TrendingUp className="w-5 h-5 text-success-light" />;
     }
   };
 
@@ -234,14 +234,14 @@ export default function DashboardPage() {
   const activeAlerts = data?.alerts.filter(a => !dismissedAlerts.includes(a.id)) || [];
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background">
       <Sidebar />
       <main className="ml-64 p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               Vue d&apos;ensemble de votre activité philanthropique
             </p>
           </div>
@@ -249,9 +249,9 @@ export default function DashboardPage() {
             {/* Notifications */}
             {activeAlerts.length > 0 && (
               <div className="relative">
-                <button className="p-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors">
-                  <Bell className="w-5 h-5 text-gray-300" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                <button className="p-2 bg-surface-secondary border border-border rounded-lg hover:bg-surface-tertiary transition-colors">
+                  <Bell className="w-5 h-5 text-foreground" />
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-error rounded-full text-xs text-white flex items-center justify-center">
                     {activeAlerts.length}
                   </span>
                 </button>
@@ -267,7 +267,7 @@ export default function DashboardPage() {
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-surface-secondary border border-border text-foreground rounded-lg hover:bg-surface-tertiary transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
               Actualiser
@@ -279,7 +279,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-400">Chargement du dashboard...</p>
+              <p className="text-muted-foreground">Chargement du dashboard...</p>
             </div>
           </div>
         ) : data ? (
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                       {getAlertIcon(alert.type)}
                       <div>
                         <p className="font-medium text-white">{alert.title}</p>
-                        <p className="text-sm text-gray-400">{alert.message}</p>
+                        <p className="text-sm text-muted-foreground">{alert.message}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -310,7 +310,7 @@ export default function DashboardPage() {
                         onClick={() => dismissAlert(alert.id)}
                         className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
                       >
-                        <X className="w-4 h-4 text-gray-400" />
+                        <X className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </div>
                   </div>
@@ -340,23 +340,23 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-lg font-semibold text-white">Objectif mensuel</h2>
-                    <p className="text-sm text-gray-400">Basé sur les campagnes actives</p>
+                    <p className="text-sm text-muted-foreground">Basé sur les campagnes actives</p>
                   </div>
                   <div className="text-right">
                     <p className="text-3xl font-bold text-white">{data.monthlyGoal.progress.toFixed(1)}%</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                       {formatCurrency(data.monthlyGoal.current)} / {formatCurrency(data.monthlyGoal.target)}
                     </p>
                   </div>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                <div className="w-full bg-surface-tertiary rounded-full h-4 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(data.monthlyGoal.progress, 100)}%` }}
                   />
                 </div>
                 {data.monthlyGoal.remaining > 0 && (
-                  <p className="text-sm text-gray-400 mt-2">
+                  <p className="text-sm text-muted-foreground mt-2">
                     Il reste {formatCurrency(data.monthlyGoal.remaining)} à collecter
                   </p>
                 )}
@@ -372,8 +372,8 @@ export default function DashboardPage() {
                     onClick={() => setSelectedPeriod(period)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedPeriod === period
-                        ? "bg-purple-600 text-white"
-                        : "bg-slate-800 text-gray-400 hover:bg-slate-700"
+                        ? "bg-brand text-white"
+                        : "bg-surface-secondary text-muted-foreground hover:bg-surface-tertiary"
                     }`}
                   >
                     {period === "today" && "Aujourd'hui"}
@@ -387,19 +387,19 @@ export default function DashboardPage() {
               {/* KPIs Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Dons période */}
-                <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+                <div className="bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                      <DollarSign className="w-6 h-6 text-green-600" />
+                    <div className="w-12 h-12 bg-success-light/20 rounded-xl flex items-center justify-center">
+                      <DollarSign className="w-6 h-6 text-success" />
                     </div>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-muted-foreground">
                       {data.period[selectedPeriod].count} dons
                     </span>
                   </div>
                   <h3 className="text-3xl font-bold text-white">
                     {formatCurrency(data.period[selectedPeriod].amount)}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-1">
+                  <p className="text-muted-foreground text-sm mt-1">
                     {selectedPeriod === "today" && "Collecté aujourd'hui"}
                     {selectedPeriod === "week" && "Collecté cette semaine"}
                     {selectedPeriod === "month" && "Collecté ce mois"}
@@ -408,14 +408,14 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Total Donateurs */}
-                <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+                <div className="bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <Users className="w-6 h-6 text-purple-600" />
+                    <div className="w-12 h-12 bg-brand-light/20 rounded-xl flex items-center justify-center">
+                      <Users className="w-6 h-6 text-brand" />
                     </div>
                     <span
                       className={`flex items-center gap-1 text-sm font-medium ${
-                        data.kpis.donorGrowth >= 0 ? "text-green-600" : "text-red-600"
+                        data.kpis.donorGrowth >= 0 ? "text-success" : "text-error"
                       }`}
                     >
                       {data.kpis.donorGrowth >= 0 ? (
@@ -429,39 +429,39 @@ export default function DashboardPage() {
                   <h3 className="text-3xl font-bold text-white">
                     {data.kpis.totalDonors.toLocaleString()}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-1">Donateurs totaux</p>
-                  <p className="text-purple-600 text-xs mt-2">
+                  <p className="text-muted-foreground text-sm mt-1">Donateurs totaux</p>
+                  <p className="text-brand text-xs mt-2">
                     +{data.kpis.newDonorsThisMonth} ce mois
                   </p>
                 </div>
 
                 {/* Campagnes actives */}
-                <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+                <div className="bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                      <Target className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-info-light/20 rounded-xl flex items-center justify-center">
+                      <Target className="w-6 h-6 text-info" />
                     </div>
                   </div>
                   <h3 className="text-3xl font-bold text-white">
                     {data.kpis.activeCampaigns}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-1">Campagnes actives</p>
-                  <p className="text-blue-600 text-xs mt-2">
+                  <p className="text-muted-foreground text-sm mt-1">Campagnes actives</p>
+                  <p className="text-info text-xs mt-2">
                     {data.kpis.totalCampaigns} au total
                   </p>
                 </div>
 
                 {/* Don moyen */}
-                <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+                <div className="bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
                       <Heart className="w-6 h-6 text-pink-600" />
                     </div>
                   </div>
                   <h3 className="text-3xl font-bold text-white">
                     {formatCurrency(data.kpis.averageDonation)}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-1">Don moyen</p>
+                  <p className="text-muted-foreground text-sm mt-1">Don moyen</p>
                   <p className="text-pink-600 text-xs mt-2">
                     {data.kpis.recurringDonors} donateurs récurrents
                   </p>
@@ -472,14 +472,14 @@ export default function DashboardPage() {
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Graphique des dons */}
-              <div className="lg:col-span-2 bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+              <div className="lg:col-span-2 bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-white">
                     Évolution des dons
                   </h2>
                   <Link
                     href="/analytics"
-                    className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center gap-1"
+                    className="text-brand hover:text-purple-700 text-sm font-medium flex items-center gap-1"
                   >
                     Voir plus <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -500,7 +500,7 @@ export default function DashboardPage() {
                             {month.count} dons
                           </div>
                         </div>
-                        <span className="text-xs text-gray-400 mt-2 truncate w-full text-center">
+                        <span className="text-xs text-muted-foreground mt-2 truncate w-full text-center">
                           {month.month}
                         </span>
                       </div>
@@ -524,20 +524,20 @@ export default function DashboardPage() {
                     <Link
                       key={suggestion.id}
                       href={suggestion.action}
-                      className="block p-3 bg-slate-800/50 hover:bg-slate-800 rounded-lg transition-colors group"
+                      className="block p-3 bg-surface-secondary/50 hover:bg-surface-secondary rounded-lg transition-colors group"
                     >
                       <div className="flex items-start gap-3">
                         {getSuggestionIcon(suggestion.type)}
                         <div className="flex-1">
                           <p className="font-medium text-white text-sm">{suggestion.title}</p>
-                          <p className="text-xs text-gray-400 mt-1">{suggestion.message}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{suggestion.message}</p>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+                        <ChevronRight className="w-4 h-4 text-text-tertiary group-hover:text-white transition-colors" />
                       </div>
                     </Link>
                   ))}
                   {data.suggestions.length === 0 && (
-                    <p className="text-center text-gray-400 py-4 text-sm">
+                    <p className="text-center text-muted-foreground py-4 text-sm">
                       Aucune suggestion pour le moment
                     </p>
                   )}
@@ -554,24 +554,24 @@ export default function DashboardPage() {
 
             {/* Donateurs à relancer */}
             {data.donorsToReengage.length > 0 && (
-              <div className="mt-8 bg-amber-900/20 rounded-xl border border-amber-700/50 p-6">
+              <div className="mt-8 bg-warning/20/20 rounded-xl border border-warning/50 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-amber-400" />
+                      <Clock className="w-5 h-5 text-warning" />
                     </div>
                     <div>
                       <h2 className="text-lg font-semibold text-white">
                         Donateurs à relancer
                       </h2>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {data.donorsToReengage.length} donateur(s) inactif(s) depuis 6+ mois
                       </p>
                     </div>
                   </div>
                   <Link
                     href="/donors?status=inactive"
-                    className="text-amber-400 hover:text-amber-300 text-sm font-medium flex items-center gap-1"
+                    className="text-warning hover:text-amber-300 text-sm font-medium flex items-center gap-1"
                   >
                     Voir tout <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -581,11 +581,11 @@ export default function DashboardPage() {
                     <Link
                       key={donor.id}
                       href={`/donors/${donor.id}`}
-                      className="p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg transition-colors"
+                      className="p-4 bg-surface-secondary/50 hover:bg-surface-secondary rounded-lg transition-colors"
                     >
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center">
-                          <span className="text-amber-400 font-medium text-sm">
+                          <span className="text-warning font-medium text-sm">
                             {donor.firstName?.[0]}{donor.lastName?.[0]}
                           </span>
                         </div>
@@ -593,14 +593,14 @@ export default function DashboardPage() {
                           <p className="font-medium text-white truncate">
                             {donor.firstName} {donor.lastName}
                           </p>
-                          <p className="text-xs text-gray-400 truncate">{donor.email}</p>
+                          <p className="text-xs text-muted-foreground truncate">{donor.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-amber-400 font-medium">
+                        <span className="text-warning font-medium">
                           {formatCurrency(donor.totalDonated)}
                         </span>
-                        <span className="text-gray-500 text-xs">
+                        <span className="text-text-tertiary text-xs">
                           {formatDateShort(donor.lastDonationDate)}
                         </span>
                       </div>
@@ -613,14 +613,14 @@ export default function DashboardPage() {
             {/* Bottom Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
               {/* Dons récents */}
-              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+              <div className="bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-white">
                     Dons récents
                   </h2>
                   <Link
                     href="/donors"
-                    className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center gap-1"
+                    className="text-brand hover:text-purple-700 text-sm font-medium flex items-center gap-1"
                   >
                     Voir tout <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -629,33 +629,33 @@ export default function DashboardPage() {
                   {data.recent.donations.slice(0, 5).map((donation) => (
                     <div
                       key={donation.id}
-                      className="flex items-center justify-between p-3 bg-slate-800 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-surface-secondary rounded-lg"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                          <DollarSign className="w-5 h-5 text-green-600" />
+                        <div className="w-10 h-10 bg-success-light/20 rounded-full flex items-center justify-center">
+                          <DollarSign className="w-5 h-5 text-success" />
                         </div>
                         <div>
                           <p className="font-medium text-white">
                             {donation.isAnonymous ? "Donateur anonyme" : donation.donorName}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-muted-foreground">
                             {formatDate(donation.date)}
                             {donation.isRecurring && (
-                              <span className="ml-2 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">
+                              <span className="ml-2 px-1.5 py-0.5 bg-brand-light/20 text-purple-700 rounded text-xs">
                                 Récurrent
                               </span>
                             )}
                           </p>
                         </div>
                       </div>
-                      <span className="font-semibold text-green-600">
+                      <span className="font-semibold text-success">
                         +{formatCurrency(donation.amount)}
                       </span>
                     </div>
                   ))}
                   {data.recent.donations.length === 0 && (
-                    <p className="text-center text-gray-400 py-8">
+                    <p className="text-center text-muted-foreground py-8">
                       Aucun don récent
                     </p>
                   )}
@@ -663,14 +663,14 @@ export default function DashboardPage() {
               </div>
 
               {/* Campagnes en cours */}
-              <div className="bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+              <div className="bg-surface-primary rounded-xl shadow-sm border border-border p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-white">
                     Campagnes en cours
                   </h2>
                   <Link
                     href="/campaigns"
-                    className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center gap-1"
+                    className="text-brand hover:text-purple-700 text-sm font-medium flex items-center gap-1"
                   >
                     Voir tout <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -680,33 +680,33 @@ export default function DashboardPage() {
                     <Link
                       key={campaign.id}
                       href={`/campaigns/${campaign.id}`}
-                      className="block p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors"
+                      className="block p-4 bg-surface-secondary rounded-lg hover:bg-surface-tertiary transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium text-white">{campaign.name}</h3>
                         <div className="flex items-center gap-2">
                           {campaign.daysRemaining !== null && campaign.daysRemaining <= 7 && (
-                            <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
+                            <span className="px-2 py-0.5 bg-amber-500/20 text-warning text-xs rounded-full">
                               {campaign.daysRemaining}j restants
                             </span>
                           )}
-                          <span className="text-sm text-gray-400">
+                          <span className="text-sm text-muted-foreground">
                             {campaign.donorCount} donateurs
                           </span>
                         </div>
                       </div>
-                      <div className="w-full bg-slate-700 rounded-full h-2 mb-2">
+                      <div className="w-full bg-surface-tertiary rounded-full h-2 mb-2">
                         <div
                           className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all"
                           style={{ width: `${Math.min(campaign.progress, 100)}%` }}
                         ></div>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-300">
+                        <span className="text-foreground">
                           {formatCurrency(campaign.totalRaised)} collectés
                         </span>
                         {campaign.goalAmount && (
-                          <span className="text-gray-400">
+                          <span className="text-muted-foreground">
                             Objectif: {formatCurrency(campaign.goalAmount)}
                           </span>
                         )}
@@ -715,11 +715,11 @@ export default function DashboardPage() {
                   ))}
                   {data.recent.campaigns.length === 0 && (
                     <div className="text-center py-8">
-                      <Target className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-gray-400">Aucune campagne active</p>
+                      <Target className="w-12 h-12 text-foreground mx-auto mb-2" />
+                      <p className="text-muted-foreground">Aucune campagne active</p>
                       <Link
                         href="/campaigns/new"
-                        className="text-purple-600 hover:text-purple-700 text-sm font-medium mt-2 inline-block"
+                        className="text-brand hover:text-purple-700 text-sm font-medium mt-2 inline-block"
                       >
                         Créer une campagne
                       </Link>
@@ -730,71 +730,71 @@ export default function DashboardPage() {
             </div>
 
             {/* Actions rapides */}
-            <div className="mt-8 bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+            <div className="mt-8 bg-surface-primary rounded-xl shadow-sm border border-border p-6">
               <h2 className="text-lg font-semibold text-white mb-4">
                 Actions rapides
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Link
                   href="/donors/new"
-                  className="flex items-center gap-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-surface-secondary hover:bg-surface-tertiary rounded-lg transition-colors group"
                 >
-                  <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-brand rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                     <UserPlus className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Nouveau donateur</p>
-                    <p className="text-xs text-gray-400">Ajouter un contact</p>
+                    <p className="text-xs text-muted-foreground">Ajouter un contact</p>
                   </div>
                 </Link>
                 <Link
                   href="/forms/new"
-                  className="flex items-center gap-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-surface-secondary hover:bg-surface-tertiary rounded-lg transition-colors group"
                 >
                   <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                     <PlusCircle className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Formulaire de don</p>
-                    <p className="text-xs text-gray-400">Créer un formulaire</p>
+                    <p className="text-xs text-muted-foreground">Créer un formulaire</p>
                   </div>
                 </Link>
                 <Link
                   href="/campaigns/new"
-                  className="flex items-center gap-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-surface-secondary hover:bg-surface-tertiary rounded-lg transition-colors group"
                 >
                   <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Megaphone className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Nouvelle campagne</p>
-                    <p className="text-xs text-gray-400">Lancer une collecte</p>
+                    <p className="text-xs text-muted-foreground">Lancer une collecte</p>
                   </div>
                 </Link>
                 <Link
                   href="/copilot"
-                  className="flex items-center gap-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
+                  className="flex items-center gap-3 p-4 bg-surface-secondary hover:bg-surface-tertiary rounded-lg transition-colors group"
                 >
                   <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Bot className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="font-medium text-white">CausePilot IA</p>
-                    <p className="text-xs text-gray-400">Poser une question</p>
+                    <p className="text-xs text-muted-foreground">Poser une question</p>
                   </div>
                 </Link>
               </div>
             </div>
 
             {/* Top donateurs */}
-            <div className="mt-8 bg-slate-900 rounded-xl shadow-sm border border-slate-700 p-6">
+            <div className="mt-8 bg-surface-primary rounded-xl shadow-sm border border-border p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-white">
                   Top donateurs
                 </h2>
                 <Link
                   href="/donors?sort=totalDonated"
-                  className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center gap-1"
+                  className="text-brand hover:text-purple-700 text-sm font-medium flex items-center gap-1"
                 >
                   Voir tout <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -804,7 +804,7 @@ export default function DashboardPage() {
                   <Link
                     key={donor.id}
                     href={`/donors/${donor.id}`}
-                    className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors text-center relative"
+                    className="p-4 bg-surface-secondary rounded-lg hover:bg-surface-tertiary transition-colors text-center relative"
                   >
                     {index < 3 && (
                       <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
@@ -815,8 +815,8 @@ export default function DashboardPage() {
                         {index + 1}
                       </div>
                     )}
-                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-purple-600 font-semibold">
+                    <div className="w-12 h-12 bg-brand-light/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-brand font-semibold">
                         {donor.firstName?.[0]}
                         {donor.lastName?.[0]}
                       </span>
@@ -824,17 +824,17 @@ export default function DashboardPage() {
                     <p className="font-medium text-white truncate">
                       {donor.firstName} {donor.lastName}
                     </p>
-                    <p className="text-xs text-gray-400 truncate">{donor.email}</p>
-                    <p className="text-sm text-green-600 font-medium mt-1">
+                    <p className="text-xs text-muted-foreground truncate">{donor.email}</p>
+                    <p className="text-sm text-success font-medium mt-1">
                       {formatCurrency(donor.totalDonated)}
                     </p>
-                    <p className="text-xs text-gray-500">{donor.donationCount} dons</p>
+                    <p className="text-xs text-text-tertiary">{donor.donationCount} dons</p>
                   </Link>
                 ))}
                 {data.topDonors.length === 0 && (
                   <div className="col-span-5 text-center py-8">
-                    <Users className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                    <p className="text-gray-400">Aucun donateur</p>
+                    <Users className="w-12 h-12 text-foreground mx-auto mb-2" />
+                    <p className="text-muted-foreground">Aucun donateur</p>
                   </div>
                 )}
               </div>
@@ -842,10 +842,10 @@ export default function DashboardPage() {
           </>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-400">Erreur lors du chargement des données</p>
+            <p className="text-muted-foreground">Erreur lors du chargement des données</p>
             <button
               onClick={handleRefresh}
-              className="mt-4 text-purple-600 hover:text-purple-700 font-medium"
+              className="mt-4 text-brand hover:text-purple-700 font-medium"
             >
               Réessayer
             </button>

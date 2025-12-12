@@ -186,23 +186,23 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
   };
 
   const getEngagementColor = (score: number) => {
-    if (score >= 70) return "bg-green-500";
-    if (score >= 40) return "bg-yellow-500";
-    return "bg-red-500";
+    if (score >= 70) return "bg-success";
+    if (score >= 40) return "bg-warning";
+    return "bg-error";
   };
 
   const getPotentialColor = (score: number | null) => {
-    if (!score) return "bg-slate-500";
-    if (score >= 70) return "bg-emerald-500";
+    if (!score) return "bg-muted";
+    if (score >= 70) return "bg-success";
     if (score >= 40) return "bg-amber-500";
-    return "bg-slate-500";
+    return "bg-muted";
   };
 
   const getChurnRiskColor = (score: number | null) => {
-    if (!score) return "bg-slate-500";
-    if (score >= 70) return "bg-red-500";
+    if (!score) return "bg-muted";
+    if (score >= 70) return "bg-error";
     if (score >= 40) return "bg-orange-500";
-    return "bg-green-500";
+    return "bg-success";
   };
 
   const getPotentialLabel = (score: number | null) => {
@@ -232,8 +232,8 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
   if (error || !donor) {
     return (
       <AppLayout breadcrumbs={[{ name: "Base Donateurs", href: "/donors" }, { name: "Erreur" }]}>
-        <Card className="text-center max-w-md mx-auto bg-slate-900 border-slate-800">
-          <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <Card className="text-center max-w-md mx-auto bg-surface-primary border-border">
+          <svg className="mx-auto h-12 w-12 text-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <h3 className="mt-2 text-lg font-semibold text-white">{error || "Donateur non trouvé"}</h3>
@@ -273,11 +273,11 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
                   {statusLabels[donor.status]}
                 </Badge>
               </div>
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {donorTypeLabels[donor.donorType]} • Créé le {new Date(donor.createdAt).toLocaleDateString("fr-CA")}
               </p>
               {donor.email && (
-                <p className="mt-1 text-sm text-gray-300">{donor.email}</p>
+                <p className="mt-1 text-sm text-foreground">{donor.email}</p>
               )}
             </div>
           </div>
@@ -311,22 +311,22 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
       {/* Scoring Prédictif */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* Score de Potentiel Major Gift */}
-        <Card className="bg-slate-900 border-slate-800 p-4">
+        <Card className="bg-surface-primary border-border p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-emerald-500/20 rounded-lg">
-                <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="p-2 bg-success/20 rounded-lg">
+                <svg className="w-5 h-5 text-success-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-white">Potentiel Major Gift</p>
-                <p className="text-xs text-gray-400">Probabilité de don majeur</p>
+                <p className="text-xs text-muted-foreground">Probabilité de don majeur</p>
               </div>
             </div>
             <div className="text-right">
               {loadingScores ? (
-                <div className="animate-pulse bg-slate-700 h-8 w-16 rounded"></div>
+                <div className="animate-pulse bg-surface-tertiary h-8 w-16 rounded"></div>
               ) : (
                 <>
                   <p className="text-2xl font-bold text-white">{scores?.potentialScore || 0}</p>
@@ -337,7 +337,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
               )}
             </div>
           </div>
-          <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-3 bg-surface-tertiary rounded-full overflow-hidden">
             <div 
               className={`h-full ${getPotentialColor(scores?.potentialScore || null)} transition-all duration-500`}
               style={{ width: `${scores?.potentialScore || 0}%` }}
@@ -346,22 +346,22 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
         </Card>
 
         {/* Score de Risque de Churn */}
-        <Card className="bg-slate-900 border-slate-800 p-4">
+        <Card className="bg-surface-primary border-border p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-red-500/20 rounded-lg">
-                <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="p-2 bg-error/20 rounded-lg">
+                <svg className="w-5 h-5 text-error-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-white">Risque de Churn</p>
-                <p className="text-xs text-gray-400">Probabilité d&apos;attrition</p>
+                <p className="text-xs text-muted-foreground">Probabilité d&apos;attrition</p>
               </div>
             </div>
             <div className="text-right">
               {loadingScores ? (
-                <div className="animate-pulse bg-slate-700 h-8 w-16 rounded"></div>
+                <div className="animate-pulse bg-surface-tertiary h-8 w-16 rounded"></div>
               ) : (
                 <>
                   <p className="text-2xl font-bold text-white">{scores?.churnRiskScore || 0}</p>
@@ -372,7 +372,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
               )}
             </div>
           </div>
-          <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-3 bg-surface-tertiary rounded-full overflow-hidden">
             <div 
               className={`h-full ${getChurnRiskColor(scores?.churnRiskScore || null)} transition-all duration-500`}
               style={{ width: `${scores?.churnRiskScore || 0}%` }}
@@ -383,28 +383,28 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
 
       {/* Quick Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <Card className="bg-slate-900 border-slate-800 p-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Total des dons</p>
+        <Card className="bg-surface-primary border-border p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Total des dons</p>
           <p className="text-xl font-bold text-white mt-1">{formatCurrency(donor.totalDonations)}</p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Nombre de dons</p>
+        <Card className="bg-surface-primary border-border p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Nombre de dons</p>
           <p className="text-xl font-bold text-white mt-1">{donor.donationCount}</p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Don moyen</p>
+        <Card className="bg-surface-primary border-border p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Don moyen</p>
           <p className="text-xl font-bold text-white mt-1">{formatCurrency(donor.averageDonation)}</p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Dernier don</p>
+        <Card className="bg-surface-primary border-border p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Dernier don</p>
           <p className="text-xl font-bold text-white mt-1">
             {donor.lastDonationDate ? new Date(donor.lastDonationDate).toLocaleDateString("fr-CA") : "-"}
           </p>
         </Card>
-        <Card className="bg-slate-900 border-slate-800 p-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Score d&apos;engagement</p>
+        <Card className="bg-surface-primary border-border p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">Score d&apos;engagement</p>
           <div className="flex items-center gap-2 mt-1">
-            <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div className="flex-1 h-2 bg-surface-tertiary rounded-full overflow-hidden">
               <div 
                 className={`h-full ${getEngagementColor(engagementScore)} transition-all`}
                 style={{ width: `${engagementScore}%` }}
@@ -416,7 +416,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-700 mb-6">
+      <div className="border-b border-border mb-6">
         <nav className="flex gap-6">
           {[
             { key: "profile", label: "Profil", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
@@ -430,7 +430,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
               className={`flex items-center gap-2 py-3 px-1 border-b-2 transition-colors ${
                 activeTab === tab.key
                   ? "border-indigo-500 text-indigo-400"
-                  : "border-transparent text-gray-400 hover:text-white hover:border-gray-500"
+                  : "border-transparent text-muted-foreground hover:text-white hover:border-muted-foreground"
               }`}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -448,7 +448,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Contact Info */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -457,19 +457,19 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
               </h3>
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Email</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Email</dt>
                   <dd className="mt-1 text-sm text-white">{donor.email || "-"}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Téléphone</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Téléphone</dt>
                   <dd className="mt-1 text-sm text-white">{donor.phone || "-"}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Mobile</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Mobile</dt>
                   <dd className="mt-1 text-sm text-white">{donor.mobile || "-"}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Date de naissance</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Date de naissance</dt>
                   <dd className="mt-1 text-sm text-white">
                     {donor.dateOfBirth ? new Date(donor.dateOfBirth).toLocaleDateString("fr-CA") : "-"}
                   </dd>
@@ -478,7 +478,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             </Card>
 
             {/* Address */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -495,12 +495,12 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
                   </div>
                 )}
                 {donor.country && <div>{donor.country}</div>}
-                {!donor.address && !donor.city && <span className="text-gray-500">Aucune adresse renseignée</span>}
+                {!donor.address && !donor.city && <span className="text-text-tertiary">Aucune adresse renseignée</span>}
               </address>
             </Card>
 
             {/* Professional Info */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -509,34 +509,34 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
               </h3>
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Profession</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Profession</dt>
                   <dd className="mt-1 text-sm text-white">{donor.profession || "-"}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Employeur</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Employeur</dt>
                   <dd className="mt-1 text-sm text-white">{donor.employer || "-"}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Titre du poste</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Titre du poste</dt>
                   <dd className="mt-1 text-sm text-white">{donor.jobTitle || "-"}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400">Secteur</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">Secteur</dt>
                   <dd className="mt-1 text-sm text-white">{donor.industry || "-"}</dd>
                 </div>
               </dl>
             </Card>
 
             {/* Notes */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 Notes
               </h3>
-              <p className="text-sm text-gray-300 whitespace-pre-wrap">
-                {donor.notes || <span className="text-gray-500 italic">Aucune note</span>}
+              <p className="text-sm text-foreground whitespace-pre-wrap">
+                {donor.notes || <span className="text-text-tertiary italic">Aucune note</span>}
               </p>
             </Card>
           </div>
@@ -544,7 +544,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
           {/* Right Column - Stats & Quick Info */}
           <div className="space-y-6">
             {/* Consent Status - RGPD Compliance */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                   <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -574,87 +574,87 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
                 </Button>
               </div>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-surface-secondary/50">
                   <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <span className="text-sm text-gray-300">Email marketing</span>
+                    <span className="text-sm text-foreground">Email marketing</span>
                   </div>
                   {donor.consentEmail ? (
-                    <Badge variant="success" className="bg-green-500/20 text-green-400">Autorisé</Badge>
+                    <Badge variant="success" className="bg-success/20 text-success-light">Autorisé</Badge>
                   ) : (
-                    <Badge variant="default" className="bg-red-500/20 text-red-400">Non autorisé</Badge>
+                    <Badge variant="default" className="bg-error/20 text-error-light">Non autorisé</Badge>
                   )}
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-surface-secondary/50">
                   <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
-                    <span className="text-sm text-gray-300">Téléphone</span>
+                    <span className="text-sm text-foreground">Téléphone</span>
                   </div>
                   {donor.consentPhone ? (
-                    <Badge variant="success" className="bg-green-500/20 text-green-400">Autorisé</Badge>
+                    <Badge variant="success" className="bg-success/20 text-success-light">Autorisé</Badge>
                   ) : (
-                    <Badge variant="default" className="bg-red-500/20 text-red-400">Non autorisé</Badge>
+                    <Badge variant="default" className="bg-error/20 text-error-light">Non autorisé</Badge>
                   )}
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-surface-secondary/50">
                   <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
                     </svg>
-                    <span className="text-sm text-gray-300">Courrier postal</span>
+                    <span className="text-sm text-foreground">Courrier postal</span>
                   </div>
                   {donor.consentMail ? (
-                    <Badge variant="success" className="bg-green-500/20 text-green-400">Autorisé</Badge>
+                    <Badge variant="success" className="bg-success/20 text-success-light">Autorisé</Badge>
                   ) : (
-                    <Badge variant="default" className="bg-red-500/20 text-red-400">Non autorisé</Badge>
+                    <Badge variant="default" className="bg-error/20 text-error-light">Non autorisé</Badge>
                   )}
                 </div>
               </div>
               {donor.consentDate && (
-                <p className="text-xs text-gray-500 mt-3">
+                <p className="text-xs text-text-tertiary mt-3">
                   Dernier consentement: {new Date(donor.consentDate).toLocaleDateString("fr-CA")}
                 </p>
               )}
               {donor.optOutDate && (
-                <p className="text-xs text-red-400 mt-1">
+                <p className="text-xs text-error-light mt-1">
                   Désabonnement: {new Date(donor.optOutDate).toLocaleDateString("fr-CA")}
                 </p>
               )}
             </Card>
 
             {/* Tags & Segment */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <h3 className="text-lg font-semibold text-white mb-4">Classification</h3>
               <div className="space-y-4">
                 <div>
-                  <dt className="text-sm font-medium text-gray-400 mb-2">Segment</dt>
+                  <dt className="text-sm font-medium text-muted-foreground mb-2">Segment</dt>
                   <dd>
                     {donor.segment ? (
                       <Badge variant="info">{donor.segment}</Badge>
                     ) : (
-                      <span className="text-sm text-gray-500">Non défini</span>
+                      <span className="text-sm text-text-tertiary">Non défini</span>
                     )}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-400 mb-2">Tags</dt>
+                  <dt className="text-sm font-medium text-muted-foreground mb-2">Tags</dt>
                   <dd className="flex flex-wrap gap-2">
                     {donor.tags && donor.tags.length > 0 ? (
                       donor.tags.map((tag, index) => (
                         <Badge key={index} variant="default">{tag}</Badge>
                       ))
                     ) : (
-                      <span className="text-sm text-gray-500">Aucun tag</span>
+                      <span className="text-sm text-text-tertiary">Aucun tag</span>
                     )}
                   </dd>
                 </div>
                 {donor.source && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-400 mb-2">Source</dt>
+                    <dt className="text-sm font-medium text-muted-foreground mb-2">Source</dt>
                     <dd className="text-sm text-white">{donor.source}</dd>
                   </div>
                 )}
@@ -662,7 +662,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             </Card>
 
             {/* Quick Actions */}
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-surface-primary border-border">
               <h3 className="text-lg font-semibold text-white mb-4">Actions rapides</h3>
               <div className="space-y-2">
                 <Button variant="outline" className="w-full justify-start" size="sm">
@@ -696,7 +696,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
       )}
 
       {activeTab === "donations" && (
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-surface-primary border-border">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white">Historique des dons</h3>
             <Button variant="primary" size="sm">
@@ -713,38 +713,38 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             </div>
           ) : donations.length === 0 ? (
             <div className="text-center py-8">
-              <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="mx-auto h-12 w-12 text-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="mt-2 text-gray-400">Aucun don enregistré</p>
+              <p className="mt-2 text-muted-foreground">Aucun don enregistré</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Date</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Montant</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Campagne</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Méthode</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Statut</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Reçu</th>
-                    <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Actions</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Date</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Montant</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Campagne</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Méthode</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Statut</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Reçu</th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {donations.map((donation) => (
-                    <tr key={donation.id} className="border-b border-slate-800 hover:bg-slate-800/50">
+                    <tr key={donation.id} className="border-b border-border hover:bg-surface-secondary/50">
                       <td className="py-3 px-4 text-sm text-white">
                         {new Date(donation.donationDate).toLocaleDateString("fr-CA")}
                       </td>
                       <td className="py-3 px-4 text-sm font-semibold text-white">
                         {formatCurrency(donation.amount, donation.currency)}
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-300">
+                      <td className="py-3 px-4 text-sm text-foreground">
                         {donation.campaignName || "-"}
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-300">
+                      <td className="py-3 px-4 text-sm text-foreground">
                         {donation.paymentMethod}
                       </td>
                       <td className="py-3 px-4">
@@ -777,16 +777,16 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
       )}
 
       {activeTab === "activity" && (
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-surface-primary border-border">
           <h3 className="text-lg font-semibold text-white mb-4">Timeline d&apos;activité</h3>
           <div className="space-y-4">
             {activities.map((activity, index) => (
               <div key={activity.id} className="flex gap-4">
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    activity.type === "DONATION" ? "bg-green-500/20 text-green-400" :
-                    activity.type === "EMAIL_SENT" ? "bg-blue-500/20 text-blue-400" :
-                    "bg-gray-500/20 text-gray-400"
+                    activity.type === "DONATION" ? "bg-success/20 text-success-light" :
+                    activity.type === "EMAIL_SENT" ? "bg-info/20 text-info-light" :
+                    "bg-muted/20 text-muted-foreground"
                   }`}>
                     {activity.type === "DONATION" && (
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -805,12 +805,12 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
                     )}
                   </div>
                   {index < activities.length - 1 && (
-                    <div className="w-px h-full bg-slate-700 my-2" />
+                    <div className="w-px h-full bg-surface-tertiary my-2" />
                   )}
                 </div>
                 <div className="flex-1 pb-4">
                   <p className="text-sm text-white">{activity.description}</p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-text-tertiary mt-1">
                     {new Date(activity.date).toLocaleDateString("fr-CA")} à {new Date(activity.date).toLocaleTimeString("fr-CA", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
@@ -821,7 +821,7 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
       )}
 
       {activeTab === "communications" && (
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-surface-primary border-border">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white">Historique des communications</h3>
             <Button variant="primary" size="sm">
@@ -832,11 +832,11 @@ export default function DonorDetailPage({ params }: DonorDetailPageProps) {
             </Button>
           </div>
           <div className="text-center py-8">
-            <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="mx-auto h-12 w-12 text-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <p className="mt-2 text-gray-400">Aucune communication enregistrée</p>
-            <p className="text-sm text-gray-500">Les emails envoyés via les campagnes marketing apparaîtront ici</p>
+            <p className="mt-2 text-muted-foreground">Aucune communication enregistrée</p>
+            <p className="text-sm text-text-tertiary">Les emails envoyés via les campagnes marketing apparaîtront ici</p>
           </div>
         </Card>
       )}

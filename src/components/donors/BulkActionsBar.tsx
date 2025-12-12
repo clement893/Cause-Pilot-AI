@@ -116,26 +116,26 @@ export default function BulkActionsBar({
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 ml-32 z-50">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-4 flex items-center gap-4">
+      <div className="bg-surface-primary border border-border rounded-xl shadow-2xl p-4 flex items-center gap-4">
         {/* Compteur */}
-        <div className="flex items-center gap-2 pr-4 border-r border-slate-700">
-          <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+        <div className="flex items-center gap-2 pr-4 border-r border-border">
+          <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center">
             <Users className="w-4 h-4 text-white" />
           </div>
           <div>
             <p className="text-white font-medium">{selectedCount}</p>
-            <p className="text-xs text-gray-400">sélectionné(s)</p>
+            <p className="text-xs text-muted-foreground">sélectionné(s)</p>
           </div>
         </div>
 
         {/* Actions */}
         {loading ? (
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>Traitement...</span>
           </div>
         ) : result ? (
-          <div className={`flex items-center gap-2 ${result.success ? "text-green-400" : "text-red-400"}`}>
+          <div className={`flex items-center gap-2 ${result.success ? "text-success-light" : "text-error-light"}`}>
             <CheckCircle className="w-5 h-5" />
             <span>{result.message}</span>
           </div>
@@ -145,19 +145,19 @@ export default function BulkActionsBar({
             <div className="relative">
               <button
                 onClick={() => setShowSegmentMenu(!showSegmentMenu)}
-                className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors"
               >
                 <Users className="w-4 h-4" />
                 Segment
                 <ChevronDown className="w-4 h-4" />
               </button>
               {showSegmentMenu && (
-                <div className="absolute bottom-full mb-2 left-0 bg-slate-800 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+                <div className="absolute bottom-full mb-2 left-0 bg-surface-secondary border border-border rounded-lg shadow-xl overflow-hidden">
                   {SEGMENTS.map((segment) => (
                     <button
                       key={segment}
                       onClick={() => executeAction("update_segment", { segment })}
-                      className="block w-full px-4 py-2 text-left text-gray-300 hover:bg-slate-700 transition-colors"
+                      className="block w-full px-4 py-2 text-left text-foreground hover:bg-surface-tertiary transition-colors"
                     >
                       {segment}
                     </button>
@@ -170,19 +170,19 @@ export default function BulkActionsBar({
             <div className="relative">
               <button
                 onClick={() => setShowStatusMenu(!showStatusMenu)}
-                className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
                 Statut
                 <ChevronDown className="w-4 h-4" />
               </button>
               {showStatusMenu && (
-                <div className="absolute bottom-full mb-2 left-0 bg-slate-800 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+                <div className="absolute bottom-full mb-2 left-0 bg-surface-secondary border border-border rounded-lg shadow-xl overflow-hidden">
                   {STATUSES.map((status) => (
                     <button
                       key={status}
                       onClick={() => executeAction("update_status", { status })}
-                      className="block w-full px-4 py-2 text-left text-gray-300 hover:bg-slate-700 transition-colors"
+                      className="block w-full px-4 py-2 text-left text-foreground hover:bg-surface-tertiary transition-colors"
                     >
                       {status}
                     </button>
@@ -195,26 +195,26 @@ export default function BulkActionsBar({
             <div className="relative">
               <button
                 onClick={() => setShowTagMenu(!showTagMenu)}
-                className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors"
               >
                 <Tag className="w-4 h-4" />
                 Tag
                 <ChevronDown className="w-4 h-4" />
               </button>
               {showTagMenu && (
-                <div className="absolute bottom-full mb-2 left-0 bg-slate-800 border border-slate-700 rounded-lg shadow-xl p-3 w-64">
+                <div className="absolute bottom-full mb-2 left-0 bg-surface-secondary border border-border rounded-lg shadow-xl p-3 w-64">
                   <input
                     type="text"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                     placeholder="Nom du tag..."
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-2"
+                    className="w-full px-3 py-2 bg-surface-tertiary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-2"
                     onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
                   />
                   <button
                     onClick={handleAddTag}
                     disabled={!newTag.trim()}
-                    className="w-full px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                    className="w-full px-3 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors disabled:opacity-50"
                   >
                     Ajouter le tag
                   </button>
@@ -228,7 +228,7 @@ export default function BulkActionsBar({
                 name: `Campagne - ${selectedCount} donateurs`,
                 subject: "Nouvelle communication",
               })}
-              className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors"
             >
               <Mail className="w-4 h-4" />
               Email
@@ -237,7 +237,7 @@ export default function BulkActionsBar({
             {/* Exporter */}
             <button
               onClick={() => executeAction("export")}
-              className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-foreground rounded-lg transition-colors"
             >
               <Download className="w-4 h-4" />
               Exporter
@@ -250,7 +250,7 @@ export default function BulkActionsBar({
                   executeAction("delete");
                 }
               }}
-              className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-red-900/50 text-gray-300 hover:text-red-400 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 bg-surface-secondary hover:bg-error/20/50 text-foreground hover:text-error-light rounded-lg transition-colors"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -260,9 +260,9 @@ export default function BulkActionsBar({
         {/* Fermer */}
         <button
           onClick={onClear}
-          className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-2 hover:bg-surface-secondary rounded-lg transition-colors"
         >
-          <X className="w-5 h-5 text-gray-400" />
+          <X className="w-5 h-5 text-muted-foreground" />
         </button>
       </div>
     </div>

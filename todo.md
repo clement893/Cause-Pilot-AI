@@ -73,3 +73,21 @@
 - [x] Modifier la page customize pour charger/sauvegarder depuis la DB
 - [x] Tester le changement d'organisation
 - [x] Tester la persistance du layout
+
+
+## Phase 7 - Refactorisation Tailwind CSS Design System
+- [x] Analyser la version Tailwind (v4) et structure CSS actuelle
+- [x] Créer design-tokens.css avec palette de couleurs complète
+- [x] Définir spacing scale, typography, border radius, shadows
+- [x] Créer cards.css avec classes réutilisables
+- [x] Créer buttons.css avec variantes
+- [x] Créer headers.css pour navigation
+- [x] Créer forms.css pour inputs et formulaires
+- [x] Créer badges.css pour badges et tags
+- [x] Créer tables.css pour tables et listes
+- [x] Créer modals.css pour modals et dialogs
+- [x] Créer utilities.css pour classes utilitaires
+- [x] Remplacer couleurs hard-codées par tokens
+- [x] Mettre à jour globals.css pour importer le design system
+- [x] Tester la cohérence visuelle sur toutes les pages
+- [ ] Pousser sur Git

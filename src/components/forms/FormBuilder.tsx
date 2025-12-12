@@ -163,7 +163,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
       {/* Formulaire principal */}
       <form onSubmit={handleSubmit} className="flex-1 space-y-8">
         {error && (
-          <div className="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-lg">
+          <div className="bg-error/20/50 border border-error text-red-200 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
@@ -177,7 +177,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
               </div>
               <div>
                 <h3 className="text-white font-medium">CausePilot - Assistant IA</h3>
-                <p className="text-sm text-gray-300">Laissez l&apos;IA vous aider à créer un formulaire optimisé</p>
+                <p className="text-sm text-foreground">Laissez l&apos;IA vous aider à créer un formulaire optimisé</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -198,7 +198,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                 type="button"
                 onClick={() => getAISuggestions("optimize_amounts")}
                 disabled={aiLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg transition-colors disabled:opacity-50"
               >
                 <Lightbulb className="w-4 h-4" />
                 Optimiser montants
@@ -208,14 +208,14 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
         </div>
 
         {/* Section: Informations générales */}
-        <div className="bg-slate-800 rounded-xl shadow-sm border border-slate-700 p-6">
+        <div className="bg-surface-secondary rounded-xl shadow-sm border border-border p-6">
           <h2 className="text-lg font-semibold text-white mb-4">
             Informations générales
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Nom du formulaire *
               </label>
               <input
@@ -223,32 +223,32 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                 required
                 value={formData.name}
                 onChange={(e) => updateField("name", e.target.value)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Ex: Don de fin d'année 2024"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => updateField("description", e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Décrivez l'objectif de ce formulaire..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Type de formulaire
               </label>
               <select
                 value={formData.formType}
                 onChange={(e) => updateField("formType", e.target.value as FormType)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 {Object.entries(FORM_TYPE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
@@ -257,13 +257,13 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Statut
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => updateField("status", e.target.value as FormStatus)}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="DRAFT">Brouillon</option>
                 <option value="PUBLISHED">Publié</option>
@@ -274,7 +274,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
         </div>
 
         {/* Section: Configuration des montants */}
-        <div className="bg-slate-800 rounded-xl shadow-sm border border-slate-700 p-6">
+        <div className="bg-surface-secondary rounded-xl shadow-sm border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">
               Configuration des montants
@@ -292,7 +292,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Montants suggérés
               </label>
               <div className="flex flex-wrap gap-2 mb-2">
@@ -314,7 +314,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                 <input
                   type="number"
                   placeholder="Ajouter..."
-                  className="w-24 px-3 py-1 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white"
+                  className="w-24 px-3 py-1 bg-surface-tertiary border border-border rounded-lg text-sm text-white"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -327,11 +327,11 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   }}
                 />
               </div>
-              <p className="text-xs text-gray-500">Appuyez sur Entrée pour ajouter un montant</p>
+              <p className="text-xs text-text-tertiary">Appuyez sur Entrée pour ajouter un montant</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Montant minimum
               </label>
               <div className="relative">
@@ -340,14 +340,14 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   min="1"
                   value={formData.minimumAmount}
                   onChange={(e) => updateField("minimumAmount", parseFloat(e.target.value))}
-                  className="w-full px-4 py-2 pr-8 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-2 pr-8 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Montant maximum (optionnel)
               </label>
               <div className="relative">
@@ -356,15 +356,15 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   min="1"
                   value={formData.maximumAmount || ""}
                   onChange={(e) => updateField("maximumAmount", e.target.value ? parseFloat(e.target.value) : undefined)}
-                  className="w-full px-4 py-2 pr-8 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-2 pr-8 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Aucune limite"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Objectif de collecte (optionnel)
               </label>
               <div className="relative">
@@ -373,10 +373,10 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   min="1"
                   value={formData.goalAmount || ""}
                   onChange={(e) => updateField("goalAmount", e.target.value ? parseFloat(e.target.value) : undefined)}
-                  className="w-full px-4 py-2 pr-8 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-2 pr-8 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Ex: 50000"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
               </div>
             </div>
 
@@ -386,9 +386,9 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                 id="allowCustomAmount"
                 checked={formData.allowCustomAmount}
                 onChange={(e) => updateField("allowCustomAmount", e.target.checked)}
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-600 rounded bg-slate-700"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-border rounded bg-surface-tertiary"
               />
-              <label htmlFor="allowCustomAmount" className="ml-2 text-sm text-gray-300">
+              <label htmlFor="allowCustomAmount" className="ml-2 text-sm text-foreground">
                 Permettre un montant personnalisé
               </label>
             </div>
@@ -396,7 +396,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
 
           {/* Options récurrentes si type récurrent */}
           {formData.formType === "RECURRING" && (
-            <div className="mt-6 pt-6 border-t border-slate-700">
+            <div className="mt-6 pt-6 border-t border-border">
               <h3 className="text-sm font-medium text-white mb-3">Options de récurrence</h3>
               <div className="flex flex-wrap gap-3">
                 {(["WEEKLY", "BIWEEKLY", "MONTHLY", "QUARTERLY", "YEARLY"] as RecurringFrequency[]).map((freq) => (
@@ -411,9 +411,9 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                           : current.filter(f => f !== freq);
                         updateField("recurringOptions", updated);
                       }}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-600 rounded bg-slate-700"
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-border rounded bg-surface-tertiary"
                     />
-                    <span className="ml-2 text-sm text-gray-300">
+                    <span className="ml-2 text-sm text-foreground">
                       {freq === "WEEKLY" && "Hebdomadaire"}
                       {freq === "BIWEEKLY" && "Bi-mensuel"}
                       {freq === "MONTHLY" && "Mensuel"}
@@ -428,7 +428,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
         </div>
 
         {/* Section: Champs à collecter */}
-        <div className="bg-slate-800 rounded-xl shadow-sm border border-slate-700 p-6">
+        <div className="bg-surface-secondary rounded-xl shadow-sm border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">
               Informations à collecter
@@ -458,16 +458,16 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   type="checkbox"
                   checked={formData[field]}
                   onChange={(e) => updateField(field, e.target.checked)}
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-600 rounded bg-slate-700"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-border rounded bg-surface-tertiary"
                 />
-                <span className="ml-2 text-sm text-gray-300">{label}</span>
+                <span className="ml-2 text-sm text-foreground">{label}</span>
               </label>
             ))}
           </div>
         </div>
 
         {/* Section: Personnalisation */}
-        <div className="bg-slate-800 rounded-xl shadow-sm border border-slate-700 p-6">
+        <div className="bg-surface-secondary rounded-xl shadow-sm border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">
               Personnalisation
@@ -485,7 +485,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Couleur principale
               </label>
               <div className="flex items-center gap-3">
@@ -493,19 +493,19 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   type="color"
                   value={formData.primaryColor}
                   onChange={(e) => updateField("primaryColor", e.target.value)}
-                  className="h-10 w-20 rounded border border-slate-600 cursor-pointer bg-slate-700"
+                  className="h-10 w-20 rounded border border-border cursor-pointer bg-surface-tertiary"
                 />
                 <input
                   type="text"
                   value={formData.primaryColor}
                   onChange={(e) => updateField("primaryColor", e.target.value)}
-                  className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+                  className="flex-1 px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Couleur secondaire
               </label>
               <div className="flex items-center gap-3">
@@ -513,26 +513,26 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   type="color"
                   value={formData.secondaryColor}
                   onChange={(e) => updateField("secondaryColor", e.target.value)}
-                  className="h-10 w-20 rounded border border-slate-600 cursor-pointer bg-slate-700"
+                  className="h-10 w-20 rounded border border-border cursor-pointer bg-surface-tertiary"
                 />
                 <input
                   type="text"
                   value={formData.secondaryColor}
                   onChange={(e) => updateField("secondaryColor", e.target.value)}
-                  className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
+                  className="flex-1 px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white"
                 />
               </div>
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Message de remerciement
               </label>
               <textarea
                 value={formData.thankYouMessage}
                 onChange={(e) => updateField("thankYouMessage", e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Merci pour votre généreux don!"
               />
             </div>
@@ -544,7 +544,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-2 text-gray-300 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+            className="px-6 py-2 text-foreground bg-surface-tertiary rounded-lg hover:bg-surface-elevated transition-colors"
           >
             Annuler
           </button>
@@ -560,7 +560,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
 
       {/* Panneau des suggestions IA */}
       {showAiPanel && aiSuggestions && (
-        <div className="w-96 bg-slate-800 border border-slate-700 rounded-xl p-6 h-fit sticky top-6">
+        <div className="w-96 bg-surface-secondary border border-border rounded-xl p-6 h-fit sticky top-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 rounded-full flex items-center justify-center">
@@ -570,7 +570,7 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
             </div>
             <button
               onClick={() => setShowAiPanel(false)}
-              className="text-gray-400 hover:text-white"
+              className="text-muted-foreground hover:text-white"
             >
               ×
             </button>
@@ -578,9 +578,9 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
 
           <div className="space-y-4">
             {aiSuggestions.name && (
-              <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="bg-surface-tertiary/50 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400">Nom suggéré</span>
+                  <span className="text-xs text-muted-foreground">Nom suggéré</span>
                   <button
                     onClick={() => applySuggestion("name", aiSuggestions.name)}
                     className="text-xs text-indigo-400 hover:text-indigo-300"
@@ -593,9 +593,9 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
             )}
 
             {aiSuggestions.description && (
-              <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="bg-surface-tertiary/50 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400">Description suggérée</span>
+                  <span className="text-xs text-muted-foreground">Description suggérée</span>
                   <button
                     onClick={() => applySuggestion("description", aiSuggestions.description)}
                     className="text-xs text-indigo-400 hover:text-indigo-300"
@@ -608,9 +608,9 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
             )}
 
             {aiSuggestions.suggestedAmounts && (
-              <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="bg-surface-tertiary/50 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400">Montants optimisés</span>
+                  <span className="text-xs text-muted-foreground">Montants optimisés</span>
                   <button
                     onClick={() => applySuggestion("suggestedAmounts", aiSuggestions.suggestedAmounts)}
                     className="text-xs text-indigo-400 hover:text-indigo-300"
@@ -626,15 +626,15 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
                   ))}
                 </div>
                 {aiSuggestions.reasoning && (
-                  <p className="text-xs text-gray-400 mt-2">{aiSuggestions.reasoning}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{aiSuggestions.reasoning}</p>
                 )}
               </div>
             )}
 
             {aiSuggestions.thankYouMessage && (
-              <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="bg-surface-tertiary/50 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400">Message de remerciement</span>
+                  <span className="text-xs text-muted-foreground">Message de remerciement</span>
                   <button
                     onClick={() => applySuggestion("thankYouMessage", aiSuggestions.thankYouMessage)}
                     className="text-xs text-indigo-400 hover:text-indigo-300"
@@ -647,8 +647,8 @@ export default function FormBuilder({ initialData, mode }: FormBuilderProps) {
             )}
 
             {aiSuggestions.tips && aiSuggestions.tips.length > 0 && (
-              <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-3">
-                <span className="text-xs text-amber-400 font-medium">💡 Conseils</span>
+              <div className="bg-warning/20/30 border border-warning/50 rounded-lg p-3">
+                <span className="text-xs text-warning font-medium">💡 Conseils</span>
                 <ul className="mt-2 space-y-1">
                   {aiSuggestions.tips.map((tip, i) => (
                     <li key={i} className="text-sm text-amber-200">• {tip}</li>

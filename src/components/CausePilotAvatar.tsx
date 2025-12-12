@@ -27,7 +27,7 @@ export default function CausePilotAvatar({
       
       {/* Avatar container */}
       <div className="relative w-full h-full bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 rounded-full p-0.5 shadow-lg">
-        <div className="w-full h-full bg-slate-900 rounded-full flex items-center justify-center overflow-hidden">
+        <div className="w-full h-full bg-surface-primary rounded-full flex items-center justify-center overflow-hidden">
           {/* Robot face SVG */}
           <svg
             viewBox="0 0 100 100"
@@ -94,7 +94,7 @@ export default function CausePilotAvatar({
       
       {/* Online indicator */}
       {animated && (
-        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-900 animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-slate-900 animate-pulse" />
       )}
     </div>
   );

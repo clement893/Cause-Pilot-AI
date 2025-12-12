@@ -214,17 +214,17 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
   };
 
   return (
-    <div className="flex h-full bg-slate-950">
+    <div className="flex h-full bg-background">
       {/* Panneau gauche - Blocs disponibles */}
-      <div className="w-64 bg-slate-900 border-r border-slate-700 flex flex-col">
-        <div className="p-4 border-b border-slate-700">
+      <div className="w-64 bg-surface-primary border-r border-border flex flex-col">
+        <div className="p-4 border-b border-border">
           <h3 className="text-sm font-semibold text-white mb-3">Blocs</h3>
           <div className="grid grid-cols-3 gap-2">
             {BLOCK_TYPES.map(({ type, icon, label }) => (
               <button
                 key={type}
                 onClick={() => handleAddBlock(type)}
-                className="flex flex-col items-center justify-center p-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group"
+                className="flex flex-col items-center justify-center p-2 bg-surface-secondary hover:bg-surface-tertiary rounded-lg transition-colors group"
                 title={label}
               >
                 <div className="text-slate-400 group-hover:text-indigo-400 transition-colors">
@@ -239,14 +239,14 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
         </div>
 
         {/* Variables de personnalisation */}
-        <div className="p-4 border-b border-slate-700">
+        <div className="p-4 border-b border-border">
           <h3 className="text-sm font-semibold text-white mb-3">Variables</h3>
           <div className="space-y-1 max-h-48 overflow-y-auto">
             {PERSONALIZATION_VARIABLES.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => navigator.clipboard.writeText(key)}
-                className="w-full text-left px-2 py-1 text-xs text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
+                className="w-full text-left px-2 py-1 text-xs text-slate-400 hover:text-white hover:bg-surface-secondary rounded transition-colors"
                 title={`Cliquez pour copier: ${key}`}
               >
                 <span className="font-mono text-indigo-400">{key}</span>
@@ -274,7 +274,7 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
               <select
                 value={globalStyle.fontFamily}
                 onChange={(e) => setGlobalStyle({ ...globalStyle, fontFamily: e.target.value })}
-                className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                className="w-full bg-surface-secondary border border-border rounded px-2 py-1 text-sm text-white"
               >
                 <option value="Arial, sans-serif">Arial</option>
                 <option value="Georgia, serif">Georgia</option>
@@ -287,7 +287,7 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
               <select
                 value={globalStyle.contentWidth}
                 onChange={(e) => setGlobalStyle({ ...globalStyle, contentWidth: e.target.value })}
-                className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                className="w-full bg-surface-secondary border border-border rounded px-2 py-1 text-sm text-white"
               >
                 <option value="500px">500px</option>
                 <option value="600px">600px</option>
@@ -301,7 +301,7 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
       {/* Zone centrale - Canvas */}
       <div className="flex-1 flex flex-col">
         {/* Barre d'outils */}
-        <div className="h-14 bg-slate-900 border-b border-slate-700 flex items-center justify-between px-4">
+        <div className="h-14 bg-surface-primary border-b border-border flex items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <button
               onClick={handleUndo}
@@ -324,19 +324,19 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPreviewMode("desktop")}
-              className={`p-2 rounded ${previewMode === "desktop" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"}`}
+              className={`p-2 rounded ${previewMode === "desktop" ? "bg-surface-tertiary text-white" : "text-slate-400 hover:text-white"}`}
               title="Aperçu desktop"
             >
               <Monitor className="w-5 h-5" />
             </button>
             <button
               onClick={() => setPreviewMode("mobile")}
-              className={`p-2 rounded ${previewMode === "mobile" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-white"}`}
+              className={`p-2 rounded ${previewMode === "mobile" ? "bg-surface-tertiary text-white" : "text-slate-400 hover:text-white"}`}
               title="Aperçu mobile"
             >
               <Smartphone className="w-5 h-5" />
             </button>
-            <div className="w-px h-6 bg-slate-700 mx-2" />
+            <div className="w-px h-6 bg-surface-tertiary mx-2" />
             <button
               onClick={() => setShowPreview(!showPreview)}
               className={`p-2 rounded ${showPreview ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"}`}
@@ -349,7 +349,7 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
           <div className="flex items-center gap-2">
             <button
               onClick={handleExport}
-              className="px-3 py-1.5 text-sm text-slate-300 hover:text-white border border-slate-600 rounded hover:bg-slate-800 transition-colors"
+              className="px-3 py-1.5 text-sm text-slate-300 hover:text-white border border-border rounded hover:bg-surface-secondary transition-colors"
             >
               Exporter HTML
             </button>
@@ -364,7 +364,7 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
         </div>
 
         {/* Canvas / Prévisualisation */}
-        <div className="flex-1 overflow-auto p-8 bg-slate-800">
+        <div className="flex-1 overflow-auto p-8 bg-surface-secondary">
           {showPreview ? (
             <div 
               className="mx-auto bg-white shadow-xl"
@@ -394,7 +394,7 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
                 }}
               >
                 {blocks.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+                  <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
                     <p className="text-lg mb-2">Glissez des blocs ici</p>
                     <p className="text-sm">ou cliquez sur un bloc dans le panneau de gauche</p>
                   </div>
@@ -431,8 +431,8 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
 
       {/* Panneau droit - Éditeur de bloc */}
       {selectedBlock && !showPreview && (
-        <div className="w-80 bg-slate-900 border-l border-slate-700 overflow-y-auto">
-          <div className="p-4 border-b border-slate-700 flex items-center justify-between">
+        <div className="w-80 bg-surface-primary border-l border-border overflow-y-auto">
+          <div className="p-4 border-b border-border flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Propriétés
@@ -440,14 +440,14 @@ export function EmailEditor({ initialTemplate, onSave, onExport }: EmailEditorPr
             <div className="flex items-center gap-1">
               <button
                 onClick={() => handleDuplicateBlock(selectedBlock.id)}
-                className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-slate-800"
+                className="p-1.5 text-slate-400 hover:text-white rounded hover:bg-surface-secondary"
                 title="Dupliquer"
               >
                 <Copy className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleDeleteBlock(selectedBlock.id)}
-                className="p-1.5 text-slate-400 hover:text-red-400 rounded hover:bg-slate-800"
+                className="p-1.5 text-slate-400 hover:text-error-light rounded hover:bg-surface-secondary"
                 title="Supprimer"
               >
                 <Trash2 className="w-4 h-4" />

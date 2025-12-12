@@ -43,7 +43,7 @@ export function BlockEditor({ block, onUpdate }: BlockEditorProps) {
       {block.type === "columns" && <ColumnsEditor block={block as ColumnsBlock} onUpdate={onUpdate} />}
 
       {/* Styles communs */}
-      <div className="border-t border-slate-700 pt-4">
+      <div className="border-t border-border pt-4">
         <h4 className="text-xs font-semibold text-slate-400 uppercase mb-3">Style</h4>
         
         <div className="space-y-3">
@@ -67,7 +67,7 @@ export function BlockEditor({ block, onUpdate }: BlockEditorProps) {
                   className={`flex-1 py-1.5 text-xs rounded ${
                     block.style?.textAlign === align 
                       ? "bg-indigo-600 text-white" 
-                      : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                      : "bg-surface-secondary text-slate-400 hover:bg-surface-tertiary"
                   }`}
                 >
                   {align === "left" ? "Gauche" : align === "center" ? "Centre" : "Droite"}
@@ -82,7 +82,7 @@ export function BlockEditor({ block, onUpdate }: BlockEditorProps) {
               type="text"
               value={block.style?.padding || "10px 20px"}
               onChange={(e) => updateStyle("padding", e.target.value)}
-              className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+              className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
               placeholder="10px 20px"
             />
           </div>
@@ -113,13 +113,13 @@ function TextEditor({ block, onUpdate }: { block: TextBlock; onUpdate: (block: E
           </button>
         </div>
         {showVariables && (
-          <div className="mb-2 p-2 bg-slate-800 rounded border border-slate-600">
+          <div className="mb-2 p-2 bg-surface-secondary rounded border border-border">
             <div className="grid grid-cols-2 gap-1">
               {PERSONALIZATION_VARIABLES.slice(0, 6).map(({ key, label }) => (
                 <button
                   key={key}
                   onClick={() => insertVariable(key)}
-                  className="text-xs text-left px-2 py-1 hover:bg-slate-700 rounded"
+                  className="text-xs text-left px-2 py-1 hover:bg-surface-tertiary rounded"
                 >
                   <span className="text-indigo-400">{key}</span>
                 </button>
@@ -130,7 +130,7 @@ function TextEditor({ block, onUpdate }: { block: TextBlock; onUpdate: (block: E
         <textarea
           value={block.content}
           onChange={(e) => onUpdate({ ...block, content: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white min-h-[100px]"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white min-h-[100px]"
           placeholder="Entrez votre texte..."
         />
       </div>
@@ -139,7 +139,7 @@ function TextEditor({ block, onUpdate }: { block: TextBlock; onUpdate: (block: E
         <select
           value={block.style?.fontSize || "16px"}
           onChange={(e) => onUpdate({ ...block, style: { ...block.style, fontSize: e.target.value } })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="12px">12px</option>
           <option value="14px">14px</option>
@@ -170,7 +170,7 @@ function HeadingEditor({ block, onUpdate }: { block: HeadingBlock; onUpdate: (bl
           type="text"
           value={block.content}
           onChange={(e) => onUpdate({ ...block, content: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         />
       </div>
       <div>
@@ -183,7 +183,7 @@ function HeadingEditor({ block, onUpdate }: { block: HeadingBlock; onUpdate: (bl
               className={`flex-1 py-1.5 text-xs rounded ${
                 block.level === level 
                   ? "bg-indigo-600 text-white" 
-                  : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                  : "bg-surface-secondary text-slate-400 hover:bg-surface-tertiary"
               }`}
             >
               H{level}
@@ -240,13 +240,13 @@ function ImageEditor({ block, onUpdate }: { block: ImageBlock; onUpdate: (block:
           type="text"
           value={block.src}
           onChange={(e) => onUpdate({ ...block, src: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
           placeholder="https://..."
         />
       </div>
       <div>
         <label className="text-xs text-slate-400 block mb-1">Ou télécharger</label>
-        <label className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-slate-600 rounded cursor-pointer hover:border-indigo-500 transition-colors">
+        <label className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-border rounded cursor-pointer hover:border-indigo-500 transition-colors">
           <Upload className="w-4 h-4 text-slate-400" />
           <span className="text-sm text-slate-400">
             {uploading ? "Téléchargement..." : "Choisir un fichier"}
@@ -266,7 +266,7 @@ function ImageEditor({ block, onUpdate }: { block: ImageBlock; onUpdate: (block:
           type="text"
           value={block.alt}
           onChange={(e) => onUpdate({ ...block, alt: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
           placeholder="Description de l'image"
         />
       </div>
@@ -275,7 +275,7 @@ function ImageEditor({ block, onUpdate }: { block: ImageBlock; onUpdate: (block:
         <select
           value={block.width || "100%"}
           onChange={(e) => onUpdate({ ...block, width: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="100%">100%</option>
           <option value="75%">75%</option>
@@ -290,7 +290,7 @@ function ImageEditor({ block, onUpdate }: { block: ImageBlock; onUpdate: (block:
           type="text"
           value={block.link || ""}
           onChange={(e) => onUpdate({ ...block, link: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
           placeholder="https://..."
         />
       </div>
@@ -314,7 +314,7 @@ function ButtonEditor({ block, onUpdate }: { block: ButtonBlock; onUpdate: (bloc
           type="text"
           value={block.text}
           onChange={(e) => onUpdate({ ...block, text: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         />
       </div>
       <div>
@@ -323,7 +323,7 @@ function ButtonEditor({ block, onUpdate }: { block: ButtonBlock; onUpdate: (bloc
           type="text"
           value={block.link}
           onChange={(e) => onUpdate({ ...block, link: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
           placeholder="https://..."
         />
       </div>
@@ -350,7 +350,7 @@ function ButtonEditor({ block, onUpdate }: { block: ButtonBlock; onUpdate: (bloc
         <select
           value={block.buttonStyle?.borderRadius || "6px"}
           onChange={(e) => updateButtonStyle("borderRadius", e.target.value)}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="0">Carré</option>
           <option value="4px">Léger</option>
@@ -371,7 +371,7 @@ function DividerEditor({ block, onUpdate }: { block: DividerBlock; onUpdate: (bl
         <select
           value={block.lineStyle || "solid"}
           onChange={(e) => onUpdate({ ...block, lineStyle: e.target.value as "solid" | "dashed" | "dotted" })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="solid">Solide</option>
           <option value="dashed">Tirets</option>
@@ -392,7 +392,7 @@ function DividerEditor({ block, onUpdate }: { block: DividerBlock; onUpdate: (bl
         <select
           value={block.lineWidth || "1px"}
           onChange={(e) => onUpdate({ ...block, lineWidth: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="1px">1px</option>
           <option value="2px">2px</option>
@@ -412,7 +412,7 @@ function SpacerEditor({ block, onUpdate }: { block: SpacerBlock; onUpdate: (bloc
         <select
           value={block.height}
           onChange={(e) => onUpdate({ ...block, height: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="10px">10px</option>
           <option value="20px">20px</option>
@@ -458,7 +458,7 @@ function SocialEditor({ block, onUpdate }: { block: SocialBlock; onUpdate: (bloc
         <select
           value={block.iconSize || "32px"}
           onChange={(e) => onUpdate({ ...block, iconSize: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         >
           <option value="24px">Petit</option>
           <option value="32px">Moyen</option>
@@ -482,7 +482,7 @@ function SocialEditor({ block, onUpdate }: { block: SocialBlock; onUpdate: (bloc
               <select
                 value={link.platform}
                 onChange={(e) => updateLink(index, "platform", e.target.value)}
-                className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-xs text-white"
+                className="bg-surface-secondary border border-border rounded px-2 py-1 text-xs text-white"
               >
                 {platforms.map(p => (
                   <option key={p} value={p}>{p}</option>
@@ -492,12 +492,12 @@ function SocialEditor({ block, onUpdate }: { block: SocialBlock; onUpdate: (bloc
                 type="text"
                 value={link.url}
                 onChange={(e) => updateLink(index, "url", e.target.value)}
-                className="flex-1 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-xs text-white"
+                className="flex-1 bg-surface-secondary border border-border rounded px-2 py-1 text-xs text-white"
                 placeholder="URL"
               />
               <button
                 onClick={() => removeLink(index)}
-                className="p-1 text-slate-400 hover:text-red-400"
+                className="p-1 text-slate-400 hover:text-error-light"
               >
                 <Trash2 className="w-3 h-3" />
               </button>
@@ -518,7 +518,7 @@ function FooterEditor({ block, onUpdate }: { block: FooterBlock; onUpdate: (bloc
           type="text"
           value={block.companyName || ""}
           onChange={(e) => onUpdate({ ...block, companyName: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         />
       </div>
       <div>
@@ -526,7 +526,7 @@ function FooterEditor({ block, onUpdate }: { block: FooterBlock; onUpdate: (bloc
         <textarea
           value={block.address || ""}
           onChange={(e) => onUpdate({ ...block, address: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white min-h-[60px]"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white min-h-[60px]"
         />
       </div>
       <div>
@@ -535,7 +535,7 @@ function FooterEditor({ block, onUpdate }: { block: FooterBlock; onUpdate: (bloc
           type="text"
           value={block.unsubscribeText || "Se désabonner"}
           onChange={(e) => onUpdate({ ...block, unsubscribeText: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-sm text-white"
+          className="w-full bg-surface-secondary border border-border rounded px-2 py-1.5 text-sm text-white"
         />
       </div>
     </div>
@@ -568,7 +568,7 @@ function ColumnsEditor({ block, onUpdate }: { block: ColumnsBlock; onUpdate: (bl
             <button
               key={index}
               onClick={() => setLayout(layout.columns)}
-              className="w-full text-left px-3 py-2 text-xs bg-slate-800 hover:bg-slate-700 rounded text-slate-300"
+              className="w-full text-left px-3 py-2 text-xs bg-surface-secondary hover:bg-surface-tertiary rounded text-slate-300"
             >
               {layout.label}
             </button>

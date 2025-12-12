@@ -47,55 +47,55 @@ function DonateSuccessContent() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
         {/* Success Icon */}
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-12 h-12 text-green-600" />
+        <div className="w-20 h-20 bg-success-light/20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle className="w-12 h-12 text-success" />
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           Merci pour votre don !
         </h1>
-        <p className="text-gray-600 mb-6">
+        <p className="text-muted-foreground mb-6">
           Votre générosité fait une réelle différence.
         </p>
 
         {/* Donation Details */}
         {loading ? (
-          <div className="bg-gray-50 rounded-xl p-6 mb-6">
-            <p className="text-gray-500">Chargement des détails...</p>
+          <div className="bg-muted rounded-xl p-6 mb-6">
+            <p className="text-text-tertiary">Chargement des détails...</p>
           </div>
         ) : sessionDetails ? (
-          <div className="bg-gray-50 rounded-xl p-6 mb-6 text-left">
+          <div className="bg-muted rounded-xl p-6 mb-6 text-left">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-600">Montant</span>
-              <span className="text-2xl font-bold text-green-600">
+              <span className="text-muted-foreground">Montant</span>
+              <span className="text-2xl font-bold text-success">
                 {sessionDetails.amount.toFixed(2)} $
               </span>
             </div>
             {sessionDetails.isRecurring && (
               <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-600">Type</span>
-                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                <span className="text-muted-foreground">Type</span>
+                <span className="px-3 py-1 bg-brand-light/20 text-purple-700 rounded-full text-sm">
                   Don récurrent
                 </span>
               </div>
             )}
             {sessionDetails.campaignName && (
               <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-600">Campagne</span>
-                <span className="text-gray-900 font-medium">
+                <span className="text-muted-foreground">Campagne</span>
+                <span className="text-foreground font-medium">
                   {sessionDetails.campaignName}
                 </span>
               </div>
             )}
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Confirmation envoyée à</span>
-              <span className="text-gray-900">{sessionDetails.email}</span>
+              <span className="text-muted-foreground">Confirmation envoyée à</span>
+              <span className="text-foreground">{sessionDetails.email}</span>
             </div>
           </div>
         ) : (
           <div className="bg-green-50 rounded-xl p-6 mb-6">
-            <Heart className="w-8 h-8 text-green-600 mx-auto mb-2" />
+            <Heart className="w-8 h-8 text-success mx-auto mb-2" />
             <p className="text-green-800">
               Votre don a été traité avec succès !
             </p>
@@ -105,13 +105,13 @@ function DonateSuccessContent() {
         {/* Next Steps */}
         <div className="space-y-3 mb-6">
           <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg text-left">
-            <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
+            <Mail className="w-5 h-5 text-info flex-shrink-0" />
             <p className="text-sm text-blue-800">
               Un reçu de confirmation vous sera envoyé par email.
             </p>
           </div>
           <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg text-left">
-            <Download className="w-5 h-5 text-purple-600 flex-shrink-0" />
+            <Download className="w-5 h-5 text-brand flex-shrink-0" />
             <p className="text-sm text-purple-800">
               Votre reçu fiscal sera disponible en début d&apos;année prochaine.
             </p>
@@ -130,7 +130,7 @@ function DonateSuccessContent() {
           {formId && (
             <Link
               href={`/donate/${formId}`}
-              className="block w-full px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="block w-full px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-muted transition-colors"
             >
               Faire un autre don
             </Link>
@@ -139,7 +139,7 @@ function DonateSuccessContent() {
 
         {/* Social Share */}
         <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-600 mb-3">
+          <p className="text-sm text-muted-foreground mb-3">
             Partagez votre geste et inspirez d&apos;autres personnes
           </p>
           <div className="flex justify-center gap-3">
@@ -171,7 +171,7 @@ export default function DonateSuccessPage() {
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement...</p>
+          <p className="text-muted-foreground">Chargement...</p>
         </div>
       </div>
     }>

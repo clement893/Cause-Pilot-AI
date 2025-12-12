@@ -121,17 +121,17 @@ export default function TemplatesPage() {
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      WELCOME: "bg-green-500/20 text-green-400",
-      THANK_YOU: "bg-blue-500/20 text-blue-400",
-      "THANK-YOU": "bg-blue-500/20 text-blue-400",
-      NEWSLETTER: "bg-purple-500/20 text-purple-400",
-      CAMPAIGN: "bg-pink-500/20 text-pink-400",
-      FUNDRAISING: "bg-red-500/20 text-red-400",
-      REMINDER: "bg-yellow-500/20 text-yellow-400",
+      WELCOME: "bg-success/20 text-success-light",
+      THANK_YOU: "bg-info/20 text-info-light",
+      "THANK-YOU": "bg-info/20 text-info-light",
+      NEWSLETTER: "bg-brand/20 text-brand-light",
+      CAMPAIGN: "bg-accent/20 text-accent",
+      FUNDRAISING: "bg-error/20 text-error-light",
+      REMINDER: "bg-warning/20 text-yellow-400",
       REACTIVATION: "bg-orange-500/20 text-orange-400",
       RECEIPT: "bg-cyan-500/20 text-cyan-400",
-      GENERAL: "bg-gray-500/20 text-gray-400",
-      OTHER: "bg-gray-500/20 text-gray-400",
+      GENERAL: "bg-muted/20 text-muted-foreground",
+      OTHER: "bg-muted/20 text-muted-foreground",
     };
     return colors[category?.toUpperCase()] || colors.OTHER;
   };
@@ -160,8 +160,8 @@ export default function TemplatesPage() {
 
   const TemplateCard = ({ template }: { template: Template }) => (
     <div
-      className={`bg-slate-800/50 rounded-xl border overflow-hidden hover:border-slate-600 transition-colors ${
-        template.isStarter ? "border-indigo-500/30" : "border-slate-700"
+      className={`bg-surface-secondary/50 rounded-xl border overflow-hidden hover:border-border transition-colors ${
+        template.isStarter ? "border-indigo-500/30" : "border-border"
       }`}
     >
       {/* Preview Area */}
@@ -175,7 +175,7 @@ export default function TemplatesPage() {
         {template.blocks ? (
           <Layout className="w-12 h-12 text-indigo-400" />
         ) : (
-          <FileText className="w-12 h-12 text-gray-500" />
+          <FileText className="w-12 h-12 text-text-tertiary" />
         )}
       </div>
 
@@ -190,11 +190,11 @@ export default function TemplatesPage() {
               </span>
               {!template.isStarter && (
                 template.isActive ? (
-                  <span className="flex items-center gap-1 text-xs text-green-400">
+                  <span className="flex items-center gap-1 text-xs text-success-light">
                     <Check className="w-3 h-3" /> Actif
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-xs text-gray-500">
+                  <span className="flex items-center gap-1 text-xs text-text-tertiary">
                     <X className="w-3 h-3" /> Inactif
                   </span>
                 )
@@ -204,19 +204,19 @@ export default function TemplatesPage() {
         </div>
 
         {template.description && (
-          <p className="text-sm text-gray-400 mt-2 line-clamp-2">
+          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
             {template.description}
           </p>
         )}
 
         {!template.isStarter && (
-          <div className="text-xs text-gray-500 mt-3">
+          <div className="text-xs text-text-tertiary mt-3">
             Utilisé dans {template._count?.campaigns || 0} campagne(s)
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-700">
+        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
           {template.isStarter ? (
             <>
               <Link
@@ -228,7 +228,7 @@ export default function TemplatesPage() {
               </Link>
               <Link
                 href={`/marketing/templates/${template.id}`}
-                className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
                 title="Prévisualiser"
               >
                 <Eye className="w-4 h-4" />
@@ -238,28 +238,28 @@ export default function TemplatesPage() {
             <>
               <Link
                 href={`/marketing/templates/${template.id}`}
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
               >
                 <Eye className="w-4 h-4" />
                 Voir
               </Link>
               <Link
                 href={template.blocks ? `/marketing/templates/editor?id=${template.id}` : `/marketing/templates/${template.id}/edit`}
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
               >
                 <Edit className="w-4 h-4" />
                 Modifier
               </Link>
               <button
                 onClick={() => handleDuplicate(template)}
-                className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
                 title="Dupliquer"
               >
                 <Copy className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleDelete(template.id)}
-                className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                className="p-2 text-muted-foreground hover:text-error-light hover:bg-error/10 rounded-lg transition-colors"
                 title="Supprimer"
               >
                 <Trash2 className="w-4 h-4" />
@@ -278,7 +278,7 @@ export default function TemplatesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Templates Email</h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               Créez et gérez vos modèles email réutilisables
             </p>
           </div>
@@ -292,7 +292,7 @@ export default function TemplatesPage() {
             </Link>
             <Link
               href="/marketing/templates/new"
-              className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-all"
             >
               <Plus className="w-4 h-4" />
               Template HTML
@@ -303,20 +303,20 @@ export default function TemplatesPage() {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Rechercher un template..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-pink-500"
+              className="w-full pl-10 pr-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent"
             />
           </div>
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+            className="px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
           >
             <option value="">Toutes les catégories</option>
             <option value="WELCOME">Bienvenue</option>
@@ -329,12 +329,12 @@ export default function TemplatesPage() {
             <option value="RECEIPT">Reçu</option>
           </select>
 
-          <label className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white cursor-pointer">
+          <label className="flex items-center gap-2 px-4 py-2 bg-surface-secondary border border-border rounded-lg text-white cursor-pointer">
             <input
               type="checkbox"
               checked={showStarters}
               onChange={(e) => setShowStarters(e.target.checked)}
-              className="rounded border-slate-600"
+              className="rounded border-border"
             />
             <span className="text-sm">Afficher les starters</span>
           </label>
@@ -343,7 +343,7 @@ export default function TemplatesPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-48 bg-slate-800/50 rounded-xl animate-pulse" />
+              <div key={i} className="h-48 bg-surface-secondary/50 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : (
@@ -377,12 +377,12 @@ export default function TemplatesPage() {
 
             {/* État vide */}
             {filteredTemplates.length === 0 && (
-              <div className="text-center py-16 bg-slate-800/30 rounded-xl border border-slate-700">
-                <FileText className="w-16 h-16 mx-auto text-gray-600 mb-4" />
+              <div className="text-center py-16 bg-surface-secondary/30 rounded-xl border border-border">
+                <FileText className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">
                   Aucun template trouvé
                 </h3>
-                <p className="text-gray-400 mb-6">
+                <p className="text-muted-foreground mb-6">
                   {searchTerm || categoryFilter
                     ? "Aucun template ne correspond à vos critères"
                     : "Commencez par créer votre premier template email"}

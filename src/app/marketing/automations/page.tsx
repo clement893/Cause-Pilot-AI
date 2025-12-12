@@ -126,14 +126,14 @@ export default function AutomationsPage() {
 
   const getTriggerColor = (type: string) => {
     const colors: Record<string, string> = {
-      NEW_DONOR: "bg-green-500/20 text-green-400",
-      NEW_DONATION: "bg-blue-500/20 text-blue-400",
-      DONATION_ANNIVERSARY: "bg-purple-500/20 text-purple-400",
+      NEW_DONOR: "bg-success/20 text-success-light",
+      NEW_DONATION: "bg-info/20 text-info-light",
+      DONATION_ANNIVERSARY: "bg-brand/20 text-brand-light",
       INACTIVITY: "bg-orange-500/20 text-orange-400",
-      BIRTHDAY: "bg-pink-500/20 text-pink-400",
+      BIRTHDAY: "bg-accent/20 text-accent",
       RECURRING_PAYMENT: "bg-cyan-500/20 text-cyan-400",
-      CAMPAIGN_END: "bg-yellow-500/20 text-yellow-400",
-      CUSTOM: "bg-gray-500/20 text-gray-400",
+      CAMPAIGN_END: "bg-warning/20 text-yellow-400",
+      CUSTOM: "bg-muted/20 text-muted-foreground",
     };
     return colors[type] || colors.CUSTOM;
   };
@@ -150,7 +150,7 @@ export default function AutomationsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Automatisations</h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               Configurez des workflows automatiques pour engager vos donateurs
             </p>
           </div>
@@ -165,13 +165,13 @@ export default function AutomationsPage() {
 
         {/* Search */}
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Rechercher une automatisation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-pink-500"
+            className="w-full pl-10 pr-4 py-2 bg-surface-secondary border border-border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent"
           />
         </div>
 
@@ -179,7 +179,7 @@ export default function AutomationsPage() {
         {loading ? (
           <div className="space-y-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 bg-slate-800/50 rounded-xl animate-pulse" />
+              <div key={i} className="h-32 bg-surface-secondary/50 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : filteredAutomations.length > 0 ? (
@@ -187,10 +187,10 @@ export default function AutomationsPage() {
             {filteredAutomations.map((automation) => (
               <div
                 key={automation.id}
-                className={`bg-slate-800/50 rounded-xl border p-6 transition-colors ${
+                className={`bg-surface-secondary/50 rounded-xl border p-6 transition-colors ${
                   automation.isActive
                     ? "border-green-500/30 hover:border-green-500/50"
-                    : "border-slate-700 hover:border-slate-600"
+                    : "border-border hover:border-border"
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -206,19 +206,19 @@ export default function AutomationsPage() {
                         <span
                           className={`px-2 py-0.5 rounded-full text-xs ${
                             automation.isActive
-                              ? "bg-green-500/20 text-green-400"
-                              : "bg-gray-500/20 text-gray-400"
+                              ? "bg-success/20 text-success-light"
+                              : "bg-muted/20 text-muted-foreground"
                           }`}
                         >
                           {automation.isActive ? "Actif" : "Inactif"}
                         </span>
                       </div>
                       {automation.description && (
-                        <p className="text-gray-400 text-sm mt-1">
+                        <p className="text-muted-foreground text-sm mt-1">
                           {automation.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                      <div className="flex items-center gap-4 mt-2 text-sm text-text-tertiary">
                         <span className={`px-2 py-0.5 rounded ${getTriggerColor(automation.triggerType)}`}>
                           {getTriggerLabel(automation.triggerType)}
                         </span>
@@ -246,7 +246,7 @@ export default function AutomationsPage() {
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                         automation.isActive
                           ? "bg-orange-500/20 text-orange-400 hover:bg-orange-500/30"
-                          : "bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                          : "bg-success/20 text-success-light hover:bg-success/30"
                       }`}
                     >
                       {automation.isActive ? (
@@ -263,14 +263,14 @@ export default function AutomationsPage() {
                     </button>
                     <Link
                       href={`/marketing/automations/${automation.id}`}
-                      className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                      className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
                       title="Configurer"
                     >
                       <Settings className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => handleDelete(automation.id)}
-                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      className="p-2 text-muted-foreground hover:text-error-light hover:bg-error/10 rounded-lg transition-colors"
                       title="Supprimer"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -281,12 +281,12 @@ export default function AutomationsPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-slate-800/30 rounded-xl border border-slate-700">
-            <Zap className="w-16 h-16 mx-auto text-gray-600 mb-4" />
+          <div className="text-center py-16 bg-surface-secondary/30 rounded-xl border border-border">
+            <Zap className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">
               Aucune automatisation configurée
             </h3>
-            <p className="text-gray-400 mb-6 max-w-md mx-auto">
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Les automatisations vous permettent d&apos;envoyer des emails automatiquement
               en fonction d&apos;événements comme un nouveau don ou l&apos;anniversaire d&apos;un donateur.
             </p>
@@ -332,7 +332,7 @@ export default function AutomationsPage() {
                 <Link
                   key={suggestion.name}
                   href={`/marketing/automations/new?trigger=${suggestion.trigger}&name=${encodeURIComponent(suggestion.name)}`}
-                  className="p-4 bg-slate-800/30 rounded-lg border border-slate-700 hover:border-pink-500/50 transition-colors"
+                  className="p-4 bg-surface-secondary/30 rounded-lg border border-border hover:border-accent/50 transition-colors"
                 >
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg ${getTriggerColor(suggestion.trigger)}`}>
@@ -340,7 +340,7 @@ export default function AutomationsPage() {
                     </div>
                     <div>
                       <h3 className="font-medium text-white">{suggestion.name}</h3>
-                      <p className="text-sm text-gray-400 mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {suggestion.description}
                       </p>
                     </div>

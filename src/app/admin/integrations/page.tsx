@@ -92,64 +92,64 @@ export default function IntegrationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
         <div className="p-8">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
               <Link href="/admin" className="hover:text-white">Administration</Link>
               <span>/</span>
               <span className="text-white">Intégrations</span>
             </div>
             <h1 className="text-3xl font-bold text-white">Intégrations</h1>
-            <p className="text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               Connectez des services externes pour étendre les fonctionnalités
             </p>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <div className="bg-surface-primary rounded-xl p-6 border border-border">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-green-500/20 rounded-lg">
-                  <Check className="w-6 h-6 text-green-400" />
+                <div className="p-3 bg-success/20 rounded-lg">
+                  <Check className="w-6 h-6 text-success-light" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {integrations.filter((i) => i.isEnabled).length}
                   </p>
-                  <p className="text-sm text-gray-400">Intégrations actives</p>
+                  <p className="text-sm text-muted-foreground">Intégrations actives</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <div className="bg-surface-primary rounded-xl p-6 border border-border">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-amber-500/20 rounded-lg">
-                  <Settings className="w-6 h-6 text-amber-400" />
+                  <Settings className="w-6 h-6 text-warning" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {integrations.filter((i) => i.isConfigured).length}
                   </p>
-                  <p className="text-sm text-gray-400">Configurées</p>
+                  <p className="text-sm text-muted-foreground">Configurées</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <div className="bg-surface-primary rounded-xl p-6 border border-border">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-purple-500/20 rounded-lg">
-                  <Plug className="w-6 h-6 text-purple-400" />
+                <div className="p-3 bg-brand/20 rounded-lg">
+                  <Plug className="w-6 h-6 text-brand-light" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">
                     {integrations.length}
                   </p>
-                  <p className="text-sm text-gray-400">Disponibles</p>
+                  <p className="text-sm text-muted-foreground">Disponibles</p>
                 </div>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function IntegrationsPage() {
 
           {/* Integrations by Category */}
           {loading ? (
-            <div className="bg-slate-900 rounded-xl p-8 border border-slate-800 text-center text-gray-400">
+            <div className="bg-surface-primary rounded-xl p-8 border border-border text-center text-muted-foreground">
               Chargement...
             </div>
           ) : (
@@ -167,7 +167,7 @@ export default function IntegrationsPage() {
                 return (
                   <div key={category}>
                     <div className="flex items-center gap-3 mb-4">
-                      <Icon className="w-5 h-5 text-purple-400" />
+                      <Icon className="w-5 h-5 text-brand-light" />
                       <h2 className="text-lg font-semibold text-white">
                         {categoryLabels[category] || category}
                       </h2>
@@ -177,15 +177,15 @@ export default function IntegrationsPage() {
                       {categoryIntegrations.map((integration) => (
                         <div
                           key={integration.provider}
-                          className={`bg-slate-900 rounded-xl p-6 border transition-colors ${
+                          className={`bg-surface-primary rounded-xl p-6 border transition-colors ${
                             integration.isEnabled
                               ? "border-green-500/50"
-                              : "border-slate-800 hover:border-slate-700"
+                              : "border-border hover:border-border"
                           }`}
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center overflow-hidden">
+                              <div className="w-12 h-12 rounded-lg bg-surface-secondary flex items-center justify-center overflow-hidden">
                                 {integration.logoUrl ? (
                                   <img
                                     src={integration.logoUrl}
@@ -196,12 +196,12 @@ export default function IntegrationsPage() {
                                     }}
                                   />
                                 ) : (
-                                  <Plug className="w-6 h-6 text-gray-400" />
+                                  <Plug className="w-6 h-6 text-muted-foreground" />
                                 )}
                               </div>
                               <div>
                                 <h3 className="text-white font-medium">{integration.name}</h3>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-text-tertiary">
                                   {integration.isConfigured ? "Configuré" : "Non configuré"}
                                 </p>
                               </div>
@@ -216,16 +216,16 @@ export default function IntegrationsPage() {
                                 disabled={!integration.isConfigured}
                                 className="sr-only peer"
                               />
-                              <div className={`w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 ${!integration.isConfigured ? "opacity-50 cursor-not-allowed" : ""}`}></div>
+                              <div className={`w-11 h-6 bg-surface-tertiary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 ${!integration.isConfigured ? "opacity-50 cursor-not-allowed" : ""}`}></div>
                             </label>
                           </div>
                           
-                          <p className="text-sm text-gray-400 mb-4">
+                          <p className="text-sm text-muted-foreground mb-4">
                             {integration.description}
                           </p>
                           
                           {integration.lastSyncAt && (
-                            <p className="text-xs text-gray-500 mb-4">
+                            <p className="text-xs text-text-tertiary mb-4">
                               Dernière sync: {new Date(integration.lastSyncAt).toLocaleString("fr-FR")}
                             </p>
                           )}
@@ -233,7 +233,7 @@ export default function IntegrationsPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleConfigure(integration)}
-                              className="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm rounded-lg transition-colors"
+                              className="flex-1 px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary text-white text-sm rounded-lg transition-colors"
                             >
                               <Settings className="w-4 h-4 inline mr-1" />
                               Configurer
@@ -243,7 +243,7 @@ export default function IntegrationsPage() {
                                 href={integration.docsUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 text-gray-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                                className="p-2 text-muted-foreground hover:text-white hover:bg-surface-secondary rounded-lg transition-colors"
                               >
                                 <ExternalLink className="w-4 h-4" />
                               </a>

@@ -81,7 +81,7 @@ export default function NewCampaignPage() {
     >
       <form onSubmit={handleSubmit} className="max-w-4xl">
         {/* Informations générales */}
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 mb-6">
+        <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border mb-6">
           <h2 className="text-lg font-semibold text-white mb-4">Informations générales</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -94,7 +94,7 @@ export default function NewCampaignPage() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="Ex: Campagne de fin d'année 2024"
               />
             </div>
@@ -106,7 +106,7 @@ export default function NewCampaignPage() {
               <select
                 value={formData.campaignType}
                 onChange={(e) => setFormData({ ...formData, campaignType: e.target.value as CampaignType })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               >
                 {Object.entries(CAMPAIGN_TYPE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
@@ -121,7 +121,7 @@ export default function NewCampaignPage() {
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as CampaignPriority })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               >
                 {Object.entries(CAMPAIGN_PRIORITY_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
@@ -137,7 +137,7 @@ export default function NewCampaignPage() {
                 type="text"
                 value={formData.shortDescription}
                 onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="Résumé en une phrase"
               />
             </div>
@@ -150,7 +150,7 @@ export default function NewCampaignPage() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="Description détaillée de la campagne..."
               />
             </div>
@@ -158,7 +158,7 @@ export default function NewCampaignPage() {
         </div>
 
         {/* Dates et objectifs */}
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 mb-6">
+        <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border mb-6">
           <h2 className="text-lg font-semibold text-white mb-4">Dates et objectifs</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -170,7 +170,7 @@ export default function NewCampaignPage() {
                 type="date"
                 value={formData.startDate}
                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>
 
@@ -182,7 +182,7 @@ export default function NewCampaignPage() {
                 type="date"
                 value={formData.endDate}
                 onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>
 
@@ -194,7 +194,7 @@ export default function NewCampaignPage() {
                 type="number"
                 value={formData.goalAmount}
                 onChange={(e) => setFormData({ ...formData, goalAmount: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="50000"
               />
             </div>
@@ -207,7 +207,7 @@ export default function NewCampaignPage() {
                 type="number"
                 value={formData.minimumGoal}
                 onChange={(e) => setFormData({ ...formData, minimumGoal: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="25000"
               />
             </div>
@@ -220,7 +220,7 @@ export default function NewCampaignPage() {
                 type="number"
                 value={formData.stretchGoal}
                 onChange={(e) => setFormData({ ...formData, stretchGoal: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="75000"
               />
             </div>
@@ -228,7 +228,7 @@ export default function NewCampaignPage() {
         </div>
 
         {/* Personnalisation */}
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 mb-6">
+        <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border mb-6">
           <h2 className="text-lg font-semibold text-white mb-4">Personnalisation</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -247,7 +247,7 @@ export default function NewCampaignPage() {
                   type="text"
                   value={formData.primaryColor}
                   onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                  className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="flex-1 px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function NewCampaignPage() {
                   type="text"
                   value={formData.secondaryColor}
                   onChange={(e) => setFormData({ ...formData, secondaryColor: e.target.value })}
-                  className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="flex-1 px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -280,7 +280,7 @@ export default function NewCampaignPage() {
                 value={formData.thankYouMessage}
                 onChange={(e) => setFormData({ ...formData, thankYouMessage: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="Merci pour votre générosité..."
               />
             </div>
@@ -293,7 +293,7 @@ export default function NewCampaignPage() {
                 type="text"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="Ex: Éducation, Santé, Environnement"
               />
             </div>
@@ -306,7 +306,7 @@ export default function NewCampaignPage() {
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 placeholder="urgence, enfants, local"
               />
             </div>
@@ -314,7 +314,7 @@ export default function NewCampaignPage() {
         </div>
 
         {/* Options */}
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 mb-6">
+        <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border mb-6">
           <h2 className="text-lg font-semibold text-white mb-4">Options</h2>
           
           <div className="space-y-4">
@@ -323,7 +323,7 @@ export default function NewCampaignPage() {
                 type="checkbox"
                 checked={formData.isPublic}
                 onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })}
-                className="w-5 h-5 rounded border-slate-600 text-pink-500 focus:ring-pink-500"
+                className="w-5 h-5 rounded border-border text-accent focus:ring-pink-500"
               />
               <span className="text-slate-300">Campagne publique</span>
             </label>
@@ -333,7 +333,7 @@ export default function NewCampaignPage() {
                 type="checkbox"
                 checked={formData.allowP2P}
                 onChange={(e) => setFormData({ ...formData, allowP2P: e.target.checked })}
-                className="w-5 h-5 rounded border-slate-600 text-pink-500 focus:ring-pink-500"
+                className="w-5 h-5 rounded border-border text-accent focus:ring-pink-500"
               />
               <span className="text-slate-300">Autoriser les collectes peer-to-peer</span>
             </label>
@@ -343,7 +343,7 @@ export default function NewCampaignPage() {
                 type="checkbox"
                 checked={formData.enableMatching}
                 onChange={(e) => setFormData({ ...formData, enableMatching: e.target.checked })}
-                className="w-5 h-5 rounded border-slate-600 text-pink-500 focus:ring-pink-500"
+                className="w-5 h-5 rounded border-border text-accent focus:ring-pink-500"
               />
               <span className="text-slate-300">Activer le matching de dons</span>
             </label>
@@ -359,7 +359,7 @@ export default function NewCampaignPage() {
                     step="0.1"
                     value={formData.matchingRatio}
                     onChange={(e) => setFormData({ ...formData, matchingRatio: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     placeholder="2.0 (pour 2:1)"
                   />
                 </div>
@@ -371,7 +371,7 @@ export default function NewCampaignPage() {
                     type="number"
                     value={formData.matchingCap}
                     onChange={(e) => setFormData({ ...formData, matchingCap: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-surface-tertiary border border-border rounded-lg text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     placeholder="10000"
                   />
                 </div>
@@ -385,14 +385,14 @@ export default function NewCampaignPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+            className="px-6 py-2 bg-surface-tertiary hover:bg-surface-elevated text-white rounded-lg transition-colors"
           >
             Annuler
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-6 py-2 bg-accent hover:bg-pink-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Création..." : "Créer la campagne"}
           </button>

@@ -63,7 +63,7 @@ export function ExportButtons({ filters, selectedIds }: ExportButtonsProps) {
       <button
         onClick={() => setShowDropdown(!showDropdown)}
         disabled={exporting !== null}
-        className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors border border-slate-700 disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 bg-surface-secondary text-white rounded-lg hover:bg-surface-tertiary transition-colors border border-border disabled:opacity-50"
       >
         {exporting ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -82,25 +82,25 @@ export function ExportButtons({ filters, selectedIds }: ExportButtonsProps) {
           />
 
           {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg border border-slate-700 shadow-xl z-20 overflow-hidden">
+          <div className="absolute right-0 mt-2 w-48 bg-surface-secondary rounded-lg border border-border shadow-xl z-20 overflow-hidden">
             <button
               onClick={() => handleExport("csv")}
-              className="flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-slate-700 transition-colors"
+              className="flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-surface-tertiary transition-colors"
             >
-              <FileText className="w-5 h-5 text-green-400" />
+              <FileText className="w-5 h-5 text-success-light" />
               <div>
                 <p className="font-medium">Export CSV</p>
-                <p className="text-xs text-gray-400">Format texte universel</p>
+                <p className="text-xs text-muted-foreground">Format texte universel</p>
               </div>
             </button>
             <button
               onClick={() => handleExport("xlsx")}
-              className="flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-slate-700 transition-colors border-t border-slate-700"
+              className="flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-surface-tertiary transition-colors border-t border-border"
             >
-              <FileSpreadsheet className="w-5 h-5 text-blue-400" />
+              <FileSpreadsheet className="w-5 h-5 text-info-light" />
               <div>
                 <p className="font-medium">Export Excel</p>
-                <p className="text-xs text-gray-400">Format .xlsx</p>
+                <p className="text-xs text-muted-foreground">Format .xlsx</p>
               </div>
             </button>
           </div>

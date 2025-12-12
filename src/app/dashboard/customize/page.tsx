@@ -275,7 +275,7 @@ export default function CustomizeDashboardPage() {
               <p className="text-muted-foreground text-sm mt-1">
                 Glissez et redimensionnez les widgets pour créer votre vue personnalisée
                 {currentOrganization && (
-                  <span className="ml-2 text-purple-400">
+                  <span className="ml-2 text-brand-light">
                     • {currentOrganization.name}
                   </span>
                 )}

@@ -1,0 +1,261 @@
+/**
+ * Table & List Components
+ * Reusable table and list styles
+ */
+
+/* Table container */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+}
+
+/* Base table */
+.table {
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+/* Table header */
+.table-header {
+  border-bottom: 1px solid var(--border-default);
+  background: var(--surface-secondary);
+}
+
+.table-header-cell {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.table-header-cell-sortable {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.table-header-cell-sortable:hover {
+  color: var(--text-primary);
+}
+
+/* Table body */
+.table-body > * + * {
+  border-top: 1px solid var(--border-default);
+}
+
+/* Table row */
+.table-row {
+  transition: background-color 0.15s ease;
+}
+
+.table-row:hover {
+  background: var(--surface-secondary);
+}
+
+.table-row-clickable {
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.table-row-clickable:hover {
+  background: var(--surface-secondary);
+}
+
+.table-row-selected {
+  transition: background-color 0.15s ease;
+  background: oklch(0.628 0.258 292.717 / 10%);
+}
+
+/* Table cell */
+.table-cell {
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+}
+
+.table-cell-muted {
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+}
+
+/* Table footer */
+.table-footer {
+  border-top: 1px solid var(--border-default);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-secondary);
+}
+
+/* Empty state */
+.table-empty {
+  padding: 3rem 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* List container */
+.list-container {
+  border-radius: var(--rounded-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+}
+
+/* List item */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-default);
+  transition: background-color 0.15s ease;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:hover {
+  background: var(--surface-secondary);
+}
+
+.list-item-clickable {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-default);
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.list-item-clickable:last-child {
+  border-bottom: none;
+}
+
+.list-item-clickable:hover {
+  background: var(--surface-secondary);
+}
+
+/* List item content */
+.list-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-item-title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.list-item-subtitle {
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+/* List item actions */
+.list-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Data list (key-value pairs) */
+.data-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.data-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.data-list-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.data-list-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Stacked list */
+.stacked-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stacked-list-item {
+  padding: 1rem;
+  border-radius: var(--rounded-lg);
+  transition: background-color 0.15s ease;
+  background: var(--surface-secondary);
+}
+
+.stacked-list-item:hover {
+  background: var(--surface-tertiary);
+}
+
+/* Timeline list */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-default);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -1.25rem;
+  top: 0.25rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  border: 2px solid var(--brand-purple);
+  background: var(--surface-primary);
+}
+
+.timeline-content {
+  margin-left: 0.5rem;
+}
+
+.timeline-time {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}

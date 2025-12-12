@@ -42,10 +42,10 @@ function StatWidget({
 }) {
   const colorClasses: Record<string, string> = {
     primary: "bg-primary/20 text-primary",
-    green: "bg-green-500/20 text-green-400",
-    blue: "bg-blue-500/20 text-blue-400",
-    purple: "bg-purple-500/20 text-purple-400",
-    amber: "bg-amber-500/20 text-amber-400",
+    green: "bg-success/20 text-success-light",
+    blue: "bg-info/20 text-info-light",
+    purple: "bg-brand/20 text-brand-light",
+    amber: "bg-amber-500/20 text-warning",
   };
 
   return (
@@ -62,13 +62,13 @@ function StatWidget({
       {change !== undefined && (
         <div className="flex items-center gap-1 mt-2">
           {change >= 0 ? (
-            <TrendingUp className="h-4 w-4 text-green-400" />
+            <TrendingUp className="h-4 w-4 text-success-light" />
           ) : (
-            <TrendingDown className="h-4 w-4 text-red-400" />
+            <TrendingDown className="h-4 w-4 text-error-light" />
           )}
           <span
             className={`text-sm ${
-              change >= 0 ? "text-green-400" : "text-red-400"
+              change >= 0 ? "text-success-light" : "text-error-light"
             }`}
           >
             {change >= 0 ? "+" : ""}
@@ -112,7 +112,7 @@ export function DonorCountWidget({ data }: { data?: Record<string, unknown> }) {
           <p className="text-sm text-muted-foreground">Donateurs Actifs</p>
           <p className="text-2xl font-bold text-white mt-1">{count}</p>
         </div>
-        <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400">
+        <div className="p-2 rounded-lg bg-info/20 text-info-light">
           <Users className="h-5 w-5" />
         </div>
       </div>
@@ -135,7 +135,7 @@ export function AverageDonationWidget({ data }: { data?: Record<string, unknown>
           <p className="text-sm text-muted-foreground">Don Moyen</p>
           <p className="text-2xl font-bold text-white mt-1">{average} $</p>
         </div>
-        <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
+        <div className="p-2 rounded-lg bg-brand/20 text-brand-light">
           <BarChart3 className="h-5 w-5" />
         </div>
       </div>
@@ -190,9 +190,9 @@ export function DonationsOverTimeWidget() {
 // Widget Répartition par Type
 export function DonationsByTypeWidget() {
   const data = [
-    { label: "Individuel", value: 62, color: "bg-blue-500" },
-    { label: "Entreprise", value: 18, color: "bg-purple-500" },
-    { label: "Fondation", value: 20, color: "bg-green-500" },
+    { label: "Individuel", value: 62, color: "bg-info" },
+    { label: "Entreprise", value: 18, color: "bg-brand" },
+    { label: "Fondation", value: 20, color: "bg-success" },
   ];
 
   return (
@@ -221,10 +221,10 @@ export function DonationsByTypeWidget() {
 // Widget Segments Donateurs
 export function DonorSegmentsWidget() {
   const segments = [
-    { name: "Réguliers", count: 15, color: "bg-green-500" },
-    { name: "Occasionnels", count: 12, color: "bg-blue-500" },
-    { name: "Nouveaux", count: 8, color: "bg-purple-500" },
-    { name: "À risque", count: 3, color: "bg-red-500" },
+    { name: "Réguliers", count: 15, color: "bg-success" },
+    { name: "Occasionnels", count: 12, color: "bg-info" },
+    { name: "Nouveaux", count: 8, color: "bg-brand" },
+    { name: "À risque", count: 3, color: "bg-error" },
   ];
 
   return (
@@ -326,7 +326,7 @@ export function RecentDonationsWidget() {
                 <p className="text-sm font-medium text-white">{donation.donor}</p>
                 <p className="text-xs text-muted-foreground">{donation.date}</p>
               </div>
-              <p className="text-sm font-medium text-green-400">
+              <p className="text-sm font-medium text-success-light">
                 +{donation.amount} $
               </p>
             </div>
@@ -380,7 +380,7 @@ export function AtRiskDonorsWidget() {
   return (
     <div className="h-full p-4 flex flex-col">
       <div className="flex items-center gap-2 mb-4">
-        <AlertTriangle className="h-4 w-4 text-amber-400" />
+        <AlertTriangle className="h-4 w-4 text-warning" />
         <h3 className="text-sm font-medium text-white">Donateurs à Risque</h3>
       </div>
       <div className="flex-1 space-y-2 overflow-auto">
@@ -396,7 +396,7 @@ export function AtRiskDonorsWidget() {
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-bold text-amber-400">{donor.risk}%</p>
+              <p className="text-sm font-bold text-warning">{donor.risk}%</p>
               <p className="text-xs text-muted-foreground">risque</p>
             </div>
           </div>

@@ -1,0 +1,276 @@
+/**
+ * Card Components
+ * Reusable card styles using design tokens
+ */
+
+/* Base card styles */
+.card-base {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  transition: all 0.2s ease;
+}
+
+/* Standard card with padding */
+.card-default {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  transition: all 0.2s ease;
+  padding: 1.5rem;
+}
+
+/* Compact card for smaller content */
+.card-compact {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  transition: all 0.2s ease;
+  padding: 1rem;
+}
+
+/* Large card for featured content */
+.card-large {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  transition: all 0.2s ease;
+  padding: 2rem;
+}
+
+/* Interactive card with hover effects */
+.card-interactive {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  border-color: oklch(0.628 0.258 292.717 / 50%);
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.02);
+}
+
+.card-interactive:active {
+  transform: scale(0.98);
+}
+
+/* Glass morphism card */
+.card-glass {
+  border-radius: 1rem;
+  border: 1px solid oklch(1 0 0 / 10%);
+  background: oklch(1 0 0 / 5%);
+  backdrop-filter: blur(8px);
+}
+
+/* Glass card with hover */
+.card-glass-interactive {
+  border-radius: 1rem;
+  border: 1px solid oklch(1 0 0 / 10%);
+  background: oklch(1 0 0 / 5%);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-glass-interactive:hover {
+  border-color: oklch(0.628 0.258 292.717 / 50%);
+  transform: scale(1.05);
+}
+
+/* Stat card for dashboard metrics */
+.card-stat {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.card-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.card-stat-trend {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.card-stat-trend-up {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-success);
+}
+
+.card-stat-trend-down {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-error);
+}
+
+/* Alert/notification cards */
+.card-alert {
+  border-radius: var(--rounded-xl);
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.card-alert-warning {
+  border-radius: var(--rounded-xl);
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: oklch(0.795 0.184 86.047 / 10%);
+  border: 1px solid oklch(0.795 0.184 86.047 / 30%);
+}
+
+.card-alert-error {
+  border-radius: var(--rounded-xl);
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: oklch(0.628 0.258 29.234 / 10%);
+  border: 1px solid oklch(0.628 0.258 29.234 / 30%);
+}
+
+.card-alert-success {
+  border-radius: var(--rounded-xl);
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: oklch(0.723 0.191 142.495 / 10%);
+  border: 1px solid oklch(0.723 0.191 142.495 / 30%);
+}
+
+.card-alert-info {
+  border-radius: var(--rounded-xl);
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: oklch(0.628 0.258 292.717 / 10%);
+  border: 1px solid oklch(0.628 0.258 292.717 / 30%);
+}
+
+/* Feature card for landing pages */
+.card-feature {
+  border-radius: 1rem;
+  border: 1px solid oklch(1 0 0 / 10%);
+  background: oklch(1 0 0 / 5%);
+  backdrop-filter: blur(8px);
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.card-feature:hover {
+  border-color: oklch(0.628 0.258 292.717 / 50%);
+  transform: scale(1.05);
+}
+
+.card-feature-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--rounded-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.card-feature-icon-purple {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--rounded-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: oklch(0.628 0.258 292.717 / 20%);
+}
+
+.card-feature-icon-pink {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--rounded-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: oklch(0.656 0.241 354.308 / 20%);
+}
+
+.card-feature-icon-blue {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--rounded-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: oklch(0.623 0.214 259.815 / 20%);
+}
+
+.card-feature-icon-green {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--rounded-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: oklch(0.723 0.191 142.495 / 20%);
+}
+
+/* List item card */
+.card-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--rounded-lg);
+  background: var(--surface-secondary);
+  transition: background-color 0.15s ease;
+}
+
+.card-list-item:hover {
+  background: var(--surface-tertiary);
+}
+
+/* Pricing card */
+.card-pricing {
+  border-radius: 1rem;
+  border: 1px solid oklch(1 0 0 / 10%);
+  background: oklch(1 0 0 / 5%);
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  text-align: center;
+}
+
+.card-pricing-featured {
+  border-radius: 1rem;
+  background: oklch(1 0 0 / 5%);
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--brand-purple);
+  box-shadow: var(--shadow-brand);
+}

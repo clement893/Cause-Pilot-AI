@@ -136,7 +136,7 @@ export default function PreferenceCenterPage({
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-pink-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     );
   }
@@ -144,10 +144,10 @@ export default function PreferenceCenterPage({
   if (error && !donor) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-8 max-w-md text-center">
-          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+        <div className="bg-surface-secondary/50 backdrop-blur-sm rounded-2xl border border-border p-8 max-w-md text-center">
+          <AlertCircle className="w-16 h-16 text-error-light mx-auto mb-4" />
           <h1 className="text-xl font-bold text-white mb-2">Lien invalide</h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Ce lien de préférences n&apos;est plus valide ou a expiré.
             Veuillez contacter notre équipe pour obtenir un nouveau lien.
           </p>
@@ -167,30 +167,30 @@ export default function PreferenceCenterPage({
           <h1 className="text-3xl font-bold text-white mb-2">
             Centre de Préférences
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Bonjour {donor?.firstName}, gérez vos préférences de communication
           </p>
         </div>
 
         {/* Messages */}
         {success && (
-          <div className="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-xl flex items-center gap-3">
-            <CheckCircle className="w-5 h-5 text-green-400" />
+          <div className="mb-6 p-4 bg-success/20 border border-green-500/50 rounded-xl flex items-center gap-3">
+            <CheckCircle className="w-5 h-5 text-success-light" />
             <p className="text-green-300">Vos préférences ont été mises à jour avec succès.</p>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400" />
+          <div className="mb-6 p-4 bg-error/20 border border-red-500/50 rounded-xl flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-error-light" />
             <p className="text-red-300">{error}</p>
           </div>
         )}
 
         {/* Consentements */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6 mb-6">
+        <div className="bg-surface-secondary/50 backdrop-blur-sm rounded-2xl border border-border p-6 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-6 h-6 text-pink-500" />
+            <Shield className="w-6 h-6 text-accent" />
             <h2 className="text-xl font-semibold text-white">
               Vos Consentements
             </h2>
@@ -198,57 +198,57 @@ export default function PreferenceCenterPage({
 
           <div className="space-y-4">
             {/* Email */}
-            <label className="flex items-start gap-4 p-4 bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-700/70 transition-colors">
+            <label className="flex items-start gap-4 p-4 bg-surface-tertiary/50 rounded-xl cursor-pointer hover:bg-surface-tertiary/70 transition-colors">
               <input
                 type="checkbox"
                 checked={consentEmail}
                 onChange={(e) => setConsentEmail(e.target.checked)}
-                className="w-5 h-5 mt-0.5 rounded border-slate-500 text-pink-500 focus:ring-pink-500"
+                className="w-5 h-5 mt-0.5 rounded border-slate-500 text-accent focus:ring-pink-500"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-blue-400" />
+                  <Mail className="w-5 h-5 text-info-light" />
                   <span className="font-medium text-white">Communications par email</span>
                 </div>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Recevez nos newsletters, mises à jour sur nos campagnes et appels aux dons par email.
                 </p>
               </div>
             </label>
 
             {/* Téléphone */}
-            <label className="flex items-start gap-4 p-4 bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-700/70 transition-colors">
+            <label className="flex items-start gap-4 p-4 bg-surface-tertiary/50 rounded-xl cursor-pointer hover:bg-surface-tertiary/70 transition-colors">
               <input
                 type="checkbox"
                 checked={consentPhone}
                 onChange={(e) => setConsentPhone(e.target.checked)}
-                className="w-5 h-5 mt-0.5 rounded border-slate-500 text-pink-500 focus:ring-pink-500"
+                className="w-5 h-5 mt-0.5 rounded border-slate-500 text-accent focus:ring-pink-500"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-green-400" />
+                  <Phone className="w-5 h-5 text-success-light" />
                   <span className="font-medium text-white">Communications téléphoniques</span>
                 </div>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Acceptez d&apos;être contacté par téléphone pour des informations importantes.
                 </p>
               </div>
             </label>
 
             {/* Courrier */}
-            <label className="flex items-start gap-4 p-4 bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-700/70 transition-colors">
+            <label className="flex items-start gap-4 p-4 bg-surface-tertiary/50 rounded-xl cursor-pointer hover:bg-surface-tertiary/70 transition-colors">
               <input
                 type="checkbox"
                 checked={consentMail}
                 onChange={(e) => setConsentMail(e.target.checked)}
-                className="w-5 h-5 mt-0.5 rounded border-slate-500 text-pink-500 focus:ring-pink-500"
+                className="w-5 h-5 mt-0.5 rounded border-slate-500 text-accent focus:ring-pink-500"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-orange-400" />
                   <span className="font-medium text-white">Communications postales</span>
                 </div>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Recevez nos communications par courrier postal (rapports annuels, invitations).
                 </p>
               </div>
@@ -257,7 +257,7 @@ export default function PreferenceCenterPage({
         </div>
 
         {/* Préférences de fréquence */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6 mb-6">
+        <div className="bg-surface-secondary/50 backdrop-blur-sm rounded-2xl border border-border p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">
             Fréquence des communications
           </h2>
@@ -273,8 +273,8 @@ export default function PreferenceCenterPage({
                 key={option.value}
                 className={`p-3 rounded-xl border cursor-pointer transition-all ${
                   preferredFrequency === option.value
-                    ? "border-pink-500 bg-pink-500/20"
-                    : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
+                    ? "border-accent bg-accent/20"
+                    : "border-border bg-surface-tertiary/50 hover:border-slate-500"
                 }`}
               >
                 <input
@@ -292,7 +292,7 @@ export default function PreferenceCenterPage({
         </div>
 
         {/* Langue préférée */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-6 mb-6">
+        <div className="bg-surface-secondary/50 backdrop-blur-sm rounded-2xl border border-border p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">
             Langue préférée
           </h2>
@@ -306,8 +306,8 @@ export default function PreferenceCenterPage({
                 key={option.value}
                 className={`p-3 rounded-xl border cursor-pointer transition-all ${
                   preferredLanguage === option.value
-                    ? "border-pink-500 bg-pink-500/20"
-                    : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
+                    ? "border-accent bg-accent/20"
+                    : "border-border bg-surface-tertiary/50 hover:border-slate-500"
                 }`}
               >
                 <input
@@ -342,14 +342,14 @@ export default function PreferenceCenterPage({
           <button
             onClick={handleUnsubscribeAll}
             disabled={saving}
-            className="px-6 py-3 bg-slate-700 text-gray-300 rounded-xl font-medium hover:bg-slate-600 transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-surface-tertiary text-foreground rounded-xl font-medium hover:bg-surface-elevated transition-colors disabled:opacity-50"
           >
             Me désinscrire de tout
           </button>
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="mt-8 text-center text-sm text-text-tertiary">
           <p>
             Conformément au RGPD et à la loi PIPEDA, vous pouvez modifier vos préférences à tout moment.
           </p>

@@ -98,12 +98,12 @@ interface Member {
 }
 
 const roleIcons: Record<string, React.ReactNode> = {
-  OWNER: <Crown className="h-4 w-4 text-amber-400" />,
-  ADMIN: <Shield className="h-4 w-4 text-purple-400" />,
-  MANAGER: <Settings className="h-4 w-4 text-blue-400" />,
-  ANALYST: <Eye className="h-4 w-4 text-green-400" />,
-  MEMBER: <Users className="h-4 w-4 text-gray-400" />,
-  VIEWER: <Eye className="h-4 w-4 text-gray-400" />,
+  OWNER: <Crown className="h-4 w-4 text-warning" />,
+  ADMIN: <Shield className="h-4 w-4 text-brand-light" />,
+  MANAGER: <Settings className="h-4 w-4 text-info-light" />,
+  ANALYST: <Eye className="h-4 w-4 text-success-light" />,
+  MEMBER: <Users className="h-4 w-4 text-muted-foreground" />,
+  VIEWER: <Eye className="h-4 w-4 text-muted-foreground" />,
 };
 
 const roleLabels: Record<string, string> = {

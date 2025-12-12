@@ -142,20 +142,20 @@ function EditorContent() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-950">
+      <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-white">Chargement...</div>
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-950">
+    <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <div className="h-14 bg-slate-900 border-b border-slate-700 flex items-center justify-between px-4">
+      <div className="h-14 bg-surface-primary border-b border-border flex items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <Link 
             href="/marketing/templates"
-            className="p-2 text-slate-400 hover:text-white rounded hover:bg-slate-800"
+            className="p-2 text-slate-400 hover:text-white rounded hover:bg-surface-secondary"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
@@ -191,7 +191,7 @@ function EditorContent() {
       {/* Modal pour le nom du template */}
       {showNameModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 w-full max-w-md">
+          <div className="bg-surface-primary border border-border rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold text-white mb-4">
               Nouveau template
             </h2>
@@ -204,7 +204,7 @@ function EditorContent() {
                   type="text"
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white"
+                  className="w-full bg-surface-secondary border border-border rounded px-3 py-2 text-white"
                   placeholder="Ex: Newsletter mensuelle"
                   autoFocus
                 />
@@ -216,7 +216,7 @@ function EditorContent() {
                 <textarea
                   value={templateDescription}
                   onChange={(e) => setTemplateDescription(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white min-h-[80px]"
+                  className="w-full bg-surface-secondary border border-border rounded px-3 py-2 text-white min-h-[80px]"
                   placeholder="Description du template..."
                 />
               </div>
@@ -246,7 +246,7 @@ function EditorContent() {
 export default function TemplateEditorPage() {
   return (
     <Suspense fallback={
-      <div className="h-screen flex items-center justify-center bg-slate-950">
+      <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-white">Chargement...</div>
       </div>
     }>

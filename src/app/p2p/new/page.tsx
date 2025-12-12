@@ -174,13 +174,13 @@ export default function NewP2PPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="p-2 text-gray-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-white hover:bg-surface-tertiary rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-white">Nouvelle page de collecte P2P</h1>
-            <p className="text-gray-400 text-sm">Créez une page de collecte personnalisée</p>
+            <p className="text-muted-foreground text-sm">Créez une page de collecte personnalisée</p>
           </div>
         </div>
 
@@ -191,8 +191,8 @@ export default function NewP2PPage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   step >= s
-                    ? "bg-pink-500 text-white"
-                    : "bg-slate-700 text-gray-400"
+                    ? "bg-accent text-white"
+                    : "bg-surface-tertiary text-muted-foreground"
                 }`}
               >
                 {s}
@@ -200,7 +200,7 @@ export default function NewP2PPage() {
               {s < 3 && (
                 <div
                   className={`w-16 h-1 mx-2 ${
-                    step > s ? "bg-pink-500" : "bg-slate-700"
+                    step > s ? "bg-accent" : "bg-surface-tertiary"
                   }`}
                 />
               )}
@@ -210,15 +210,15 @@ export default function NewP2PPage() {
 
         {/* Step 1: Informations personnelles */}
         {step === 1 && (
-          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-6">
+          <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-6">
             <h2 className="font-semibold text-white flex items-center gap-2">
-              <User className="w-5 h-5 text-pink-400" />
+              <User className="w-5 h-5 text-accent" />
               Informations personnelles
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Prénom *
                 </label>
                 <input
@@ -226,11 +226,11 @@ export default function NewP2PPage() {
                   value={formData.firstName}
                   onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   placeholder="Jean"
-                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Nom *
                 </label>
                 <input
@@ -238,14 +238,14 @@ export default function NewP2PPage() {
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   placeholder="Tremblay"
-                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Email *
                 </label>
                 <input
@@ -253,11 +253,11 @@ export default function NewP2PPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="jean@exemple.com"
-                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Téléphone
                 </label>
                 <input
@@ -265,19 +265,19 @@ export default function NewP2PPage() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="514-555-1234"
-                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Campagne *
               </label>
               <select
                 value={formData.campaignId}
                 onChange={(e) => setFormData({ ...formData, campaignId: e.target.value, teamId: "" })}
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
               >
                 <option value="">Sélectionner une campagne</option>
                 {campaigns.map((campaign) => (
@@ -288,14 +288,14 @@ export default function NewP2PPage() {
               </select>
               
               {campaigns.length === 0 && campaignsWithoutP2P.length > 0 && (
-                <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <div className="mt-4 p-4 bg-warning/10 border border-yellow-500/30 rounded-lg">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm text-yellow-400 font-medium">
                         Aucune campagne P2P active
                       </p>
-                      <p className="text-sm text-gray-400 mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         Vous avez {campaignsWithoutP2P.length} campagne(s) active(s) sans l&apos;option P2P activée.
                         Activez le P2P sur une campagne existante :
                       </p>
@@ -308,10 +308,10 @@ export default function NewP2PPage() {
                               setSelectedCampaignToEnable(campaign);
                               setShowEnableP2PModal(true);
                             }}
-                            className="flex items-center gap-2 w-full px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-left transition-colors"
+                            className="flex items-center gap-2 w-full px-3 py-2 bg-surface-secondary hover:bg-surface-tertiary border border-border rounded-lg text-left transition-colors"
                           >
                             <span className="text-white flex-1">{campaign.name}</span>
-                            <span className="text-xs text-pink-400">Activer P2P →</span>
+                            <span className="text-xs text-accent">Activer P2P →</span>
                           </button>
                         ))}
                       </div>
@@ -329,13 +329,13 @@ export default function NewP2PPage() {
 
             {teams.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Rejoindre une équipe (optionnel)
                 </label>
                 <select
                   value={formData.teamId}
                   onChange={(e) => setFormData({ ...formData, teamId: e.target.value })}
-                  className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+                  className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
                 >
                   <option value="">Collecte individuelle</option>
                   {teams.map((team) => (
@@ -351,14 +351,14 @@ export default function NewP2PPage() {
 
         {/* Step 2: Objectif et histoire */}
         {step === 2 && (
-          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-6">
+          <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-6">
             <h2 className="font-semibold text-white flex items-center gap-2">
-              <Target className="w-5 h-5 text-pink-400" />
+              <Target className="w-5 h-5 text-accent" />
               Objectif et histoire
             </h2>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Titre de votre page
               </label>
               <input
@@ -366,12 +366,12 @@ export default function NewP2PPage() {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder={`Collecte de ${formData.firstName || "..."}`}
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Objectif de collecte ($) *
               </label>
               <input
@@ -380,13 +380,13 @@ export default function NewP2PPage() {
                 onChange={(e) => setFormData({ ...formData, goalAmount: parseInt(e.target.value) || 0 })}
                 min="100"
                 step="100"
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
               />
-              <p className="text-xs text-gray-500 mt-1">Minimum: 100 $</p>
+              <p className="text-xs text-text-tertiary mt-1">Minimum: 100 $</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 <FileText className="w-4 h-4 inline mr-1" />
                 Votre histoire
               </label>
@@ -395,12 +395,12 @@ export default function NewP2PPage() {
                 onChange={(e) => setFormData({ ...formData, story: e.target.value })}
                 rows={5}
                 placeholder="Partagez pourquoi cette cause vous tient à cœur..."
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 URL vidéo (YouTube, Vimeo)
               </label>
               <input
@@ -408,7 +408,7 @@ export default function NewP2PPage() {
                 value={formData.videoUrl}
                 onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
                 placeholder="https://youtube.com/watch?v=..."
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
               />
             </div>
           </div>
@@ -416,14 +416,14 @@ export default function NewP2PPage() {
 
         {/* Step 3: Personnalisation */}
         {step === 3 && (
-          <div className="bg-slate-800/50 rounded-xl border border-slate-700 p-6 space-y-6">
+          <div className="bg-surface-secondary/50 rounded-xl border border-border p-6 space-y-6">
             <h2 className="font-semibold text-white flex items-center gap-2">
-              <Palette className="w-5 h-5 text-pink-400" />
+              <Palette className="w-5 h-5 text-accent" />
               Personnalisation
             </h2>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 <Image className="w-4 h-4 inline mr-1" />
                 Photo de profil (URL)
               </label>
@@ -432,7 +432,7 @@ export default function NewP2PPage() {
                 value={formData.photoUrl}
                 onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
                 placeholder="https://exemple.com/photo.jpg"
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
               />
               {formData.photoUrl && (
                 <img
@@ -444,7 +444,7 @@ export default function NewP2PPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Image de couverture (URL)
               </label>
               <input
@@ -452,7 +452,7 @@ export default function NewP2PPage() {
                 value={formData.coverImageUrl}
                 onChange={(e) => setFormData({ ...formData, coverImageUrl: e.target.value })}
                 placeholder="https://exemple.com/cover.jpg"
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500"
+                className="w-full px-4 py-2 bg-surface-primary border border-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent"
               />
               {formData.coverImageUrl && (
                 <img
@@ -464,7 +464,7 @@ export default function NewP2PPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Couleur principale
               </label>
               <div className="flex items-center gap-3">
@@ -478,7 +478,7 @@ export default function NewP2PPage() {
                   type="text"
                   value={formData.primaryColor}
                   onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                  className="flex-1 px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-pink-500"
+                  className="flex-1 px-4 py-2 bg-surface-primary border border-border rounded-lg text-white focus:outline-none focus:border-accent"
                 />
               </div>
             </div>
@@ -491,7 +491,7 @@ export default function NewP2PPage() {
             <button
               type="button"
               onClick={() => setStep(step - 1)}
-              className="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+              className="px-6 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors"
             >
               Précédent
             </button>
@@ -504,7 +504,7 @@ export default function NewP2PPage() {
               type="button"
               onClick={() => setStep(step + 1)}
               disabled={!canProceed()}
-              className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Suivant
             </button>
@@ -533,15 +533,15 @@ export default function NewP2PPage() {
       {/* Modal pour activer le P2P */}
       {showEnableP2PModal && selectedCampaignToEnable && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 max-w-md w-full">
+          <div className="bg-surface-secondary rounded-xl border border-border p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold text-white mb-4">
               Activer le P2P pour cette campagne ?
             </h3>
-            <p className="text-gray-400 mb-4">
+            <p className="text-muted-foreground mb-4">
               Voulez-vous activer les collectes peer-to-peer pour la campagne{" "}
               <strong className="text-white">{selectedCampaignToEnable.name}</strong> ?
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-text-tertiary mb-6">
               Cela permettra aux participants de créer leurs propres pages de collecte liées à cette campagne.
             </p>
             <div className="flex gap-3 justify-end">
@@ -551,7 +551,7 @@ export default function NewP2PPage() {
                   setShowEnableP2PModal(false);
                   setSelectedCampaignToEnable(null);
                 }}
-                className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+                className="px-4 py-2 bg-surface-tertiary text-white rounded-lg hover:bg-surface-elevated transition-colors"
               >
                 Annuler
               </button>
@@ -559,7 +559,7 @@ export default function NewP2PPage() {
                 type="button"
                 onClick={() => handleEnableP2P(selectedCampaignToEnable)}
                 disabled={enablingP2P}
-                className="flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50"
               >
                 {enablingP2P ? (
                   <>

@@ -148,15 +148,15 @@ export default function CampaignDetailPage({
       case "PUBLISHED":
       case "ACTIVE":
       case "SENT":
-        return "bg-green-900/50 text-green-400";
+        return "bg-success/20/50 text-success-light";
       case "DRAFT":
-        return "bg-slate-700 text-slate-300";
+        return "bg-surface-tertiary text-slate-300";
       case "SCHEDULED":
-        return "bg-blue-900/50 text-blue-400";
+        return "bg-info/20/50 text-info-light";
       case "PAUSED":
         return "bg-yellow-900/50 text-yellow-400";
       default:
-        return "bg-slate-700 text-slate-300";
+        return "bg-surface-tertiary text-slate-300";
     }
   };
 
@@ -164,7 +164,7 @@ export default function CampaignDetailPage({
     return (
       <AppLayout title="Chargement...">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
         </div>
       </AppLayout>
     );
@@ -175,7 +175,7 @@ export default function CampaignDetailPage({
       <AppLayout title="Campagne non trouvée">
         <div className="text-center py-12">
           <p className="text-slate-400">Cette campagne n&apos;existe pas.</p>
-          <Link href="/campaigns" className="text-pink-400 hover:underline mt-4 inline-block">
+          <Link href="/campaigns" className="text-accent hover:underline mt-4 inline-block">
             Retour aux campagnes
           </Link>
         </div>
@@ -221,7 +221,7 @@ export default function CampaignDetailPage({
             </Link>
             <button
               onClick={handleDelete}
-              className="px-4 py-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-error/80 hover:bg-error text-white rounded-lg transition-colors"
             >
               Supprimer
             </button>
@@ -230,14 +230,14 @@ export default function CampaignDetailPage({
       </div>
 
       {/* Onglets */}
-      <div className="border-b border-slate-700 mb-6">
+      <div className="border-b border-border mb-6">
         <nav className="flex gap-6">
           <button
             onClick={() => setActiveTab("overview")}
             className={`pb-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === "overview"
-                ? "border-pink-500 text-pink-400"
-                : "border-transparent text-gray-500 hover:text-gray-300"
+                ? "border-accent text-accent"
+                : "border-transparent text-text-tertiary hover:text-foreground"
             }`}
           >
             <TrendingUp className="w-4 h-4" />
@@ -247,8 +247,8 @@ export default function CampaignDetailPage({
             onClick={() => setActiveTab("forms")}
             className={`pb-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === "forms"
-                ? "border-pink-500 text-pink-400"
-                : "border-transparent text-gray-500 hover:text-gray-300"
+                ? "border-accent text-accent"
+                : "border-transparent text-text-tertiary hover:text-foreground"
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -258,8 +258,8 @@ export default function CampaignDetailPage({
             onClick={() => setActiveTab("emails")}
             className={`pb-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === "emails"
-                ? "border-pink-500 text-pink-400"
-                : "border-transparent text-gray-500 hover:text-gray-300"
+                ? "border-accent text-accent"
+                : "border-transparent text-text-tertiary hover:text-foreground"
             }`}
           >
             <Mail className="w-4 h-4" />
@@ -269,8 +269,8 @@ export default function CampaignDetailPage({
             onClick={() => setActiveTab("donors")}
             className={`pb-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === "donors"
-                ? "border-pink-500 text-pink-400"
-                : "border-transparent text-gray-500 hover:text-gray-300"
+                ? "border-accent text-accent"
+                : "border-transparent text-text-tertiary hover:text-foreground"
             }`}
           >
             <Users className="w-4 h-4" />
@@ -285,7 +285,7 @@ export default function CampaignDetailPage({
           {/* Colonne principale */}
           <div className="lg:col-span-2 space-y-6">
             {/* Progression */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Progression de la collecte</h2>
               
               <div className="mb-4">
@@ -293,7 +293,7 @@ export default function CampaignDetailPage({
                   <span className="text-slate-400">Collecté</span>
                   <span className="text-white font-semibold">{progress.toFixed(1)}%</span>
                 </div>
-                <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-4 bg-surface-tertiary rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full transition-all"
                     style={{ width: `${progress}%` }}
@@ -322,7 +322,7 @@ export default function CampaignDetailPage({
             </div>
 
             {/* Description */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Description</h2>
               {campaign.shortDescription && (
                 <p className="text-slate-300 font-medium mb-4">{campaign.shortDescription}</p>
@@ -333,23 +333,23 @@ export default function CampaignDetailPage({
             </div>
 
             {/* Statistiques */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Statistiques</h2>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                <div className="bg-surface-tertiary/50 rounded-lg p-4 text-center">
                   <p className="text-2xl font-bold text-white">{campaign.donorCount}</p>
                   <p className="text-sm text-slate-400">Donateurs</p>
                 </div>
-                <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                <div className="bg-surface-tertiary/50 rounded-lg p-4 text-center">
                   <p className="text-2xl font-bold text-white">{campaign.donationCount}</p>
                   <p className="text-sm text-slate-400">Dons</p>
                 </div>
-                <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                <div className="bg-surface-tertiary/50 rounded-lg p-4 text-center">
                   <p className="text-2xl font-bold text-white">{formatCurrency(campaign.averageDonation)}</p>
                   <p className="text-sm text-slate-400">Don moyen</p>
                 </div>
-                <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                <div className="bg-surface-tertiary/50 rounded-lg p-4 text-center">
                   <p className="text-2xl font-bold text-white">{formatCurrency(campaign.largestDonation)}</p>
                   <p className="text-sm text-slate-400">Plus grand don</p>
                 </div>
@@ -358,7 +358,7 @@ export default function CampaignDetailPage({
 
             {/* Jalons */}
             {campaign.milestones && campaign.milestones.length > 0 && (
-              <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+              <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
                 <h2 className="text-lg font-semibold text-white mb-4">Jalons</h2>
                 
                 <div className="space-y-4">
@@ -366,12 +366,12 @@ export default function CampaignDetailPage({
                     <div
                       key={milestone.id}
                       className={`flex items-center gap-4 p-4 rounded-lg ${
-                        milestone.isCompleted ? "bg-green-500/10" : "bg-slate-700/50"
+                        milestone.isCompleted ? "bg-success/10" : "bg-surface-tertiary/50"
                       }`}
                     >
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          milestone.isCompleted ? "bg-green-500" : "bg-slate-600"
+                          milestone.isCompleted ? "bg-success" : "bg-surface-elevated"
                         }`}
                       >
                         {milestone.isCompleted ? (
@@ -403,13 +403,13 @@ export default function CampaignDetailPage({
           {/* Colonne latérale */}
           <div className="space-y-6">
             {/* Statut et actions */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Statut</h2>
               
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-slate-400 mb-1">Statut actuel</p>
-                  <span className="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium">
                     {CAMPAIGN_STATUS_LABELS[campaign.status]}
                   </span>
                 </div>
@@ -420,7 +420,7 @@ export default function CampaignDetailPage({
                     {campaign.status === "DRAFT" && (
                       <button
                         onClick={() => handleStatusChange("ACTIVE")}
-                        className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm transition-colors"
+                        className="px-3 py-1 bg-success hover:bg-green-600 text-white rounded-lg text-sm transition-colors"
                       >
                         Lancer
                       </button>
@@ -429,13 +429,13 @@ export default function CampaignDetailPage({
                       <>
                         <button
                           onClick={() => handleStatusChange("PAUSED")}
-                          className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm transition-colors"
+                          className="px-3 py-1 bg-warning hover:bg-yellow-600 text-white rounded-lg text-sm transition-colors"
                         >
                           Pause
                         </button>
                         <button
                           onClick={() => handleStatusChange("COMPLETED")}
-                          className="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm transition-colors"
+                          className="px-3 py-1 bg-brand hover:bg-brand text-white rounded-lg text-sm transition-colors"
                         >
                           Terminer
                         </button>
@@ -444,7 +444,7 @@ export default function CampaignDetailPage({
                     {campaign.status === "PAUSED" && (
                       <button
                         onClick={() => handleStatusChange("ACTIVE")}
-                        className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm transition-colors"
+                        className="px-3 py-1 bg-success hover:bg-green-600 text-white rounded-lg text-sm transition-colors"
                       >
                         Reprendre
                       </button>
@@ -455,7 +455,7 @@ export default function CampaignDetailPage({
             </div>
 
             {/* Informations */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Informations</h2>
               
               <div className="space-y-3">
@@ -490,7 +490,7 @@ export default function CampaignDetailPage({
                     <p className="text-sm text-slate-400 mb-1">Tags</p>
                     <div className="flex flex-wrap gap-1">
                       {campaign.tags.map((tag, i) => (
-                        <span key={i} className="px-2 py-0.5 bg-slate-700 text-slate-300 rounded text-xs">
+                        <span key={i} className="px-2 py-0.5 bg-surface-tertiary text-slate-300 rounded text-xs">
                           {tag}
                         </span>
                       ))}
@@ -501,25 +501,25 @@ export default function CampaignDetailPage({
             </div>
 
             {/* Options */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Options</h2>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Publique</span>
-                  <span className={campaign.isPublic ? "text-green-400" : "text-slate-500"}>
+                  <span className={campaign.isPublic ? "text-success-light" : "text-slate-500"}>
                     {campaign.isPublic ? "Oui" : "Non"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">P2P autorisé</span>
-                  <span className={campaign.allowP2P ? "text-green-400" : "text-slate-500"}>
+                  <span className={campaign.allowP2P ? "text-success-light" : "text-slate-500"}>
                     {campaign.allowP2P ? "Oui" : "Non"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Matching actif</span>
-                  <span className={campaign.enableMatching ? "text-green-400" : "text-slate-500"}>
+                  <span className={campaign.enableMatching ? "text-success-light" : "text-slate-500"}>
                     {campaign.enableMatching ? "Oui" : "Non"}
                   </span>
                 </div>
@@ -533,7 +533,7 @@ export default function CampaignDetailPage({
             </div>
 
             {/* Dates */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div className="bg-surface-secondary/50 rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold text-white mb-4">Historique</h2>
               
               <div className="space-y-2 text-sm">
@@ -570,7 +570,7 @@ export default function CampaignDetailPage({
                 <Link
                   key={form.id}
                   href={`/forms/${form.id}`}
-                  className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-pink-500/50 transition-colors"
+                  className="bg-surface-secondary/50 rounded-xl p-6 border border-border hover:border-accent/50 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
@@ -596,7 +596,7 @@ export default function CampaignDetailPage({
               ))}
             </div>
           ) : (
-            <div className="bg-slate-800/50 rounded-xl p-12 border border-slate-700 text-center">
+            <div className="bg-surface-secondary/50 rounded-xl p-12 border border-border text-center">
               <FileText className="w-12 h-12 text-slate-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-white mb-2">Aucun formulaire lié</h3>
               <p className="text-slate-400 mb-4">Créez un formulaire et associez-le à cette campagne</p>
@@ -625,9 +625,9 @@ export default function CampaignDetailPage({
           </div>
 
           {campaign.linkedEmailCampaigns && campaign.linkedEmailCampaigns.length > 0 ? (
-            <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+            <div className="bg-surface-secondary/50 rounded-xl border border-border overflow-hidden">
               <table className="min-w-full divide-y divide-slate-700">
-                <thead className="bg-slate-900/50">
+                <thead className="bg-surface-primary/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Campagne
@@ -663,7 +663,7 @@ export default function CampaignDetailPage({
                 </thead>
                 <tbody className="divide-y divide-slate-700">
                   {campaign.linkedEmailCampaigns.map((email) => (
-                    <tr key={email.id} className="hover:bg-slate-700/30">
+                    <tr key={email.id} className="hover:bg-surface-tertiary/30">
                       <td className="px-6 py-4">
                         <div>
                           <p className="font-medium text-white">{email.name}</p>
@@ -698,7 +698,7 @@ export default function CampaignDetailPage({
                       <td className="px-6 py-4 text-right">
                         <Link
                           href={`/marketing/email/${email.id}`}
-                          className="text-pink-400 hover:text-pink-300"
+                          className="text-accent hover:text-pink-300"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </Link>
@@ -709,7 +709,7 @@ export default function CampaignDetailPage({
               </table>
             </div>
           ) : (
-            <div className="bg-slate-800/50 rounded-xl p-12 border border-slate-700 text-center">
+            <div className="bg-surface-secondary/50 rounded-xl p-12 border border-border text-center">
               <Mail className="w-12 h-12 text-slate-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-white mb-2">Aucune campagne courriel liée</h3>
               <p className="text-slate-400 mb-4">Les campagnes emails mentionnant cette campagne apparaîtront ici</p>
@@ -735,9 +735,9 @@ export default function CampaignDetailPage({
           </div>
 
           {campaign.donorsWithDetails && campaign.donorsWithDetails.length > 0 ? (
-            <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+            <div className="bg-surface-secondary/50 rounded-xl border border-border overflow-hidden">
               <table className="min-w-full divide-y divide-slate-700">
-                <thead className="bg-slate-900/50">
+                <thead className="bg-surface-primary/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Donateur
@@ -764,7 +764,7 @@ export default function CampaignDetailPage({
                 </thead>
                 <tbody className="divide-y divide-slate-700">
                   {campaign.donorsWithDetails.map((cd) => (
-                    <tr key={cd.id} className="hover:bg-slate-700/30">
+                    <tr key={cd.id} className="hover:bg-surface-tertiary/30">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
@@ -774,12 +774,12 @@ export default function CampaignDetailPage({
                             <p className="font-medium text-white">
                               {cd.donor?.firstName} {cd.donor?.lastName}
                               {cd.isMajorDonor && (
-                                <span className="ml-2 px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
+                                <span className="ml-2 px-2 py-0.5 bg-amber-500/20 text-warning text-xs rounded-full">
                                   Major
                                 </span>
                               )}
                               {cd.isRecurring && (
-                                <span className="ml-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">
+                                <span className="ml-1 px-2 py-0.5 bg-success/20 text-success-light text-xs rounded-full">
                                   Récurrent
                                 </span>
                               )}
@@ -789,7 +789,7 @@ export default function CampaignDetailPage({
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs font-medium rounded-full">
+                        <span className="px-2 py-1 bg-brand/20 text-brand-light text-xs font-medium rounded-full">
                           {cd.donorLevel}
                         </span>
                       </td>
@@ -808,7 +808,7 @@ export default function CampaignDetailPage({
                       <td className="px-6 py-4 text-right">
                         <Link
                           href={`/donors/${cd.donor?.id}`}
-                          className="text-pink-400 hover:text-pink-300"
+                          className="text-accent hover:text-pink-300"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </Link>
@@ -819,7 +819,7 @@ export default function CampaignDetailPage({
               </table>
             </div>
           ) : (
-            <div className="bg-slate-800/50 rounded-xl p-12 border border-slate-700 text-center">
+            <div className="bg-surface-secondary/50 rounded-xl p-12 border border-border text-center">
               <Users className="w-12 h-12 text-slate-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-white mb-2">Aucun donateur</h3>
               <p className="text-slate-400">Les donateurs apparaîtront ici une fois les premiers dons reçus</p>

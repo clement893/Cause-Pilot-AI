@@ -135,19 +135,19 @@ export default function NotificationCenter() {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "DONATIONS":
-        return "bg-green-500/20 text-green-400";
+        return "bg-success/20 text-success-light";
       case "DONORS":
-        return "bg-purple-500/20 text-purple-400";
+        return "bg-brand/20 text-brand-light";
       case "CAMPAIGNS":
-        return "bg-blue-500/20 text-blue-400";
+        return "bg-info/20 text-info-light";
       case "EMAILS":
-        return "bg-amber-500/20 text-amber-400";
+        return "bg-amber-500/20 text-warning";
       case "FORMS":
-        return "bg-pink-500/20 text-pink-400";
+        return "bg-accent/20 text-accent";
       case "P2P":
-        return "bg-red-500/20 text-red-400";
+        return "bg-error/20 text-error-light";
       default:
-        return "bg-gray-500/20 text-gray-400";
+        return "bg-muted/20 text-muted-foreground";
     }
   };
 
@@ -182,11 +182,11 @@ export default function NotificationCenter() {
       {/* Bouton de notification */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors"
+        className="relative p-2 bg-surface-secondary border border-border rounded-lg hover:bg-surface-tertiary transition-colors"
       >
-        <Bell className="w-5 h-5 text-gray-300" />
+        <Bell className="w-5 h-5 text-foreground" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center px-1">
+          <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-error rounded-full text-xs text-white flex items-center justify-center px-1">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -194,15 +194,15 @@ export default function NotificationCenter() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-96 bg-surface-primary border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-700">
+          <div className="flex items-center justify-between p-4 border-b border-border">
             <h3 className="font-semibold text-white">Notifications</h3>
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1"
+                  className="text-xs text-brand-light hover:text-purple-300 flex items-center gap-1"
                 >
                   <CheckCheck className="w-4 h-4" />
                   Tout marquer comme lu
@@ -216,20 +216,20 @@ export default function NotificationCenter() {
             {loading ? (
               <div className="p-8 text-center">
                 <div className="w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                <p className="text-sm text-gray-400">Chargement...</p>
+                <p className="text-sm text-muted-foreground">Chargement...</p>
               </div>
             ) : notifications.length === 0 ? (
               <div className="p-8 text-center">
-                <Bell className="w-12 h-12 text-gray-600 mx-auto mb-2" />
-                <p className="text-gray-400">Aucune notification</p>
+                <Bell className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground">Aucune notification</p>
               </div>
             ) : (
               <div>
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`relative p-4 hover:bg-slate-800/50 transition-colors ${
-                      !notification.isRead ? "bg-slate-800/30" : ""
+                    className={`relative p-4 hover:bg-surface-secondary/50 transition-colors ${
+                      !notification.isRead ? "bg-surface-secondary/30" : ""
                     } ${getPriorityIndicator(notification.priority)}`}
                   >
                     <div className="flex items-start gap-3">
@@ -247,16 +247,16 @@ export default function NotificationCenter() {
                         <div className="flex items-start justify-between gap-2">
                           <p
                             className={`text-sm font-medium ${
-                              notification.isRead ? "text-gray-300" : "text-white"
+                              notification.isRead ? "text-foreground" : "text-white"
                             }`}
                           >
                             {notification.title}
                           </p>
-                          <span className="text-xs text-gray-500 flex-shrink-0">
+                          <span className="text-xs text-text-tertiary flex-shrink-0">
                             {formatTimeAgo(notification.createdAt)}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                           {notification.message}
                         </p>
 
@@ -269,7 +269,7 @@ export default function NotificationCenter() {
                                 markAsRead(notification.id);
                                 setIsOpen(false);
                               }}
-                              className="text-xs text-purple-400 hover:text-purple-300"
+                              className="text-xs text-brand-light hover:text-purple-300"
                             >
                               {notification.actionLabel || "Voir"}
                             </Link>
@@ -277,7 +277,7 @@ export default function NotificationCenter() {
                           {!notification.isRead && (
                             <button
                               onClick={() => markAsRead(notification.id)}
-                              className="text-xs text-gray-500 hover:text-gray-400 flex items-center gap-1"
+                              className="text-xs text-text-tertiary hover:text-muted-foreground flex items-center gap-1"
                             >
                               <Check className="w-3 h-3" />
                               Marquer comme lu
@@ -289,15 +289,15 @@ export default function NotificationCenter() {
                       {/* Bouton fermer */}
                       <button
                         onClick={() => dismissNotification(notification.id)}
-                        className="p-1 hover:bg-slate-700 rounded transition-colors flex-shrink-0"
+                        className="p-1 hover:bg-surface-tertiary rounded transition-colors flex-shrink-0"
                       >
-                        <X className="w-4 h-4 text-gray-500" />
+                        <X className="w-4 h-4 text-text-tertiary" />
                       </button>
                     </div>
 
                     {/* Indicateur non lu */}
                     {!notification.isRead && (
-                      <div className="absolute top-4 left-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <div className="absolute top-4 left-1 w-2 h-2 bg-brand rounded-full"></div>
                     )}
                   </div>
                 ))}
@@ -306,11 +306,11 @@ export default function NotificationCenter() {
           </div>
 
           {/* Footer */}
-          <div className="p-3 border-t border-slate-700">
+          <div className="p-3 border-t border-border">
             <Link
               href="/notifications"
               onClick={() => setIsOpen(false)}
-              className="block text-center text-sm text-purple-400 hover:text-purple-300"
+              className="block text-center text-sm text-brand-light hover:text-purple-300"
             >
               Voir toutes les notifications
             </Link>

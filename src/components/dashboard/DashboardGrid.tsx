@@ -1,23 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import GridLayout from "react-grid-layout";
-
-// Type défini localement car @types/react-grid-layout n'est pas compatible avec v2
-interface GridLayoutItem {
-  i: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  minW?: number;
-  minH?: number;
-  maxW?: number;
-  maxH?: number;
-  static?: boolean;
-  isDraggable?: boolean;
-  isResizable?: boolean;
-}
+import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { Button } from "@/components/ui/button";
@@ -242,10 +226,9 @@ export default function DashboardGrid({
 
   // Gérer le changement de layout
   const handleLayoutChange = useCallback(
-    (newLayout: unknown) => {
-      const layoutItems = newLayout as GridLayoutItem[];
+    (newLayout: Layout[]) => {
       const updatedWidgets = layout.widgets.map((widget) => {
-        const layoutItem = layoutItems.find((l) => l.i === widget.id);
+        const layoutItem = newLayout.find((l) => l.i === widget.id);
         if (layoutItem) {
           return {
             ...widget,

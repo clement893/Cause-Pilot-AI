@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  // Exclude @react-pdf/renderer from SSR to avoid Html import issue
-  serverExternalPackages: ["@react-pdf/renderer"],
+  // Exclude packages from SSR bundling
+  serverExternalPackages: ["@react-pdf/renderer", "@prisma/client", "prisma"],
   webpack: (config, { isServer }) => {
     // Handle @react-pdf/renderer for server-side rendering
     if (isServer) {

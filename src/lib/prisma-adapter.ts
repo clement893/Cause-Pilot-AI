@@ -8,13 +8,17 @@ import type { Adapter, AdapterAccount, AdapterSession, AdapterUser, Verification
 export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
   return {
     async createUser(data) {
+      // Donner le rôle SUPER_ADMIN aux utilisateurs @nukleo.com
+      const isSuperAdmin = data.email?.endsWith("@nukleo.com");
+      
       const user = await prisma.adminUser.create({
         data: {
           email: data.email,
           name: data.name ?? null,
           image: data.image ?? null,
           emailVerified: data.emailVerified ?? null,
-          // role et status ont des valeurs par défaut dans le schéma
+          role: isSuperAdmin ? "SUPER_ADMIN" : "ADMIN",
+          status: "ACTIVE",
         },
       });
       return {

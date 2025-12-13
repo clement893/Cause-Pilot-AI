@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
         organizationId: organizationId || null,
       },
       include: {
-        preferences: true,
+        DonorPreference: true,
       },
     });
     

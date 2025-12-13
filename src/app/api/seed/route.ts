@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor } from "@prisma/client";
+import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor, Prisma } from "@prisma/client";
 import { withRateLimit, RATE_LIMITS, getClientIP } from "@/lib/rate-limit";
 
 const prisma = new PrismaClient();
@@ -208,8 +208,7 @@ export async function POST(request: NextRequest) {
         const status = randomElement(statuses);
         const donorType = randomElement(donorTypes);
 
-        const donor = await prisma.donor.create({
-          data: {
+        const donorData: Prisma.DonorUncheckedCreateInput = {
             firstName,
             lastName,
             email: `${firstName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}.${lastName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}${orgIndex}${i}@${randomElement(["gmail.com", "outlook.com", "hotmail.com", "videotron.ca"])}`,
@@ -242,14 +241,20 @@ export async function POST(request: NextRequest) {
             consentPhone: Math.random() > 0.5,
             consentMail: Math.random() > 0.3,
             organizationId: organization.id, // Lier explicitement à l'organisation
-            DonorPreference: {
-              create: {
-                preferredChannel: randomElement(channels),
-                preferredFrequency: randomElement(frequencies),
-                preferredLanguage: Math.random() > 0.15 ? "fr" : "en",
-                causesOfInterest: Math.random() > 0.4 ? [randomElement(["Éducation", "Santé", "Environnement", "Culture", "Pauvreté"])] : [],
-              },
-            },
+        };
+
+        const donor = await prisma.donor.create({
+          data: donorData,
+        });
+
+        // Créer les préférences séparément
+        await prisma.donorPreference.create({
+          data: {
+            donorId: donor.id,
+            preferredChannel: randomElement(channels),
+            preferredFrequency: randomElement(frequencies),
+            preferredLanguage: Math.random() > 0.15 ? "fr" : "en",
+            causesOfInterest: Math.random() > 0.4 ? [randomElement(["Éducation", "Santé", "Environnement", "Culture", "Pauvreté"])] : [],
           },
         });
 

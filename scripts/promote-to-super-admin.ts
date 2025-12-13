@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 
 // Utiliser la même configuration que le projet
-const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:DSCeLISPbWoLYHDubmnLMEXLXrDQdgYl@hopper.proxy.rlwy.net:10280/railway";
+// AdminUser est dans la base principale
+const databaseUrl = process.env.DATABASE_URL || process.env.DIRECT_DATABASE_URL || "postgresql://postgres:DSCeLISPbWoLYHDubmnLMEXLXrDQdgYl@hopper.proxy.rlwy.net:10280/railway";
 
 const prisma = new PrismaClient({
   datasources: {

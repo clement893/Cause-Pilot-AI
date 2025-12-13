@@ -13,7 +13,8 @@
     "db:studio": "prisma studio",
     "db:seed": "npx tsx prisma/seed.mts",
     "seed:donors": "npx tsx scripts/seed-donors.ts",
-    "generate:seed-token": "npx tsx scripts/generate-seed-token.ts"
+    "generate:seed-token": "npx tsx scripts/generate-seed-token.ts",
+    "promote:super-admin": "npx tsx scripts/promote-to-super-admin.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.mts"

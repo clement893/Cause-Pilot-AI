@@ -160,6 +160,26 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Récupérer les organisations existantes
+    const organizations = await prisma.organization.findMany({
+      orderBy: { createdAt: "asc" },
+      take: 2,
+    });
+
+    if (organizations.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "Aucune organisation trouvée. Veuillez créer au moins 2 organisations d'abord." },
+        { status: 400 }
+      );
+    }
+
+    if (organizations.length < 2) {
+      return NextResponse.json(
+        { success: false, error: `Seulement ${organizations.length} organisation(s) trouvée(s). Veuillez créer 2 organisations.` },
+        { status: 400 }
+      );
+    }
+
     // Supprimer les données existantes dans le bon ordre
     await prisma.communication.deleteMany();
     await prisma.donorCustomField.deleteMany();
@@ -167,73 +187,98 @@ export async function POST(request: Request) {
     await prisma.donation.deleteMany();
     await prisma.donor.deleteMany();
 
-    const donors = [];
+    const allDonors = [];
+    const donorsPerOrg = 30; // 30 donateurs par organisation
 
-    for (let i = 0; i < 50; i++) {
-      const firstName = randomElement(firstNames);
-      const lastName = randomElement(lastNames);
-      const location = randomElement(cities);
-      const donations = generateDonations();
-      const status = randomElement(statuses);
-      const donorType = randomElement(donorTypes);
+    // Créer des donateurs pour chaque organisation
+    for (let orgIndex = 0; orgIndex < organizations.length; orgIndex++) {
+      const organization = organizations[orgIndex];
 
-      const donor = await prisma.donor.create({
-        data: {
-          firstName,
-          lastName,
-          email: generateEmail(firstName, lastName, i),
-          phone: generatePhone(),
-          mobile: Math.random() > 0.3 ? generatePhone() : null,
-          dateOfBirth: Math.random() > 0.2 ? generateBirthDate() : null,
-          address: `${randomInt(1, 9999)} ${randomElement(streets)}`,
-          address2: Math.random() > 0.8 ? `App. ${randomInt(1, 20)}` : null,
-          city: location.city,
-          state: location.state,
-          postalCode: generatePostalCode(location.postalPrefix),
-          country: "Canada",
-          profession: Math.random() > 0.2 ? randomElement(professions) : null,
-          employer: Math.random() > 0.3 ? randomElement(employers) : null,
-          jobTitle: Math.random() > 0.5 ? randomElement(["Directeur", "Gestionnaire", "Analyste", "Conseiller"]) : null,
-          industry: Math.random() > 0.4 ? randomElement(["Énergie", "Finance", "Technologie", "Santé", "Éducation"]) : null,
-          status,
-          donorType,
-          segment: randomElement(segments),
-          tags: Math.random() > 0.5 ? [randomElement(["fidèle", "généreux", "engagé", "bénévole"])] : [],
-          source: randomElement(sources),
-          notes: Math.random() > 0.7 ? `Donateur ${status === "ACTIVE" ? "actif et engagé" : "à relancer"}.` : null,
-          totalDonations: donations.total,
-          donationCount: donations.count,
-          averageDonation: donations.average,
-          highestDonation: donations.highest,
-          lastDonationDate: donations.lastDate,
-          firstDonationDate: donations.firstDate,
-          consentEmail: Math.random() > 0.2,
-          consentPhone: Math.random() > 0.5,
-          consentMail: Math.random() > 0.3,
-          DonorPreference: {
-            create: {
-              preferredChannel: randomElement(channels),
-              preferredFrequency: randomElement(frequencies),
-              preferredLanguage: Math.random() > 0.15 ? "fr" : "en",
-              causesOfInterest: Math.random() > 0.4 ? [randomElement(["Éducation", "Santé", "Environnement"])] : [],
+      for (let i = 0; i < donorsPerOrg; i++) {
+        const firstName = randomElement(firstNames);
+        const lastName = randomElement(lastNames);
+        const location = randomElement(cities);
+        const donations = generateDonations();
+        const status = randomElement(statuses);
+        const donorType = randomElement(donorTypes);
+
+        const donor = await prisma.donor.create({
+          data: {
+            firstName,
+            lastName,
+            email: `${firstName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}.${lastName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}${orgIndex}${i}@${randomElement(["gmail.com", "outlook.com", "hotmail.com", "videotron.ca"])}`,
+            phone: generatePhone(),
+            mobile: Math.random() > 0.3 ? generatePhone() : null,
+            dateOfBirth: Math.random() > 0.2 ? generateBirthDate() : null,
+            address: `${randomInt(1, 9999)} ${randomElement(streets)}`,
+            address2: Math.random() > 0.8 ? `App. ${randomInt(1, 20)}` : null,
+            city: location.city,
+            state: location.state,
+            postalCode: generatePostalCode(location.postalPrefix),
+            country: "Canada",
+            profession: Math.random() > 0.2 ? randomElement(professions) : null,
+            employer: Math.random() > 0.3 ? randomElement(employers) : null,
+            jobTitle: Math.random() > 0.5 ? randomElement(["Directeur", "Gestionnaire", "Analyste", "Conseiller", "Spécialiste"]) : null,
+            industry: Math.random() > 0.4 ? randomElement(["Énergie", "Finance", "Technologie", "Santé", "Éducation", "Construction", "Télécommunications"]) : null,
+            status,
+            donorType,
+            segment: randomElement(segments),
+            tags: Math.random() > 0.5 ? [randomElement(["fidèle", "généreux", "engagé", "bénévole", "ambassadeur"])] : [],
+            source: randomElement(sources),
+            notes: Math.random() > 0.7 ? `Donateur ${status === "ACTIVE" ? "actif et engagé" : "à relancer"}. ${Math.random() > 0.5 ? "Intéressé par les événements." : ""}` : null,
+            totalDonations: donations.total,
+            donationCount: donations.count,
+            averageDonation: donations.average,
+            highestDonation: donations.highest,
+            lastDonationDate: donations.lastDate,
+            firstDonationDate: donations.firstDate,
+            consentEmail: Math.random() > 0.2,
+            consentPhone: Math.random() > 0.5,
+            consentMail: Math.random() > 0.3,
+            Organization: {
+              connect: { id: organization.id },
+            },
+            DonorPreference: {
+              create: {
+                preferredChannel: randomElement(channels),
+                preferredFrequency: randomElement(frequencies),
+                preferredLanguage: Math.random() > 0.15 ? "fr" : "en",
+                causesOfInterest: Math.random() > 0.4 ? [randomElement(["Éducation", "Santé", "Environnement", "Culture", "Pauvreté"])] : [],
+              },
             },
           },
-        },
-      });
+        });
 
-      donors.push(donor);
+        allDonors.push(donor);
+      }
     }
 
-    const activeCount = donors.filter(d => d.status === "ACTIVE").length;
-    const totalDonations = donors.reduce((sum, d) => sum + d.totalDonations, 0);
+    const activeCount = allDonors.filter(d => d.status === "ACTIVE").length;
+    const totalDonations = allDonors.reduce((sum, d) => sum + d.totalDonations, 0);
+
+    // Statistiques par organisation
+    const orgStats = organizations.map(org => {
+      const orgDonors = allDonors.filter(d => d.organizationId === org.id);
+      const orgActiveCount = orgDonors.filter(d => d.status === "ACTIVE").length;
+      const orgTotalDonations = orgDonors.reduce((sum, d) => sum + d.totalDonations, 0);
+      
+      return {
+        organizationId: org.id,
+        organizationName: org.name,
+        totalDonors: orgDonors.length,
+        activeDonors: orgActiveCount,
+        totalDonations: orgTotalDonations,
+      };
+    });
 
     return NextResponse.json({
       success: true,
-      message: "50 donateurs créés avec succès!",
+      message: `${allDonors.length} donateurs créés avec succès répartis sur ${organizations.length} organisations!`,
       data: {
-        totalDonors: donors.length,
+        totalDonors: allDonors.length,
         activeDonors: activeCount,
         totalDonations: totalDonations,
+        organizations: orgStats,
       },
     });
   } catch (error) {

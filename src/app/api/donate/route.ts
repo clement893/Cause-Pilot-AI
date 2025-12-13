@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPrisma, getMainPrisma } from "@/lib/prisma-org";
+import { getMainPrisma } from "@/lib/prisma-org";
+import { getPrismaForOrganization } from "@/lib/prisma-multi";
 
 // POST - Soumettre un don
 export async function POST(request: NextRequest) {
@@ -57,7 +58,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Obtenir l'instance Prisma appropriée pour cette organisation
-    const prisma = await getPrisma(request);
+    // Utiliser directement getPrismaForOrganization car l'organizationId vient du formulaire
+    const prisma = await getPrismaForOrganization(organizationId);
 
     if (form.status !== "PUBLISHED") {
       return NextResponse.json(

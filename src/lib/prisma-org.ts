@@ -4,6 +4,7 @@
  */
 
 import { NextRequest } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getPrismaForOrganization, defaultPrisma } from "./prisma-multi";
 import { getOrganizationId } from "./organization";
@@ -13,7 +14,7 @@ import { getOrganizationId } from "./organization";
  * Si l'organisation a une base dédiée, l'utilise
  * Sinon, utilise l'instance par défaut (mode partagé)
  */
-export async function getPrisma(request?: NextRequest): Promise<typeof prisma> {
+export async function getPrisma(request?: NextRequest): Promise<PrismaClient> {
   // Si pas de requête, utiliser l'instance par défaut
   if (!request) {
     return prisma;
@@ -49,6 +50,6 @@ export async function getPrisma(request?: NextRequest): Promise<typeof prisma> {
  * Obtient l'instance Prisma pour la base principale (métadonnées)
  * Toujours utiliser cette instance pour les requêtes sur Organization, User, etc.
  */
-export function getMainPrisma(): typeof prisma {
+export function getMainPrisma(): PrismaClient {
   return defaultPrisma;
 }

@@ -206,6 +206,10 @@ export async function POST(request: NextRequest) {
       
       console.log(`📦 Traitement de l'organisation: ${organization.name} (ID: ${organization.id})`);
       
+      // Vérifier si l'organisation utilise une base de données dédiée
+      const hasDedicatedDB = !!organization.databaseUrl;
+      console.log(`  ${hasDedicatedDB ? '🔒 Base de données dédiée' : '🔓 Base de données partagée'}`);
+      
       // Obtenir l'instance Prisma pour cette organisation
       let orgPrisma;
       try {
@@ -272,7 +276,9 @@ export async function POST(request: NextRequest) {
               consentEmail: Math.random() > 0.2,
               consentPhone: Math.random() > 0.5,
               consentMail: Math.random() > 0.3,
-              organizationId: organization.id, // Lier explicitement à l'organisation
+              // Ne pas inclure organizationId si l'organisation utilise une base dédiée
+              // car la table Organization n'existe pas dans les bases dédiées
+              ...(hasDedicatedDB ? {} : { organizationId: organization.id }),
           };
 
           const donor = await orgPrisma.donor.create({
@@ -303,8 +309,13 @@ export async function POST(request: NextRequest) {
     const totalDonations = allDonors.reduce((sum, d) => sum + d.totalDonations, 0);
 
     // Statistiques par organisation
-    const orgStats = organizations.map(org => {
-      const orgDonors = allDonors.filter(d => d.organizationId === org.id);
+    // Pour les bases dédiées, tous les donateurs créés appartiennent à cette organisation
+    const orgStats = organizations.map((org, orgIndex) => {
+      // Calculer le nombre de donateurs créés pour cette organisation
+      const donorsCreatedForOrg = donorsPerOrg;
+      const startIndex = orgIndex * donorsPerOrg;
+      const endIndex = startIndex + donorsPerOrg;
+      const orgDonors = allDonors.slice(startIndex, endIndex);
       const orgActiveCount = orgDonors.filter(d => d.status === "ACTIVE").length;
       const orgTotalDonations = orgDonors.reduce((sum, d) => sum + d.totalDonations, 0);
       

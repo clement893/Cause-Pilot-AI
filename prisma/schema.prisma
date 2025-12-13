@@ -102,7 +102,7 @@ model AuditLog {
 }
 
 model Automation {
-  id                   String                @id
+  id                   String                @id @default(uuid())
   name                 String
   description          String?
   status               AutomationStatus      @default(DRAFT)
@@ -113,7 +113,7 @@ model Automation {
   failedExecutions     Int                   @default(0)
   lastExecutedAt       DateTime?
   createdAt            DateTime              @default(now())
-  updatedAt            DateTime
+  updatedAt            DateTime              @updatedAt
   createdBy            String?
   AutomationExecution  AutomationExecution[]
   AutomationStep       AutomationStep[]

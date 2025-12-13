@@ -1,373 +1,128 @@
 import sgMail from "@sendgrid/mail";
 
-// Initialize SendGrid
-const sendgridApiKey = process.env.SENDGRID_API_KEY;
-
-if (sendgridApiKey) {
-  sgMail.setApiKey(sendgridApiKey);
-} else {
-  console.warn("SENDGRID_API_KEY is not set. Email sending will not work.");
+// Initialiser SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// Get default sender with validation
-function getDefaultFromEmail(): string {
-  const email = process.env.SENDGRID_FROM_EMAIL;
-  if (!email) {
-    throw new Error("SENDGRID_FROM_EMAIL environment variable is required");
-  }
-  return email;
-}
-
-function getDefaultFromName(): string {
-  return process.env.SENDGRID_FROM_NAME || "Nucleus Cause";
-}
-
-export interface EmailOptions {
-  to: string | string[];
+interface SendEmailOptions {
+  to: string;
   subject: string;
+  html: string;
   text?: string;
-  html?: string;
-  templateId?: string;
-  dynamicTemplateData?: Record<string, unknown>;
-  from?: {
-    email: string;
-    name?: string;
-  };
-  replyTo?: string;
-  attachments?: Array<{
-    content: string; // Base64 encoded
-    filename: string;
-    type: string;
-    disposition?: "attachment" | "inline";
-  }>;
-  categories?: string[];
-  customArgs?: Record<string, string>;
 }
 
-// Send a single email
-export async function sendEmail(options: EmailOptions): Promise<boolean> {
-  if (!sendgridApiKey) {
-    console.error("SendGrid API key not configured");
-    return false;
+export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.error("SENDGRID_API_KEY n'est pas configuré");
+    throw new Error("Configuration email manquante");
   }
+
+  const msg = {
+    to,
+    from: {
+      email: process.env.SENDGRID_FROM_EMAIL || "hello@nukleo.digital",
+      name: process.env.SENDGRID_FROM_NAME || "CausePilotAI",
+    },
+    subject,
+    text: text || html.replace(/<[^>]*>/g, ""), // Extraire le texte du HTML si pas fourni
+    html,
+  };
 
   try {
-    const msg: sgMail.MailDataRequired = {
-      to: options.to,
-      from: {
-        email: options.from?.email || getDefaultFromEmail(),
-        name: options.from?.name || getDefaultFromName(),
-      },
-      subject: options.subject,
-      text: options.text || "",
-      html: options.html || options.text || "",
-      replyTo: options.replyTo,
-      attachments: options.attachments,
-      categories: options.categories,
-      customArgs: options.customArgs,
-    };
-
-    // Use dynamic template if provided
-    if (options.templateId) {
-      msg.templateId = options.templateId;
-      msg.dynamicTemplateData = options.dynamicTemplateData;
-    }
-
     await sgMail.send(msg);
-    console.log(`Email sent successfully to ${options.to}`);
-    return true;
-  } catch (error) {
-    console.error("Error sending email:", error);
-    return false;
-  }
-}
-
-// Send multiple emails (batch)
-export async function sendBulkEmails(
-  emails: EmailOptions[]
-): Promise<{ success: number; failed: number }> {
-  if (!sendgridApiKey) {
-    console.error("SendGrid API key not configured");
-    return { success: 0, failed: emails.length };
-  }
-
-  let success = 0;
-  let failed = 0;
-
-  // SendGrid recommends batching in groups of 1000
-  const batchSize = 1000;
-  for (let i = 0; i < emails.length; i += batchSize) {
-    const batch = emails.slice(i, i + batchSize);
-    
-    const messages = batch.map((options) => ({
-      to: options.to,
-      from: {
-        email: options.from?.email || getDefaultFromEmail(),
-        name: options.from?.name || getDefaultFromName(),
-      },
-      subject: options.subject,
-      text: options.text || "",
-      html: options.html || options.text || "",
-      templateId: options.templateId,
-      dynamicTemplateData: options.dynamicTemplateData,
-      categories: options.categories,
-      customArgs: options.customArgs,
-    }));
-
-    try {
-      await sgMail.send(messages as sgMail.MailDataRequired[]);
-      success += batch.length;
-    } catch (error) {
-      console.error("Error sending batch emails:", error);
-      failed += batch.length;
+    console.log(`Email envoyé à ${to}`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("Erreur lors de l'envoi de l'email:", error);
+    if (error.response) {
+      console.error("Détails SendGrid:", error.response.body);
     }
+    throw error;
   }
-
-  return { success, failed };
 }
 
-// Pre-built email templates
-export const EmailTemplates = {
-  // Donation confirmation
-  donationConfirmation: (data: {
-    donorName: string;
-    amount: number;
-    campaignName?: string;
-    transactionId: string;
-    date: Date;
-  }) => ({
-    subject: "Merci pour votre don !",
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #8B5CF6, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .header h1 { color: white; margin: 0; }
-          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-          .amount { font-size: 36px; font-weight: bold; color: #8B5CF6; text-align: center; margin: 20px 0; }
-          .details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .details p { margin: 10px 0; }
-          .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Merci pour votre générosité !</h1>
+export async function sendInvitationEmail({
+  email,
+  token,
+  inviteType,
+  organizationName,
+  role,
+  invitedByName,
+}: {
+  email: string;
+  token: string;
+  inviteType: "admin" | "organization";
+  organizationName?: string;
+  role?: string;
+  invitedByName?: string;
+}) {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app";
+  const acceptUrl = `${baseUrl}/super-admin/invite/accept?token=${token}`;
+
+  const subject = inviteType === "admin" 
+    ? `Invitation à rejoindre CausePilot AI en tant qu'administrateur`
+    : `Invitation à rejoindre ${organizationName} sur CausePilot AI`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Invitation CausePilot AI</title>
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">CausePilot AI</h1>
+      </div>
+      
+      <div style="background: #f9fafb; padding: 40px; border-radius: 0 0 10px 10px;">
+        <h2 style="color: #1f2937; margin-top: 0;">Vous avez été invité !</h2>
+        
+        ${invitedByName ? `<p style="color: #6b7280;">Bonjour,</p><p style="color: #6b7280;"><strong>${invitedByName}</strong> vous a invité à rejoindre CausePilot AI.</p>` : '<p style="color: #6b7280;">Bonjour,</p><p style="color: #6b7280;">Vous avez été invité à rejoindre CausePilot AI.</p>'}
+        
+        ${inviteType === "admin" ? `
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6366f1;">
+            <p style="margin: 0; color: #374151;"><strong>Rôle:</strong> ${role || "Administrateur"}</p>
+            <p style="margin: 10px 0 0 0; color: #6b7280;">Vous aurez accès à l'administration de la plateforme.</p>
           </div>
-          <div class="content">
-            <p>Cher(e) ${data.donorName},</p>
-            <p>Nous avons bien reçu votre don et nous vous en remercions chaleureusement.</p>
-            
-            <div class="amount">${data.amount.toFixed(2)} $</div>
-            
-            <div class="details">
-              <p><strong>Numéro de transaction :</strong> ${data.transactionId}</p>
-              <p><strong>Date :</strong> ${data.date.toLocaleDateString("fr-CA")}</p>
-              ${data.campaignName ? `<p><strong>Campagne :</strong> ${data.campaignName}</p>` : ""}
-            </div>
-            
-            <p>Votre contribution fait une réelle différence et nous permet de poursuivre notre mission.</p>
-            <p>Un reçu fiscal vous sera envoyé en début d'année prochaine.</p>
-            
-            <p>Avec toute notre gratitude,<br>L'équipe</p>
+        ` : `
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
+            <p style="margin: 0; color: #374151;"><strong>Organisation:</strong> ${organizationName}</p>
+            <p style="margin: 10px 0 0 0; color: #6b7280;">Vous aurez accès à cette organisation sur la plateforme.</p>
           </div>
-          <div class="footer">
-            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
-          </div>
+        `}
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${acceptUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+            Accepter l'invitation
+          </a>
         </div>
-      </body>
-      </html>
-    `,
-    text: `
-Merci pour votre don !
-
-Cher(e) ${data.donorName},
-
-Nous avons bien reçu votre don de ${data.amount.toFixed(2)} $ et nous vous en remercions chaleureusement.
-
-Numéro de transaction : ${data.transactionId}
-Date : ${data.date.toLocaleDateString("fr-CA")}
-${data.campaignName ? `Campagne : ${data.campaignName}` : ""}
-
-Votre contribution fait une réelle différence et nous permet de poursuivre notre mission.
-Un reçu fiscal vous sera envoyé en début d'année prochaine.
-
-Avec toute notre gratitude,
-L'équipe
-    `,
-  }),
-
-  // Welcome email for new donors
-  welcomeDonor: (data: { donorName: string; organizationName: string }) => ({
-    subject: `Bienvenue dans la communauté ${data.organizationName} !`,
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #8B5CF6, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .header h1 { color: white; margin: 0; }
-          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-          .cta { display: inline-block; background: #8B5CF6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Bienvenue !</h1>
-          </div>
-          <div class="content">
-            <p>Cher(e) ${data.donorName},</p>
-            <p>Merci de rejoindre notre communauté de donateurs !</p>
-            <p>Grâce à des personnes généreuses comme vous, nous pouvons continuer notre mission et avoir un impact positif.</p>
-            <p>Restez connecté(e) pour suivre l'impact de votre contribution et découvrir nos prochaines initiatives.</p>
-            <p>Avec toute notre gratitude,<br>L'équipe ${data.organizationName}</p>
-          </div>
+        
+        <p style="color: #9ca3af; font-size: 14px; margin-top: 30px;">
+          Ou copiez ce lien dans votre navigateur :<br>
+          <a href="${acceptUrl}" style="color: #6366f1; word-break: break-all;">${acceptUrl}</a>
+        </p>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+            Cette invitation expire dans 7 jours.<br>
+            Si vous n'avez pas demandé cette invitation, vous pouvez ignorer cet email.
+          </p>
         </div>
-      </body>
-      </html>
-    `,
-    text: `
-Bienvenue dans la communauté ${data.organizationName} !
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 12px;">
+        <p>CausePilot AI © ${new Date().getFullYear()}</p>
+      </div>
+    </body>
+    </html>
+  `;
 
-Cher(e) ${data.donorName},
-
-Merci de rejoindre notre communauté de donateurs !
-
-Grâce à des personnes généreuses comme vous, nous pouvons continuer notre mission et avoir un impact positif.
-
-Restez connecté(e) pour suivre l'impact de votre contribution et découvrir nos prochaines initiatives.
-
-Avec toute notre gratitude,
-L'équipe ${data.organizationName}
-    `,
-  }),
-
-  // Campaign update
-  campaignUpdate: (data: {
-    donorName: string;
-    campaignName: string;
-    progress: number;
-    goal: number;
-    message: string;
-  }) => ({
-    subject: `Mise à jour : ${data.campaignName}`,
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #8B5CF6, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .header h1 { color: white; margin: 0; font-size: 24px; }
-          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-          .progress-container { background: #e5e7eb; border-radius: 10px; height: 20px; margin: 20px 0; overflow: hidden; }
-          .progress-bar { background: linear-gradient(90deg, #8B5CF6, #EC4899); height: 100%; border-radius: 10px; }
-          .stats { display: flex; justify-content: space-between; margin: 10px 0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>${data.campaignName}</h1>
-          </div>
-          <div class="content">
-            <p>Cher(e) ${data.donorName},</p>
-            
-            <div class="progress-container">
-              <div class="progress-bar" style="width: ${Math.min((data.progress / data.goal) * 100, 100)}%"></div>
-            </div>
-            <div class="stats">
-              <span><strong>${data.progress.toLocaleString("fr-CA")} $</strong> collectés</span>
-              <span>Objectif : <strong>${data.goal.toLocaleString("fr-CA")} $</strong></span>
-            </div>
-            
-            <p>${data.message}</p>
-            
-            <p>Merci pour votre soutien continu !</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `,
-    text: `
-${data.campaignName} - Mise à jour
-
-Cher(e) ${data.donorName},
-
-Progression : ${data.progress.toLocaleString("fr-CA")} $ / ${data.goal.toLocaleString("fr-CA")} $
-
-${data.message}
-
-Merci pour votre soutien continu !
-    `,
-  }),
-};
-
-// Send donation confirmation email
-export async function sendDonationConfirmation(
-  email: string,
-  data: {
-    donorName: string;
-    amount: number;
-    campaignName?: string;
-    transactionId: string;
-    date: Date;
-  }
-): Promise<boolean> {
-  const template = EmailTemplates.donationConfirmation(data);
   return sendEmail({
     to: email,
-    subject: template.subject,
-    html: template.html,
-    text: template.text,
-    categories: ["donation", "confirmation"],
-  });
-}
-
-// Send welcome email to new donor
-export async function sendWelcomeEmail(
-  email: string,
-  donorName: string,
-  organizationName: string = "Notre Organisation"
-): Promise<boolean> {
-  const template = EmailTemplates.welcomeDonor({ donorName, organizationName });
-  return sendEmail({
-    to: email,
-    subject: template.subject,
-    html: template.html,
-    text: template.text,
-    categories: ["welcome", "onboarding"],
-  });
-}
-
-// Send campaign update
-export async function sendCampaignUpdate(
-  email: string,
-  data: {
-    donorName: string;
-    campaignName: string;
-    progress: number;
-    goal: number;
-    message: string;
-  }
-): Promise<boolean> {
-  const template = EmailTemplates.campaignUpdate(data);
-  return sendEmail({
-    to: email,
-    subject: template.subject,
-    html: template.html,
-    text: template.text,
-    categories: ["campaign", "update"],
+    subject,
+    html,
   });
 }

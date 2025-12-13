@@ -44,6 +44,27 @@ model AdminAuditLog {
   @@index([entityType])
 }
 
+model AdminInvitation {
+  id             String           @id @default(uuid())
+  createdAt      DateTime         @default(now())
+  expiresAt      DateTime
+  email          String
+  token          String           @unique
+  status         InvitationStatus @default(PENDING)
+  acceptedAt     DateTime?
+  invitedBy      String
+  invitedByName  String?
+  role           SuperAdminRole?
+  organizationId String?
+  Organization   Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  AdminUser      AdminUser        @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([status])
+  @@index([token])
+  @@index([invitedBy])
+}
+
 model AdminOrganizationAccess {
   id             String       @id @default(uuid())
   createdAt      DateTime     @default(now())
@@ -73,6 +94,7 @@ model AdminUser {
   lastLoginAt             DateTime?
   Account                 Account[]
   AdminAuditLog           AdminAuditLog[]
+  AdminInvitation         AdminInvitation[]
   AdminOrganizationAccess AdminOrganizationAccess[]
   Session                 Session[]
 }
@@ -1020,6 +1042,7 @@ model Organization {
   maxDonors               Int                       @default(1000)
   maxCampaigns            Int                       @default(10)
   databaseUrl             String?                   // URL de la base de données dédiée (optionnel, null = base partagée)
+  AdminInvitation         AdminInvitation[]
   AdminOrganizationAccess AdminOrganizationAccess[]
   DashboardLayout         DashboardLayout[]
   Donor                   Donor[]

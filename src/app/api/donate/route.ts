@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!donor) {
-      const donorData: Prisma.DonorCreateInput = {
+      const donorData: Prisma.DonorUncheckedCreateInput = {
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
@@ -133,11 +133,8 @@ export async function POST(request: NextRequest) {
         source: `Formulaire: ${form.name}`,
         consentEmail: body.consentEmail || false,
         status: "ACTIVE",
+        organizationId: organizationId || null,
       };
-      
-      if (organizationId) {
-        donorData.organizationId = organizationId;
-      }
       
       donor = await prismaInstance.donor.create({
         data: donorData,

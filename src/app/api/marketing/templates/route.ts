@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       ],
       include: {
         _count: {
-          select: { campaigns: true },
+          select: { EmailCampaign: true },
         },
       },
     });

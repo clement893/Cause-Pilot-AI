@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         skip: (page - 1) * limit,
         include: {
-          members: {
+          P2PFundraiser: {
             select: {
               id: true,
               firstName: true,
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
             take: 5,
           },
           _count: {
-            select: { members: true },
+            select: { P2PFundraiser: true },
           },
         },
       }),

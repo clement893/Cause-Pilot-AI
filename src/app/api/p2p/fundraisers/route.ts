@@ -36,14 +36,14 @@ export async function GET(request: NextRequest) {
         take: limit,
         skip: (page - 1) * limit,
         include: {
-          campaign: {
+          Campaign: {
             select: { id: true, name: true, slug: true, goalAmount: true },
           },
-          team: {
+          P2PTeam: {
             select: { id: true, name: true, slug: true },
           },
           _count: {
-            select: { donations: true },
+            select: { P2PDonation: true },
           },
         },
       }),
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
         status: "PENDING",
       },
       include: {
-        campaign: {
+        Campaign: {
           select: { id: true, name: true, slug: true },
         },
       },

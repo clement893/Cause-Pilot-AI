@@ -72,8 +72,8 @@ export async function GET(request: NextRequest) {
         include: {
           _count: {
             select: {
-              members: true,
-              dashboardLayouts: true,
+              OrganizationMember: true,
+              DashboardLayout: true,
             },
           },
         },

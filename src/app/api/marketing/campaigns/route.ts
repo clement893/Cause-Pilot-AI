@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         skip: (page - 1) * limit,
         take: limit,
         include: {
-          template: {
+          EmailTemplate: {
             select: {
               id: true,
               name: true,
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
             },
           },
           _count: {
-            select: { recipients: true },
+            select: { EmailRecipient: true },
           },
         },
       }),
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         templateId: body.templateId,
       },
       include: {
-        template: true,
+        EmailTemplate: true,
       },
     });
 

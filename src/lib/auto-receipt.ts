@@ -258,7 +258,7 @@ export async function generateAnnualReceipts(year: number): Promise<{
   // Trouver tous les donateurs avec des dons cette année sans reçu annuel
   const donors = await prisma.donor.findMany({
     where: {
-      donations: {
+      Donation: {
         some: {
           donationDate: {
             gte: new Date(`${year}-01-01`),
@@ -269,7 +269,7 @@ export async function generateAnnualReceipts(year: number): Promise<{
       },
     },
     include: {
-      donations: {
+      Donation: {
         where: {
           donationDate: {
             gte: new Date(`${year}-01-01`),
@@ -284,7 +284,7 @@ export async function generateAnnualReceipts(year: number): Promise<{
   for (const donor of donors) {
     try {
       // Calculer le total des dons de l'année
-      const totalAmount = donor.donations.reduce((sum, d) => sum + d.amount, 0);
+      const totalAmount = donor.Donation.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
 
       if (totalAmount <= 0) continue;
 
@@ -303,7 +303,7 @@ export async function generateAnnualReceipts(year: number): Promise<{
           receiptNumber,
           year,
           sequenceNumber,
-          donationId: donor.donations[0].id, // Référence au premier don
+          donationId: donor.Donation[0].id, // Référence au premier don
           donorId: donor.id,
           donorName: `${donor.firstName} ${donor.lastName}`,
           donorAddress: [

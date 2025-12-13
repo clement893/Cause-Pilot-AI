@@ -65,10 +65,10 @@ export async function POST(
     // Vérifier les limites du plan
     const organization = await prisma.organization.findUnique({
       where: { id },
-      include: { _count: { select: { members: true } } },
+      include: { _count: { select: { OrganizationMember: true } } },
     });
 
-    if (organization && organization._count.members >= organization.maxUsers) {
+    if (organization && organization._count.OrganizationMember >= organization.maxUsers) {
       return NextResponse.json(
         { error: "Limite de membres atteinte pour ce plan" },
         { status: 400 }

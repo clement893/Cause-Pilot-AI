@@ -14,8 +14,8 @@ export async function POST(
     const campaign = await prisma.emailCampaign.findUnique({
       where: { id },
       include: {
-        template: true,
-        recipients: {
+        EmailTemplate: true,
+        EmailRecipient: {
           where: { status: "PENDING" },
         },
       },
@@ -36,7 +36,7 @@ export async function POST(
     }
 
     // Si aucun destinataire, ajouter les donateurs avec consentement email
-    if (campaign.recipients.length === 0) {
+    if (campaign.EmailRecipient.length === 0) {
       // Construire les conditions de filtrage
       const donorWhere: Record<string, unknown> = {
         consentEmail: true,
@@ -107,8 +107,8 @@ export async function POST(
 
     // Préparer les emails à envoyer
     const emailOptions: EmailOptions[] = pendingRecipients.map((recipient) => {
-      let htmlContent = campaign.template?.htmlContent || "";
-      let textContent = campaign.template?.textContent || "";
+      let htmlContent = campaign.EmailTemplate?.htmlContent || "";
+      let textContent = campaign.EmailTemplate?.textContent || "";
 
       // Remplacer les variables
       htmlContent = htmlContent

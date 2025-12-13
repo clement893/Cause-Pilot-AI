@@ -14,11 +14,11 @@ export async function GET(
         OR: [{ id }, { slug: id }],
       },
       include: {
-        members: {
+        P2PFundraiser: {
           orderBy: { totalRaised: "desc" },
           include: {
             _count: {
-              select: { donations: true },
+              select: { P2PDonation: true },
             },
           },
         },

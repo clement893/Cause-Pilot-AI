@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         orderBy: { createdAt: "desc" },
         include: {
-          adminUser: {
+          AdminUser: {
             select: {
               id: true,
               name: true,

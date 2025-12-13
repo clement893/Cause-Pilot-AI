@@ -12,13 +12,13 @@ export async function GET(
     const campaign = await prisma.emailCampaign.findUnique({
       where: { id },
       include: {
-        template: true,
-        recipients: {
+        EmailTemplate: true,
+        EmailRecipient: {
           take: 100,
           orderBy: { createdAt: "desc" },
         },
         _count: {
-          select: { recipients: true },
+          select: { EmailRecipient: true },
         },
       },
     });
@@ -91,7 +91,7 @@ export async function PUT(
         templateId: body.templateId,
       },
       include: {
-        template: true,
+        EmailTemplate: true,
       },
     });
 

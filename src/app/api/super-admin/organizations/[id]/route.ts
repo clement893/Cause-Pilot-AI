@@ -31,14 +31,14 @@ export async function GET(
     const organization = await prisma.organization.findUnique({
       where: { id },
       include: {
-        members: {
+        OrganizationMember: {
           include: {
             // Note: userId fait référence à User, pas AdminUser
           },
         },
-        adminAccess: {
+        AdminOrganizationAccess: {
           include: {
-            adminUser: {
+            AdminUser: {
               select: {
                 id: true,
                 name: true,
@@ -51,8 +51,8 @@ export async function GET(
         },
         _count: {
           select: {
-            members: true,
-            dashboardLayouts: true,
+            OrganizationMember: true,
+            DashboardLayout: true,
           },
         },
       },

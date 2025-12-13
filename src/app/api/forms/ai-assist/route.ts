@@ -99,7 +99,7 @@ async function getFormData(formId: string) {
       where: { id: formId },
       include: {
         _count: {
-          select: { submissions: true }
+          select: { DonationSubmission: true }
         }
       }
     });

@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
         donor = await prisma.donor.findUnique({
           where: { id: donorId },
           include: {
-            donations: {
+            Donation: {
               orderBy: { donationDate: "desc" },
               take: 10,
             },
@@ -98,9 +98,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculer les montants personnalisés
-    const lastDonation = donor.donations[0];
-    const completedDonations = donor.donations.filter(
-      (d) => d.status === "COMPLETED"
+    const lastDonation = donor.Donation[0];
+    const completedDonations = donor.Donation.filter(
+      (d: { status: string }) => d.status === "COMPLETED"
     );
 
     // Calculer le montant recommandé (dernier don + 15%)
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Vérifier si le donateur a des dons récurrents
-    const hasRecurringDonations = donor.donations.some((d) => d.isRecurring);
+    const hasRecurringDonations = donor.Donation.some((d: { isRecurring: boolean }) => d.isRecurring);
 
     // Créer le message de bienvenue
     const welcomeMessage = `Bonjour ${donor.firstName} ! Merci pour votre fidélité.`;

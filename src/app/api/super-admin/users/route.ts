@@ -56,9 +56,9 @@ export async function GET(request: NextRequest) {
         take: limit,
         orderBy: { createdAt: "desc" },
         include: {
-          managedOrganizations: {
+          AdminOrganizationAccess: {
             include: {
-              organization: {
+              Organization: {
                 select: {
                   id: true,
                   name: true,
@@ -69,8 +69,8 @@ export async function GET(request: NextRequest) {
           },
           _count: {
             select: {
-              auditLogs: true,
-              managedOrganizations: true,
+              AdminAuditLog: true,
+              AdminOrganizationAccess: true,
             },
           },
         },

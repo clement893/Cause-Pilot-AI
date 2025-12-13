@@ -30,7 +30,7 @@ export async function GET(
         take: limit,
         skip: (page - 1) * limit,
         include: {
-          recipient: {
+          EmailRecipient: {
             select: {
               email: true,
               firstName: true,

@@ -62,15 +62,15 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             providerAccountId,
           },
         },
-        include: { user: true },
+        include: { AdminUser: true },
       });
-      if (!account?.user) return null;
+      if (!account?.AdminUser) return null;
       return {
-        id: account.user.id,
-        email: account.user.email,
-        name: account.user.name,
-        image: account.user.image,
-        emailVerified: account.user.emailVerified,
+        id: account.AdminUser.id,
+        email: account.AdminUser.email,
+        name: account.AdminUser.name,
+        image: account.AdminUser.image,
+        emailVerified: account.AdminUser.emailVerified,
       } as AdapterUser;
     },
 
@@ -145,7 +145,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     async getSessionAndUser(sessionToken) {
       const session = await prisma.session.findUnique({
         where: { sessionToken },
-        include: { user: true },
+        include: { AdminUser: true },
       });
       if (!session) return null;
       return {
@@ -155,11 +155,11 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           expires: session.expires,
         } as AdapterSession,
         user: {
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.name,
-          image: session.user.image,
-          emailVerified: session.user.emailVerified,
+          id: session.AdminUser.id,
+          email: session.AdminUser.email,
+          name: session.AdminUser.name,
+          image: session.AdminUser.image,
+          emailVerified: session.AdminUser.emailVerified,
         } as AdapterUser,
       };
     },

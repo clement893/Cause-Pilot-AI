@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
       include: {
         _count: {
-          select: { members: true },
+          select: { OrganizationMember: true },
         },
       },
     });

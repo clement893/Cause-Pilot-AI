@@ -12,7 +12,7 @@ export async function GET(
     const automation = await prisma.automationRule.findUnique({
       where: { id },
       include: {
-        campaigns: {
+        EmailCampaign: {
           take: 10,
           orderBy: { createdAt: "desc" },
         },

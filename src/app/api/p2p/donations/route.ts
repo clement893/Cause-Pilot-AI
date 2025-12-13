@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         skip: (page - 1) * limit,
         include: {
-          fundraiser: {
+          P2PFundraiser: {
             select: {
               id: true,
               firstName: true,
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     if (fundraiser.teamId) {
       const teamStats = await prisma.p2PDonation.aggregate({
         where: {
-          fundraiser: { teamId: fundraiser.teamId },
+          P2PFundraiser: { teamId: fundraiser.teamId },
           status: "COMPLETED",
         },
         _sum: { amount: true },
@@ -139,8 +139,8 @@ export async function POST(request: NextRequest) {
       await prisma.p2PTeam.update({
         where: { id: fundraiser.teamId },
         data: {
-          totalRaised: teamStats._sum.amount || 0,
-          donationCount: teamStats._count,
+          totalRaised: teamStats._sum?.amount || 0,
+          donationCount: teamStats._count || 0,
         },
       });
     }

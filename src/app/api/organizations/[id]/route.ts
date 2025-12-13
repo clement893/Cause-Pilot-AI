@@ -12,7 +12,7 @@ export async function GET(
     const organization = await prisma.organization.findUnique({
       where: { id },
       include: {
-        members: {
+        OrganizationMember: {
           include: {
             // On ne peut pas inclure User directement car la relation n'est pas définie
             // On récupère juste les membres
@@ -20,8 +20,8 @@ export async function GET(
         },
         _count: {
           select: { 
-            members: true,
-            dashboardLayouts: true,
+            OrganizationMember: true,
+            DashboardLayout: true,
           },
         },
       },

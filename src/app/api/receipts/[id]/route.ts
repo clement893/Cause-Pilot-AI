@@ -12,7 +12,7 @@ export async function GET(
     const receipt = await prisma.taxReceipt.findUnique({
       where: { id },
       include: {
-        donor: {
+        Donor: {
           select: {
             id: true,
             firstName: true,
@@ -25,7 +25,7 @@ export async function GET(
             country: true,
           },
         },
-        donation: {
+        Donation: {
           select: {
             id: true,
             amount: true,

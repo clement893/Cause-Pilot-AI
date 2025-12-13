@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
       take: 10,
       orderBy: { createdAt: "desc" },
       include: {
-        adminUser: {
+        AdminUser: {
           select: {
             name: true,
             email: true,

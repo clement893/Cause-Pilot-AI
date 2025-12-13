@@ -134,7 +134,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
       const completedDonations = donationsData.data.filter(
         (d: { status: string }) => d.status === "COMPLETED"
       );
-      const receiptDonationIds = new Set(receipts.map((r) => r.donation.id));
+      const receiptDonationIds = new Set(receipts.map((r) => r.Donation.id));
       const donationsWithoutReceipts = completedDonations.filter(
         (d: { id: string }) => !receiptDonationIds.has(d.id)
       );

@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
       include: {
         _count: {
-          select: { campaigns: true },
+          select: { EmailCampaign: true },
         },
       },
     });

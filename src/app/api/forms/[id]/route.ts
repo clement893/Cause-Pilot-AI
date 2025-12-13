@@ -20,7 +20,7 @@ export async function GET(
         ],
       },
       include: {
-        fields: {
+        FormField: {
           orderBy: { sortOrder: "asc" },
         },
         _count: {
@@ -116,7 +116,7 @@ export async function PUT(
         goalAmount: body.goalAmount,
       },
       include: {
-        fields: true,
+        FormField: true,
       },
     });
 

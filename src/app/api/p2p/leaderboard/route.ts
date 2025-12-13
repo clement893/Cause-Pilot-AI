@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         orderBy: { [sortBy]: "desc" },
         take: limit,
         include: {
-          members: {
+          P2PFundraiser: {
             select: {
               id: true,
               firstName: true,
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
             take: 3,
           },
           _count: {
-            select: { members: true },
+            select: { P2PFundraiser: true },
           },
         },
       });
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
         level: true,
         badges: true,
         goalAmount: true,
-        team: {
+        P2PTeam: {
           select: {
             id: true,
             name: true,

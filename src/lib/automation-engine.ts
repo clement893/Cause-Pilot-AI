@@ -35,7 +35,7 @@ export async function executeAutomation(
   const automation = await prisma.automation.findUnique({
     where: { id: automationId },
     include: {
-      actions: {
+      AutomationStep: {
         where: { parentActionId: null },
         orderBy: { order: "asc" },
       },
@@ -60,7 +60,7 @@ export async function executeAutomation(
   try {
     // Exécuter chaque action
     const results: Record<string, unknown>[] = [];
-    for (const action of automation.actions) {
+    for (const action of automation.AutomationStep) {
       const result = await executeAction(action, context);
       results.push({ actionId: action.id, ...result });
 
@@ -405,7 +405,7 @@ async function checkDonationAnniversaries() {
         status: "COMPLETED",
       },
       include: {
-        donor: true,
+        Donor: true,
       },
       take: 50,
     });
@@ -514,21 +514,21 @@ async function resumeWaitingExecutions(now: Date) {
         lte: now,
       },
     },
-    include: {
-      automation: {
-        include: {
-          actions: {
-            orderBy: { order: "asc" },
+      include: {
+        Automation: {
+          include: {
+            AutomationStep: {
+              orderBy: { order: "asc" },
+            },
           },
         },
       },
-    },
   });
 
   for (const execution of waitingExecutions) {
     // Reprendre l'exécution à partir de l'action suivante
-    const remainingActions = execution.automation.actions.filter(
-      (a) => a.order > execution.currentActionOrder
+    const remainingActions = execution.Automation.AutomationStep.filter(
+      (a: { order: number }) => a.order > execution.currentActionOrder
     );
 
     if (remainingActions.length === 0) {

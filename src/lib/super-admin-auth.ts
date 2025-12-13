@@ -117,7 +117,7 @@ export async function hasOrganizationAccess(
   const adminUser = await prisma.adminUser.findUnique({
     where: { id: adminUserId },
     include: {
-      managedOrganizations: {
+      AdminOrganizationAccess: {
         where: { organizationId },
       },
     },
@@ -129,7 +129,7 @@ export async function hasOrganizationAccess(
   if (adminUser.role === "SUPER_ADMIN") return true;
 
   // Vérifier si l'utilisateur a un accès explicite à l'organisation
-  return adminUser.managedOrganizations.length > 0;
+  return adminUser.AdminOrganizationAccess.length > 0;
 }
 
 /**

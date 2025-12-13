@@ -15,7 +15,7 @@ export async function GET(
         OR: [{ id }, { slug: id }],
       },
       include: {
-        campaign: {
+        Campaign: {
           select: {
             id: true,
             name: true,
@@ -28,7 +28,7 @@ export async function GET(
             bannerUrl: true,
           },
         },
-        team: {
+        P2PTeam: {
           select: {
             id: true,
             name: true,
@@ -37,7 +37,7 @@ export async function GET(
             memberCount: true,
           },
         },
-        donations: {
+        P2PDonation: {
           where: { status: "COMPLETED" },
           orderBy: { createdAt: "desc" },
           take: 20,
@@ -114,7 +114,7 @@ export async function PUT(
         teamId: body.teamId,
       },
       include: {
-        campaign: {
+        Campaign: {
           select: { id: true, name: true, slug: true },
         },
       },

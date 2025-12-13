@@ -91,17 +91,23 @@ export async function POST(request: NextRequest) {
       }
 
       // Créer l'invitation dans la base de données
-      const invitation = await mainPrisma.adminInvitation.create({
-        data: {
-          email,
-          token,
-          expiresAt,
-          invitedBy: session.user.id,
-          invitedByName: inviter?.name || inviter?.email || "Super Admin",
-          organizationId: organizationId,
-          role: "ADMIN", // Rôle par défaut pour les membres d'organisation
-        },
-      });
+      let invitation;
+      try {
+        invitation = await mainPrisma.adminInvitation.create({
+          data: {
+            email,
+            token,
+            expiresAt,
+            invitedBy: session.user.id,
+            invitedByName: inviter?.name || inviter?.email || "Super Admin",
+            organizationId: organizationId,
+            role: "ADMIN", // Rôle par défaut pour les membres d'organisation
+          },
+        });
+      } catch (dbError) {
+        console.error("Erreur lors de la création de l'invitation:", dbError);
+        throw dbError;
+      }
 
       // Envoyer l'email d'invitation
       try {
@@ -157,16 +163,22 @@ export async function POST(request: NextRequest) {
       }
 
       // Créer l'invitation dans la base de données
-      const invitation = await mainPrisma.adminInvitation.create({
-        data: {
-          email,
-          token,
-          expiresAt,
-          invitedBy: session.user.id,
-          invitedByName: inviter?.name || inviter?.email || "Super Admin",
-          role: role as SuperAdminRole,
-        },
-      });
+      let invitation;
+      try {
+        invitation = await mainPrisma.adminInvitation.create({
+          data: {
+            email,
+            token,
+            expiresAt,
+            invitedBy: session.user.id,
+            invitedByName: inviter?.name || inviter?.email || "Super Admin",
+            role: role as SuperAdminRole,
+          },
+        });
+      } catch (dbError) {
+        console.error("Erreur lors de la création de l'invitation:", dbError);
+        throw dbError;
+      }
 
       // Envoyer l'email d'invitation
       try {
@@ -213,8 +225,26 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Error inviting user:", error);
+    
+    // Log détaillé de l'erreur
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    
+    // Vérifier si c'est une erreur Prisma
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error("Prisma error code:", (error as { code?: string }).code);
+    }
+    
     return NextResponse.json(
-      { success: false, error: "Erreur lors de l'invitation de l'utilisateur", details: String(error) },
+      { 
+        success: false, 
+        error: "Erreur lors de l'invitation de l'utilisateur", 
+        details: error instanceof Error ? error.message : String(error),
+        errorType: error instanceof Error ? error.name : typeof error,
+      },
       { status: 500 }
     );
   }

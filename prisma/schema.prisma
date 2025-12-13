@@ -927,9 +927,9 @@ model MailingList {
 }
 
 model MailingListSubscriber {
-  id             String           @id
+  id             String           @id @default(uuid())
   createdAt      DateTime         @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime         @updatedAt
   email          String
   firstName      String?
   lastName       String?

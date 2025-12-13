@@ -123,6 +123,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Si c'est une invitation pour une organisation, le mot de passe est requis
+    // Pour les admins généraux, le mot de passe est optionnel (peuvent utiliser Google)
+    const isOrganizationInvitation = !!invitation.organizationId;
+    if (isOrganizationInvitation && !password) {
+      return NextResponse.json(
+        { success: false, error: "Le mot de passe est requis pour les membres d'organisation" },
+        { status: 400 }
+      );
+    }
+
+    if (password && password.length < 8) {
+      return NextResponse.json(
+        { success: false, error: "Le mot de passe doit contenir au moins 8 caractères" },
+        { status: 400 }
+      );
+    }
+
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await mainPrisma.adminUser.findUnique({
       where: { email: invitation.email },

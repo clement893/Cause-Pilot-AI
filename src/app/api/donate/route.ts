@@ -45,6 +45,11 @@ export async function POST(request: NextRequest) {
         minimumAmount: true,
         maximumAmount: true,
         campaignId: true,
+        donationCount: true,
+        totalCollected: true,
+        thankYouMessage: true,
+        thankYouRedirectUrl: true,
+        campaignName: true,
       },
     });
 

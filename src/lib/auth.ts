@@ -38,18 +38,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
-          hd: ALLOWED_DOMAIN, // Restreindre au domaine nukleo.com
+          // Ne pas restreindre avec hd pour permettre d'autres domaines pour les membres d'organisation
+          // La vérification se fait dans le callback signIn
         },
       },
     }),
   ],
   callbacks: {
     async signIn({ user }) {
-      // Vérifier que l'email appartient au domaine autorisé
+      // Vérifier si l'utilisateur existe déjà dans la base de données
       if (user.email) {
+        const existingUser = await prisma.adminUser.findUnique({
+          where: { email: user.email },
+          select: { role: true, status: true },
+        });
+
+        // Si l'utilisateur existe déjà, permettre la connexion (peut être admin ou membre d'organisation)
+        if (existingUser) {
+          return true;
+        }
+
+        // Si l'utilisateur n'existe pas encore, vérifier le domaine uniquement pour les super admins
+        // Les membres d'organisation peuvent avoir d'autres domaines
         const domain = user.email.split("@")[1];
         if (domain !== ALLOWED_DOMAIN) {
-          console.log(`Accès refusé pour ${user.email} - domaine non autorisé`);
+          console.log(`Accès refusé pour ${user.email} - domaine non autorisé pour les nouveaux utilisateurs admin`);
           return false;
         }
       }

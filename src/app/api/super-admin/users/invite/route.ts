@@ -37,10 +37,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier que l'email est du domaine nukleo.com
-    if (!email.endsWith("@nukleo.com")) {
+    // Vérifier que l'email est du domaine nukleo.com uniquement pour les admins généraux
+    // Pour les invitations d'organisation, permettre n'importe quel email
+    if (!organizationId && !email.endsWith("@nukleo.com")) {
       return NextResponse.json(
-        { success: false, error: "Seuls les emails @nukleo.com sont autorisés" },
+        { success: false, error: "Seuls les emails @nukleo.com sont autorisés pour les administrateurs généraux" },
         { status: 400 }
       );
     }

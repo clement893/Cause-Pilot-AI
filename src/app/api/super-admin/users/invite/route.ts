@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Seuls les super admins peuvent inviter
+    const mainPrisma = getMainPrisma();
     const isSuper = await isSuperAdmin(session.user.id);
     if (!isSuper) {
       // Debug: vérifier le rôle de l'utilisateur
@@ -51,8 +52,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    const mainPrisma = getMainPrisma();
 
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await mainPrisma.adminUser.findUnique({

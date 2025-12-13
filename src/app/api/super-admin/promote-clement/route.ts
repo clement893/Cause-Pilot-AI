@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/super-admin/promote-clement - Route temporaire pour promouvoir clement@nukleo.com
 // Cette route peut être supprimée après utilisation
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await auth();
     

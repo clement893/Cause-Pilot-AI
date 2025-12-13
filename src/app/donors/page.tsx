@@ -153,6 +153,39 @@ export default function DonorsPage() {
     }
   };
 
+  const handleSeed = async () => {
+    if (!confirm("⚠️ Cette action va supprimer TOUS les donateurs existants et créer 30 nouveaux donateurs pour chaque organisation. Continuer ?")) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("/api/seed", {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const orgStats = data.data.organizations?.map((org: { organizationName: string; totalDonors: number; activeDonors: number; totalDonations: number }) => 
+          `📦 ${org.organizationName}: ${org.totalDonors} donateurs (${org.activeDonors} actifs)`
+        ).join("\n") || "";
+        
+        alert(`✅ ${data.message}\n\n📊 Statistiques:\n- Total: ${data.data.totalDonors} donateurs\n- Actifs: ${data.data.activeDonors}\n- Total dons: ${new Intl.NumberFormat("fr-CA", { style: "currency", currency: "CAD" }).format(data.data.totalDonations)}\n\n${orgStats}`);
+        // Recharger les donateurs
+        fetchDonors(currentFilters);
+        fetchStats();
+      } else {
+        alert(`❌ Erreur: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error seeding donors:", error);
+      alert("❌ Erreur lors de la création des donateurs");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleImportSuccess = () => {
     fetchDonors(currentFilters);
     fetchStats();
@@ -177,6 +210,15 @@ export default function DonorsPage() {
                 search: currentFilters.query,
               }}
             />
+
+            {/* Seed Button */}
+            <button
+              onClick={handleSeed}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors border border-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              🌱 Générer donateurs
+            </button>
 
             {/* Import Button */}
             <button

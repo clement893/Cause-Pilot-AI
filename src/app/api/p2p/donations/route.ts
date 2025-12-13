@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
     const fundraiser = await prisma.p2PFundraiser.findUnique({
       where: { id: body.fundraiserId },
       include: {
-        campaign: true,
-        team: true,
+        Campaign: true,
+        P2PTeam: true,
       },
     });
 

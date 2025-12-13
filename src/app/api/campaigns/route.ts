@@ -133,11 +133,11 @@ export async function POST(request: NextRequest) {
         ogImage: body.ogImage,
       },
       include: {
-        milestones: true,
+        CampaignMilestone: true,
         _count: {
           select: {
-            donors: true,
-            forms: true,
+            CampaignDonor: true,
+            CampaignForm: true,
           },
         },
       },

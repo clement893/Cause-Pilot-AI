@@ -210,7 +210,7 @@ export async function POST(request: Request) {
           consentEmail: Math.random() > 0.2,
           consentPhone: Math.random() > 0.5,
           consentMail: Math.random() > 0.3,
-          preferences: {
+          DonorPreference: {
             create: {
               preferredChannel: randomElement(channels),
               preferredFrequency: randomElement(frequencies),

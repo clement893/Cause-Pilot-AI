@@ -64,7 +64,7 @@ export async function GET(
         consentPhone: true,
         consentMail: true,
         consentDate: true,
-        preferences: {
+        DonorPreference: {
           select: {
             preferredChannel: true,
             preferredFrequency: true,
@@ -90,7 +90,7 @@ export async function GET(
         consentPhone: donor.consentPhone,
         consentMail: donor.consentMail,
         consentDate: donor.consentDate,
-        preferences: donor.preferences,
+        preferences: donor.DonorPreference,
       },
     });
   } catch (error) {

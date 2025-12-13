@@ -12,6 +12,8 @@ import {
   Plus,
   X,
   Building2,
+  Clock,
+  Trash2,
 } from "lucide-react";
 
 interface AdminUser {
@@ -35,9 +37,31 @@ interface AdminUser {
   };
 }
 
+interface AdminInvitation {
+  id: string;
+  email: string;
+  role: string | null;
+  status: string;
+  createdAt: string;
+  expiresAt: string;
+  invitedByName: string | null;
+  Organization: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+  AdminUser: {
+    id: string;
+    name: string | null;
+    email: string;
+  };
+}
+
 export default function SuperAdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [invitations, setInvitations] = useState<AdminInvitation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingInvitations, setLoadingInvitations] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -51,6 +75,7 @@ export default function SuperAdminUsersPage() {
 
   useEffect(() => {
     fetchUsers();
+    fetchInvitations();
   }, [search, roleFilter, statusFilter, pagination.page]);
 
   const fetchUsers = async () => {
@@ -79,6 +104,51 @@ export default function SuperAdminUsersPage() {
       console.error("Erreur:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchInvitations = async () => {
+    setLoadingInvitations(true);
+    try {
+      const response = await fetch("/api/super-admin/invitations?status=PENDING", {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setInvitations(data.data);
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+    } finally {
+      setLoadingInvitations(false);
+    }
+  };
+
+  const revokeInvitation = async (invitationId: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir révoquer cette invitation ?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/super-admin/invitations?id=${invitationId}`, {
+        method: "DELETE",
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        fetchInvitations();
+      } else {
+        alert(data.error || "Erreur lors de la révocation");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de la révocation");
     }
   };
 
@@ -155,6 +225,67 @@ export default function SuperAdminUsersPage() {
             <option value="SUSPENDED">Suspendu</option>
           </select>
         </div>
+
+        {/* Invitations en attente */}
+        {invitations.length > 0 && (
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-yellow-400" />
+                <h2 className="text-lg font-semibold text-yellow-300">
+                  Invitations en attente ({invitations.length})
+                </h2>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {invitations.map((invitation) => (
+                <div
+                  key={invitation.id}
+                  className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-4 h-4 text-slate-400" />
+                        <span className="text-white font-medium">{invitation.email}</span>
+                        {invitation.role && (
+                          <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getRoleColor(invitation.role)}`}>
+                            {invitation.role}
+                          </span>
+                        )}
+                        {invitation.Organization && (
+                          <span className="px-2 py-1 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300">
+                            {invitation.Organization.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2 flex items-center gap-4 text-xs text-slate-400">
+                        <span>
+                          Invité par: {invitation.invitedByName || invitation.AdminUser.name || invitation.AdminUser.email}
+                        </span>
+                        <span>•</span>
+                        <span>
+                          Expire le: {new Date(invitation.expiresAt).toLocaleDateString("fr-CA")}
+                        </span>
+                        <span>•</span>
+                        <span>
+                          Créée le: {new Date(invitation.createdAt).toLocaleDateString("fr-CA")}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => revokeInvitation(invitation.id)}
+                      className="p-2 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-colors"
+                      title="Révoquer l'invitation"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Info */}
         <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4">
@@ -317,6 +448,7 @@ export default function SuperAdminUsersPage() {
             onInvited={() => {
               setShowInviteModal(false);
               fetchUsers();
+              fetchInvitations();
             }}
           />
         )}

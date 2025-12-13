@@ -12,28 +12,28 @@ export async function GET(
     const campaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
-        milestones: {
+        CampaignMilestone: {
           orderBy: { sortOrder: "asc" },
         },
-        donors: {
+        CampaignDonor: {
           orderBy: { totalDonated: "desc" },
           take: 50,
         },
-        forms: true,
-        updates: {
+        CampaignForm: true,
+        CampaignUpdate: {
           where: { isPublished: true },
           orderBy: { publishedAt: "desc" },
           take: 5,
         },
-        team: {
+        CampaignTeamMember: {
           orderBy: { sortOrder: "asc" },
         },
         _count: {
           select: {
-            donors: true,
-            forms: true,
-            updates: true,
-            team: true,
+            CampaignDonor: true,
+            CampaignForm: true,
+            CampaignUpdate: true,
+            CampaignTeamMember: true,
           },
         },
       },
@@ -43,7 +43,7 @@ export async function GET(
     const linkedForms = await prisma.donationForm.findMany({
       where: {
         id: {
-          in: campaign?.forms.map(f => f.formId) || []
+          in: campaign?.CampaignForm.map(f => f.formId) || []
         }
       },
       select: {
@@ -82,7 +82,7 @@ export async function GET(
     });
 
     // Récupérer les donateurs avec leurs informations complètes
-    const donorIds = campaign?.donors.map(d => d.donorId) || [];
+    const donorIds = campaign?.CampaignDonor.map(d => d.donorId) || [];
     const donorsDetails = await prisma.donor.findMany({
       where: {
         id: { in: donorIds }
@@ -101,7 +101,7 @@ export async function GET(
     });
 
     // Combiner les données des donateurs
-    const donorsWithDetails = campaign?.donors.map(cd => {
+    const donorsWithDetails = campaign?.CampaignDonor.map(cd => {
       const donor = donorsDetails.find(d => d.id === cd.donorId);
       return {
         ...cd,
@@ -221,11 +221,11 @@ export async function PUT(
         ogImage: body.ogImage,
       },
       include: {
-        milestones: true,
+        CampaignMilestone: true,
         _count: {
           select: {
-            donors: true,
-            forms: true,
+            CampaignDonor: true,
+            CampaignForm: true,
           },
         },
       },

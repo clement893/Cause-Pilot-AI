@@ -9,6 +9,9 @@ import {
   Mail,
   Calendar,
   MoreVertical,
+  Plus,
+  X,
+  Building2,
 } from "lucide-react";
 
 interface AdminUser {
@@ -38,6 +41,8 @@ export default function SuperAdminUsersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [organizations, setOrganizations] = useState<Array<{ id: string; name: string }>>([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -60,7 +65,12 @@ export default function SuperAdminUsersPage() {
       if (roleFilter) params.append("role", roleFilter);
       if (statusFilter) params.append("status", statusFilter);
 
-      const response = await fetch(`/api/super-admin/users?${params}`);
+      const response = await fetch(`/api/super-admin/users?${params}`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       const data = await response.json();
       if (data.success) {
         setUsers(data.data);
@@ -96,11 +106,20 @@ export default function SuperAdminUsersPage() {
     <SuperAdminWrapper>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-white">Utilisateurs Admin</h1>
-          <p className="text-slate-400 mt-1">
-            Gérez les utilisateurs ayant accès à l&apos;administration
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Utilisateurs Admin</h1>
+            <p className="text-slate-400 mt-1">
+              Gérez les utilisateurs ayant accès à l&apos;administration
+            </p>
+          </div>
+          <button
+            onClick={() => setShowInviteModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            Inviter un utilisateur
+          </button>
         </div>
 
         {/* Filters */}
@@ -291,7 +310,215 @@ export default function SuperAdminUsersPage() {
             </div>
           </div>
         )}
+
+        {/* Invite Modal */}
+        {showInviteModal && (
+          <InviteUserModal
+            onClose={() => setShowInviteModal(false)}
+            onInvited={() => {
+              setShowInviteModal(false);
+              fetchUsers();
+            }}
+          />
+        )}
       </div>
     </SuperAdminWrapper>
+  );
+}
+
+function InviteUserModal({
+  onClose,
+  onInvited,
+}: {
+  onClose: () => void;
+  onInvited: () => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [inviteType, setInviteType] = useState<"admin" | "organization">("admin");
+  const [organizations, setOrganizations] = useState<Array<{ id: string; name: string }>>([]);
+  const [formData, setFormData] = useState({
+    email: "",
+    role: "ADMIN",
+    organizationId: "",
+  });
+
+  useEffect(() => {
+    if (inviteType === "organization") {
+      fetchOrganizations();
+    }
+  }, [inviteType]);
+
+  const fetchOrganizations = async () => {
+    try {
+      const response = await fetch("/api/super-admin/organizations?limit=100", {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setOrganizations(data.data.map((org: { id: string; name: string }) => ({
+          id: org.id,
+          name: org.name,
+        })));
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/super-admin/users/invite", {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          role: inviteType === "admin" ? formData.role : undefined,
+          organizationId: inviteType === "organization" ? formData.organizationId : undefined,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        onInvited();
+      } else {
+        alert(data.error || "Erreur lors de l'invitation");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de l'invitation");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-800 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+          <h2 className="text-xl font-semibold text-white">
+            Inviter un utilisateur
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5 text-slate-400" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Type d'invitation */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Type d&apos;invitation
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setInviteType("admin")}
+                className={`px-4 py-3 rounded-xl border-2 transition-colors ${
+                  inviteType === "admin"
+                    ? "border-purple-500 bg-purple-500/20 text-purple-300"
+                    : "border-slate-700 bg-slate-700/50 text-slate-300 hover:border-slate-600"
+                }`}
+              >
+                <Shield className="w-5 h-5 mx-auto mb-2" />
+                <p className="font-medium">Admin</p>
+                <p className="text-xs mt-1">Accès administration</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setInviteType("organization")}
+                className={`px-4 py-3 rounded-xl border-2 transition-colors ${
+                  inviteType === "organization"
+                    ? "border-purple-500 bg-purple-500/20 text-purple-300"
+                    : "border-slate-700 bg-slate-700/50 text-slate-300 hover:border-slate-600"
+                }`}
+              >
+                <Building2 className="w-5 h-5 mx-auto mb-2" />
+                <p className="font-medium">Organisation</p>
+                <p className="text-xs mt-1">Accès organisation spécifique</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Email * <span className="text-xs text-slate-500">(@nukleo.com uniquement)</span>
+            </label>
+            <input
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="utilisateur@nukleo.com"
+              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Rôle (si admin) */}
+          {inviteType === "admin" && (
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Rôle
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="ADMIN">Admin</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="SUPPORT">Support</option>
+              </select>
+            </div>
+          )}
+
+          {/* Organisation (si organisation) */}
+          {inviteType === "organization" && (
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Organisation *
+              </label>
+              <select
+                required={inviteType === "organization"}
+                value={formData.organizationId}
+                onChange={(e) => setFormData({ ...formData, organizationId: e.target.value })}
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="">Sélectionner une organisation</option>
+                {organizations.map((org) => (
+                  <option key={org.id} value={org.id}>
+                    {org.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="flex items-center justify-end gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-slate-300 hover:text-white transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={loading || (inviteType === "organization" && !formData.organizationId)}
+              className="px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors disabled:opacity-50"
+            >
+              {loading ? "Envoi..." : "Envoyer l'invitation"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

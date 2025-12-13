@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Gestionnaire de connexions Prisma multiples pour isolation par organisation
  * Permet d'\''avoir une base de donnÃƒÂ©es sÃƒÂ©parÃƒÂ©e par organisation pour une sÃƒÂ©curitÃƒÂ© maximale
  */

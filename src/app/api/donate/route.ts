@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMainPrisma } from "@/lib/prisma-org";
 import { getPrismaForOrganization } from "@/lib/prisma-multi";
+import { prisma } from "@/lib/prisma";
 
 // POST - Soumettre un don
 export async function POST(request: NextRequest) {
@@ -53,26 +54,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Récupérer l'organizationId depuis la campagne si campaignId existe
-    let organizationId: string | null = null;
-    if (form.campaignId) {
-      const campaign = await mainPrisma.campaign.findUnique({
-        where: { id: form.campaignId },
-        select: { organizationId: true },
-      });
-      organizationId = campaign?.organizationId || null;
+    // Récupérer l'organizationId depuis le body ou utiliser la base par défaut
+    // Les campagnes n'ont pas de organizationId dans le schéma actuel
+    // Pour une route publique, on peut accepter organizationId dans le body
+    // ou utiliser la base par défaut si le système multi-database n'est pas activé
+    let organizationId: string | null = body.organizationId || null;
+    let prismaInstance: typeof prisma;
+    
+    const useMultiDatabase = process.env.ENABLE_MULTI_DATABASE === "true";
+    
+    if (useMultiDatabase && organizationId) {
+      // Utiliser la base dédiée de l'organisation si fournie et si le système multi-database est activé
+      prismaInstance = await getPrismaForOrganization(organizationId);
+    } else {
+      // Utiliser la base par défaut (mode partagé ou si pas d'organizationId fourni)
+      prismaInstance = prisma;
     }
-
-    if (!organizationId) {
-      return NextResponse.json(
-        { error: "Organisation non trouvée pour ce formulaire" },
-        { status: 400 }
-      );
-    }
-
-    // Obtenir l'instance Prisma appropriée pour cette organisation
-    // Utiliser directement getPrismaForOrganization car l'organizationId vient du formulaire
-    const prisma = await getPrismaForOrganization(organizationId);
 
     if (form.status !== "PUBLISHED") {
       return NextResponse.json(
@@ -110,40 +107,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Chercher ou créer le donateur dans la base dédiée de l'organisation
-    let donor = await prisma.donor.findFirst({
-      where: { 
-        email: body.email,
-        organizationId,
-      },
+    // Chercher ou créer le donateur
+    const donorWhere: any = { email: body.email };
+    if (organizationId) {
+      donorWhere.organizationId = organizationId;
+    }
+    
+    let donor = await prismaInstance.donor.findFirst({
+      where: donorWhere,
     });
 
     if (!donor) {
-      donor = await prisma.donor.create({
-        data: {
-          firstName: body.firstName,
-          lastName: body.lastName,
-          email: body.email,
-          phone: body.phone,
-          address: body.address,
-          city: body.city,
-          state: body.state,
-          postalCode: body.postalCode,
-          country: body.country || "Canada",
-          employer: body.employer,
-          source: `Formulaire: ${form.name}`,
-          consentEmail: body.consentEmail || false,
-          status: "ACTIVE",
-          organizationId,
-        },
+      const donorData: any = {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        phone: body.phone,
+        address: body.address,
+        city: body.city,
+        state: body.state,
+        postalCode: body.postalCode,
+        country: body.country || "Canada",
+        employer: body.employer,
+        source: `Formulaire: ${form.name}`,
+        consentEmail: body.consentEmail || false,
+        status: "ACTIVE",
+      };
+      
+      if (organizationId) {
+        donorData.organizationId = organizationId;
+      }
+      
+      donor = await prismaInstance.donor.create({
+        data: donorData,
       });
     }
 
     // Générer un ID de transaction unique
     const transactionId = `DON-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
 
-    // Créer la soumission
-    const submission = await prisma.donationSubmission.create({
+    // Créer la soumission (dans la base dédiée de l'organisation)
+    const submission = await prismaInstance.donationSubmission.create({
       data: {
         formId: body.formId,
         donorId: donor.id,
@@ -183,7 +187,7 @@ export async function POST(request: NextRequest) {
 
     // Simuler le paiement réussi (à remplacer par Stripe en production)
     // Pour l'instant, on marque directement comme complété
-    const completedSubmission = await prisma.donationSubmission.update({
+    const completedSubmission = await prismaInstance.donationSubmission.update({
       where: { id: submission.id },
       data: {
         paymentStatus: "COMPLETED",
@@ -191,8 +195,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Mettre à jour les statistiques du formulaire
-    await prisma.donationForm.update({
+    // Mettre à jour les statistiques du formulaire (dans la base principale)
+    await mainPrisma.donationForm.update({
       where: { id: body.formId },
       data: {
         totalCollected: { increment: body.amount },
@@ -203,8 +207,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Mettre à jour les statistiques du donateur
-    await prisma.donor.update({
+    // Mettre à jour les statistiques du donateur (dans la base dédiée)
+    await prismaInstance.donor.update({
       where: { id: donor.id },
       data: {
         totalDonations: { increment: body.amount },
@@ -218,8 +222,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Créer l'entrée dans l'historique des dons
-    await prisma.donation.create({
+    // Créer l'entrée dans l'historique des dons (dans la base dédiée)
+    await prismaInstance.donation.create({
       data: {
         donorId: donor.id,
         amount: body.amount,

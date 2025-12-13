@@ -102,10 +102,10 @@ export function DonorForm({ donor, onSubmit, loading }: DonorFormProps) {
     consentPhone: donor?.consentPhone || false,
     consentMail: donor?.consentMail || false,
     preferences: {
-      preferredChannel: (donor?.preferences?.preferredChannel as CommunicationChannel) || "EMAIL",
-      preferredFrequency: (donor?.preferences?.preferredFrequency as CommunicationFrequency) || "MONTHLY",
-      preferredLanguage: donor?.preferences?.preferredLanguage || "fr",
-      causesOfInterest: donor?.preferences?.causesOfInterest || [],
+      preferredChannel: (donor?.DonorPreference?.preferredChannel as CommunicationChannel) || "EMAIL",
+      preferredFrequency: (donor?.DonorPreference?.preferredFrequency as CommunicationFrequency) || "MONTHLY",
+      preferredLanguage: donor?.DonorPreference?.preferredLanguage || "fr",
+      causesOfInterest: donor?.DonorPreference?.causesOfInterest || [],
     },
   });
 

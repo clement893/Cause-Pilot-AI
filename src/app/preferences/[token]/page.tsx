@@ -58,9 +58,9 @@ export default function PreferenceCenterPage({
         setConsentEmail(data.donor.consentEmail);
         setConsentPhone(data.donor.consentPhone);
         setConsentMail(data.donor.consentMail);
-        if (data.donor.preferences) {
-          setPreferredFrequency(data.donor.preferences.preferredFrequency);
-          setPreferredLanguage(data.donor.preferences.preferredLanguage);
+        if (data.donor.DonorPreference) {
+          setPreferredFrequency(data.donor.DonorPreference.preferredFrequency);
+          setPreferredLanguage(data.donor.DonorPreference.preferredLanguage);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Une erreur est survenue");

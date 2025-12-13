@@ -209,9 +209,9 @@ model AutomationStep {
 }
 
 model Campaign {
-  id                 String               @id
+  id                 String               @id @default(uuid())
   createdAt          DateTime             @default(now())
-  updatedAt          DateTime
+  updatedAt          DateTime             @updatedAt
   name               String
   slug               String               @unique
   description        String?
@@ -452,9 +452,9 @@ model DashboardWidget {
 }
 
 model Donation {
-  id              String          @id
+  id              String          @id @default(uuid())
   createdAt       DateTime        @default(now())
-  updatedAt       DateTime
+  updatedAt       DateTime        @updatedAt
   amount          Float
   currency        String          @default("CAD")
   donationDate    DateTime

@@ -207,7 +207,9 @@ async function main() {
     for (const donation of donationData) {
       await prisma.donation.create({
         data: {
-          donorId: donor.id,
+          Donor: {
+            connect: { id: donor.id },
+          },
           amount: donation.amount,
           donationDate: donation.date,
           status: "COMPLETED",

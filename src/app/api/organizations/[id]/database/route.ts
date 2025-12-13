@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMainPrisma } from "@/lib/prisma-org";
-import { getOrganizationId } from "@/lib/organization";
 import { z } from "zod";
 
 const updateDatabaseUrlSchema = z.object({
@@ -13,10 +12,10 @@ const updateDatabaseUrlSchema = z.object({
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const organizationId = params.id;
+    const { id: organizationId } = await params;
     const mainPrisma = getMainPrisma();
 
     const organization = await mainPrisma.organization.findUnique({
@@ -55,10 +54,10 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const organizationId = params.id;
+    const { id: organizationId } = await params;
     const body = await request.json();
     const validatedData = updateDatabaseUrlSchema.parse(body);
 

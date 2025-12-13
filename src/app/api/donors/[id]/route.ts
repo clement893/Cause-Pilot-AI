@@ -13,14 +13,14 @@ export async function GET(
       where: { id },
       include: {
         DonorPreference: true,
-        donations: {
+        Donation: {
           orderBy: { donationDate: "desc" },
           take: 10,
         },
-        customFields: {
-          include: { field: true },
+        DonorCustomField: {
+          include: { CustomFieldDefinition: true },
         },
-        communications: {
+        Communication: {
           orderBy: { createdAt: "desc" },
           take: 10,
         },

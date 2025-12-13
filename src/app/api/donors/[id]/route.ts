@@ -25,7 +25,7 @@ export async function GET(
           take: 10,
         },
         _count: {
-          select: { donations: true, communications: true },
+          select: { Donation: true, Communication: true },
         },
       },
     });

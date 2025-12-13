@@ -11,10 +11,8 @@ export async function GET(request: NextRequest) {
     console.log("API - Cookies received:", cookies.length);
     console.log("API - Cookie names:", cookies.map(c => c.name));
     
-    // Essayer de récupérer la session
-    const session = await auth({
-      headers: request.headers,
-    });
+    // Essayer de récupérer la session (NextAuth v5 détecte automatiquement le contexte)
+    const session = await auth();
     
     console.log("API - Session check");
     console.log("API - Session exists:", !!session);

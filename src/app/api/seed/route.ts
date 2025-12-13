@@ -171,6 +171,16 @@ export async function POST(request: NextRequest) {
     const organizations = await mainPrisma.organization.findMany({
       orderBy: { createdAt: "asc" },
       take: 2,
+      select: {
+        id: true,
+        name: true,
+        databaseUrl: true,
+      },
+    });
+
+    console.log(`📋 Organisations trouvées: ${organizations.length}`);
+    organizations.forEach(org => {
+      console.log(`  - ${org.name} (ID: ${org.id}, DB: ${org.databaseUrl ? 'Dédiée' : 'Partagée'})`);
     });
 
     if (organizations.length === 0) {
@@ -194,76 +204,99 @@ export async function POST(request: NextRequest) {
     for (let orgIndex = 0; orgIndex < organizations.length; orgIndex++) {
       const organization = organizations[orgIndex];
       
+      console.log(`📦 Traitement de l'organisation: ${organization.name} (ID: ${organization.id})`);
+      
       // Obtenir l'instance Prisma pour cette organisation
-      const orgPrisma = await getPrismaForOrganization(organization.id);
+      let orgPrisma;
+      try {
+        orgPrisma = await getPrismaForOrganization(organization.id);
+        console.log(`✅ Instance Prisma obtenue pour ${organization.name}`);
+      } catch (error) {
+        console.error(`❌ Erreur lors de l'obtention de l'instance Prisma pour ${organization.name}:`, error);
+        throw new Error(`Impossible de se connecter à la base de données de l'organisation ${organization.name}: ${error instanceof Error ? error.message : String(error)}`);
+      }
       
       // Supprimer les données existantes dans le bon ordre pour cette organisation
-      await orgPrisma.communication.deleteMany();
-      await orgPrisma.donorCustomField.deleteMany();
-      await orgPrisma.donorPreference.deleteMany();
-      await orgPrisma.donation.deleteMany();
-      await orgPrisma.donor.deleteMany();
-
-      for (let i = 0; i < donorsPerOrg; i++) {
-        const firstName = randomElement(firstNames);
-        const lastName = randomElement(lastNames);
-        const location = randomElement(cities);
-        const donations = generateDonations();
-        const status = randomElement(statuses);
-        const donorType = randomElement(donorTypes);
-
-        const donorData: Prisma.DonorUncheckedCreateInput = {
-            firstName,
-            lastName,
-            email: `${firstName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}.${lastName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}${orgIndex}${i}@${randomElement(["gmail.com", "outlook.com", "hotmail.com", "videotron.ca"])}`,
-            phone: generatePhone(),
-            mobile: Math.random() > 0.3 ? generatePhone() : null,
-            dateOfBirth: Math.random() > 0.2 ? generateBirthDate() : null,
-            address: `${randomInt(1, 9999)} ${randomElement(streets)}`,
-            address2: Math.random() > 0.8 ? `App. ${randomInt(1, 20)}` : null,
-            city: location.city,
-            state: location.state,
-            postalCode: generatePostalCode(location.postalPrefix),
-            country: "Canada",
-            profession: Math.random() > 0.2 ? randomElement(professions) : null,
-            employer: Math.random() > 0.3 ? randomElement(employers) : null,
-            jobTitle: Math.random() > 0.5 ? randomElement(["Directeur", "Gestionnaire", "Analyste", "Conseiller", "Spécialiste"]) : null,
-            industry: Math.random() > 0.4 ? randomElement(["Énergie", "Finance", "Technologie", "Santé", "Éducation", "Construction", "Télécommunications"]) : null,
-            status,
-            donorType,
-            segment: randomElement(segments),
-            tags: Math.random() > 0.5 ? [randomElement(["fidèle", "généreux", "engagé", "bénévole", "ambassadeur"])] : [],
-            source: randomElement(sources),
-            notes: Math.random() > 0.7 ? `Donateur ${status === "ACTIVE" ? "actif et engagé" : "à relancer"}. ${Math.random() > 0.5 ? "Intéressé par les événements." : ""}` : null,
-            totalDonations: donations.total,
-            donationCount: donations.count,
-            averageDonation: donations.average,
-            highestDonation: donations.highest,
-            lastDonationDate: donations.lastDate,
-            firstDonationDate: donations.firstDate,
-            consentEmail: Math.random() > 0.2,
-            consentPhone: Math.random() > 0.5,
-            consentMail: Math.random() > 0.3,
-            organizationId: organization.id, // Lier explicitement à l'organisation
-        };
-
-        const donor = await orgPrisma.donor.create({
-          data: donorData,
-        });
-
-        // Créer les préférences séparément
-        await orgPrisma.donorPreference.create({
-          data: {
-            donorId: donor.id,
-            preferredChannel: randomElement(channels),
-            preferredFrequency: randomElement(frequencies),
-            preferredLanguage: Math.random() > 0.15 ? "fr" : "en",
-            causesOfInterest: Math.random() > 0.4 ? [randomElement(["Éducation", "Santé", "Environnement", "Culture", "Pauvreté"])] : [],
-          },
-        });
-
-        allDonors.push(donor);
+      try {
+        console.log(`🧹 Nettoyage des données existantes pour ${organization.name}...`);
+        await orgPrisma.communication.deleteMany();
+        await orgPrisma.donorCustomField.deleteMany();
+        await orgPrisma.donorPreference.deleteMany();
+        await orgPrisma.donation.deleteMany();
+        await orgPrisma.donor.deleteMany();
+        console.log(`✅ Données nettoyées pour ${organization.name}`);
+      } catch (error) {
+        console.error(`❌ Erreur lors du nettoyage pour ${organization.name}:`, error);
+        // Continuer même si le nettoyage échoue (peut-être qu'il n'y a pas de données)
       }
+
+      console.log(`👥 Création de ${donorsPerOrg} donateurs pour ${organization.name}...`);
+      for (let i = 0; i < donorsPerOrg; i++) {
+        try {
+          const firstName = randomElement(firstNames);
+          const lastName = randomElement(lastNames);
+          const location = randomElement(cities);
+          const donations = generateDonations();
+          const status = randomElement(statuses);
+          const donorType = randomElement(donorTypes);
+
+          const donorData: Prisma.DonorUncheckedCreateInput = {
+              firstName,
+              lastName,
+              email: `${firstName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}.${lastName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}${orgIndex}${i}@${randomElement(["gmail.com", "outlook.com", "hotmail.com", "videotron.ca"])}`,
+              phone: generatePhone(),
+              mobile: Math.random() > 0.3 ? generatePhone() : null,
+              dateOfBirth: Math.random() > 0.2 ? generateBirthDate() : null,
+              address: `${randomInt(1, 9999)} ${randomElement(streets)}`,
+              address2: Math.random() > 0.8 ? `App. ${randomInt(1, 20)}` : null,
+              city: location.city,
+              state: location.state,
+              postalCode: generatePostalCode(location.postalPrefix),
+              country: "Canada",
+              profession: Math.random() > 0.2 ? randomElement(professions) : null,
+              employer: Math.random() > 0.3 ? randomElement(employers) : null,
+              jobTitle: Math.random() > 0.5 ? randomElement(["Directeur", "Gestionnaire", "Analyste", "Conseiller", "Spécialiste"]) : null,
+              industry: Math.random() > 0.4 ? randomElement(["Énergie", "Finance", "Technologie", "Santé", "Éducation", "Construction", "Télécommunications"]) : null,
+              status,
+              donorType,
+              segment: randomElement(segments),
+              tags: Math.random() > 0.5 ? [randomElement(["fidèle", "généreux", "engagé", "bénévole", "ambassadeur"])] : [],
+              source: randomElement(sources),
+              notes: Math.random() > 0.7 ? `Donateur ${status === "ACTIVE" ? "actif et engagé" : "à relancer"}. ${Math.random() > 0.5 ? "Intéressé par les événements." : ""}` : null,
+              totalDonations: donations.total,
+              donationCount: donations.count,
+              averageDonation: donations.average,
+              highestDonation: donations.highest,
+              lastDonationDate: donations.lastDate,
+              firstDonationDate: donations.firstDate,
+              consentEmail: Math.random() > 0.2,
+              consentPhone: Math.random() > 0.5,
+              consentMail: Math.random() > 0.3,
+              organizationId: organization.id, // Lier explicitement à l'organisation
+          };
+
+          const donor = await orgPrisma.donor.create({
+            data: donorData,
+          });
+
+          // Créer les préférences séparément
+          await orgPrisma.donorPreference.create({
+            data: {
+              donorId: donor.id,
+              preferredChannel: randomElement(channels),
+              preferredFrequency: randomElement(frequencies),
+              preferredLanguage: Math.random() > 0.15 ? "fr" : "en",
+              causesOfInterest: Math.random() > 0.4 ? [randomElement(["Éducation", "Santé", "Environnement", "Culture", "Pauvreté"])] : [],
+            },
+          });
+
+          allDonors.push(donor);
+        } catch (error) {
+          console.error(`❌ Erreur lors de la création du donateur ${i + 1} pour ${organization.name}:`, error);
+          throw new Error(`Erreur lors de la création du donateur ${i + 1} pour ${organization.name}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+      console.log(`✅ ${donorsPerOrg} donateurs créés pour ${organization.name}`);
     }
 
     const activeCount = allDonors.filter(d => d.status === "ACTIVE").length;
@@ -295,9 +328,17 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Seed error:", error);
+    console.error("❌ Seed error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("Error details:", { errorMessage, errorStack });
     return NextResponse.json(
-      { success: false, error: "Erreur lors du seeding", details: String(error) },
+      { 
+        success: false, 
+        error: "Erreur lors du seeding", 
+        details: errorMessage,
+        stack: process.env.NODE_ENV === "development" ? errorStack : undefined
+      },
       { status: 500 }
     );
   }

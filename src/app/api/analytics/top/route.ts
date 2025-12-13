@@ -55,7 +55,7 @@ export async function GET(request: Request) {
         lastName: true,
         isAnonymous: true,
         createdAt: true,
-        form: {
+        DonationForm: {
           select: {
             name: true,
           },

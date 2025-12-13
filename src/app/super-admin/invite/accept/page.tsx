@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Shield, Building2, Mail, CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -31,17 +31,7 @@ export default function AcceptInvitationPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    if (!token) {
-      setError("Token d'invitation manquant");
-      setLoading(false);
-      return;
-    }
-
-    fetchInvitation();
-  }, [token]);
-
-  const fetchInvitation = async () => {
+  const fetchInvitation = useCallback(async () => {
     try {
       const response = await fetch(`/api/super-admin/invite/accept?token=${token}`, {
         credentials: 'include',
@@ -51,15 +41,25 @@ export default function AcceptInvitationPage() {
       if (data.success) {
         setInvitation(data.data);
       } else {
-        setError(data.error || "Erreur lors de la récupération de l'invitation");
+        setError(data.error || "Erreur lors de la récupération de l&apos;invitation");
       }
     } catch (err) {
       console.error("Erreur:", err);
-      setError("Erreur lors de la récupération de l'invitation");
+      setError("Erreur lors de la récupération de l&apos;invitation");
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) {
+      setError("Token d&apos;invitation manquant");
+      setLoading(false);
+      return;
+    }
+
+    fetchInvitation();
+  }, [token, fetchInvitation]);
 
   const handleAccept = async () => {
     if (!token) return;
@@ -82,11 +82,11 @@ export default function AcceptInvitationPage() {
           router.push("/super-admin/login");
         }, 3000);
       } else {
-        setError(data.error || "Erreur lors de l'acceptation de l'invitation");
+        setError(data.error || "Erreur lors de l&apos;acceptation de l&apos;invitation");
       }
     } catch (err) {
       console.error("Erreur:", err);
-      setError("Erreur lors de l'acceptation de l'invitation");
+      setError("Erreur lors de l&apos;acceptation de l&apos;invitation");
     } finally {
       setAccepting(false);
     }
@@ -97,7 +97,7 @@ export default function AcceptInvitationPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-purple-500 animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Chargement de l'invitation...</p>
+          <p className="text-slate-400">Chargement de l&apos;invitation...</p>
         </div>
       </div>
     );

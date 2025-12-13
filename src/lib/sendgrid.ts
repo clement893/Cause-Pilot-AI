@@ -5,6 +5,19 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
+export interface EmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  from?: {
+    email: string;
+    name?: string;
+  };
+  categories?: string[];
+  customArgs?: Record<string, string>;
+}
+
 interface SendEmailOptions {
   to: string;
   subject: string;
@@ -33,12 +46,53 @@ export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
     await sgMail.send(msg);
     console.log(`Email envoyé à ${to}`);
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erreur lors de l'envoi de l'email:", error);
-    if (error.response) {
-      console.error("Détails SendGrid:", error.response.body);
+    if (error && typeof error === 'object' && 'response' in error) {
+      const sendGridError = error as { response?: { body?: unknown } };
+      console.error("Détails SendGrid:", sendGridError.response?.body);
     }
     throw error;
+  }
+}
+
+// Envoyer plusieurs emails en lot
+export async function sendBulkEmails(emails: EmailOptions[]): Promise<{ success: number; failed: number }> {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.error("SENDGRID_API_KEY n'est pas configuré");
+    throw new Error("Configuration email manquante");
+  }
+
+  if (emails.length === 0) {
+    return { success: 0, failed: 0 };
+  }
+
+  const messages = emails.map((email) => ({
+    to: email.to,
+    from: email.from || {
+      email: process.env.SENDGRID_FROM_EMAIL || "hello@nukleo.digital",
+      name: process.env.SENDGRID_FROM_NAME || "CausePilotAI",
+    },
+    subject: email.subject,
+    text: email.text || email.html.replace(/<[^>]*>/g, ""),
+    html: email.html,
+    categories: email.categories,
+    customArgs: email.customArgs,
+  }));
+
+  try {
+    await sgMail.send(messages);
+    console.log(`${emails.length} email(s) envoyé(s) via SendGrid`);
+    return { success: emails.length, failed: 0 };
+  } catch (error: unknown) {
+    console.error("Erreur lors de l'envoi des emails en lot:", error);
+    if (error && typeof error === 'object' && 'response' in error) {
+      const sendGridError = error as { response?: { body?: unknown } };
+      console.error("Détails SendGrid:", sendGridError.response?.body);
+    }
+    // En cas d'erreur partielle, SendGrid peut retourner des détails
+    // Pour l'instant, on considère tout comme échoué
+    return { success: 0, failed: emails.length };
   }
 }
 

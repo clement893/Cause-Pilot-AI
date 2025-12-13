@@ -30,6 +30,11 @@ export default function DonorsPage() {
   const [showImportModal, setShowImportModal] = useState(false);
 
   const fetchDonors = useCallback(async (filters: DonorSearchFilters = {}) => {
+    if (!currentOrganization?.id) {
+      console.log("⚠️ No organization selected, skipping donor fetch");
+      return;
+    }
+    
     setLoading(true);
     try {
       const queryParams = new URLSearchParams();
@@ -38,40 +43,41 @@ export default function DonorsPage() {
       if (filters.sortBy) queryParams.set("sortBy", filters.sortBy);
       if (filters.sortOrder) queryParams.set("sortOrder", filters.sortOrder);
       if (filters.query) queryParams.set("search", filters.query);
-      // Ajouter l'organisation courante
-      if (currentOrganization?.id) {
-        queryParams.set("organizationId", currentOrganization.id);
-      }
+      // Ajouter l'organisation courante (obligatoire)
+      queryParams.set("organizationId", currentOrganization.id);
 
       const response = await fetch(`/api/donors?${queryParams.toString()}`, {
-        headers: currentOrganization?.id ? {
+        headers: {
           'X-Organization-Id': currentOrganization.id,
-        } : {},
+        },
       });
       const data: PaginatedResponse<Donor> = await response.json();
 
       if (data.success) {
         setDonors(data.data);
         setPagination(data.pagination);
+        console.log(`✅ Fetched ${data.data.length} donors for organization ${currentOrganization.id} (${currentOrganization.name})`);
       }
     } catch (error) {
       console.error("Error fetching donors:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentOrganization?.id]);
 
   const fetchStats = useCallback(async () => {
+    if (!currentOrganization?.id) {
+      return;
+    }
+    
     setStatsLoading(true);
     try {
       const queryParams = new URLSearchParams();
-      if (currentOrganization?.id) {
-        queryParams.set("organizationId", currentOrganization.id);
-      }
+      queryParams.set("organizationId", currentOrganization.id);
       const response = await fetch(`/api/donors/stats?${queryParams.toString()}`, {
-        headers: currentOrganization?.id ? {
+        headers: {
           'X-Organization-Id': currentOrganization.id,
-        } : {},
+        },
       });
       const data = await response.json();
 
@@ -83,15 +89,15 @@ export default function DonorsPage() {
     } finally {
       setStatsLoading(false);
     }
-  }, []);
+  }, [currentOrganization?.id]);
 
   useEffect(() => {
     // Attendre que l'organisation soit chargée avant de récupérer les donateurs
-    if (!orgLoading) {
-      fetchDonors();
+    if (!orgLoading && currentOrganization?.id) {
+      fetchDonors(currentFilters);
       fetchStats();
     }
-  }, [fetchDonors, fetchStats, currentOrganization?.id, orgLoading]); // Recharger quand l'organisation change
+  }, [fetchDonors, fetchStats, currentOrganization?.id, orgLoading, currentFilters]); // Recharger quand l'organisation change
 
   const handleSearch = async (filters: DonorSearchFilters) => {
     setCurrentFilters(filters);

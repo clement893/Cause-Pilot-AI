@@ -241,6 +241,7 @@ export async function POST(request: NextRequest) {
             consentEmail: Math.random() > 0.2,
             consentPhone: Math.random() > 0.5,
             consentMail: Math.random() > 0.3,
+            organizationId: organization.id, // Lier explicitement à l'organisation
             Organization: {
               connect: { id: organization.id },
             },

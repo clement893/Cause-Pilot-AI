@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency } from "@prisma/client";
+import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor } from "@prisma/client";
 import { withRateLimit, RATE_LIMITS, getClientIP } from "@/lib/rate-limit";
 
 const prisma = new PrismaClient();
@@ -187,7 +187,7 @@ export async function POST(request: Request) {
     await prisma.donation.deleteMany();
     await prisma.donor.deleteMany();
 
-    const allDonors: Array<{ id: string; organizationId: string | null; status: string; totalDonations: number }> = [];
+    const allDonors: Donor[] = [];
     const donorsPerOrg = 30; // 30 donateurs par organisation
 
     // Créer des donateurs pour chaque organisation

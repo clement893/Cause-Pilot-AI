@@ -1,7 +1,14 @@
 import { createHmac, randomBytes } from "crypto";
 import { cookies } from "next/headers";
 
-const CSRF_SECRET = process.env.CSRF_SECRET || process.env.JWT_SECRET || "csrf-secret-key";
+// Get CSRF secret with strict validation
+function getCSRFSecret(): string {
+  const secret = process.env.CSRF_SECRET || process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("CSRF_SECRET or JWT_SECRET environment variable is required");
+  }
+  return secret;
+}
 const CSRF_COOKIE_NAME = "csrf_token";
 const CSRF_HEADER_NAME = "x-csrf-token";
 const TOKEN_EXPIRY = 24 * 60 * 60 * 1000; // 24 heures
@@ -10,6 +17,7 @@ const TOKEN_EXPIRY = 24 * 60 * 60 * 1000; // 24 heures
  * Génère un token CSRF sécurisé
  */
 export function generateCSRFToken(): string {
+  const CSRF_SECRET = getCSRFSecret();
   const timestamp = Date.now().toString();
   const random = randomBytes(16).toString("hex");
   const data = `${timestamp}:${random}`;
@@ -37,6 +45,7 @@ export function verifyCSRFToken(token: string): boolean {
   }
 
   // Vérifier la signature
+  const CSRF_SECRET = getCSRFSecret();
   const data = `${timestamp}:${random}`;
   const expectedSignature = createHmac("sha256", CSRF_SECRET)
     .update(data)

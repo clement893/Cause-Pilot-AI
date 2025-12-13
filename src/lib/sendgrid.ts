@@ -9,9 +9,18 @@ if (sendgridApiKey) {
   console.warn("SENDGRID_API_KEY is not set. Email sending will not work.");
 }
 
-// Default sender
-const DEFAULT_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "noreply@example.com";
-const DEFAULT_FROM_NAME = process.env.SENDGRID_FROM_NAME || "Nucleus Cause";
+// Get default sender with validation
+function getDefaultFromEmail(): string {
+  const email = process.env.SENDGRID_FROM_EMAIL;
+  if (!email) {
+    throw new Error("SENDGRID_FROM_EMAIL environment variable is required");
+  }
+  return email;
+}
+
+function getDefaultFromName(): string {
+  return process.env.SENDGRID_FROM_NAME || "Nucleus Cause";
+}
 
 export interface EmailOptions {
   to: string | string[];
@@ -46,8 +55,8 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     const msg: sgMail.MailDataRequired = {
       to: options.to,
       from: {
-        email: options.from?.email || DEFAULT_FROM_EMAIL,
-        name: options.from?.name || DEFAULT_FROM_NAME,
+        email: options.from?.email || getDefaultFromEmail(),
+        name: options.from?.name || getDefaultFromName(),
       },
       subject: options.subject,
       text: options.text || "",
@@ -93,8 +102,8 @@ export async function sendBulkEmails(
     const messages = batch.map((options) => ({
       to: options.to,
       from: {
-        email: options.from?.email || DEFAULT_FROM_EMAIL,
-        name: options.from?.name || DEFAULT_FROM_NAME,
+        email: options.from?.email || getDefaultFromEmail(),
+        name: options.from?.name || getDefaultFromName(),
       },
       subject: options.subject,
       text: options.text || "",

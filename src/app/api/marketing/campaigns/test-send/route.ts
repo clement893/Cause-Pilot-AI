@@ -3,8 +3,22 @@ import sgMail from "@sendgrid/mail";
 
 // Initialize SendGrid
 const sendgridApiKey = process.env.SENDGRID_API_KEY;
-const fromEmail = process.env.SENDGRID_FROM_EMAIL || "hello@nukleo.digital";
-const fromName = process.env.SENDGRID_FROM_NAME || "CausePilotAI";
+
+// Get default sender with validation (allow defaults only in development)
+function getDefaultFromEmail(): string {
+  const email = process.env.SENDGRID_FROM_EMAIL;
+  if (!email) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error("SENDGRID_FROM_EMAIL environment variable is required in production");
+    }
+    return "hello@nukleo.digital"; // Dev default
+  }
+  return email;
+}
+
+function getDefaultFromName(): string {
+  return process.env.SENDGRID_FROM_NAME || "CausePilotAI";
+}
 
 if (sendgridApiKey) {
   sgMail.setApiKey(sendgridApiKey);
@@ -94,8 +108,8 @@ export async function POST(request: NextRequest) {
       const msg = {
         to: testEmail,
         from: {
-          email: fromEmail,
-          name: body.fromName || fromName,
+          email: body.fromEmail || getDefaultFromEmail(),
+          name: body.fromName || getDefaultFromName(),
         },
         subject: `[TEST] ${subject}`,
         text: `[TEST] ${personalizedText}`,

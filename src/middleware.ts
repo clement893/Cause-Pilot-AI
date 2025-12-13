@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { auth } from '@/lib/auth';
 
 // Routes publiques qui ne nécessitent pas d'authentification
 const publicRoutes = [
@@ -38,32 +39,15 @@ function isProtectedRoute(pathname: string): boolean {
   return protectedRoutes.some(route => pathname.startsWith(route));
 }
 
-// Vérifier le token d'authentification
+// Vérifier le token d'authentification (pour les intégrations API)
 function verifyAuthToken(request: NextRequest): boolean {
-  // Vérifier le header Authorization
+  // Vérifier le header Authorization Bearer token
   const authHeader = request.headers.get('authorization');
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7);
-    // Pour l'instant, accepter un token simple basé sur une variable d'environnement
     const validToken = process.env.API_AUTH_TOKEN;
     if (validToken && token === validToken) {
       return true;
-    }
-  }
-
-  // Vérifier le cookie de session
-  const sessionCookie = request.cookies.get('admin_session');
-  if (sessionCookie?.value) {
-    // Valider le cookie de session
-    try {
-      // Simple validation - en production, utiliser JWT ou une autre méthode sécurisée
-      const sessionData = JSON.parse(atob(sessionCookie.value));
-      if (sessionData.authenticated && sessionData.expiresAt > Date.now()) {
-        return true;
-      }
-    } catch {
-      // Cookie invalide
-      return false;
     }
   }
 
@@ -79,7 +63,7 @@ function verifyAuthToken(request: NextRequest): boolean {
   return false;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Ignorer les routes non-API
@@ -94,20 +78,39 @@ export function middleware(request: NextRequest) {
 
   // Vérifier l'authentification pour les routes protégées
   if (isProtectedRoute(pathname)) {
-    // TEMPORAIRE: Désactiver l'authentification jusqu'à ce qu'un système de login soit implémenté
-    // TODO: Implémenter un vrai système d'authentification (NextAuth, etc.)
-    return NextResponse.next();
+    // En développement, permettre l'accès sans auth si DISABLE_AUTH=true
+    if (process.env.NODE_ENV === 'development' && process.env.DISABLE_AUTH === 'true') {
+      console.warn('⚠️  AUTHENTICATION DISABLED - Development mode only');
+      return NextResponse.next();
+    }
+
+    // Vérifier la session NextAuth pour les routes super-admin
+    if (pathname.startsWith('/api/super-admin')) {
+      const session = await auth();
+      if (!session?.user) {
+        return NextResponse.json(
+          { success: false, error: 'Unauthorized', message: 'Authentication required' },
+          { status: 401 }
+        );
+      }
+      return NextResponse.next();
+    }
+
+    // Pour les autres routes protégées, vérifier le token API ou la session
+    const hasTokenAuth = verifyAuthToken(request);
     
-    // Code d'authentification commenté pour référence future:
-    // if (process.env.NODE_ENV === 'development') {
-    //   return NextResponse.next();
-    // }
-    // if (!verifyAuthToken(request)) {
-    //   return NextResponse.json(
-    //     { success: false, error: 'Unauthorized', message: 'Authentication required' },
-    //     { status: 401 }
-    //   );
-    // }
+    // En production, forcer l'authentification
+    if (process.env.NODE_ENV === 'production' && !hasTokenAuth) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized', message: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // En développement, avertir mais permettre si pas de token
+    if (process.env.NODE_ENV === 'development' && !hasTokenAuth) {
+      console.warn(`⚠️  Unauthenticated request to protected route: ${pathname}`);
+    }
   }
 
   // Ajouter les headers de sécurité

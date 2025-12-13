@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { z } from "zod";
+import { listQuerySchema, createDonorSchema, parseQueryParams, parseBody } from "@/lib/validation";
 
 // GET /api/donors - Liste des donateurs avec pagination et filtres
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     
-    // Pagination
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    // Validation avec Zod
+    const query = parseQueryParams(searchParams, listQuerySchema);
+    const { page, limit, sortBy = "createdAt", sortOrder = "desc", search, status, segment, donorType } = query;
     const skip = (page - 1) * limit;
-    
-    // Tri
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
     
     // Filtres
     const status = searchParams.get("status");
@@ -88,18 +86,13 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validation des champs requis
-    if (!body.firstName || !body.lastName) {
-      return NextResponse.json(
-        { success: false, error: "First name and last name are required" },
-        { status: 400 }
-      );
-    }
+    // Validation avec Zod
+    const validatedData = parseBody(body, createDonorSchema);
     
     // Vérifier si l'email existe déjà
-    if (body.email) {
+    if (validatedData.email) {
       const existingDonor = await prisma.donor.findUnique({
-        where: { email: body.email },
+        where: { email: validatedData.email },
       });
       
       if (existingDonor) {
@@ -113,32 +106,32 @@ export async function POST(request: NextRequest) {
     // Créer le donateur
     const donor = await prisma.donor.create({
       data: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email || null,
-        phone: body.phone || null,
-        mobile: body.mobile || null,
-        dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null,
-        address: body.address || null,
-        address2: body.address2 || null,
-        city: body.city || null,
-        state: body.state || null,
-        postalCode: body.postalCode || null,
-        country: body.country || "Canada",
-        profession: body.profession || null,
-        employer: body.employer || null,
-        jobTitle: body.jobTitle || null,
-        industry: body.industry || null,
-        status: body.status || "ACTIVE",
-        donorType: body.donorType || "INDIVIDUAL",
-        segment: body.segment || null,
-        tags: body.tags || [],
-        notes: body.notes || null,
-        source: body.source || null,
-        consentEmail: body.consentEmail || false,
-        consentPhone: body.consentPhone || false,
-        consentMail: body.consentMail || false,
-        consentDate: body.consentEmail || body.consentPhone || body.consentMail ? new Date() : null,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        email: validatedData.email || null,
+        phone: validatedData.phone || null,
+        mobile: validatedData.mobile || null,
+        dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
+        address: validatedData.address || null,
+        address2: validatedData.address2 || null,
+        city: validatedData.city || null,
+        state: validatedData.state || null,
+        postalCode: validatedData.postalCode || null,
+        country: validatedData.country,
+        profession: validatedData.profession || null,
+        employer: validatedData.employer || null,
+        jobTitle: validatedData.jobTitle || null,
+        industry: validatedData.industry || null,
+        status: validatedData.status,
+        donorType: validatedData.donorType,
+        segment: validatedData.segment || null,
+        tags: validatedData.tags,
+        notes: validatedData.notes || null,
+        source: validatedData.source || null,
+        consentEmail: validatedData.consentEmail,
+        consentPhone: validatedData.consentPhone,
+        consentMail: validatedData.consentMail,
+        consentDate: validatedData.consentEmail || validatedData.consentPhone || validatedData.consentMail ? new Date() : null,
       },
       include: {
         preferences: true,
@@ -146,14 +139,14 @@ export async function POST(request: NextRequest) {
     });
     
     // Créer les préférences si fournies
-    if (body.preferences) {
+    if (validatedData.preferences) {
       await prisma.donorPreference.create({
         data: {
           donorId: donor.id,
-          preferredChannel: body.preferences.preferredChannel || "EMAIL",
-          preferredFrequency: body.preferences.preferredFrequency || "MONTHLY",
-          preferredLanguage: body.preferences.preferredLanguage || "fr",
-          causesOfInterest: body.preferences.causesOfInterest || [],
+          preferredChannel: validatedData.preferences.preferredChannel || "EMAIL",
+          preferredFrequency: validatedData.preferences.preferredFrequency || "MONTHLY",
+          preferredLanguage: validatedData.preferences.preferredLanguage || "fr",
+          causesOfInterest: validatedData.preferences.causesOfInterest || [],
         },
       });
     }
@@ -163,6 +156,18 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    // Gérer les erreurs de validation Zod
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Validation error", 
+          details: error.errors.map(e => ({ path: e.path.join('.'), message: e.message }))
+        },
+        { status: 400 }
+      );
+    }
+    
     console.error("Error creating donor:", error);
     return NextResponse.json(
       { success: false, error: "Failed to create donor" },

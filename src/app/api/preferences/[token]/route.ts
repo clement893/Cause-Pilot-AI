@@ -2,9 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 
+// Get JWT secret with strict validation
+function getJWTSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET environment variable is required");
+  }
+  return secret;
+}
+
 // Fonction pour générer un token unique basé sur l'email du donateur
 function generateToken(donorId: string, email: string): string {
-  const secret = process.env.JWT_SECRET || "default-secret";
+  const secret = getJWTSecret();
   return crypto
     .createHmac("sha256", secret)
     .update(`${donorId}:${email}`)

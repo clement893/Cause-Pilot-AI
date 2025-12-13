@@ -6,18 +6,16 @@ const prisma = new PrismaClient();
 
 // Vérification de sécurité pour la route seed
 function checkSeedAccess(request: Request): { allowed: boolean; error?: string } {
-  // Désactiver en production sauf si explicitement autorisé
+  // Désactiver complètement en production
   if (process.env.NODE_ENV === "production") {
-    const seedSecret = process.env.SEED_SECRET;
-    const providedSecret = request.headers.get("x-seed-secret");
-    
-    if (!seedSecret || seedSecret !== providedSecret) {
-      return {
-        allowed: false,
-        error: "Seed route is disabled in production. Set SEED_SECRET env and provide x-seed-secret header."
-      };
-    }
+    return {
+      allowed: false,
+      error: "Seed route is disabled in production for security reasons."
+    };
   }
+  
+  // En développement, permettre l'accès mais avec un avertissement
+  console.warn("⚠️  Seed route accessed in development mode");
   
   return { allowed: true };
 }

@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 
+// Get JWT secret with strict validation
+function getJWTSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET environment variable is required");
+  }
+  return secret;
+}
+
 // Verify unsubscribe token
 function verifyUnsubscribeToken(token: string, email: string): boolean {
-  const secret = process.env.JWT_SECRET || "default-secret";
-  
   // Try to find donor by email to get their ID
   // We'll verify the token matches what we would generate for this email
   return true; // We'll do full verification in the handler
@@ -13,7 +20,7 @@ function verifyUnsubscribeToken(token: string, email: string): boolean {
 
 // Generate token for verification
 function generateUnsubscribeToken(donorId: string, email: string): string {
-  const secret = process.env.JWT_SECRET || "default-secret";
+  const secret = getJWTSecret();
   const data = `${donorId}:${email}`;
   return crypto.createHmac("sha256", secret).update(data).digest("hex");
 }

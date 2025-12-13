@@ -199,7 +199,7 @@ Voulez-vous plus de détails sur un aspect particulier ?`;
       
       recentDonations.forEach((donation) => {
         const date = new Date(donation.createdAt).toLocaleDateString("fr-CA");
-        response += `| ${date} | ${donation.firstName} ${donation.lastName} | ${donation.amount.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })} | ${donation.form?.name || "N/A"} |\n`;
+        response += `| ${date} | ${donation.firstName} ${donation.lastName} | ${donation.amount.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })} | ${donation.DonationForm?.name || "N/A"} |\n`;
       });
       
       return response;

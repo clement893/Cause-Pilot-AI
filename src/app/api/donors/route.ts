@@ -3,7 +3,8 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { listQuerySchema, createDonorSchema, parseQueryParams, parseBody } from "@/lib/validation";
 import { getOrganizationId } from "@/lib/organization";
-import { getPrisma } from "@/lib/prisma-org";
+import { getPrisma, getMainPrisma } from "@/lib/prisma-org";
+import { hasDedicatedDatabase } from "@/lib/prisma-multi";
 
 // GET /api/donors - Liste des donateurs avec pagination et filtres
 export async function GET(request: NextRequest) {
@@ -23,15 +24,18 @@ export async function GET(request: NextRequest) {
     // Obtenir l'instance Prisma appropriée pour cette organisation
     const prisma = await getPrisma(request);
     
+    // Vérifier si l'organisation utilise une base de données dédiée
+    const usesDedicatedDB = await hasDedicatedDatabase(organizationId);
+    
     // Validation avec Zod
     const query = parseQueryParams(searchParams, listQuerySchema);
     const { page, limit, sortBy = "createdAt", sortOrder = "desc", search, status, segment, donorType } = query;
     const skip = (page - 1) * limit;
     
     // Construction de la requête
-    const where: Prisma.DonorWhereInput = {
-      organizationId, // Toujours filtrer par organisation
-    };
+    // Si l'organisation utilise une base dédiée, ne pas filtrer par organizationId
+    // car tous les donateurs dans cette base appartiennent déjà à cette organisation
+    const where: Prisma.DonorWhereInput = usesDedicatedDB ? {} : { organizationId };
     
     if (status) {
       where.status = status as Prisma.EnumDonorStatusFilter["equals"];
@@ -77,8 +81,9 @@ export async function GET(request: NextRequest) {
     ]);
     
     console.log(`✅ Found ${donors.length} donors (total: ${total})`);
+    console.log(`📊 Uses dedicated DB: ${usesDedicatedDB}`);
     if (donors.length > 0) {
-      console.log("📋 Sample donor:", { id: donors[0].id, name: `${donors[0].firstName} ${donors[0].lastName}`, orgId: donors[0].organizationId });
+      console.log("📋 Sample donor:", { id: donors[0].id, name: `${donors[0].firstName} ${donors[0].lastName}`, orgId: donors[0].organizationId || "N/A (dedicated DB)" });
     }
     
     return NextResponse.json({
@@ -121,13 +126,16 @@ export async function POST(request: NextRequest) {
     // Validation avec Zod
     const validatedData = parseBody(body, createDonorSchema);
     
+    // Vérifier si l'organisation utilise une base de données dédiée
+    const usesDedicatedDB = await hasDedicatedDatabase(organizationId);
+    
     // Vérifier si l'email existe déjà dans cette organisation
     if (validatedData.email) {
+      const emailWhere = usesDedicatedDB 
+        ? { email: validatedData.email }
+        : { email: validatedData.email, organizationId };
       const existingDonor = await prisma.donor.findFirst({
-        where: {
-          email: validatedData.email,
-          organizationId,
-        },
+        where: emailWhere,
       });
       
       if (existingDonor) {
@@ -139,36 +147,39 @@ export async function POST(request: NextRequest) {
     }
     
     // Créer le donateur
+    // Ne pas inclure organizationId si l'organisation utilise une base dédiée
+    const donorData: Prisma.DonorUncheckedCreateInput = {
+      firstName: validatedData.firstName,
+      lastName: validatedData.lastName,
+      email: validatedData.email || null,
+      phone: validatedData.phone || null,
+      mobile: validatedData.mobile || null,
+      dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
+      address: validatedData.address || null,
+      address2: validatedData.address2 || null,
+      city: validatedData.city || null,
+      state: validatedData.state || null,
+      postalCode: validatedData.postalCode || null,
+      country: validatedData.country,
+      profession: validatedData.profession || null,
+      employer: validatedData.employer || null,
+      jobTitle: validatedData.jobTitle || null,
+      industry: validatedData.industry || null,
+      status: validatedData.status,
+      donorType: validatedData.donorType,
+      segment: validatedData.segment || null,
+      tags: validatedData.tags,
+      notes: validatedData.notes || null,
+      source: validatedData.source || null,
+      consentEmail: validatedData.consentEmail,
+      consentPhone: validatedData.consentPhone,
+      consentMail: validatedData.consentMail,
+      consentDate: validatedData.consentEmail || validatedData.consentPhone || validatedData.consentMail ? new Date() : null,
+      ...(usesDedicatedDB ? {} : { organizationId }),
+    };
+    
     const donor = await prisma.donor.create({
-      data: {
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        email: validatedData.email || null,
-        phone: validatedData.phone || null,
-        mobile: validatedData.mobile || null,
-        dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
-        address: validatedData.address || null,
-        address2: validatedData.address2 || null,
-        city: validatedData.city || null,
-        state: validatedData.state || null,
-        postalCode: validatedData.postalCode || null,
-        country: validatedData.country,
-        profession: validatedData.profession || null,
-        employer: validatedData.employer || null,
-        jobTitle: validatedData.jobTitle || null,
-        industry: validatedData.industry || null,
-        status: validatedData.status,
-        donorType: validatedData.donorType,
-        segment: validatedData.segment || null,
-        tags: validatedData.tags,
-        notes: validatedData.notes || null,
-        source: validatedData.source || null,
-        consentEmail: validatedData.consentEmail,
-        consentPhone: validatedData.consentPhone,
-        consentMail: validatedData.consentMail,
-        consentDate: validatedData.consentEmail || validatedData.consentPhone || validatedData.consentMail ? new Date() : null,
-        organizationId,
-      },
+      data: donorData,
       include: {
         DonorPreference: true,
       },

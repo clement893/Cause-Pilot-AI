@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       where,
       orderBy: { lastName: "asc" },
       include: {
-        donations: {
+        Donation: {
           orderBy: { donationDate: "desc" },
           take: 1,
         },

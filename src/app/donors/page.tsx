@@ -15,7 +15,7 @@ import { Upload } from "lucide-react";
 import { useOrganization } from "@/contexts/OrganizationContext";
 
 export default function DonorsPage() {
-  const { currentOrganization } = useOrganization();
+  const { currentOrganization, isLoading: orgLoading } = useOrganization();
   const [donors, setDonors] = useState<Donor[]>([]);
   const [stats, setStats] = useState<DonorStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -86,9 +86,12 @@ export default function DonorsPage() {
   }, []);
 
   useEffect(() => {
-    fetchDonors();
-    fetchStats();
-  }, [fetchDonors, fetchStats, currentOrganization?.id]); // Recharger quand l'organisation change
+    // Attendre que l'organisation soit chargée avant de récupérer les donateurs
+    if (!orgLoading) {
+      fetchDonors();
+      fetchStats();
+    }
+  }, [fetchDonors, fetchStats, currentOrganization?.id, orgLoading]); // Recharger quand l'organisation change
 
   const handleSearch = async (filters: DonorSearchFilters) => {
     setCurrentFilters(filters);

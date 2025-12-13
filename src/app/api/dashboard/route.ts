@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     const recurringDonorIds = await prisma.donation.findMany({
       where: {
         isRecurring: true,
-        donor: { organizationId },
+        Donor: { organizationId },
       },
       select: { donorId: true },
       distinct: ['donorId'],
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
     const donations = await prisma.donation.findMany({
       where: {
         status: "COMPLETED",
-        donor: { organizationId },
+        Donor: { organizationId },
       },
       select: { amount: true, createdAt: true, donationDate: true, isRecurring: true },
     });

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor, Prisma } from "@prisma/client";
 import { withRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
-import { getMainPrisma, getPrismaForOrganization } from "@/lib/prisma-multi";
+import { getMainPrisma } from "@/lib/prisma-org";
+import { getPrismaForOrganization } from "@/lib/prisma-multi";
 
 // Vérification de sécurité pour la route seed
 function checkSeedAccess(request: NextRequest): { allowed: boolean; error?: string } {

@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
         where: { adminUserId: session.user.id },
         select: { organizationId: true },
       });
-      where.id = { in: accessibleOrgs.map((a) => a.organizationId) };
+      where.id = { in: accessibleOrgs.map((a: { organizationId: string }) => a.organizationId) };
     }
 
     console.log("Where clause:", JSON.stringify(where, null, 2));
@@ -97,9 +97,34 @@ export async function GET(request: NextRequest) {
     console.log("Organizations found:", organizations.length);
     console.log("Total:", total);
 
+    // Mapper les données pour correspondre à l'interface TypeScript de la page
+    const mappedOrganizations = organizations.map((org: {
+      id: string;
+      name: string;
+      slug: string;
+      description: string | null;
+      email: string | null;
+      phone: string | null;
+      status: string;
+      plan: string;
+      createdAt: Date;
+      databaseUrl: string | null;
+      _count: {
+        OrganizationMember: number;
+        DashboardLayout: number;
+      };
+    }) => ({
+      ...org,
+      createdAt: org.createdAt.toISOString(),
+      _count: {
+        members: org._count.OrganizationMember,
+        dashboardLayouts: org._count.DashboardLayout,
+      },
+    }));
+
     return NextResponse.json({
       success: true,
-      data: organizations,
+      data: mappedOrganizations,
       pagination: {
         page,
         limit,

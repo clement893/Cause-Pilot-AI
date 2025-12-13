@@ -21,14 +21,11 @@ export async function GET(request: NextRequest) {
     // Construction de la requête
     const where: Prisma.DonorWhereInput = {};
     
-    // Filtrer par organisation si fournie, sinon retourner tous les donateurs
+    // Filtrer par organisation si fournie
     if (organizationId) {
       where.organizationId = organizationId;
-    } else {
-      // Si pas d'organisation spécifiée, retourner tous les donateurs (pour debug)
-      // En production, vous pourriez vouloir retourner une erreur ici
-      console.warn("⚠️  No organizationId provided - returning all donors");
     }
+    // Si pas d'organisation fournie, retourner tous les donateurs (pour debug/fallback)
     
     if (status) {
       where.status = status as Prisma.EnumDonorStatusFilter["equals"];

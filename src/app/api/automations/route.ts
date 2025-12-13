@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         triggerType,
         triggerConfig,
         status,
-        actions: {
+        AutomationStep: {
           create: actions?.map((action: { actionType: string; config: Record<string, unknown>; order: number }) => ({
             actionType: action.actionType,
             config: action.config,
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
         },
       },
       include: {
-        actions: {
+        AutomationStep: {
           orderBy: { order: "asc" },
         },
       },

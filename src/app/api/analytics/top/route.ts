@@ -119,7 +119,7 @@ export async function GET(request: Request) {
           id: d.id,
           amount: d.amount,
           donor: d.isAnonymous ? "Anonyme" : `${d.firstName} ${d.lastName}`,
-          formName: d.form?.name || "N/A",
+          formName: d.DonationForm?.name || "N/A",
           date: d.createdAt,
         })),
         byCity: donorsByCity.map((c) => ({

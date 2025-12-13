@@ -114,9 +114,9 @@ export async function middleware(request: NextRequest) {
     let hasSessionAuth = false;
     try {
       const session = await auth();
-      hasSessionAuth = !!session?.user;
-      if (hasSessionAuth) {
-        console.log(`✅ Authenticated request to ${pathname} by user: ${session?.user?.email}`);
+      if (session?.user) {
+        hasSessionAuth = true;
+        console.log(`✅ Authenticated request to ${pathname} by user: ${session.user.email}`);
       }
     } catch (error) {
       // Ignorer les erreurs d'auth silencieusement

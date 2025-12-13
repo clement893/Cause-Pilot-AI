@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import AppLayout from "@/components/layout/AppLayout";
 import FormCard from "@/components/forms/FormCard";
+import { useOrganization } from "@/contexts/OrganizationContext";
 import { DonationForm, FormType, FormStatus, FORM_TYPE_LABELS, FORM_STATUS_LABELS } from "@/types/form";
 
 interface FormStats {
@@ -19,6 +20,7 @@ interface FormStats {
 }
 
 export default function FormsPage() {
+  const { currentOrganization } = useOrganization();
   const [forms, setForms] = useState<DonationForm[]>([]);
   const [stats, setStats] = useState<FormStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,7 @@ export default function FormsPage() {
   useEffect(() => {
     fetchForms();
     fetchStats();
-  }, [filterType, filterStatus]);
+  }, [filterType, filterStatus, currentOrganization?.id]); // Recharger quand l'organisation change
 
   const fetchForms = async () => {
     try {

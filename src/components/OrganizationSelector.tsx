@@ -39,6 +39,9 @@ export default function OrganizationSelector() {
     // Si on était en mode super-admin, rediriger vers le dashboard
     if (isSuperAdminMode) {
       router.push("/dashboard");
+    } else {
+      // Recharger la page actuelle pour mettre à jour les données avec la nouvelle organisation
+      router.refresh();
     }
   };
 

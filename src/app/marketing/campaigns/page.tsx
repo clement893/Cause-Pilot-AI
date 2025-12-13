@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/layout/AppLayout";
+import { useOrganization } from "@/contexts/OrganizationContext";
 import {
   Mail,
   Plus,
@@ -57,6 +58,7 @@ type TabType = "all" | "draft" | "sent" | "scheduled";
 
 export default function CampaignsPage() {
   const router = useRouter();
+  const { currentOrganization } = useOrganization();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,7 +67,7 @@ export default function CampaignsPage() {
 
   useEffect(() => {
     fetchCampaigns();
-  }, []);
+  }, [currentOrganization?.id]); // Recharger quand l'organisation change
 
   const fetchCampaigns = async () => {
     try {

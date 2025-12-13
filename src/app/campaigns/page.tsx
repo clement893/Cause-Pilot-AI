@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import AppLayout from "@/components/layout/AppLayout";
+import { useOrganization } from "@/contexts/OrganizationContext";
 import {
   Campaign,
   CampaignStatus,
@@ -40,6 +41,7 @@ interface Stats {
 }
 
 export default function CampaignsPage() {
+  const { currentOrganization } = useOrganization();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export default function CampaignsPage() {
 
   useEffect(() => {
     fetchData();
-  }, [filter]);
+  }, [filter, currentOrganization?.id]); // Recharger quand l'organisation change
 
   const fetchData = async () => {
     try {

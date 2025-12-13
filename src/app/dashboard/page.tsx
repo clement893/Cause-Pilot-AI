@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import CausePilotWidget from "@/components/CausePilotWidget";
+import { useOrganization } from "@/contexts/OrganizationContext";
 import {
   Users,
   DollarSign,
@@ -141,6 +142,7 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  const { currentOrganization } = useOrganization();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -164,7 +166,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [currentOrganization?.id]); // Recharger quand l'organisation change
 
   const handleRefresh = () => {
     setRefreshing(true);

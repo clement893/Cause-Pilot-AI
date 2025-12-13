@@ -29,11 +29,11 @@ export async function GET(request: NextRequest) {
     // Construire les filtres
     const where: Prisma.OrganizationWhereInput = {};
     
-    if (search) {
+    if (search && search.trim()) {
       where.OR = [
-        { name: { contains: search } },
-        { email: { contains: search } },
-        { slug: { contains: search } },
+        { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
+        { email: { contains: search, mode: Prisma.QueryMode.insensitive } },
+        { slug: { contains: search, mode: Prisma.QueryMode.insensitive } },
       ];
     }
     
@@ -54,6 +54,31 @@ export async function GET(request: NextRequest) {
     
     // Utiliser la base principale pour les organisations (métadonnées)
     const mainPrisma = getMainPrisma();
+
+    // Debug: Vérifier la connexion et compter toutes les organisations
+    try {
+      // Log de l'URL de la base de données (masquer le mot de passe)
+      const dbUrl = process.env.DATABASE_URL || 'NOT SET';
+      const maskedUrl = dbUrl.replace(/:([^:@]+)@/, ':****@');
+      console.log("DATABASE_URL:", maskedUrl);
+      
+      const allOrgsCount = await mainPrisma.organization.count();
+      console.log("Total organizations in database:", allOrgsCount);
+      
+      // Récupérer toutes les organisations sans filtre pour debug
+      const allOrgs = await mainPrisma.organization.findMany({
+        take: 5,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          status: true,
+        },
+      });
+      console.log("Sample organizations:", JSON.stringify(allOrgs, null, 2));
+    } catch (dbError) {
+      console.error("Database connection error:", dbError);
+    }
 
     if (!isSuperAdmin) {
       // Pour les non-super admin, filtrer par organisations accessibles

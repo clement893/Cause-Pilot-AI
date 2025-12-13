@@ -85,38 +85,15 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // Vérifier la session NextAuth pour les routes super-admin
+    // Pour les routes super-admin, laisser la route API gérer l'authentification
+    // Le middleware ne bloque plus, la vérification se fait dans la route API elle-même
+    // Cela évite les problèmes de lecture de session dans le middleware avec NextAuth v5
     if (pathname.startsWith('/api/super-admin')) {
-      // Permettre la route de test sans authentification
-      if (pathname === '/api/super-admin/test-auth') {
-        return NextResponse.next();
-      }
-      
-      try {
-        const session = await auth();
-        console.log("Middleware - Session check for:", pathname);
-        console.log("Middleware - Session exists:", !!session);
-        console.log("Middleware - Session user:", session?.user?.email);
-        
-        if (!session?.user) {
-          console.log("Middleware - No session found, checking cookies...");
-          const cookies = request.cookies.getAll();
-          console.log("Middleware - Cookies:", cookies.map(c => ({ name: c.name, hasValue: !!c.value })));
-          
-          return NextResponse.json(
-            { success: false, error: 'Unauthorized', message: 'Authentication required', debug: { pathname, hasSession: !!session } },
-            { status: 401 }
-          );
-        }
-        console.log("Middleware - Session validated, allowing request");
-        return NextResponse.next();
-      } catch (error) {
-        console.error("Middleware - Auth error:", error);
-        return NextResponse.json(
-          { success: false, error: 'Unauthorized', message: 'Authentication error', details: String(error) },
-          { status: 401 }
-        );
-      }
+      // Log pour debug
+      const cookies = request.cookies.getAll();
+      console.log("Middleware - Allowing super-admin route:", pathname);
+      console.log("Middleware - Cookies:", cookies.map(c => c.name));
+      return NextResponse.next();
     }
 
     // Routes qui peuvent être accessibles sans auth stricte (donors, seed, etc.)

@@ -6,13 +6,33 @@ import { Prisma, OrganizationStatus, OrganizationPlan } from "@prisma/client";
 // GET /api/super-admin/organizations - Liste toutes les organisations
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth();
+    // Vérifier les cookies reçus
+    const cookies = request.cookies.getAll();
+    console.log("API - Cookies received:", cookies.length);
+    console.log("API - Cookie names:", cookies.map(c => c.name));
     
-    console.log("Session:", JSON.stringify(session, null, 2));
+    // Essayer de récupérer la session
+    const session = await auth({
+      headers: request.headers,
+    });
+    
+    console.log("API - Session check");
+    console.log("API - Session exists:", !!session);
+    console.log("API - Session user:", session?.user?.email);
+    console.log("API - Session user id:", session?.user?.id);
     
     if (!session?.user?.id) {
+      console.log("API - No session found, returning 401");
       return NextResponse.json(
-        { success: false, error: "Non authentifié" },
+        { 
+          success: false, 
+          error: "Non authentifié",
+          debug: {
+            hasSession: !!session,
+            cookieCount: cookies.length,
+            cookieNames: cookies.map(c => c.name),
+          }
+        },
         { status: 401 }
       );
     }

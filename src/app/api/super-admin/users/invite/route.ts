@@ -109,7 +109,8 @@ export async function POST(request: NextRequest) {
         throw dbError;
       }
 
-      // Envoyer l'email d'invitation
+      // Envoyer l'email d'invitation (non bloquant)
+      let emailSent = false;
       try {
         await sendInvitationEmail({
           email,
@@ -118,9 +119,11 @@ export async function POST(request: NextRequest) {
           organizationName: organization.name,
           invitedByName: inviter?.name || inviter?.email || "Super Admin",
         });
+        emailSent = true;
       } catch (emailError) {
         console.error("Erreur lors de l'envoi de l'email:", emailError);
         // Ne pas échouer si l'email ne peut pas être envoyé, l'invitation est quand même créée
+        emailSent = false;
       }
 
       // Log d'audit
@@ -148,7 +151,9 @@ export async function POST(request: NextRequest) {
             email: invitation.email,
             organizationId,
             organizationName: organization.name,
-            message: "Invitation envoyée par email",
+            message: emailSent ? "Invitation envoyée par email" : "Invitation créée (email non envoyé)",
+            emailSent,
+            acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app"}/super-admin/invite/accept?token=${token}`,
           } 
         },
         { status: 201 }
@@ -180,7 +185,8 @@ export async function POST(request: NextRequest) {
         throw dbError;
       }
 
-      // Envoyer l'email d'invitation
+      // Envoyer l'email d'invitation (non bloquant)
+      let emailSent = false;
       try {
         await sendInvitationEmail({
           email,
@@ -189,9 +195,11 @@ export async function POST(request: NextRequest) {
           role: role,
           invitedByName: inviter?.name || inviter?.email || "Super Admin",
         });
+        emailSent = true;
       } catch (emailError) {
         console.error("Erreur lors de l'envoi de l'email:", emailError);
         // Ne pas échouer si l'email ne peut pas être envoyé, l'invitation est quand même créée
+        emailSent = false;
       }
 
       // Log d'audit
@@ -217,7 +225,9 @@ export async function POST(request: NextRequest) {
             invitationId: invitation.id,
             email: invitation.email,
             role: invitation.role,
-            message: "Invitation envoyée par email",
+            message: emailSent ? "Invitation envoyée par email" : "Invitation créée (email non envoyé)",
+            emailSent,
+            acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app"}/super-admin/invite/accept?token=${token}`,
           } 
         },
         { status: 201 }

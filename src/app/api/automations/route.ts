@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const automations = await prisma.automation.findMany({
       where,
       include: {
-        actions: {
+        AutomationStep: {
           orderBy: { order: "asc" },
         },
         _count: {

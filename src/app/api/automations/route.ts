@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
           orderBy: { order: "asc" },
         },
         _count: {
-          select: { executions: true },
+          select: { AutomationExecution: true },
         },
       },
       orderBy: { createdAt: "desc" },

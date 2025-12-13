@@ -139,10 +139,10 @@ export async function GET(request: NextRequest) {
     const recentDonations = await prisma.donation.findMany({
       where: {
         status: "COMPLETED",
-        ...(organizationId ? { donor: { organizationId } } : {}),
+        ...(organizationId ? { Donor: { organizationId } } : {}),
       },
       include: {
-        donor: {
+        Donor: {
           select: { firstName: true, lastName: true, email: true },
         },
       },
@@ -419,10 +419,10 @@ export async function GET(request: NextRequest) {
         donations: recentDonations.map((d) => ({
           id: d.id,
           amount: d.amount,
-          donorName: d.donor
-            ? `${d.donor.firstName} ${d.donor.lastName}`
+          donorName: d.Donor
+            ? `${d.Donor.firstName} ${d.Donor.lastName}`
             : "Anonyme",
-          donorEmail: d.donor?.email,
+          donorEmail: d.Donor?.email,
           date: d.createdAt,
           isRecurring: d.isRecurring,
           isAnonymous: d.isAnonymous,

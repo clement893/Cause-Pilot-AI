@@ -27,7 +27,7 @@ export async function generateReceiptForDonation(
     const donation = await prisma.donation.findUnique({
       where: { id: donationId },
       include: {
-        donor: true,
+        Donor: true,
       },
     });
 
@@ -84,20 +84,20 @@ export async function generateReceiptForDonation(
         sequenceNumber,
         donationId: donation.id,
         donorId: donation.donorId,
-        donorName: `${donation.donor.firstName} ${donation.donor.lastName}`,
+        donorName: `${donation.Donor.firstName} ${donation.Donor.lastName}`,
         donorAddress: [
-          donation.donor.address,
-          donation.donor.city,
-          donation.donor.state,
-          donation.donor.postalCode,
-          donation.donor.country,
+          donation.Donor.address,
+          donation.Donor.city,
+          donation.Donor.state,
+          donation.Donor.postalCode,
+          donation.Donor.country,
         ]
           .filter(Boolean)
           .join(", "),
-        donorEmail: donation.donor.email,
+        donorEmail: donation.Donor.email,
         amount: donation.amount,
         donationDate: donation.donationDate,
-        country: donation.donor.country === "France" ? "FR" : "CA",
+        country: donation.Donor.country === "France" ? "FR" : "CA",
         status: "GENERATED",
       },
     });
@@ -105,7 +105,7 @@ export async function generateReceiptForDonation(
     // Envoyer par email si demandé et si l'email est disponible
     if (
       shouldSendEmail &&
-      donation.donor.email &&
+      donation.Donor.email &&
       orgSettings?.autoSendReceipts !== false
     ) {
       try {
@@ -137,8 +137,8 @@ async function sendReceiptEmail(receiptId: string): Promise<boolean> {
   const receipt = await prisma.taxReceipt.findUnique({
     where: { id: receiptId },
     include: {
-      donor: true,
-      donation: true,
+      Donor: true,
+      Donation: true,
     },
   });
 
@@ -160,15 +160,15 @@ async function sendReceiptEmail(receiptId: string): Promise<boolean> {
     donorName: receipt.donorName,
     donorEmail: receipt.donorEmail,
     donorAddress: receipt.donorAddress || undefined,
-    donorCity: receipt.donor.city || undefined,
-    donorPostalCode: receipt.donor.postalCode || undefined,
-    donorCountry: receipt.donor.country || undefined,
-    amount: receipt.amount,
-    currency: receipt.country === "FR" ? "EUR" : "CAD",
-    donationDate: receipt.donationDate,
-    paymentMethod: receipt.donation.paymentMethod || "Carte de crédit",
-    transactionId: receipt.donation.transactionId || undefined,
-    campaignName: receipt.donation.campaignName || undefined,
+      donorCity: receipt.Donor.city || undefined,
+      donorPostalCode: receipt.Donor.postalCode || undefined,
+      donorCountry: receipt.Donor.country || undefined,
+      amount: receipt.amount,
+      currency: receipt.country === "FR" ? "EUR" : "CAD",
+      donationDate: receipt.donationDate,
+      paymentMethod: receipt.Donation.paymentMethod || "Carte de crédit",
+      transactionId: receipt.Donation.transactionId || undefined,
+      campaignName: receipt.Donation.campaignName || undefined,
     orgName: orgSettings?.organizationName || "Organisation",
     orgAddress: orgSettings?.address || undefined,
     orgCity: orgSettings?.city || undefined,

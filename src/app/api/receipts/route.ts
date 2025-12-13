@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       prisma.taxReceipt.findMany({
         where,
         include: {
-          donor: {
+          Donor: {
             select: {
               id: true,
               firstName: true,
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
               email: true,
             },
           },
-          donation: {
+          Donation: {
             select: {
               id: true,
               amount: true,
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     const donation = await prisma.donation.findUnique({
       where: { id: donationId },
       include: {
-        donor: true,
+        Donor: true,
       },
     });
 
@@ -137,25 +137,25 @@ export async function POST(request: NextRequest) {
         sequenceNumber,
         donationId: donation.id,
         donorId: donation.donorId,
-        donorName: `${donation.donor.firstName} ${donation.donor.lastName}`,
+        donorName: `${donation.Donor.firstName} ${donation.Donor.lastName}`,
         donorAddress: [
-          donation.donor.address,
-          donation.donor.city,
-          donation.donor.state,
-          donation.donor.postalCode,
-          donation.donor.country,
+          donation.Donor.address,
+          donation.Donor.city,
+          donation.Donor.state,
+          donation.Donor.postalCode,
+          donation.Donor.country,
         ]
           .filter(Boolean)
           .join(", "),
-        donorEmail: donation.donor.email,
+        donorEmail: donation.Donor.email,
         amount: donation.amount,
         donationDate: donation.donationDate,
-        country: donation.donor.country === "France" ? "FR" : "CA",
+        country: donation.Donor.country === "France" ? "FR" : "CA",
         status: "GENERATED",
       },
       include: {
-        donor: true,
-        donation: true,
+        Donor: true,
+        Donation: true,
       },
     });
 

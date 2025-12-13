@@ -18,7 +18,7 @@ interface TaxReceipt {
   receiptType: string;
   country: string;
   pdfUrl: string | null;
-  donation: {
+  Donation: {
     id: string;
     campaignName: string | null;
     paymentMethod: string;
@@ -393,7 +393,7 @@ export default function DonorReceiptsPage({ params }: DonorReceiptsPageProps) {
                       {formatCurrency(receipt.amount, receipt.country)}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {receipt.donation.campaignName || "-"}
+                      {receipt.Donation.campaignName || "-"}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
                       {getReceiptTypeBadge(receipt.receiptType)}

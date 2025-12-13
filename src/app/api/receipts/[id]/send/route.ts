@@ -16,8 +16,8 @@ export async function POST(
     const receipt = await prisma.taxReceipt.findUnique({
       where: { id },
       include: {
-        donor: true,
-        donation: true,
+        Donor: true,
+        Donation: true,
       },
     });
 
@@ -59,15 +59,15 @@ export async function POST(
       donorName: receipt.donorName,
       donorEmail: receipt.donorEmail || "",
       donorAddress: receipt.donorAddress || undefined,
-      donorCity: receipt.donor.city || undefined,
-      donorPostalCode: receipt.donor.postalCode || undefined,
-      donorCountry: receipt.donor.country || undefined,
+      donorCity: receipt.Donor.city || undefined,
+      donorPostalCode: receipt.Donor.postalCode || undefined,
+      donorCountry: receipt.Donor.country || undefined,
       amount: receipt.amount,
       currency: receipt.country === "FR" ? "EUR" : "CAD",
       donationDate: receipt.donationDate,
-      paymentMethod: receipt.donation.paymentMethod || "Carte de crédit",
-      transactionId: receipt.donation.transactionId || undefined,
-      campaignName: receipt.donation.campaignName || undefined,
+      paymentMethod: receipt.Donation.paymentMethod || "Carte de crédit",
+      transactionId: receipt.Donation.transactionId || undefined,
+      campaignName: receipt.Donation.campaignName || undefined,
       orgName: orgSettings?.organizationName || "Organisation",
       orgAddress: orgSettings?.address || undefined,
       orgCity: orgSettings?.city || undefined,

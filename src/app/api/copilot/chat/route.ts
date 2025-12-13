@@ -56,7 +56,7 @@ async function getRecentDonations(limit = 10) {
       firstName: true,
       lastName: true,
       createdAt: true,
-      form: { select: { name: true } },
+      DonationForm: { select: { name: true } },
     },
   });
 }

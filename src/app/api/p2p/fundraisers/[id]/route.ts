@@ -50,7 +50,7 @@ export async function GET(
             createdAt: true,
           },
         },
-        activities: {
+        P2PActivity: {
           where: { isPublic: true },
           orderBy: { createdAt: "desc" },
           take: 10,

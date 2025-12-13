@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, isSuperAdmin, hasOrganizationAccess } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getMainPrisma } from "@/lib/prisma-org";
 
 // GET /api/super-admin/organizations/[id] - Détails d'une organisation
 export async function GET(
@@ -28,9 +28,24 @@ export async function GET(
       );
     }
 
-    const organization = await prisma.organization.findUnique({
+    // Utiliser la base principale pour les organisations (métadonnées)
+    const mainPrisma = getMainPrisma();
+
+    const organization = await mainPrisma.organization.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        email: true,
+        phone: true,
+        website: true,
+        status: true,
+        plan: true,
+        createdAt: true,
+        updatedAt: true,
+        databaseUrl: true, // Inclure l'URL de la base de données dédiée
         OrganizationMember: {
           include: {
             // Note: userId fait référence à User, pas AdminUser
@@ -103,9 +118,12 @@ export async function PUT(
 
     const body = await request.json();
 
+    // Utiliser la base principale pour les organisations (métadonnées)
+    const mainPrisma = getMainPrisma();
+
     // Si le slug change, vérifier qu'il est unique
     if (body.slug) {
-      const existingOrg = await prisma.organization.findFirst({
+      const existingOrg = await mainPrisma.organization.findFirst({
         where: {
           slug: body.slug,
           NOT: { id },
@@ -120,7 +138,7 @@ export async function PUT(
       }
     }
 
-    const organization = await prisma.organization.update({
+    const organization = await mainPrisma.organization.update({
       where: { id },
       data: {
         name: body.name,
@@ -152,7 +170,7 @@ export async function PUT(
     });
 
     // Log d'audit
-    await prisma.adminAuditLog.create({
+    await mainPrisma.adminAuditLog.create({
       data: {
         action: "UPDATE",
         entityType: "Organization",
@@ -199,7 +217,10 @@ export async function DELETE(
       );
     }
 
-    const organization = await prisma.organization.findUnique({
+    // Utiliser la base principale pour les organisations (métadonnées)
+    const mainPrisma = getMainPrisma();
+
+    const organization = await mainPrisma.organization.findUnique({
       where: { id },
     });
 
@@ -211,12 +232,12 @@ export async function DELETE(
     }
 
     // Supprimer l'organisation (cascade supprimera les relations)
-    await prisma.organization.delete({
+    await mainPrisma.organization.delete({
       where: { id },
     });
 
     // Log d'audit
-    await prisma.adminAuditLog.create({
+    await mainPrisma.adminAuditLog.create({
       data: {
         action: "DELETE",
         entityType: "Organization",

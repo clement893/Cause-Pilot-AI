@@ -26,6 +26,7 @@ interface Organization {
   status: string;
   plan: string;
   createdAt: string;
+  databaseUrl: string | null;
   _count: {
     members: number;
     dashboardLayouts: number;
@@ -230,9 +231,16 @@ export default function SuperAdminOrganizationsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-slate-300">
-                        <Users className="w-4 h-4" />
-                        {org._count.members}
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 text-slate-300">
+                          <Users className="w-4 h-4" />
+                          {org._count.members}
+                        </div>
+                        {org.databaseUrl && (
+                          <span className="px-2 py-1 rounded-lg text-xs font-medium bg-green-500/20 text-green-300" title="Base de données dédiée">
+                            🔒
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-slate-400 text-sm">

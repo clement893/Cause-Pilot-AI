@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getMainPrisma } from "@/lib/prisma-org";
 import { Prisma, OrganizationStatus, OrganizationPlan } from "@prisma/client";
 
 // GET /api/super-admin/organizations - Liste toutes les organisations
@@ -52,9 +52,12 @@ export async function GET(request: NextRequest) {
     console.log("isSuperAdmin:", isSuperAdmin);
     console.log("User email:", session.user.email);
     
+    // Utiliser la base principale pour les organisations (métadonnées)
+    const mainPrisma = getMainPrisma();
+
     if (!isSuperAdmin) {
       // Pour les non-super admin, filtrer par organisations accessibles
-      const accessibleOrgs = await prisma.adminOrganizationAccess.findMany({
+      const accessibleOrgs = await mainPrisma.adminOrganizationAccess.findMany({
         where: { adminUserId: session.user.id },
         select: { organizationId: true },
       });
@@ -64,12 +67,22 @@ export async function GET(request: NextRequest) {
     console.log("Where clause:", JSON.stringify(where, null, 2));
 
     const [organizations, total] = await Promise.all([
-      prisma.organization.findMany({
+      mainPrisma.organization.findMany({
         where,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { [sortBy]: sortOrder },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          email: true,
+          phone: true,
+          status: true,
+          plan: true,
+          createdAt: true,
+          databaseUrl: true, // Inclure l'URL de la base de données dédiée
           _count: {
             select: {
               OrganizationMember: true,
@@ -78,7 +91,7 @@ export async function GET(request: NextRequest) {
           },
         },
       }),
-      prisma.organization.count({ where }),
+      mainPrisma.organization.count({ where }),
     ]);
 
     console.log("Organizations found:", organizations.length);
@@ -139,8 +152,11 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
 
+    // Utiliser la base principale pour les organisations (métadonnées)
+    const mainPrisma = getMainPrisma();
+
     // Vérifier que le slug est unique
-    const existingOrg = await prisma.organization.findUnique({
+    const existingOrg = await mainPrisma.organization.findUnique({
       where: { slug },
     });
 
@@ -151,7 +167,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const organization = await prisma.organization.create({
+    const organization = await mainPrisma.organization.create({
       data: {
         name: body.name,
         slug,
@@ -182,7 +198,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Log d'audit
-    await prisma.adminAuditLog.create({
+    await mainPrisma.adminAuditLog.create({
       data: {
         action: "CREATE",
         entityType: "Organization",

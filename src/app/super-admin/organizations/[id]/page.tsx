@@ -31,6 +31,7 @@ interface Organization {
   plan: string;
   createdAt: string;
   updatedAt: string;
+  databaseUrl: string | null;
   members: Array<{
     id: string;
     role: string;
@@ -421,6 +422,38 @@ export default function SuperAdminOrganizationDetailPage() {
                   <span className="text-slate-300">Dashboards</span>
                   <span className="text-white font-medium">{organization._count.dashboardLayouts}</span>
                 </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+              <h3 className="text-sm font-medium text-slate-400 mb-4">Base de données</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-300">Type</span>
+                  <span className={`px-2 py-1 rounded-lg text-xs font-medium ${organization.databaseUrl ? "bg-green-500/20 text-green-300" : "bg-slate-500/20 text-slate-300"}`}>
+                    {organization.databaseUrl ? "Dédiée" : "Partagée"}
+                  </span>
+                </div>
+                {organization.databaseUrl && (
+                  <div className="pt-2">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(`/api/organizations/${organization.id}/database`);
+                          const data = await response.json();
+                          if (data.success) {
+                            alert(`URL de la base de données:\n${data.databaseUrl || "Non configurée"}`);
+                          }
+                        } catch (error) {
+                          console.error("Erreur:", error);
+                        }
+                      }}
+                      className="w-full px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl transition-colors text-left text-sm"
+                    >
+                      Voir l'URL de la BD
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

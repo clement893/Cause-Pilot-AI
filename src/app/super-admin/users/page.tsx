@@ -133,7 +133,7 @@ export default function SuperAdminUsersPage() {
     }
 
     try {
-      const response = await fetch(`/api/super-admin/invitations?id=${invitationId}`, {
+      const response = await fetch(`/api/super-admin/invitations/${invitationId}`, {
         method: "DELETE",
         credentials: 'include',
         headers: {

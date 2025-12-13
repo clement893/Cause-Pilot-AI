@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
           where: {
             consentEmail: true,
             email: { not: null },
-            donations: {
+            Donation: {
               some: {
                 isRecurring: true,
               },

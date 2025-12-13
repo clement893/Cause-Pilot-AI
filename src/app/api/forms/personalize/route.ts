@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       donor = await prisma.donor.findUnique({
         where: { email },
         include: {
-          donations: {
+          Donation: {
             orderBy: { donationDate: "desc" },
             take: 10,
           },

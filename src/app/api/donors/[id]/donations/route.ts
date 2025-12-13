@@ -20,10 +20,25 @@ export async function GET(
     
     const prisma = await getPrisma(request);
 
+    // Vérifier d'abord que le donateur appartient à l'organisation
+    const donor = await prisma.donor.findFirst({
+      where: {
+        id,
+        organizationId,
+      },
+      select: { id: true },
+    });
+
+    if (!donor) {
+      return NextResponse.json(
+        { success: false, error: "Donateur non trouvé" },
+        { status: 404 }
+      );
+    }
+
     const donations = await prisma.donation.findMany({
       where: { 
         donorId: id,
-        Donor: { organizationId }, // S'assurer que le donateur appartient à l'organisation
       },
       orderBy: { donationDate: "desc" },
     });

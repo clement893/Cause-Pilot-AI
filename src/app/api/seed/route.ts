@@ -187,7 +187,7 @@ export async function POST(request: Request) {
     await prisma.donation.deleteMany();
     await prisma.donor.deleteMany();
 
-    const allDonors = [];
+    const allDonors: Array<{ id: string; organizationId: string | null; status: string; totalDonations: number }> = [];
     const donorsPerOrg = 30; // 30 donateurs par organisation
 
     // Créer des donateurs pour chaque organisation

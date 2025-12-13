@@ -357,12 +357,12 @@ export default function CampaignDetailPage({
             </div>
 
             {/* Jalons */}
-            {campaign.milestones && campaign.milestones.length > 0 && (
+            {campaign.CampaignMilestone && campaign.CampaignMilestone.length > 0 && (
               <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
                 <h2 className="text-lg font-semibold text-white mb-4">Jalons</h2>
                 
                 <div className="space-y-4">
-                  {campaign.milestones.map((milestone) => (
+                  {campaign.CampaignMilestone.map((milestone) => (
                     <div
                       key={milestone.id}
                       className={`flex items-center gap-4 p-4 rounded-lg ${

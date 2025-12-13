@@ -23,7 +23,7 @@ export async function GET(
     const donations = await prisma.donation.findMany({
       where: { 
         donorId: id,
-        donor: { organizationId }, // S'assurer que le donateur appartient à l'organisation
+        Donor: { organizationId }, // S'assurer que le donateur appartient à l'organisation
       },
       orderBy: { donationDate: "desc" },
     });

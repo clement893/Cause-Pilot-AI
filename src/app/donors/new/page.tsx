@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import AppLayout from "@/components/layout/AppLayout";
 import { DonorForm } from "@/components/donors/DonorForm";
 import { DonorFormData } from "@/types/donor";
+import { useOrganization } from "@/contexts/OrganizationContext";
 
 export default function NewDonorPage() {
   const router = useRouter();
+  const { currentOrganization } = useOrganization();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,10 +18,18 @@ export default function NewDonorPage() {
     setError(null);
 
     try {
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (currentOrganization?.id) {
+        headers['X-Organization-Id'] = currentOrganization.id;
+      }
+      
       const response = await fetch("/api/donors", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers,
+        body: JSON.stringify({
+          ...data,
+          organizationId: currentOrganization?.id || undefined,
+        }),
       });
 
       const result = await response.json();

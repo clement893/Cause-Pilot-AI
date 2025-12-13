@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET /api/donors/stats - Statistiques globales des donateurs
 export async function GET(request: NextRequest) {
   try {
+    // Récupérer l'organisation depuis les headers ou query params
+    const organizationId = getOrganizationId(request);
+    
+    // Construire le filtre de base avec organisation
+    const baseWhere = organizationId ? { organizationId } : {};
+    
     // Statistiques de base
     const [
       totalDonors,
@@ -13,12 +20,13 @@ export async function GET(request: NextRequest) {
       newDonorsThisMonth,
       newDonorsLastMonth,
     ] = await Promise.all([
-      prisma.donor.count(),
-      prisma.donor.count({ where: { status: "ACTIVE" } }),
-      prisma.donor.count({ where: { status: "INACTIVE" } }),
-      prisma.donor.count({ where: { status: "LAPSED" } }),
+      prisma.donor.count({ where: baseWhere }),
+      prisma.donor.count({ where: { ...baseWhere, status: "ACTIVE" } }),
+      prisma.donor.count({ where: { ...baseWhere, status: "INACTIVE" } }),
+      prisma.donor.count({ where: { ...baseWhere, status: "LAPSED" } }),
       prisma.donor.count({
         where: {
+          ...baseWhere,
           createdAt: {
             gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
           },
@@ -26,6 +34,7 @@ export async function GET(request: NextRequest) {
       }),
       prisma.donor.count({
         where: {
+          ...baseWhere,
           createdAt: {
             gte: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
             lt: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -38,17 +47,19 @@ export async function GET(request: NextRequest) {
     const donorsByType = await prisma.donor.groupBy({
       by: ["donorType"],
       _count: { id: true },
+      where: baseWhere,
     });
     
     // Statistiques par segment
     const donorsBySegment = await prisma.donor.groupBy({
       by: ["segment"],
       _count: { id: true },
-      where: { segment: { not: null } },
+      where: { ...baseWhere, segment: { not: null } },
     });
     
     // Statistiques de dons
     const donationStats = await prisma.donor.aggregate({
+      where: baseWhere,
       _sum: { totalDonations: true },
       _avg: { totalDonations: true, averageDonation: true },
       _max: { highestDonation: true },
@@ -56,7 +67,7 @@ export async function GET(request: NextRequest) {
     
     // Top donateurs
     const topDonors = await prisma.donor.findMany({
-      where: { totalDonations: { gt: 0 } },
+      where: { ...baseWhere, totalDonations: { gt: 0 } },
       orderBy: { totalDonations: "desc" },
       take: 10,
       select: {
@@ -72,6 +83,7 @@ export async function GET(request: NextRequest) {
     
     // Donateurs récents
     const recentDonors = await prisma.donor.findMany({
+      where: baseWhere,
       orderBy: { createdAt: "desc" },
       take: 5,
       select: {
@@ -86,9 +98,9 @@ export async function GET(request: NextRequest) {
     
     // Statistiques de consentement
     const consentStats = await Promise.all([
-      prisma.donor.count({ where: { consentEmail: true } }),
-      prisma.donor.count({ where: { consentPhone: true } }),
-      prisma.donor.count({ where: { consentMail: true } }),
+      prisma.donor.count({ where: { ...baseWhere, consentEmail: true } }),
+      prisma.donor.count({ where: { ...baseWhere, consentPhone: true } }),
+      prisma.donor.count({ where: { ...baseWhere, consentMail: true } }),
     ]);
     
     // Calculer le taux de croissance

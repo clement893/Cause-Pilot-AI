@@ -151,7 +151,15 @@ export default function DashboardPage() {
 
   const fetchDashboard = async () => {
     try {
-      const res = await fetch("/api/dashboard");
+      const queryParams = new URLSearchParams();
+      if (currentOrganization?.id) {
+        queryParams.set("organizationId", currentOrganization.id);
+      }
+      const res = await fetch(`/api/dashboard?${queryParams.toString()}`, {
+        headers: currentOrganization?.id ? {
+          'X-Organization-Id': currentOrganization.id,
+        } : {},
+      });
       if (res.ok) {
         const json = await res.json();
         setData(json);

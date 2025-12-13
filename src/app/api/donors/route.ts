@@ -3,11 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { listQuerySchema, createDonorSchema, parseQueryParams, parseBody } from "@/lib/validation";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET /api/donors - Liste des donateurs avec pagination et filtres
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    
+    // Récupérer l'organisation depuis les headers ou query params
+    const organizationId = getOrganizationId(request);
     
     // Validation avec Zod
     const query = parseQueryParams(searchParams, listQuerySchema);
@@ -16,6 +20,11 @@ export async function GET(request: NextRequest) {
     
     // Construction de la requête
     const where: Prisma.DonorWhereInput = {};
+    
+    // Filtrer par organisation si fournie
+    if (organizationId) {
+      where.organizationId = organizationId;
+    }
     
     if (status) {
       where.status = status as Prisma.EnumDonorStatusFilter["equals"];
@@ -80,13 +89,19 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
+    // Récupérer l'organisation depuis les headers ou query params
+    const organizationId = getOrganizationId(request);
+    
     // Validation avec Zod
     const validatedData = parseBody(body, createDonorSchema);
     
-    // Vérifier si l'email existe déjà
+    // Vérifier si l'email existe déjà (dans la même organisation si organisationId fourni)
     if (validatedData.email) {
-      const existingDonor = await prisma.donor.findUnique({
-        where: { email: validatedData.email },
+      const existingDonor = await prisma.donor.findFirst({
+        where: {
+          email: validatedData.email,
+          ...(organizationId ? { organizationId } : {}),
+        },
       });
       
       if (existingDonor) {
@@ -126,6 +141,7 @@ export async function POST(request: NextRequest) {
         consentPhone: validatedData.consentPhone,
         consentMail: validatedData.consentMail,
         consentDate: validatedData.consentEmail || validatedData.consentPhone || validatedData.consentMail ? new Date() : null,
+        organizationId: organizationId || null,
       },
       include: {
         preferences: true,

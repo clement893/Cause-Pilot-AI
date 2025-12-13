@@ -1,9 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET - Récupérer les données du dashboard amélioré
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Récupérer l'organisation depuis les headers ou query params
+    const organizationId = getOrganizationId(request);
+    
+    // Construire le filtre de base avec organisation
+    const baseDonorWhere = organizationId ? { organizationId } : {};
+    
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfWeek = new Date(now);
@@ -19,21 +26,25 @@ export async function GET() {
     threeMonthsAgo.setMonth(now.getMonth() - 3);
 
     // Métriques des donateurs
-    const totalDonors = await prisma.donor.count();
+    const totalDonors = await prisma.donor.count({ where: baseDonorWhere });
     const newDonorsThisMonth = await prisma.donor.count({
-      where: { createdAt: { gte: startOfMonth } },
+      where: { ...baseDonorWhere, createdAt: { gte: startOfMonth } },
     });
     const newDonorsLastMonth = await prisma.donor.count({
       where: {
+        ...baseDonorWhere,
         createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
       },
     });
     const activeDonors = await prisma.donor.count({
-      where: { status: "ACTIVE" },
+      where: { ...baseDonorWhere, status: "ACTIVE" },
     });
-    // Compter les donateurs avec au moins un don récurrent
+    // Compter les donateurs avec au moins un don récurrent (filtrés par organisation)
     const recurringDonorIds = await prisma.donation.findMany({
-      where: { isRecurring: true },
+      where: {
+        isRecurring: true,
+        ...(organizationId ? { donor: { organizationId } } : {}),
+      },
       select: { donorId: true },
       distinct: ['donorId'],
     });
@@ -42,15 +53,19 @@ export async function GET() {
     // Donateurs inactifs (pas de don depuis 6 mois mais ont déjà donné)
     const inactiveDonors = await prisma.donor.count({
       where: {
+        ...baseDonorWhere,
         status: "ACTIVE",
         lastDonationDate: { lt: sixMonthsAgo },
         donationCount: { gt: 0 },
       },
     });
 
-    // Métriques des dons
+    // Métriques des dons (filtrés par organisation via le donateur)
     const donations = await prisma.donation.findMany({
-      where: { status: "COMPLETED" },
+      where: {
+        status: "COMPLETED",
+        ...(organizationId ? { donor: { organizationId } } : {}),
+      },
       select: { amount: true, createdAt: true, donationDate: true, isRecurring: true },
     });
 
@@ -120,9 +135,12 @@ export async function GET() {
       where: { status: "PUBLISHED" },
     });
 
-    // Dons récents
+    // Dons récents (filtrés par organisation)
     const recentDonations = await prisma.donation.findMany({
-      where: { status: "COMPLETED" },
+      where: {
+        status: "COMPLETED",
+        ...(organizationId ? { donor: { organizationId } } : {}),
+      },
       include: {
         donor: {
           select: { firstName: true, lastName: true, email: true },
@@ -132,8 +150,9 @@ export async function GET() {
       take: 10,
     });
 
-    // Top donateurs
+    // Top donateurs (filtrés par organisation)
     const topDonors = await prisma.donor.findMany({
+      where: baseDonorWhere,
       orderBy: { totalDonations: "desc" },
       take: 5,
       select: {
@@ -151,6 +170,7 @@ export async function GET() {
     // Donateurs à relancer (inactifs avec historique de dons importants)
     const donorsToReengage = await prisma.donor.findMany({
       where: {
+        ...baseDonorWhere,
         status: "ACTIVE",
         lastDonationDate: { lt: sixMonthsAgo },
         totalDonations: { gte: 50 },
@@ -169,8 +189,9 @@ export async function GET() {
       },
     });
 
-    // Nouveaux donateurs récents
+    // Nouveaux donateurs récents (filtrés par organisation)
     const recentDonors = await prisma.donor.findMany({
+      where: baseDonorWhere,
       select: {
         id: true,
         firstName: true,
@@ -206,10 +227,11 @@ export async function GET() {
       });
     }
 
-    // Répartition par segment de donateurs
+    // Répartition par segment de donateurs (filtrés par organisation)
     const donorSegments = await prisma.donor.groupBy({
       by: ["segment"],
       _count: { id: true },
+      where: baseDonorWhere,
     });
 
     // Calcul des variations

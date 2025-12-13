@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { getOrganizationId } from "@/lib/organization";
 
 // POST /api/donors/search - Recherche avancée avec filtres multiples
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    
+    // Récupérer l'organisation depuis les headers ou body
+    const organizationId = getOrganizationId(request) || body.organizationId;
     
     // Pagination
     const page = body.page || 1;
@@ -14,6 +18,11 @@ export async function POST(request: NextRequest) {
     
     // Construction des conditions de recherche
     const conditions: Prisma.DonorWhereInput[] = [];
+    
+    // Filtrer par organisation si fournie
+    if (organizationId) {
+      conditions.push({ organizationId });
+    }
     
     // Recherche textuelle
     if (body.query) {

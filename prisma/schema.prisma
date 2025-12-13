@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ============================================
@@ -20,9 +20,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  createdDonors  Donor[]    @relation("CreatedBy")
-  updatedDonors  Donor[]    @relation("UpdatedBy")
-  donations      Donation[] @relation("RecordedBy")
+  createdDonors Donor[]    @relation("CreatedBy")
+  updatedDonors Donor[]    @relation("UpdatedBy")
+  donations     Donation[] @relation("RecordedBy")
 }
 
 enum UserRole {
@@ -45,54 +45,54 @@ model Donor {
   // Informations personnelles
   firstName   String
   lastName    String
-  email       String?  @unique
+  email       String?   @unique
   phone       String?
   mobile      String?
   dateOfBirth DateTime?
 
   // Adresse
-  address     String?
-  address2    String?
-  city        String?
-  state       String?
-  postalCode  String?
-  country     String?  @default("Canada")
+  address    String?
+  address2   String?
+  city       String?
+  state      String?
+  postalCode String?
+  country    String? @default("Canada")
 
   // Données professionnelles
-  profession  String?
-  employer    String?
-  jobTitle    String?
-  industry    String?
+  profession String?
+  employer   String?
+  jobTitle   String?
+  industry   String?
 
   // Statut et classification
-  status      DonorStatus @default(ACTIVE)
-  donorType   DonorType   @default(INDIVIDUAL)
-  segment     String?
-  tags        String[]
+  status    DonorStatus @default(ACTIVE)
+  donorType DonorType   @default(INDIVIDUAL)
+  segment   String?
+  tags      String[]
 
   // Métriques calculées (dénormalisées pour performance)
-  totalDonations    Float    @default(0)
-  donationCount     Int      @default(0)
-  averageDonation   Float    @default(0)
-  highestDonation   Float    @default(0)
+  totalDonations    Float     @default(0)
+  donationCount     Int       @default(0)
+  averageDonation   Float     @default(0)
+  highestDonation   Float     @default(0)
   lastDonationDate  DateTime?
   firstDonationDate DateTime?
 
   // Scoring prédictif
-  potentialScore    Int?     // Score de potentiel major gift (1-100)
-  churnRiskScore    Int?     // Score de risque de churn (1-100)
-  scoreUpdatedAt    DateTime? // Date de dernière mise à jour des scores
+  potentialScore Int? // Score de potentiel major gift (1-100)
+  churnRiskScore Int? // Score de risque de churn (1-100)
+  scoreUpdatedAt DateTime? // Date de dernière mise à jour des scores
 
   // Notes et commentaires
-  notes       String?
-  source      String?  // Comment le donateur a été acquis
+  notes  String?
+  source String? // Comment le donateur a été acquis
 
   // Conformité RGPD/PIPEDA
-  consentEmail     Boolean @default(false)
-  consentPhone     Boolean @default(false)
-  consentMail      Boolean @default(false)
-  consentDate      DateTime?
-  optOutDate       DateTime?
+  consentEmail Boolean   @default(false)
+  consentPhone Boolean   @default(false)
+  consentMail  Boolean   @default(false)
+  consentDate  DateTime?
+  optOutDate   DateTime?
 
   // Audit
   createdById Int?
@@ -100,14 +100,18 @@ model Donor {
   updatedById Int?
   updatedBy   User? @relation("UpdatedBy", fields: [updatedById], references: [id])
 
+  // Multi-organisation
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   // Relations
-  donations       Donation[]
-  preferences     DonorPreference?
-  customFields    DonorCustomField[]
-  communications  Communication[]
-  submissions     DonationSubmission[]
-  consentHistory  ConsentHistory[]
-  taxReceipts     TaxReceipt[]
+  donations      Donation[]
+  preferences    DonorPreference?
+  customFields   DonorCustomField[]
+  communications Communication[]
+  submissions    DonationSubmission[]
+  consentHistory ConsentHistory[]
+  taxReceipts    TaxReceipt[]
 
   @@index([email])
   @@index([lastName, firstName])
@@ -115,6 +119,7 @@ model Donor {
   @@index([segment])
   @@index([createdAt])
   @@index([totalDonations])
+  @@index([organizationId])
 }
 
 enum DonorStatus {
@@ -145,40 +150,40 @@ model Donation {
 
   // Informations du don
   amount        Float
-  currency      String    @default("CAD")
+  currency      String         @default("CAD")
   donationDate  DateTime
   paymentMethod PaymentMethod
   status        DonationStatus @default(COMPLETED)
 
   // Référence
-  transactionId   String?   @unique
-  receiptNumber   String?
-  receiptSentAt   DateTime?
+  transactionId String?   @unique
+  receiptNumber String?
+  receiptSentAt DateTime?
 
   // Campagne associée
-  campaignId    String?
-  campaignName  String?
+  campaignId   String?
+  campaignName String?
 
   // Type de don
-  donationType  DonationType @default(ONE_TIME)
-  isRecurring   Boolean      @default(false)
-  recurringId   String?
+  donationType DonationType @default(ONE_TIME)
+  isRecurring  Boolean      @default(false)
+  recurringId  String?
 
   // Don dédié (in memoriam, en l'honneur de)
   dedicationType  DedicationType?
   dedicateeName   String?
   dedicateeEmail  String?
-  notifyDedicatee Boolean @default(false)
+  notifyDedicatee Boolean         @default(false)
 
   // Notes
-  notes         String?
-  isAnonymous   Boolean @default(false)
+  notes       String?
+  isAnonymous Boolean @default(false)
 
   // Relations
-  donorId     String
-  donor       Donor  @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  donorId      String
+  donor        Donor        @relation(fields: [donorId], references: [id], onDelete: Cascade)
   recordedById Int?
-  recordedBy   User?  @relation("RecordedBy", fields: [recordedById], references: [id])
+  recordedBy   User?        @relation("RecordedBy", fields: [recordedById], references: [id])
   taxReceipts  TaxReceipt[]
 
   @@index([donorId])
@@ -229,20 +234,20 @@ model DonorPreference {
   updatedAt DateTime @updatedAt
 
   // Canaux de communication préférés
-  preferredChannel    CommunicationChannel @default(EMAIL)
-  preferredFrequency  CommunicationFrequency @default(MONTHLY)
-  preferredLanguage   String @default("fr")
+  preferredChannel   CommunicationChannel   @default(EMAIL)
+  preferredFrequency CommunicationFrequency @default(MONTHLY)
+  preferredLanguage  String                 @default("fr")
 
   // Causes d'intérêt
-  causesOfInterest    String[]
+  causesOfInterest String[]
 
   // Préférences de don
-  preferredAmount     Float?
+  preferredAmount        Float?
   preferredPaymentMethod PaymentMethod?
 
   // Dates importantes
-  birthday            DateTime?
-  anniversary         DateTime?
+  birthday    DateTime?
+  anniversary DateTime?
 
   // Relation
   donorId String @unique
@@ -275,13 +280,13 @@ model CustomFieldDefinition {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name        String   @unique
-  label       String
-  fieldType   FieldType
-  options     String[] // Pour les champs SELECT/MULTISELECT
-  isRequired  Boolean  @default(false)
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
+  name       String    @unique
+  label      String
+  fieldType  FieldType
+  options    String[] // Pour les champs SELECT/MULTISELECT
+  isRequired Boolean   @default(false)
+  isActive   Boolean   @default(true)
+  sortOrder  Int       @default(0)
 
   // Valeurs
   values DonorCustomField[]
@@ -292,13 +297,13 @@ model DonorCustomField {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  value     String
+  value String
 
   // Relations
-  donorId   String
-  donor     Donor @relation(fields: [donorId], references: [id], onDelete: Cascade)
-  fieldId   String
-  field     CustomFieldDefinition @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  donorId String
+  donor   Donor                 @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  fieldId String
+  field   CustomFieldDefinition @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 
   @@unique([donorId, fieldId])
 }
@@ -323,17 +328,17 @@ model Communication {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  type      CommunicationType
-  channel   CommunicationChannel
-  subject   String?
-  content   String?
-  sentAt    DateTime?
-  status    CommunicationStatus @default(PENDING)
+  type    CommunicationType
+  channel CommunicationChannel
+  subject String?
+  content String?
+  sentAt  DateTime?
+  status  CommunicationStatus  @default(PENDING)
 
   // Métriques
-  openedAt    DateTime?
-  clickedAt   DateTime?
-  bouncedAt   DateTime?
+  openedAt  DateTime?
+  clickedAt DateTime?
+  bouncedAt DateTime?
 
   // Relation
   donorId String
@@ -365,7 +370,6 @@ enum CommunicationStatus {
   FAILED
 }
 
-
 // ============================================
 // MODULE FORMULAIRES DON
 // ============================================
@@ -376,61 +380,61 @@ model DonationForm {
   updatedAt DateTime @updatedAt
 
   // Informations générales
-  name          String
-  slug          String   @unique
-  description   String?
-  formType      FormType @default(ONE_TIME)
-  status        FormStatus @default(DRAFT)
+  name        String
+  slug        String     @unique
+  description String?
+  formType    FormType   @default(ONE_TIME)
+  status      FormStatus @default(DRAFT)
 
   // Configuration des montants
-  suggestedAmounts    Int[]    @default([25, 50, 100, 250, 500])
-  minimumAmount       Float    @default(5)
-  maximumAmount       Float?
-  allowCustomAmount   Boolean  @default(true)
-  defaultAmount       Float?
+  suggestedAmounts  Int[]   @default([25, 50, 100, 250, 500])
+  minimumAmount     Float   @default(5)
+  maximumAmount     Float?
+  allowCustomAmount Boolean @default(true)
+  defaultAmount     Float?
 
   // Configuration récurrence (pour dons récurrents)
-  recurringOptions    RecurringFrequency[] @default([MONTHLY])
-  defaultRecurring    RecurringFrequency?
+  recurringOptions RecurringFrequency[] @default([MONTHLY])
+  defaultRecurring RecurringFrequency?
 
   // Personnalisation visuelle
-  primaryColor        String   @default("#6366f1")
-  secondaryColor      String   @default("#8b5cf6")
+  primaryColor        String  @default("#6366f1")
+  secondaryColor      String  @default("#8b5cf6")
   logoUrl             String?
   bannerUrl           String?
   thankYouMessage     String?
   thankYouRedirectUrl String?
 
   // Configuration des champs
-  collectPhone        Boolean  @default(false)
-  collectAddress      Boolean  @default(false)
-  collectEmployer     Boolean  @default(false)
-  collectComment      Boolean  @default(true)
-  collectDedication   Boolean  @default(false)
-  allowAnonymous      Boolean  @default(true)
+  collectPhone      Boolean @default(false)
+  collectAddress    Boolean @default(false)
+  collectEmployer   Boolean @default(false)
+  collectComment    Boolean @default(true)
+  collectDedication Boolean @default(false)
+  allowAnonymous    Boolean @default(true)
 
   // SEO et partage
-  metaTitle           String?
-  metaDescription     String?
-  ogImage             String?
+  metaTitle       String?
+  metaDescription String?
+  ogImage         String?
 
   // Campagne associée
-  campaignId          String?
-  campaignName        String?
+  campaignId   String?
+  campaignName String?
 
   // Statistiques (dénormalisées)
-  totalCollected      Float    @default(0)
-  donationCount       Int      @default(0)
-  averageDonation     Float    @default(0)
+  totalCollected  Float @default(0)
+  donationCount   Int   @default(0)
+  averageDonation Float @default(0)
 
   // Dates de validité
-  startDate           DateTime?
-  endDate             DateTime?
-  goalAmount          Float?
+  startDate  DateTime?
+  endDate    DateTime?
+  goalAmount Float?
 
   // Relations
-  fields              FormField[]
-  submissions         DonationSubmission[]
+  fields      FormField[]
+  submissions DonationSubmission[]
 
   @@index([slug])
   @@index([status])
@@ -439,12 +443,12 @@ model DonationForm {
 }
 
 enum FormType {
-  ONE_TIME        // Don unique
-  RECURRING       // Don récurrent
-  TICKETING       // Billetterie événement
-  IN_MEMORIAM     // Don in memoriam
-  PEER_TO_PEER    // Collecte P2P
-  PLEDGE          // Promesse de don
+  ONE_TIME // Don unique
+  RECURRING // Don récurrent
+  TICKETING // Billetterie événement
+  IN_MEMORIAM // Don in memoriam
+  PEER_TO_PEER // Collecte P2P
+  PLEDGE // Promesse de don
 }
 
 enum FormStatus {
@@ -468,31 +472,31 @@ model FormField {
   updatedAt DateTime @updatedAt
 
   // Configuration du champ
-  name          String
-  label         String
-  fieldType     FormFieldType
-  placeholder   String?
-  helpText      String?
-  defaultValue  String?
-  options       String[]  // Pour SELECT/RADIO/CHECKBOX
-  
+  name         String
+  label        String
+  fieldType    FormFieldType
+  placeholder  String?
+  helpText     String?
+  defaultValue String?
+  options      String[] // Pour SELECT/RADIO/CHECKBOX
+
   // Validation
-  isRequired    Boolean   @default(false)
-  minLength     Int?
-  maxLength     Int?
-  pattern       String?   // Regex pour validation
-  
+  isRequired Boolean @default(false)
+  minLength  Int?
+  maxLength  Int?
+  pattern    String? // Regex pour validation
+
   // Affichage
-  sortOrder     Int       @default(0)
-  isVisible     Boolean   @default(true)
-  width         FieldWidth @default(FULL)
-  
+  sortOrder Int        @default(0)
+  isVisible Boolean    @default(true)
+  width     FieldWidth @default(FULL)
+
   // Logique conditionnelle
-  showIf        String?   // JSON condition
+  showIf String? // JSON condition
 
   // Relation
-  formId        String
-  form          DonationForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId String
+  form   DonationForm @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@index([formId])
   @@index([sortOrder])
@@ -523,71 +527,71 @@ model DonationSubmission {
   updatedAt DateTime @updatedAt
 
   // Informations du don
-  amount            Float
-  currency          String    @default("CAD")
-  paymentMethod     PaymentMethod?
-  paymentStatus     PaymentStatus @default(PENDING)
-  
+  amount        Float
+  currency      String         @default("CAD")
+  paymentMethod PaymentMethod?
+  paymentStatus PaymentStatus  @default(PENDING)
+
   // Référence paiement
-  stripePaymentId   String?
-  stripeCustomerId  String?
-  transactionId     String?   @unique
+  stripePaymentId  String?
+  stripeCustomerId String?
+  transactionId    String? @unique
 
   // Informations donateur
-  email             String
-  firstName         String
-  lastName          String
-  phone             String?
-  address           String?
-  city              String?
-  state             String?
-  postalCode        String?
-  country           String?   @default("Canada")
-  
+  email      String
+  firstName  String
+  lastName   String
+  phone      String?
+  address    String?
+  city       String?
+  state      String?
+  postalCode String?
+  country    String? @default("Canada")
+
   // Employeur (pour matching gifts)
-  employer          String?
-  
+  employer String?
+
   // Don récurrent
-  isRecurring       Boolean   @default(false)
+  isRecurring        Boolean             @default(false)
   recurringFrequency RecurringFrequency?
-  nextPaymentDate   DateTime?
-  recurringStatus   RecurringStatus?
+  nextPaymentDate    DateTime?
+  recurringStatus    RecurringStatus?
 
   // Dédicace (in memoriam)
-  dedicationType    DedicationType?
-  dedicateeName     String?
-  dedicateeEmail    String?
-  dedicateeMessage  String?
-  notifyDedicatee   Boolean   @default(false)
+  dedicationType   DedicationType?
+  dedicateeName    String?
+  dedicateeEmail   String?
+  dedicateeMessage String?
+  notifyDedicatee  Boolean         @default(false)
 
   // Options
-  isAnonymous       Boolean   @default(false)
-  comment           String?
-  
+  isAnonymous Boolean @default(false)
+  comment     String?
+
   // Consentements
-  consentEmail      Boolean   @default(false)
-  consentNewsletter Boolean   @default(false)
-  
+  consentEmail      Boolean @default(false)
+  consentNewsletter Boolean @default(false)
+
   // Données personnalisées (JSON)
-  customFields      String?   // JSON des champs personnalisés
-  
+  customFields String? // JSON des champs personnalisés
+
   // Reçu fiscal
-  receiptNumber     String?
-  receiptSentAt     DateTime?
-  
+  receiptNumber String?
+  receiptSentAt DateTime?
+
   // Tracking
-  source            String?   // UTM source
-  medium            String?   // UTM medium
-  campaign          String?   // UTM campaign
-  referrer          String?
-  ipAddress         String?
-  userAgent         String?
+  source    String? // UTM source
+  medium    String? // UTM medium
+  campaign  String? // UTM campaign
+  referrer  String?
+  ipAddress String?
+  userAgent String?
 
   // Relations
-  formId            String
-  form              DonationForm @relation(fields: [formId], references: [id])
-  donorId           String?
-  donor             Donor?    @relation(fields: [donorId], references: [id])
+  formId  String
+  form    DonationForm @relation(fields: [formId], references: [id])
+  donorId String?
+  donor   Donor?       @relation(fields: [donorId], references: [id])
 
   @@index([formId])
   @@index([donorId])
@@ -616,7 +620,6 @@ enum RecurringStatus {
 // Ajout de la relation dans Donor
 // (déjà géré par la relation DonationSubmission.donor)
 
-
 // ============================================
 // MODULE GESTION CAMPAGNES
 // ============================================
@@ -627,68 +630,68 @@ model Campaign {
   updatedAt DateTime @updatedAt
 
   // Informations générales
-  name          String
-  slug          String   @unique
-  description   String?
+  name             String
+  slug             String  @unique
+  description      String?
   shortDescription String?
-  
+
   // Type et statut
-  campaignType  CampaignType @default(FUNDRAISING)
-  status        CampaignStatus @default(DRAFT)
-  priority      CampaignPriority @default(MEDIUM)
+  campaignType CampaignType     @default(FUNDRAISING)
+  status       CampaignStatus   @default(DRAFT)
+  priority     CampaignPriority @default(MEDIUM)
 
   // Dates
-  startDate     DateTime?
-  endDate       DateTime?
-  launchDate    DateTime?
+  startDate  DateTime?
+  endDate    DateTime?
+  launchDate DateTime?
 
   // Objectifs financiers
-  goalAmount    Float?
-  minimumGoal   Float?
-  stretchGoal   Float?
+  goalAmount  Float?
+  minimumGoal Float?
+  stretchGoal Float?
 
   // Statistiques (dénormalisées)
-  totalRaised       Float    @default(0)
-  donationCount     Int      @default(0)
-  donorCount        Int      @default(0)
-  averageDonation   Float    @default(0)
-  largestDonation   Float    @default(0)
-  conversionRate    Float    @default(0)
+  totalRaised     Float @default(0)
+  donationCount   Int   @default(0)
+  donorCount      Int   @default(0)
+  averageDonation Float @default(0)
+  largestDonation Float @default(0)
+  conversionRate  Float @default(0)
 
   // Personnalisation visuelle
-  primaryColor      String   @default("#6366f1")
-  secondaryColor    String   @default("#8b5cf6")
-  logoUrl           String?
-  bannerUrl         String?
-  thumbnailUrl      String?
+  primaryColor   String  @default("#6366f1")
+  secondaryColor String  @default("#8b5cf6")
+  logoUrl        String?
+  bannerUrl      String?
+  thumbnailUrl   String?
 
   // Contenu
-  thankYouMessage   String?
-  impactStatement   String?
+  thankYouMessage String?
+  impactStatement String?
 
   // SEO
-  metaTitle         String?
-  metaDescription   String?
-  ogImage           String?
+  metaTitle       String?
+  metaDescription String?
+  ogImage         String?
 
   // Configuration
-  isPublic          Boolean  @default(true)
-  allowP2P          Boolean  @default(false)
-  enableMatching    Boolean  @default(false)
-  matchingRatio     Float?   // Ex: 2.0 = 2:1 matching
-  matchingCap       Float?
+  isPublic       Boolean @default(true)
+  allowP2P       Boolean @default(false)
+  enableMatching Boolean @default(false)
+  matchingRatio  Float? // Ex: 2.0 = 2:1 matching
+  matchingCap    Float?
 
   // Catégorie/Tags
-  category          String?
-  tags              String[]
+  category String?
+  tags     String[]
 
   // Relations
-  milestones        CampaignMilestone[]
-  donors            CampaignDonor[]
-  forms             CampaignForm[]
-  updates           CampaignUpdate[]
-  team              CampaignTeamMember[]
-  p2pFundraisers    P2PFundraiser[]
+  milestones     CampaignMilestone[]
+  donors         CampaignDonor[]
+  forms          CampaignForm[]
+  updates        CampaignUpdate[]
+  team           CampaignTeamMember[]
+  p2pFundraisers P2PFundraiser[]
 
   @@index([slug])
   @@index([status])
@@ -698,15 +701,15 @@ model Campaign {
 }
 
 enum CampaignType {
-  FUNDRAISING       // Collecte générale
-  ANNUAL_FUND       // Campagne annuelle
-  CAPITAL           // Campagne de capital
-  EMERGENCY         // Urgence/Crise
-  EVENT             // Événement
-  PEER_TO_PEER      // P2P
-  CROWDFUNDING      // Financement participatif
-  MATCHING          // Campagne avec matching
-  PLANNED_GIVING    // Dons planifiés
+  FUNDRAISING // Collecte générale
+  ANNUAL_FUND // Campagne annuelle
+  CAPITAL // Campagne de capital
+  EMERGENCY // Urgence/Crise
+  EVENT // Événement
+  PEER_TO_PEER // P2P
+  CROWDFUNDING // Financement participatif
+  MATCHING // Campagne avec matching
+  PLANNED_GIVING // Dons planifiés
 }
 
 enum CampaignStatus {
@@ -733,24 +736,24 @@ model CampaignMilestone {
   updatedAt DateTime @updatedAt
 
   // Informations
-  title         String
-  description   String?
-  targetAmount  Float?
-  targetDate    DateTime?
-  
+  title        String
+  description  String?
+  targetAmount Float?
+  targetDate   DateTime?
+
   // Statut
-  isCompleted   Boolean   @default(false)
-  completedAt   DateTime?
-  actualAmount  Float?
+  isCompleted  Boolean   @default(false)
+  completedAt  DateTime?
+  actualAmount Float?
 
   // Affichage
-  sortOrder     Int       @default(0)
-  icon          String?
-  color         String?
+  sortOrder Int     @default(0)
+  icon      String?
+  color     String?
 
   // Relation
-  campaignId    String
-  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@index([campaignId])
   @@index([sortOrder])
@@ -763,24 +766,24 @@ model CampaignDonor {
   updatedAt DateTime @updatedAt
 
   // Montants
-  totalDonated      Float    @default(0)
-  donationCount     Int      @default(0)
+  totalDonated      Float     @default(0)
+  donationCount     Int       @default(0)
   firstDonationDate DateTime?
   lastDonationDate  DateTime?
-  largestDonation   Float    @default(0)
+  largestDonation   Float     @default(0)
 
   // Statut dans la campagne
-  donorLevel        DonorLevel @default(SUPPORTER)
-  isRecurring       Boolean    @default(false)
-  isMajorDonor      Boolean    @default(false)
+  donorLevel   DonorLevel @default(SUPPORTER)
+  isRecurring  Boolean    @default(false)
+  isMajorDonor Boolean    @default(false)
 
   // Notes spécifiques à la campagne
-  notes             String?
+  notes String?
 
   // Relations
-  campaignId        String
-  campaign          Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  donorId           String
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  donorId    String
 
   @@unique([campaignId, donorId])
   @@index([campaignId])
@@ -803,12 +806,12 @@ model CampaignForm {
   createdAt DateTime @default(now())
 
   // Relations
-  campaignId    String
-  campaign      Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  formId        String
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  formId     String
 
   // Configuration
-  isPrimary     Boolean  @default(false)
+  isPrimary Boolean @default(false)
 
   @@unique([campaignId, formId])
   @@index([campaignId])
@@ -821,22 +824,22 @@ model CampaignUpdate {
   updatedAt DateTime @updatedAt
 
   // Contenu
-  title         String
-  content       String
-  imageUrl      String?
-  videoUrl      String?
+  title    String
+  content  String
+  imageUrl String?
+  videoUrl String?
 
   // Publication
-  isPublished   Boolean   @default(false)
-  publishedAt   DateTime?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
 
   // Statistiques
-  viewCount     Int       @default(0)
-  shareCount    Int       @default(0)
+  viewCount  Int @default(0)
+  shareCount Int @default(0)
 
   // Relation
-  campaignId    String
-  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@index([campaignId])
   @@index([publishedAt])
@@ -848,29 +851,28 @@ model CampaignTeamMember {
   createdAt DateTime @default(now())
 
   // Informations
-  name          String
-  role          String?
-  email         String?
-  phone         String?
-  photoUrl      String?
-  bio           String?
+  name     String
+  role     String?
+  email    String?
+  phone    String?
+  photoUrl String?
+  bio      String?
 
   // Objectifs personnels (pour P2P)
-  personalGoal      Float?
-  totalRaised       Float    @default(0)
-  donorCount        Int      @default(0)
+  personalGoal Float?
+  totalRaised  Float  @default(0)
+  donorCount   Int    @default(0)
 
   // Affichage
-  sortOrder     Int       @default(0)
-  isVisible     Boolean   @default(true)
+  sortOrder Int     @default(0)
+  isVisible Boolean @default(true)
 
   // Relation
-  campaignId    String
-  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@index([campaignId])
 }
-
 
 // ============================================
 // MODULE MARKETING AUTOMATION
@@ -883,35 +885,35 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
 
   // Informations générales
-  name          String
-  description   String?
-  category      EmailCategory @default(GENERAL)
-  
+  name        String
+  description String?
+  category    EmailCategory @default(GENERAL)
+
   // Contenu
-  subject       String?
-  preheader     String?       // Texte de prévisualisation
-  htmlContent   String?       @db.Text
-  textContent   String?       @db.Text  // Version texte brut
-  
+  subject     String?
+  preheader   String? // Texte de prévisualisation
+  htmlContent String? @db.Text
+  textContent String? @db.Text // Version texte brut
+
   // Éditeur drag & drop
-  blocks        Json?         // Structure JSON des blocs de l'éditeur
-  globalStyle   Json?         // Styles globaux (backgroundColor, fontFamily, contentWidth)
-  thumbnail     String?       // URL de la miniature
-  
+  blocks      Json? // Structure JSON des blocs de l'éditeur
+  globalStyle Json? // Styles globaux (backgroundColor, fontFamily, contentWidth)
+  thumbnail   String? // URL de la miniature
+
   // Variables disponibles
-  variables     String[]      // Ex: ["firstName", "lastName", "donationAmount"]
-  
+  variables String[] // Ex: ["firstName", "lastName", "donationAmount"]
+
   // Design
-  primaryColor  String        @default("#6366f1")
-  logoUrl       String?
-  footerText    String?
-  
+  primaryColor String  @default("#6366f1")
+  logoUrl      String?
+  footerText   String?
+
   // Statut
-  isActive      Boolean       @default(true)
-  isDefault     Boolean       @default(false)
-  
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false)
+
   // Relations
-  campaigns     EmailCampaign[]
+  campaigns EmailCampaign[]
 
   @@index([category])
   @@index([isActive])
@@ -938,58 +940,58 @@ model EmailCampaign {
   updatedAt DateTime @updatedAt
 
   // Informations générales
-  name          String
-  description   String?
-  campaignType  EmailCampaignType @default(ONE_TIME)
-  status        EmailCampaignStatus @default(DRAFT)
-  
+  name         String
+  description  String?
+  campaignType EmailCampaignType   @default(ONE_TIME)
+  status       EmailCampaignStatus @default(DRAFT)
+
   // Contenu (peut surcharger le template)
-  subject       String?
-  preheader     String?
-  htmlContent   String?       @db.Text
-  
+  subject     String?
+  preheader   String?
+  htmlContent String? @db.Text
+
   // Segmentation des destinataires
-  segmentRules  Json?         // Règles de segmentation JSON
-  tags          String[]      // Tags pour filtrer les donateurs
-  segments      String[]      // Segments de donateurs
-  
+  segmentRules Json? // Règles de segmentation JSON
+  tags         String[] // Tags pour filtrer les donateurs
+  segments     String[] // Segments de donateurs
+
   // Planification
-  scheduledAt   DateTime?
-  sentAt        DateTime?
-  completedAt   DateTime?
-  
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  completedAt DateTime?
+
   // Configuration
-  fromName      String        @default("Nucleus Cause")
-  fromEmail     String        @default("noreply@nucleuscause.com")
-  replyTo       String?
-  
+  fromName  String  @default("Nucleus Cause")
+  fromEmail String  @default("noreply@nucleuscause.com")
+  replyTo   String?
+
   // A/B Testing
-  isABTest      Boolean       @default(false)
-  variantA      Json?         // Configuration variante A
-  variantB      Json?         // Configuration variante B
+  isABTest       Boolean @default(false)
+  variantA       Json? // Configuration variante A
+  variantB       Json? // Configuration variante B
   winningVariant String?
-  
+
   // Statistiques
-  totalRecipients   Int       @default(0)
-  sentCount         Int       @default(0)
-  deliveredCount    Int       @default(0)
-  openCount         Int       @default(0)
-  clickCount        Int       @default(0)
-  bounceCount       Int       @default(0)
-  unsubscribeCount  Int       @default(0)
-  complaintCount    Int       @default(0)
-  
+  totalRecipients  Int @default(0)
+  sentCount        Int @default(0)
+  deliveredCount   Int @default(0)
+  openCount        Int @default(0)
+  clickCount       Int @default(0)
+  bounceCount      Int @default(0)
+  unsubscribeCount Int @default(0)
+  complaintCount   Int @default(0)
+
   // Métriques calculées
-  openRate          Float     @default(0)
-  clickRate         Float     @default(0)
-  bounceRate        Float     @default(0)
-  
+  openRate   Float @default(0)
+  clickRate  Float @default(0)
+  bounceRate Float @default(0)
+
   // Relations
-  templateId    String?
-  template      EmailTemplate? @relation(fields: [templateId], references: [id])
-  recipients    EmailRecipient[]
-  automationId  String?
-  automation    AutomationRule? @relation(fields: [automationId], references: [id])
+  templateId   String?
+  template     EmailTemplate?   @relation(fields: [templateId], references: [id])
+  recipients   EmailRecipient[]
+  automationId String?
+  automation   AutomationRule?  @relation(fields: [automationId], references: [id])
 
   @@index([status])
   @@index([campaignType])
@@ -998,9 +1000,9 @@ model EmailCampaign {
 }
 
 enum EmailCampaignType {
-  ONE_TIME      // Envoi unique
-  RECURRING     // Envoi récurrent
-  AUTOMATED     // Déclenché par automation
+  ONE_TIME // Envoi unique
+  RECURRING // Envoi récurrent
+  AUTOMATED // Déclenché par automation
   TRANSACTIONAL // Email transactionnel
 }
 
@@ -1021,41 +1023,41 @@ model EmailRecipient {
   updatedAt DateTime @updatedAt
 
   // Informations du destinataire
-  email         String
-  firstName     String?
-  lastName      String?
-  
+  email     String
+  firstName String?
+  lastName  String?
+
   // Statut d'envoi
-  status        EmailRecipientStatus @default(PENDING)
-  sentAt        DateTime?
-  deliveredAt   DateTime?
-  
+  status      EmailRecipientStatus @default(PENDING)
+  sentAt      DateTime?
+  deliveredAt DateTime?
+
   // Engagement
-  openedAt      DateTime?
-  openCount     Int       @default(0)
-  clickedAt     DateTime?
-  clickCount    Int       @default(0)
-  clickedLinks  String[]
-  
+  openedAt     DateTime?
+  openCount    Int       @default(0)
+  clickedAt    DateTime?
+  clickCount   Int       @default(0)
+  clickedLinks String[]
+
   // Problèmes
-  bouncedAt     DateTime?
-  bounceType    BounceType?
-  bounceReason  String?
+  bouncedAt      DateTime?
+  bounceType     BounceType?
+  bounceReason   String?
   unsubscribedAt DateTime?
-  complainedAt  DateTime?
-  
+  complainedAt   DateTime?
+
   // Variante A/B
-  variant       String?   // "A" ou "B"
-  
+  variant String? // "A" ou "B"
+
   // Relation avec donateur (optionnel)
-  donorId       String?
-  
+  donorId String?
+
   // Relation
-  campaignId    String
-  campaign      EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String
+  campaign   EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   // Relation avec les événements
-  events        EmailEvent[]
+  events EmailEvent[]
 
   @@unique([campaignId, email])
   @@index([campaignId])
@@ -1089,37 +1091,37 @@ model AutomationRule {
   updatedAt DateTime @updatedAt
 
   // Informations générales
-  name          String
-  description   String?
-  isActive      Boolean       @default(false)
-  
+  name        String
+  description String?
+  isActive    Boolean @default(false)
+
   // Déclencheur
   triggerType   AutomationTrigger
-  triggerConfig Json?         // Configuration spécifique au trigger
-  
+  triggerConfig Json? // Configuration spécifique au trigger
+
   // Conditions
-  conditions    Json?         // Conditions additionnelles
-  
+  conditions Json? // Conditions additionnelles
+
   // Actions
-  actionType    AutomationAction
-  actionConfig  Json?         // Configuration de l'action
-  
+  actionType   AutomationAction
+  actionConfig Json? // Configuration de l'action
+
   // Délai
-  delayMinutes  Int           @default(0)
-  delayType     DelayType     @default(IMMEDIATE)
-  
+  delayMinutes Int       @default(0)
+  delayType    DelayType @default(IMMEDIATE)
+
   // Limites
-  maxExecutions Int?          // Limite d'exécutions par donateur
-  cooldownHours Int?          // Délai entre exécutions
-  
+  maxExecutions Int? // Limite d'exécutions par donateur
+  cooldownHours Int? // Délai entre exécutions
+
   // Statistiques
-  executionCount    Int       @default(0)
-  lastExecutedAt    DateTime?
-  successCount      Int       @default(0)
-  failureCount      Int       @default(0)
-  
+  executionCount Int       @default(0)
+  lastExecutedAt DateTime?
+  successCount   Int       @default(0)
+  failureCount   Int       @default(0)
+
   // Relations
-  campaigns     EmailCampaign[]
+  campaigns EmailCampaign[]
 
   @@index([triggerType])
   @@index([isActive])
@@ -1127,53 +1129,53 @@ model AutomationRule {
 
 enum AutomationTrigger {
   // Événements donateur
-  NEW_DONOR           // Nouveau donateur créé
-  FIRST_DONATION      // Premier don
-  DONATION_RECEIVED   // Don reçu
-  RECURRING_STARTED   // Début don récurrent
+  NEW_DONOR // Nouveau donateur créé
+  FIRST_DONATION // Premier don
+  DONATION_RECEIVED // Don reçu
+  RECURRING_STARTED // Début don récurrent
   RECURRING_CANCELLED // Annulation don récurrent
-  
+
   // Anniversaires
-  BIRTHDAY            // Anniversaire du donateur
+  BIRTHDAY // Anniversaire du donateur
   DONATION_ANNIVERSARY // Anniversaire du premier don
   MEMBERSHIP_ANNIVERSARY // Anniversaire d'adhésion
-  
+
   // Engagement
-  INACTIVE_30_DAYS    // Inactif depuis 30 jours
-  INACTIVE_90_DAYS    // Inactif depuis 90 jours
-  INACTIVE_365_DAYS   // Inactif depuis 1 an
-  
+  INACTIVE_30_DAYS // Inactif depuis 30 jours
+  INACTIVE_90_DAYS // Inactif depuis 90 jours
+  INACTIVE_365_DAYS // Inactif depuis 1 an
+
   // Formulaires
-  FORM_SUBMITTED      // Formulaire soumis
-  FORM_ABANDONED      // Formulaire abandonné
-  
+  FORM_SUBMITTED // Formulaire soumis
+  FORM_ABANDONED // Formulaire abandonné
+
   // Campagnes
-  CAMPAIGN_STARTED    // Campagne démarrée
-  CAMPAIGN_ENDING     // Campagne se termine bientôt
+  CAMPAIGN_STARTED // Campagne démarrée
+  CAMPAIGN_ENDING // Campagne se termine bientôt
   CAMPAIGN_GOAL_REACHED // Objectif atteint
-  
+
   // Manuel
-  MANUAL              // Déclenché manuellement
-  SCHEDULED           // Planifié (date/heure)
+  MANUAL // Déclenché manuellement
+  SCHEDULED // Planifié (date/heure)
 }
 
 enum AutomationAction {
-  SEND_EMAIL          // Envoyer un email
-  SEND_SMS            // Envoyer un SMS
-  ADD_TAG             // Ajouter un tag
-  REMOVE_TAG          // Retirer un tag
-  UPDATE_SEGMENT      // Mettre à jour le segment
-  CREATE_TASK         // Créer une tâche
-  NOTIFY_TEAM         // Notifier l'équipe
-  WEBHOOK             // Appeler un webhook
+  SEND_EMAIL // Envoyer un email
+  SEND_SMS // Envoyer un SMS
+  ADD_TAG // Ajouter un tag
+  REMOVE_TAG // Retirer un tag
+  UPDATE_SEGMENT // Mettre à jour le segment
+  CREATE_TASK // Créer une tâche
+  NOTIFY_TEAM // Notifier l'équipe
+  WEBHOOK // Appeler un webhook
 }
 
 enum DelayType {
-  IMMEDIATE           // Immédiat
-  MINUTES             // Après X minutes
-  HOURS               // Après X heures
-  DAYS                // Après X jours
-  SPECIFIC_TIME       // À une heure précise
+  IMMEDIATE // Immédiat
+  MINUTES // Après X minutes
+  HOURS // Après X heures
+  DAYS // Après X jours
+  SPECIFIC_TIME // À une heure précise
 }
 
 // Journal des exécutions d'automatisation
@@ -1182,20 +1184,20 @@ model AutomationLog {
   createdAt DateTime @default(now())
 
   // Référence à la règle
-  automationId  String
+  automationId   String
   automationName String
-  
+
   // Donateur concerné
-  donorId       String?
-  donorEmail    String?
-  
+  donorId    String?
+  donorEmail String?
+
   // Résultat
-  status        AutomationLogStatus
-  errorMessage  String?
-  
+  status       AutomationLogStatus
+  errorMessage String?
+
   // Détails
-  triggerData   Json?         // Données du déclencheur
-  actionResult  Json?         // Résultat de l'action
+  triggerData  Json? // Données du déclencheur
+  actionResult Json? // Résultat de l'action
 
   @@index([automationId])
   @@index([donorId])
@@ -1217,19 +1219,19 @@ model MailingList {
   updatedAt DateTime @updatedAt
 
   // Informations
-  name          String
-  description   String?
-  
+  name        String
+  description String?
+
   // Configuration
-  isPublic      Boolean       @default(false)  // Visible pour inscription
-  isDoubleOptIn Boolean       @default(true)   // Double opt-in requis
-  
+  isPublic      Boolean @default(false) // Visible pour inscription
+  isDoubleOptIn Boolean @default(true) // Double opt-in requis
+
   // Statistiques
-  subscriberCount   Int       @default(0)
-  activeCount       Int       @default(0)
-  
+  subscriberCount Int @default(0)
+  activeCount     Int @default(0)
+
   // Relations
-  subscribers   MailingListSubscriber[]
+  subscribers MailingListSubscriber[]
 
   @@index([isPublic])
 }
@@ -1240,24 +1242,24 @@ model MailingListSubscriber {
   updatedAt DateTime @updatedAt
 
   // Informations
-  email         String
-  firstName     String?
-  lastName      String?
-  
+  email     String
+  firstName String?
+  lastName  String?
+
   // Statut
-  status        SubscriberStatus @default(PENDING)
-  confirmedAt   DateTime?
+  status         SubscriberStatus @default(PENDING)
+  confirmedAt    DateTime?
   unsubscribedAt DateTime?
-  
+
   // Source
-  source        String?       // Comment ils se sont inscrits
-  
+  source String? // Comment ils se sont inscrits
+
   // Relation avec donateur
-  donorId       String?
-  
+  donorId String?
+
   // Relation
-  listId        String
-  list          MailingList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId String
+  list   MailingList @relation(fields: [listId], references: [id], onDelete: Cascade)
 
   @@unique([listId, email])
   @@index([listId])
@@ -1266,13 +1268,12 @@ model MailingListSubscriber {
 }
 
 enum SubscriberStatus {
-  PENDING       // En attente de confirmation
-  ACTIVE        // Actif
-  UNSUBSCRIBED  // Désabonné
-  BOUNCED       // Email invalide
-  COMPLAINED    // A signalé comme spam
+  PENDING // En attente de confirmation
+  ACTIVE // Actif
+  UNSUBSCRIBED // Désabonné
+  BOUNCED // Email invalide
+  COMPLAINED // A signalé comme spam
 }
-
 
 // ============================================
 // MODULE CAMPAGNES P2P (PEER-TO-PEER)
@@ -1285,55 +1286,55 @@ model P2PFundraiser {
   updatedAt DateTime @updatedAt
 
   // Informations du fundraiser
-  firstName     String
-  lastName      String
-  email         String
-  phone         String?
-  photoUrl      String?
-  
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  photoUrl  String?
+
   // Page de collecte
-  slug          String   @unique
-  title         String
-  story         String?  @db.Text  // Histoire personnelle
-  videoUrl      String?
-  
+  slug     String  @unique
+  title    String
+  story    String? @db.Text // Histoire personnelle
+  videoUrl String?
+
   // Objectifs
-  goalAmount    Float    @default(500)
-  
+  goalAmount Float @default(500)
+
   // Statistiques (dénormalisées)
-  totalRaised       Float    @default(0)
-  donationCount     Int      @default(0)
-  donorCount        Int      @default(0)
-  averageDonation   Float    @default(0)
-  
+  totalRaised     Float @default(0)
+  donationCount   Int   @default(0)
+  donorCount      Int   @default(0)
+  averageDonation Float @default(0)
+
   // Statut
-  status        P2PStatus @default(PENDING)
-  approvedAt    DateTime?
-  publishedAt   DateTime?
-  
+  status      P2PStatus @default(PENDING)
+  approvedAt  DateTime?
+  publishedAt DateTime?
+
   // Personnalisation
-  primaryColor  String   @default("#6366f1")
+  primaryColor  String  @default("#6366f1")
   coverImageUrl String?
-  
+
   // Gamification
-  points        Int      @default(0)
-  level         Int      @default(1)
-  badges        String[] // IDs des badges obtenus
-  
+  points Int      @default(0)
+  level  Int      @default(1)
+  badges String[] // IDs des badges obtenus
+
   // Partage social
-  shareCount    Int      @default(0)
-  viewCount     Int      @default(0)
-  
+  shareCount Int @default(0)
+  viewCount  Int @default(0)
+
   // Relations
-  campaignId    String
-  campaign      Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  teamId        String?
-  team          P2PTeam? @relation(fields: [teamId], references: [id])
-  donations     P2PDonation[]
-  activities    P2PActivity[]
-  
+  campaignId String
+  campaign   Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  teamId     String?
+  team       P2PTeam?      @relation(fields: [teamId], references: [id])
+  donations  P2PDonation[]
+  activities P2PActivity[]
+
   // Relation optionnelle avec un donateur existant
-  donorId       String?
+  donorId String?
 
   @@index([campaignId])
   @@index([teamId])
@@ -1343,12 +1344,12 @@ model P2PFundraiser {
 }
 
 enum P2PStatus {
-  PENDING     // En attente d'approbation
-  APPROVED    // Approuvé mais pas encore publié
-  ACTIVE      // Actif et visible
-  PAUSED      // Mis en pause
-  COMPLETED   // Objectif atteint ou campagne terminée
-  CANCELLED   // Annulé
+  PENDING // En attente d'approbation
+  APPROVED // Approuvé mais pas encore publié
+  ACTIVE // Actif et visible
+  PAUSED // Mis en pause
+  COMPLETED // Objectif atteint ou campagne terminée
+  CANCELLED // Annulé
 }
 
 // Équipe P2P (plusieurs fundraisers ensemble)
@@ -1359,30 +1360,30 @@ model P2PTeam {
 
   // Informations
   name          String
-  slug          String   @unique
-  description   String?  @db.Text
+  slug          String  @unique
+  description   String? @db.Text
   logoUrl       String?
   coverImageUrl String?
-  
+
   // Objectifs
-  goalAmount    Float    @default(2000)
-  
+  goalAmount Float @default(2000)
+
   // Statistiques (dénormalisées)
-  totalRaised       Float    @default(0)
-  donationCount     Int      @default(0)
-  memberCount       Int      @default(0)
-  
+  totalRaised   Float @default(0)
+  donationCount Int   @default(0)
+  memberCount   Int   @default(0)
+
   // Statut
-  status        P2PStatus @default(PENDING)
-  
+  status P2PStatus @default(PENDING)
+
   // Gamification
-  points        Int      @default(0)
-  rank          Int?     // Classement parmi les équipes
-  
+  points Int  @default(0)
+  rank   Int? // Classement parmi les équipes
+
   // Relations
-  campaignId    String
-  members       P2PFundraiser[]
-  captainId     String?  // ID du fundraiser capitaine
+  campaignId String
+  members    P2PFundraiser[]
+  captainId  String? // ID du fundraiser capitaine
 
   @@index([campaignId])
   @@index([slug])
@@ -1395,25 +1396,25 @@ model P2PDonation {
   createdAt DateTime @default(now())
 
   // Informations du don
-  amount        Float
-  currency      String   @default("CAD")
-  
+  amount   Float
+  currency String @default("CAD")
+
   // Donateur
-  donorName     String?
-  donorEmail    String
-  isAnonymous   Boolean  @default(false)
-  message       String?  // Message de soutien
-  
+  donorName   String?
+  donorEmail  String
+  isAnonymous Boolean @default(false)
+  message     String? // Message de soutien
+
   // Statut
   status        PaymentStatus @default(PENDING)
-  transactionId String?  @unique
-  
+  transactionId String?       @unique
+
   // Relations
-  fundraiserId  String
-  fundraiser    P2PFundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
-  
+  fundraiserId String
+  fundraiser   P2PFundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+
   // Relation optionnelle avec donateur existant
-  donorId       String?
+  donorId String?
 
   @@index([fundraiserId])
   @@index([donorEmail])
@@ -1426,22 +1427,22 @@ model P2PActivity {
   createdAt DateTime @default(now())
 
   // Type d'activité
-  activityType  P2PActivityType
-  
+  activityType P2PActivityType
+
   // Contenu
-  title         String
-  description   String?
-  imageUrl      String?
-  
+  title       String
+  description String?
+  imageUrl    String?
+
   // Données associées (JSON)
-  metadata      Json?
-  
+  metadata Json?
+
   // Visibilité
-  isPublic      Boolean  @default(true)
-  
+  isPublic Boolean @default(true)
+
   // Relations
-  fundraiserId  String
-  fundraiser    P2PFundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
+  fundraiserId String
+  fundraiser   P2PFundraiser @relation(fields: [fundraiserId], references: [id], onDelete: Cascade)
 
   @@index([fundraiserId])
   @@index([activityType])
@@ -1449,14 +1450,14 @@ model P2PActivity {
 }
 
 enum P2PActivityType {
-  PAGE_CREATED      // Page créée
+  PAGE_CREATED // Page créée
   DONATION_RECEIVED // Don reçu
-  GOAL_REACHED      // Objectif atteint
+  GOAL_REACHED // Objectif atteint
   MILESTONE_REACHED // Jalon atteint (25%, 50%, 75%)
-  BADGE_EARNED      // Badge obtenu
-  SHARE_SOCIAL      // Partage sur réseaux sociaux
-  UPDATE_POSTED     // Mise à jour publiée
-  TEAM_JOINED       // A rejoint une équipe
+  BADGE_EARNED // Badge obtenu
+  SHARE_SOCIAL // Partage sur réseaux sociaux
+  UPDATE_POSTED // Mise à jour publiée
+  TEAM_JOINED // A rejoint une équipe
 }
 
 // Badges et récompenses
@@ -1465,36 +1466,36 @@ model P2PBadge {
   createdAt DateTime @default(now())
 
   // Informations
-  name          String
-  description   String
-  iconUrl       String?
-  color         String   @default("#6366f1")
-  
+  name        String
+  description String
+  iconUrl     String?
+  color       String  @default("#6366f1")
+
   // Conditions d'obtention
-  badgeType     P2PBadgeType
-  threshold     Float?   // Seuil pour obtenir le badge
-  
+  badgeType P2PBadgeType
+  threshold Float? // Seuil pour obtenir le badge
+
   // Points accordés
-  pointsAwarded Int      @default(10)
-  
+  pointsAwarded Int @default(10)
+
   // Affichage
-  sortOrder     Int      @default(0)
-  isActive      Boolean  @default(true)
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
 
   @@index([badgeType])
 }
 
 enum P2PBadgeType {
-  FIRST_DONATION      // Premier don reçu
-  AMOUNT_RAISED       // Montant collecté (100$, 500$, 1000$, etc.)
-  DONOR_COUNT         // Nombre de donateurs (5, 10, 25, etc.)
-  GOAL_PERCENT        // Pourcentage de l'objectif (25%, 50%, 100%, 150%)
-  SOCIAL_SHARE        // Partages sociaux
-  STREAK              // Dons consécutifs (jours)
-  TOP_FUNDRAISER      // Meilleur collecteur
-  TEAM_PLAYER         // Membre d'équipe actif
-  EARLY_BIRD          // Inscription rapide
-  STORY_TELLER        // A partagé son histoire
+  FIRST_DONATION // Premier don reçu
+  AMOUNT_RAISED // Montant collecté (100$, 500$, 1000$, etc.)
+  DONOR_COUNT // Nombre de donateurs (5, 10, 25, etc.)
+  GOAL_PERCENT // Pourcentage de l'objectif (25%, 50%, 100%, 150%)
+  SOCIAL_SHARE // Partages sociaux
+  STREAK // Dons consécutifs (jours)
+  TOP_FUNDRAISER // Meilleur collecteur
+  TEAM_PLAYER // Membre d'équipe actif
+  EARLY_BIRD // Inscription rapide
+  STORY_TELLER // A partagé son histoire
 }
 
 // Classement P2P (leaderboard)
@@ -1504,21 +1505,21 @@ model P2PLeaderboard {
   updatedAt DateTime @updatedAt
 
   // Période
-  periodType    LeaderboardPeriod
-  periodStart   DateTime
-  periodEnd     DateTime
-  
+  periodType  LeaderboardPeriod
+  periodStart DateTime
+  periodEnd   DateTime
+
   // Type de classement
   leaderboardType LeaderboardType
-  
+
   // Campagne associée
-  campaignId    String
-  
+  campaignId String
+
   // Données du classement (JSON array)
-  rankings      Json     // [{fundraiserId, rank, amount, donorCount}]
-  
+  rankings Json // [{fundraiserId, rank, amount, donorCount}]
+
   // Statut
-  isFinal       Boolean  @default(false)
+  isFinal Boolean @default(false)
 
   @@index([campaignId])
   @@index([periodType])
@@ -1533,30 +1534,29 @@ enum LeaderboardPeriod {
 }
 
 enum LeaderboardType {
-  AMOUNT_RAISED     // Par montant collecté
-  DONOR_COUNT       // Par nombre de donateurs
-  POINTS            // Par points de gamification
-  TEAM              // Classement des équipes
+  AMOUNT_RAISED // Par montant collecté
+  DONOR_COUNT // Par nombre de donateurs
+  POINTS // Par points de gamification
+  TEAM // Classement des équipes
 }
-
 
 // ============================================
 // MODULE ADMINISTRATION
 // ============================================
 
 model Permission {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Identifiant unique de la permission
-  code        String   @unique  // ex: "donors.create", "campaigns.delete"
-  name        String             // ex: "Créer des donateurs"
+  code        String  @unique // ex: "donors.create", "campaigns.delete"
+  name        String // ex: "Créer des donateurs"
   description String?
-  
+
   // Catégorie/Module
-  module      String             // ex: "donors", "campaigns", "analytics"
-  
+  module String // ex: "donors", "campaigns", "analytics"
+
   // Relations
   rolePermissions RolePermission[]
 
@@ -1565,18 +1565,18 @@ model Permission {
 }
 
 model Role {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  name        String   @unique  // ex: "Administrateur", "Gestionnaire"
+  name        String  @unique // ex: "Administrateur", "Gestionnaire"
   description String?
-  isSystem    Boolean  @default(false)  // Rôles système non modifiables
-  isActive    Boolean  @default(true)
-  
+  isSystem    Boolean @default(false) // Rôles système non modifiables
+  isActive    Boolean @default(true)
+
   // Couleur pour l'UI
-  color       String?  @default("#6366f1")
-  
+  color String? @default("#6366f1")
+
   // Relations
   permissions RolePermission[]
   userRoles   UserRoleAssignment[]
@@ -1586,12 +1586,12 @@ model Role {
 }
 
 model RolePermission {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
 
-  roleId       String
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
   permissionId String
   permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
@@ -1601,20 +1601,20 @@ model RolePermission {
 }
 
 model UserRoleAssignment {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  userId      Int
-  roleId      String
-  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  
+  userId Int
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
   // Dates de validité (optionnel)
-  startDate   DateTime?
-  endDate     DateTime?
-  
+  startDate DateTime?
+  endDate   DateTime?
+
   // Qui a assigné ce rôle
-  assignedBy  Int?
+  assignedBy Int?
 
   @@unique([userId, roleId])
   @@index([userId])
@@ -1622,31 +1622,31 @@ model UserRoleAssignment {
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
 
   // Qui a fait l'action
-  userId      Int?
-  userName    String?
-  userEmail   String?
-  
+  userId    Int?
+  userName  String?
+  userEmail String?
+
   // Quelle action
-  action      AuditAction
-  module      String        // ex: "donors", "campaigns"
-  entityType  String        // ex: "Donor", "Campaign"
-  entityId    String?
-  
+  action     AuditAction
+  module     String // ex: "donors", "campaigns"
+  entityType String // ex: "Donor", "Campaign"
+  entityId   String?
+
   // Détails de l'action
   description String
-  oldValue    String?       // JSON des anciennes valeurs
-  newValue    String?       // JSON des nouvelles valeurs
-  
+  oldValue    String? // JSON des anciennes valeurs
+  newValue    String? // JSON des nouvelles valeurs
+
   // Contexte
-  ipAddress   String?
-  userAgent   String?
-  
+  ipAddress String?
+  userAgent String?
+
   // Métadonnées
-  metadata    String?       // JSON pour données additionnelles
+  metadata String? // JSON pour données additionnelles
 
   @@index([userId])
   @@index([action])
@@ -1670,27 +1670,27 @@ enum AuditAction {
 }
 
 model SystemSetting {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Clé unique du paramètre
-  key         String   @unique  // ex: "org.name", "email.sender"
-  value       String             // Valeur (peut être JSON)
-  
+  key   String @unique // ex: "org.name", "email.sender"
+  value String // Valeur (peut être JSON)
+
   // Métadonnées
-  category    String             // ex: "organization", "email", "security"
-  label       String             // Label pour l'UI
+  category    String // ex: "organization", "email", "security"
+  label       String // Label pour l'UI
   description String?
-  dataType    SettingDataType    // Type de données
-  
+  dataType    SettingDataType // Type de données
+
   // Validation
-  isRequired  Boolean  @default(false)
-  options     String?  // JSON pour les options (select)
-  
+  isRequired Boolean @default(false)
+  options    String? // JSON pour les options (select)
+
   // Sécurité
-  isSecret    Boolean  @default(false)  // Masquer la valeur
-  isReadOnly  Boolean  @default(false)  // Non modifiable via UI
+  isSecret   Boolean @default(false) // Masquer la valeur
+  isReadOnly Boolean @default(false) // Non modifiable via UI
 
   @@index([category])
   @@index([key])
@@ -1708,31 +1708,31 @@ enum SettingDataType {
 }
 
 model Integration {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Identifiant de l'intégration
-  provider    String   @unique  // ex: "stripe", "mailchimp", "salesforce"
-  name        String             // ex: "Stripe Payments"
+  provider    String              @unique // ex: "stripe", "mailchimp", "salesforce"
+  name        String // ex: "Stripe Payments"
   description String?
   category    IntegrationCategory
-  
+
   // État
-  isEnabled   Boolean  @default(false)
+  isEnabled    Boolean @default(false)
   isConfigured Boolean @default(false)
-  
+
   // Configuration (chiffré en production)
-  config      String?  // JSON des paramètres
-  
+  config String? // JSON des paramètres
+
   // Dernière synchronisation
-  lastSyncAt  DateTime?
+  lastSyncAt     DateTime?
   lastSyncStatus String?
-  
+
   // Métadonnées
-  logoUrl     String?
-  docsUrl     String?
-  webhookUrl  String?
+  logoUrl    String?
+  docsUrl    String?
+  webhookUrl String?
 
   @@index([provider])
   @@index([category])
@@ -1750,22 +1750,22 @@ enum IntegrationCategory {
 }
 
 model Invitation {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  expiresAt   DateTime
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 
-  email       String
-  roleId      String
-  
+  email  String
+  roleId String
+
   // Token unique pour l'invitation
-  token       String   @unique
-  
+  token String @unique
+
   // État
-  status      InvitationStatus @default(PENDING)
-  acceptedAt  DateTime?
-  
+  status     InvitationStatus @default(PENDING)
+  acceptedAt DateTime?
+
   // Qui a envoyé l'invitation
-  invitedBy   Int
+  invitedBy     Int
   invitedByName String?
 
   @@index([email])
@@ -1780,7 +1780,6 @@ enum InvitationStatus {
   REVOKED
 }
 
-
 // ============================================
 // MODULE TRACKING EMAIL (SENDGRID WEBHOOKS)
 // ============================================
@@ -1791,28 +1790,28 @@ model EmailEvent {
   createdAt DateTime @default(now())
 
   // Référence au destinataire
-  recipientId   String
-  recipient     EmailRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  
+  recipientId String
+  recipient   EmailRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
   // Référence à la campagne
-  campaignId    String
-  
+  campaignId String
+
   // Type d'événement
-  eventType     String    // processed, delivered, open, click, bounce, etc.
-  eventDate     DateTime
-  
+  eventType String // processed, delivered, open, click, bounce, etc.
+  eventDate DateTime
+
   // Informations du destinataire
-  email         String
-  
+  email String
+
   // Données spécifiques à l'événement
-  url           String?   // Pour les clics
-  ip            String?
-  userAgent     String?
-  reason        String?   // Pour les bounces
-  
+  url       String? // Pour les clics
+  ip        String?
+  userAgent String?
+  reason    String? // Pour les bounces
+
   // Identifiants SendGrid
-  sgEventId     String?
-  sgMessageId   String?
+  sgEventId   String?
+  sgMessageId String?
 
   @@index([recipientId])
   @@index([campaignId])
@@ -1821,79 +1820,76 @@ model EmailEvent {
   @@index([email])
 }
 
-
-
 // ============================================
 // GESTION DES CONSENTEMENTS RGPD
 // ============================================
 
 model ConsentHistory {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
   // Relation avec le donateur
-  donorId     String
-  donor       Donor    @relation(fields: [donorId], references: [id], onDelete: Cascade)
-  
+  donorId String
+  donor   Donor  @relation(fields: [donorId], references: [id], onDelete: Cascade)
+
   // Type de changement
-  consentType String   // "update", "opt_in", "opt_out", "initial"
-  
+  consentType String // "update", "opt_in", "opt_out", "initial"
+
   // Valeurs avant/après (JSON)
   previousValue String?
   newValue      String
-  
+
   // Source du changement
-  source      String   // "admin", "preference_center", "email_link", "import", "api"
-  reason      String?  // Raison du changement (optionnel)
-  
+  source String // "admin", "preference_center", "email_link", "import", "api"
+  reason String? // Raison du changement (optionnel)
+
   // Informations de traçabilité
-  ipAddress   String?
-  userAgent   String?
-  userId      Int?     // ID de l'admin qui a fait le changement (si applicable)
-  
+  ipAddress String?
+  userAgent String?
+  userId    Int? // ID de l'admin qui a fait le changement (si applicable)
+
   @@index([donorId])
   @@index([createdAt])
 }
-
 
 // ============================================
 // MODULE NOTIFICATIONS
 // ============================================
 
 model Notification {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Type et catégorie
-  type        NotificationType
-  category    NotificationCategory
-  priority    NotificationPriority @default(MEDIUM)
-  
+  type     NotificationType
+  category NotificationCategory
+  priority NotificationPriority @default(MEDIUM)
+
   // Contenu
   title       String
   message     String
   actionUrl   String?
   actionLabel String?
-  
+
   // Données additionnelles (JSON)
-  metadata    String?  // JSON avec données contextuelles
-  
+  metadata String? // JSON avec données contextuelles
+
   // Entités liées (optionnel)
-  donorId     String?
-  campaignId  String?
-  donationId  String?
-  formId      String?
-  
+  donorId    String?
+  campaignId String?
+  donationId String?
+  formId     String?
+
   // Statut
-  isRead      Boolean  @default(false)
+  isRead      Boolean   @default(false)
   readAt      DateTime?
-  isDismissed Boolean  @default(false)
+  isDismissed Boolean   @default(false)
   dismissedAt DateTime?
-  
+
   // Utilisateur destinataire (null = tous les admins)
-  userId      Int?
-  
+  userId Int?
+
   @@index([userId])
   @@index([isRead])
   @@index([type])
@@ -1903,39 +1899,39 @@ model Notification {
 
 enum NotificationType {
   // Dons
-  NEW_DONATION           // Nouveau don reçu
-  MAJOR_DONATION         // Don majeur (au-dessus d'un seuil)
-  RECURRING_CANCELLED    // Don récurrent annulé
-  RECURRING_FAILED       // Échec de prélèvement récurrent
-  
+  NEW_DONATION // Nouveau don reçu
+  MAJOR_DONATION // Don majeur (au-dessus d'un seuil)
+  RECURRING_CANCELLED // Don récurrent annulé
+  RECURRING_FAILED // Échec de prélèvement récurrent
+
   // Donateurs
-  NEW_DONOR              // Nouveau donateur
-  DONOR_MILESTONE        // Donateur atteint un jalon
-  DONOR_INACTIVE         // Donateur inactif depuis X mois
-  
+  NEW_DONOR // Nouveau donateur
+  DONOR_MILESTONE // Donateur atteint un jalon
+  DONOR_INACTIVE // Donateur inactif depuis X mois
+
   // Campagnes
-  CAMPAIGN_GOAL_50       // Campagne à 50% de l'objectif
-  CAMPAIGN_GOAL_75       // Campagne à 75% de l'objectif
-  CAMPAIGN_GOAL_100      // Campagne objectif atteint
-  CAMPAIGN_ENDING        // Campagne se termine bientôt
-  CAMPAIGN_ENDED         // Campagne terminée
-  
+  CAMPAIGN_GOAL_50 // Campagne à 50% de l'objectif
+  CAMPAIGN_GOAL_75 // Campagne à 75% de l'objectif
+  CAMPAIGN_GOAL_100 // Campagne objectif atteint
+  CAMPAIGN_ENDING // Campagne se termine bientôt
+  CAMPAIGN_ENDED // Campagne terminée
+
   // Formulaires
-  FORM_SUBMISSION        // Nouvelle soumission de formulaire
-  FORM_ERROR             // Erreur sur un formulaire
-  
+  FORM_SUBMISSION // Nouvelle soumission de formulaire
+  FORM_ERROR // Erreur sur un formulaire
+
   // Emails
-  EMAIL_BOUNCED          // Email rebondi
-  EMAIL_CAMPAIGN_SENT    // Campagne email envoyée
-  EMAIL_LOW_OPEN_RATE    // Taux d'ouverture faible
-  
+  EMAIL_BOUNCED // Email rebondi
+  EMAIL_CAMPAIGN_SENT // Campagne email envoyée
+  EMAIL_LOW_OPEN_RATE // Taux d'ouverture faible
+
   // P2P
-  P2P_NEW_FUNDRAISER     // Nouveau collecteur P2P
-  P2P_GOAL_REACHED       // Collecteur a atteint son objectif
-  
+  P2P_NEW_FUNDRAISER // Nouveau collecteur P2P
+  P2P_GOAL_REACHED // Collecteur a atteint son objectif
+
   // Système
-  SYSTEM_ALERT           // Alerte système
-  SYSTEM_INFO            // Information système
+  SYSTEM_ALERT // Alerte système
+  SYSTEM_INFO // Information système
 }
 
 enum NotificationCategory {
@@ -1957,143 +1953,141 @@ enum NotificationPriority {
 
 // Préférences de notification par utilisateur
 model NotificationPreference {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  userId      Int      @unique
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int @unique
+
   // Préférences par catégorie (JSON)
   // Format: { "DONATIONS": { "email": true, "inApp": true, "threshold": 1000 }, ... }
-  preferences String   @default("{}")
-  
+  preferences String @default("{}")
+
   // Seuils personnalisés
   majorDonationThreshold Int @default(1000)
   inactiveDonorDays      Int @default(180)
-  
+
   // Canaux
-  emailEnabled    Boolean @default(true)
-  inAppEnabled    Boolean @default(true)
-  
+  emailEnabled Boolean @default(true)
+  inAppEnabled Boolean @default(true)
+
   @@index([userId])
 }
-
 
 // ============================================
 // MODULE SEGMENTATION AVANCÉE
 // ============================================
 
 model DonorSegment {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Informations de base
   name        String
   description String?
-  color       String   @default("#8B5CF6")
+  color       String  @default("#8B5CF6")
   icon        String?
-  
+
   // Type de segment
-  type        SegmentType @default(DYNAMIC)
-  
+  type SegmentType @default(DYNAMIC)
+
   // Règles de segmentation (JSON)
   // Format: { "operator": "AND", "rules": [{ "field": "totalDonated", "operator": ">=", "value": 1000 }, ...] }
-  rules       String?
-  
+  rules String?
+
   // Statistiques (mises à jour périodiquement)
-  donorCount  Int      @default(0)
-  totalValue  Float    @default(0)
-  avgDonation Float    @default(0)
-  
+  donorCount  Int   @default(0)
+  totalValue  Float @default(0)
+  avgDonation Float @default(0)
+
   // Dernière mise à jour des stats
   lastCalculatedAt DateTime?
-  
+
   // Statut
-  isActive    Boolean  @default(true)
-  isSystem    Boolean  @default(false)  // Segments système non modifiables
-  
+  isActive Boolean @default(true)
+  isSystem Boolean @default(false) // Segments système non modifiables
+
   // Créateur
   createdById Int?
-  
+
   @@index([isActive])
   @@index([type])
   @@index([name])
 }
 
 enum SegmentType {
-  STATIC    // Liste fixe de donateurs
-  DYNAMIC   // Basé sur des règles, mis à jour automatiquement
-  SMART     // Basé sur l'IA/ML
+  STATIC // Liste fixe de donateurs
+  DYNAMIC // Basé sur des règles, mis à jour automatiquement
+  SMART // Basé sur l'IA/ML
 }
 
 // Appartenance manuelle à un segment (pour segments statiques)
 model DonorSegmentMembership {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  
-  donorId     String
-  segmentId   String
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  donorId   String
+  segmentId String
+
   // Métadonnées
-  addedBy     Int?     // ID utilisateur qui a ajouté
-  reason      String?  // Raison de l'ajout
-  
+  addedBy Int? // ID utilisateur qui a ajouté
+  reason  String? // Raison de l'ajout
+
   @@unique([donorId, segmentId])
   @@index([donorId])
   @@index([segmentId])
 }
-
 
 // ============================================
 // MODULE REÇUS FISCAUX
 // ============================================
 
 model TaxReceipt {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Numéro de reçu séquentiel (format: YYYY-NNNNNN)
-  receiptNumber String  @unique
-  year          Int
+  receiptNumber  String @unique
+  year           Int
   sequenceNumber Int
-  
+
   // Informations du don
-  donationId    String
-  donation      Donation @relation(fields: [donationId], references: [id])
-  
+  donationId String
+  donation   Donation @relation(fields: [donationId], references: [id])
+
   // Informations du donateur (snapshot au moment de l'émission)
-  donorId       String
-  donor         Donor    @relation(fields: [donorId], references: [id])
-  donorName     String
-  donorAddress  String?
-  donorEmail    String?
-  
+  donorId      String
+  donor        Donor   @relation(fields: [donorId], references: [id])
+  donorName    String
+  donorAddress String?
+  donorEmail   String?
+
   // Montant et date
-  amount        Float
-  donationDate  DateTime
-  issueDate     DateTime @default(now())
-  
+  amount       Float
+  donationDate DateTime
+  issueDate    DateTime @default(now())
+
   // Type de reçu
-  receiptType   ReceiptType @default(SINGLE)
-  country       String      @default("CA") // CA = Canada, FR = France
-  
+  receiptType ReceiptType @default(SINGLE)
+  country     String      @default("CA") // CA = Canada, FR = France
+
   // Fichier PDF
-  pdfUrl        String?
-  pdfKey        String?
-  
+  pdfUrl String?
+  pdfKey String?
+
   // Statut
-  status        ReceiptStatus @default(GENERATED)
-  sentAt        DateTime?
-  sentTo        String?
-  
+  status ReceiptStatus @default(GENERATED)
+  sentAt DateTime?
+  sentTo String?
+
   // Annulation
-  voidedAt      DateTime?
-  voidedBy      Int?
-  voidReason    String?
-  replacedById  String?
-  
+  voidedAt     DateTime?
+  voidedBy     Int?
+  voidReason   String?
+  replacedById String?
+
   @@index([donorId])
   @@index([donationId])
   @@index([year, sequenceNumber])
@@ -2102,63 +2096,62 @@ model TaxReceipt {
 }
 
 enum ReceiptType {
-  SINGLE      // Reçu pour un don unique
-  ANNUAL      // Reçu annuel consolidé
+  SINGLE // Reçu pour un don unique
+  ANNUAL // Reçu annuel consolidé
   REPLACEMENT // Reçu de remplacement
 }
 
 enum ReceiptStatus {
-  GENERATED   // Généré mais pas encore envoyé
-  SENT        // Envoyé par email
-  DOWNLOADED  // Téléchargé par le donateur
-  VOIDED      // Annulé
+  GENERATED // Généré mais pas encore envoyé
+  SENT // Envoyé par email
+  DOWNLOADED // Téléchargé par le donateur
+  VOIDED // Annulé
 }
 
 // Paramètres de l'organisation pour les reçus fiscaux
 model OrganizationSettings {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Informations légales
-  organizationName    String
-  legalName           String?
-  charityNumber       String?   // Numéro d'organisme de bienfaisance (Canada)
-  siret               String?   // Numéro SIRET (France)
-  rna                 String?   // Numéro RNA (France)
-  
+  organizationName String
+  legalName        String?
+  charityNumber    String? // Numéro d'organisme de bienfaisance (Canada)
+  siret            String? // Numéro SIRET (France)
+  rna              String? // Numéro RNA (France)
+
   // Adresse
-  address             String?
-  address2            String?
-  city                String?
-  state               String?
-  postalCode          String?
-  country             String    @default("CA")
-  
+  address    String?
+  address2   String?
+  city       String?
+  state      String?
+  postalCode String?
+  country    String  @default("CA")
+
   // Contact
-  phone               String?
-  email               String?
-  website             String?
-  
+  phone   String?
+  email   String?
+  website String?
+
   // Logo pour les reçus
-  logoUrl             String?
-  
+  logoUrl String?
+
   // Signature autorisée
   authorizedSignatory String?
   signatureUrl        String?
-  
+
   // Paramètres des reçus
-  receiptPrefix       String    @default("")  // Préfixe optionnel pour les numéros
-  autoSendReceipts    Boolean   @default(true)
+  receiptPrefix       String  @default("") // Préfixe optionnel pour les numéros
+  autoSendReceipts    Boolean @default(true)
   receiptEmailSubject String?
   receiptEmailBody    String?
-  
+
   // Seuil minimum pour émettre un reçu (certains pays ont un minimum)
-  minimumReceiptAmount Float    @default(0)
-  
+  minimumReceiptAmount Float @default(0)
+
   @@index([charityNumber])
 }
-
 
 // ==================== AUTOMATISATIONS ====================
 
@@ -2195,82 +2188,81 @@ enum ActionType {
 }
 
 model Automation {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
-  description String?  @db.Text
+  description String?          @db.Text
   status      AutomationStatus @default(DRAFT)
-  
-  triggerType TriggerType
+
+  triggerType   TriggerType
   triggerConfig Json?
-  
-  actions     AutomationStep[]
-  
-  totalExecutions Int @default(0)
-  successfulExecutions Int @default(0)
-  failedExecutions Int @default(0)
-  lastExecutedAt DateTime?
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  
-  executions  AutomationExecution[]
-  
+
+  actions AutomationStep[]
+
+  totalExecutions      Int       @default(0)
+  successfulExecutions Int       @default(0)
+  failedExecutions     Int       @default(0)
+  lastExecutedAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+
+  executions AutomationExecution[]
+
   @@index([status])
   @@index([triggerType])
 }
 
 model AutomationStep {
-  id           String   @id @default(cuid())
+  id           String     @id @default(cuid())
   automationId String
   automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  
-  order        Int
-  actionType   ActionType
-  config       Json
-  
-  conditionField String?
+
+  order      Int
+  actionType ActionType
+  config     Json
+
+  conditionField    String?
   conditionOperator String?
-  conditionValue String?
-  
+  conditionValue    String?
+
   parentActionId String?
-  parentAction   AutomationStep? @relation("ActionChildren", fields: [parentActionId], references: [id])
+  parentAction   AutomationStep?  @relation("ActionChildren", fields: [parentActionId], references: [id])
   childActions   AutomationStep[] @relation("ActionChildren")
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([automationId])
   @@index([parentActionId])
 }
 
 model AutomationExecution {
-  id           String   @id @default(cuid())
+  id           String     @id @default(cuid())
   automationId String
   automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  
-  donorId      String?
-  donationId   String?
-  campaignId   String?
-  
-  status       String   @default("PENDING")
-  startedAt    DateTime @default(now())
-  completedAt  DateTime?
-  
-  results      Json?
-  error        String?  @db.Text
-  
-  actionsExecuted Int @default(0)
+
+  donorId    String?
+  donationId String?
+  campaignId String?
+
+  status      String    @default("PENDING")
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  results Json?
+  error   String? @db.Text
+
+  actionsExecuted    Int @default(0)
   currentActionOrder Int @default(0)
-  
+
   scheduledFor DateTime?
-  
+
   @@index([automationId])
   @@index([donorId])
   @@index([status])
   @@index([scheduledFor])
 }
-
 
 // ============================================
 // MODULE MULTI-ORGANISATION
@@ -2282,50 +2274,51 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   // Informations générales
-  name          String
-  slug          String   @unique
-  description   String?
-  
+  name        String
+  slug        String  @unique
+  description String?
+
   // Branding
-  logoUrl       String?
-  primaryColor  String   @default("#6366f1")
+  logoUrl        String?
+  primaryColor   String  @default("#6366f1")
   secondaryColor String  @default("#8b5cf6")
-  
+
   // Informations légales
-  legalName         String?
-  charityNumber     String?   // Numéro d'organisme de bienfaisance
-  taxId             String?
-  
+  legalName     String?
+  charityNumber String? // Numéro d'organisme de bienfaisance
+  taxId         String?
+
   // Adresse
-  address       String?
-  city          String?
-  state         String?
-  postalCode    String?
-  country       String   @default("CA")
-  
+  address    String?
+  city       String?
+  state      String?
+  postalCode String?
+  country    String  @default("CA")
+
   // Contact
-  phone         String?
-  email         String?
-  website       String?
-  
+  phone   String?
+  email   String?
+  website String?
+
   // Paramètres
-  timezone      String   @default("America/Toronto")
-  currency      String   @default("CAD")
-  language      String   @default("fr")
-  
+  timezone String @default("America/Toronto")
+  currency String @default("CAD")
+  language String @default("fr")
+
   // Statut
-  status        OrganizationStatus @default(ACTIVE)
-  plan          OrganizationPlan   @default(FREE)
-  
+  status OrganizationStatus @default(ACTIVE)
+  plan   OrganizationPlan   @default(FREE)
+
   // Limites du plan
-  maxUsers      Int      @default(5)
-  maxDonors     Int      @default(1000)
-  maxCampaigns  Int      @default(10)
-  
+  maxUsers     Int @default(5)
+  maxDonors    Int @default(1000)
+  maxCampaigns Int @default(10)
+
   // Relations
-  members       OrganizationMember[]
+  members          OrganizationMember[]
   dashboardLayouts DashboardLayout[]
-  adminAccess   AdminOrganizationAccess[]
+  adminAccess      AdminOrganizationAccess[]
+  donors           Donor[]
 
   @@index([slug])
   @@index([status])
@@ -2351,33 +2344,33 @@ model OrganizationMember {
   updatedAt DateTime @updatedAt
 
   // Rôle dans l'organisation
-  role      OrganizationRole @default(MEMBER)
-  
+  role OrganizationRole @default(MEMBER)
+
   // Permissions spécifiques (override du rôle)
   permissions String[]
-  
+
   // Statut
   status    MemberStatus @default(ACTIVE)
   invitedAt DateTime?
   joinedAt  DateTime?
-  
+
   // Relations
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   userId         Int
-  
+
   @@unique([organizationId, userId])
   @@index([organizationId])
   @@index([userId])
 }
 
 enum OrganizationRole {
-  OWNER       // Propriétaire - tous les droits
-  ADMIN       // Administrateur - gestion complète
-  MANAGER     // Manager - gestion des données
-  ANALYST     // Analyste - lecture et rapports
-  MEMBER      // Membre - accès de base
-  VIEWER      // Viewer - lecture seule
+  OWNER // Propriétaire - tous les droits
+  ADMIN // Administrateur - gestion complète
+  MANAGER // Manager - gestion des données
+  ANALYST // Analyste - lecture et rapports
+  MEMBER // Membre - accès de base
+  VIEWER // Viewer - lecture seule
 }
 
 enum MemberStatus {
@@ -2397,21 +2390,21 @@ model DashboardLayout {
   updatedAt DateTime @updatedAt
 
   // Informations
-  name          String
-  description   String?
-  isDefault     Boolean  @default(false)
-  isShared      Boolean  @default(false)
-  
+  name        String
+  description String?
+  isDefault   Boolean @default(false)
+  isShared    Boolean @default(false)
+
   // Configuration de la grille (JSON)
   // Format: { widgets: [{ id, type, x, y, w, h, config }] }
-  layout        Json
-  
+  layout Json
+
   // Paramètres globaux
-  columns       Int      @default(12)
-  rowHeight     Int      @default(100)
-  
+  columns   Int @default(12)
+  rowHeight Int @default(100)
+
   // Relations
-  userId        Int
+  userId         Int
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
@@ -2425,32 +2418,32 @@ model DashboardWidget {
   updatedAt DateTime @updatedAt
 
   // Type de widget
-  widgetType    WidgetType
-  
+  widgetType WidgetType
+
   // Configuration spécifique au widget (JSON)
-  config        Json?
-  
+  config Json?
+
   // Titre personnalisé
-  title         String?
-  
+  title String?
+
   // Taille par défaut
-  defaultWidth  Int      @default(4)
-  defaultHeight Int      @default(2)
-  minWidth      Int      @default(2)
-  minHeight     Int      @default(1)
+  defaultWidth  Int  @default(4)
+  defaultHeight Int  @default(2)
+  minWidth      Int  @default(2)
+  minHeight     Int  @default(1)
   maxWidth      Int?
   maxHeight     Int?
-  
+
   // Statut
-  isActive      Boolean  @default(true)
-  isSystem      Boolean  @default(false)  // Widgets système non supprimables
-  
+  isActive Boolean @default(true)
+  isSystem Boolean @default(false) // Widgets système non supprimables
+
   // Catégorie pour le menu
-  category      WidgetCategory @default(GENERAL)
-  
+  category WidgetCategory @default(GENERAL)
+
   // Icône et couleur
-  icon          String?
-  color         String?
+  icon  String?
+  color String?
 
   @@index([widgetType])
   @@index([category])
@@ -2464,7 +2457,7 @@ enum WidgetType {
   STAT_MONTHLY_REVENUE
   STAT_CONVERSION_RATE
   STAT_RETENTION_RATE
-  
+
   // Graphiques
   CHART_DONATIONS_OVER_TIME
   CHART_DONATIONS_BY_TYPE
@@ -2472,19 +2465,19 @@ enum WidgetType {
   CHART_DONOR_SEGMENTS
   CHART_GEOGRAPHIC_DISTRIBUTION
   CHART_RECURRING_VS_ONETIME
-  
+
   // Listes
   LIST_TOP_DONORS
   LIST_RECENT_DONATIONS
   LIST_ACTIVE_CAMPAIGNS
   LIST_UPCOMING_EVENTS
   LIST_AT_RISK_DONORS
-  
+
   // Alertes et notifications
   ALERT_CHURN_RISK
   ALERT_GOAL_PROGRESS
   ALERT_PENDING_TASKS
-  
+
   // Autres
   CALENDAR_EVENTS
   QUICK_ACTIONS
@@ -2501,7 +2494,6 @@ enum WidgetCategory {
   ALERTS
   TOOLS
 }
-
 
 // ============================================
 // AUTHENTIFICATION NEXTAUTH (Super Admin)
@@ -2552,28 +2544,27 @@ model AdminUser {
   updatedAt     DateTime  @updatedAt
 
   // Rôle super admin
-  role          SuperAdminRole @default(ADMIN)
-  
+  role SuperAdminRole @default(ADMIN)
+
   // Statut
-  status        AdminStatus    @default(ACTIVE)
-  lastLoginAt   DateTime?
-  
+  status      AdminStatus @default(ACTIVE)
+  lastLoginAt DateTime?
+
   // Relations NextAuth
-  accounts      Account[]
-  sessions      Session[]
-  
+  accounts Account[]
+  sessions Session[]
+
   // Relations avec les organisations
   managedOrganizations AdminOrganizationAccess[]
-  
-  // Audit
-  auditLogs     AdminAuditLog[]
 
+  // Audit
+  auditLogs AdminAuditLog[]
 }
 
 enum SuperAdminRole {
-  SUPER_ADMIN   // Accès total à toutes les organisations
-  ADMIN         // Accès aux organisations assignées
-  SUPPORT       // Accès lecture seule pour support
+  SUPER_ADMIN // Accès total à toutes les organisations
+  ADMIN // Accès aux organisations assignées
+  SUPPORT // Accès lecture seule pour support
 }
 
 enum AdminStatus {
@@ -2586,18 +2577,18 @@ enum AdminStatus {
 model AdminOrganizationAccess {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  
+
   // Relations
   adminUserId    String
   adminUser      AdminUser    @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  
+
   // Permissions spécifiques pour cette organisation
   canEdit        Boolean @default(true)
   canDelete      Boolean @default(false)
   canManageUsers Boolean @default(false)
-  
+
   @@unique([adminUserId, organizationId])
   @@index([adminUserId])
   @@index([organizationId])
@@ -2607,22 +2598,22 @@ model AdminOrganizationAccess {
 model AdminAuditLog {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  
+
   // Action
-  action        String    // CREATE, UPDATE, DELETE, LOGIN, etc.
-  entityType    String    // Organization, User, etc.
-  entityId      String?
-  
+  action     String // CREATE, UPDATE, DELETE, LOGIN, etc.
+  entityType String // Organization, User, etc.
+  entityId   String?
+
   // Détails
-  description   String?
-  metadata      Json?     // Données supplémentaires
-  ipAddress     String?
-  userAgent     String?
-  
+  description String?
+  metadata    Json? // Données supplémentaires
+  ipAddress   String?
+  userAgent   String?
+
   // Relation
-  adminUserId   String
-  adminUser     AdminUser @relation(fields: [adminUserId], references: [id])
-  
+  adminUserId String
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+
   @@index([adminUserId])
   @@index([createdAt])
   @@index([action])

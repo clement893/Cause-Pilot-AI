@@ -38,8 +38,16 @@ export default function DonorsPage() {
       if (filters.sortBy) queryParams.set("sortBy", filters.sortBy);
       if (filters.sortOrder) queryParams.set("sortOrder", filters.sortOrder);
       if (filters.query) queryParams.set("search", filters.query);
+      // Ajouter l'organisation courante
+      if (currentOrganization?.id) {
+        queryParams.set("organizationId", currentOrganization.id);
+      }
 
-      const response = await fetch(`/api/donors?${queryParams.toString()}`);
+      const response = await fetch(`/api/donors?${queryParams.toString()}`, {
+        headers: currentOrganization?.id ? {
+          'X-Organization-Id': currentOrganization.id,
+        } : {},
+      });
       const data: PaginatedResponse<Donor> = await response.json();
 
       if (data.success) {
@@ -56,7 +64,15 @@ export default function DonorsPage() {
   const fetchStats = useCallback(async () => {
     setStatsLoading(true);
     try {
-      const response = await fetch("/api/donors/stats");
+      const queryParams = new URLSearchParams();
+      if (currentOrganization?.id) {
+        queryParams.set("organizationId", currentOrganization.id);
+      }
+      const response = await fetch(`/api/donors/stats?${queryParams.toString()}`, {
+        headers: currentOrganization?.id ? {
+          'X-Organization-Id': currentOrganization.id,
+        } : {},
+      });
       const data = await response.json();
 
       if (data.success) {
@@ -80,10 +96,18 @@ export default function DonorsPage() {
     if (filters.status?.length || filters.donorType?.length || filters.minTotalDonations || filters.maxTotalDonations || filters.hasEmailConsent) {
       setLoading(true);
       try {
+        const headers: HeadersInit = { "Content-Type": "application/json" };
+        if (currentOrganization?.id) {
+          headers['X-Organization-Id'] = currentOrganization.id;
+        }
         const response = await fetch("/api/donors/search", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...filters, page: 1 }),
+          headers,
+          body: JSON.stringify({ 
+            ...filters, 
+            page: 1,
+            organizationId: currentOrganization?.id || undefined,
+          }),
         });
         const data: PaginatedResponse<Donor> = await response.json();
 

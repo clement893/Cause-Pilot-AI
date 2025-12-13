@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
         { 
           success: false, 
           error: "Validation error", 
-          details: error.errors.map(e => ({ path: e.path.join('.'), message: e.message }))
+          details: error.issues.map(e => ({ path: e.path.join('.'), message: e.message }))
         },
         { status: 400 }
       );

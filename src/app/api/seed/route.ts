@@ -300,7 +300,5 @@ export async function POST(request: NextRequest) {
       { success: false, error: "Erreur lors du seeding", details: String(error) },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

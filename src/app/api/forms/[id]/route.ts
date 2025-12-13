@@ -24,7 +24,7 @@ export async function GET(
           orderBy: { sortOrder: "asc" },
         },
         _count: {
-          select: { submissions: true },
+          select: { DonationSubmission: true },
         },
       },
     });
@@ -143,7 +143,7 @@ export async function DELETE(
       where: { id },
       include: {
         _count: {
-          select: { submissions: true },
+          select: { DonationSubmission: true },
         },
       },
     });
@@ -156,7 +156,7 @@ export async function DELETE(
     }
 
     // Avertir si des soumissions existent
-    if (existingForm._count.submissions > 0) {
+    if (existingForm._count.DonationSubmission > 0) {
       // Archiver plutôt que supprimer
       await prisma.donationForm.update({
         where: { id },

@@ -49,11 +49,11 @@ async function getFormStats() {
           formType: true,
           suggestedAmounts: true,
           _count: {
-            select: { submissions: true }
+            select: { DonationSubmission: true }
           }
         },
         orderBy: {
-          submissions: { _count: "desc" }
+          DonationSubmission: { _count: "desc" }
         },
         take: 5
       })
@@ -79,7 +79,7 @@ async function getFormStats() {
       topForms: formPerformance.map(f => ({
         name: f.name,
         type: f.formType,
-        submissions: f._count.submissions,
+        submissions: f._count.DonationSubmission,
         amounts: f.suggestedAmounts
       })),
       popularAmounts: popularAmounts.map(p => ({
@@ -131,12 +131,12 @@ async function getFormData(formId: string) {
     return {
       form,
       stats: {
-        totalSubmissions: form._count.submissions,
+        totalSubmissions: form._count.DonationSubmission,
         completedSubmissions: completedSubmissions.length,
         totalRaised,
         avgAmount,
-        conversionRate: form._count.submissions > 0 
-          ? (completedSubmissions.length / form._count.submissions * 100).toFixed(1)
+        conversionRate: form._count.DonationSubmission > 0 
+          ? (completedSubmissions.length / form._count.DonationSubmission * 100).toFixed(1)
           : 0,
         amountDistribution
       }

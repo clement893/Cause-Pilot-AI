@@ -12,10 +12,10 @@ export async function GET(
     const automation = await prisma.automation.findUnique({
       where: { id },
       include: {
-        actions: {
+        AutomationStep: {
           orderBy: { order: "asc" },
         },
-        executions: {
+        AutomationExecution: {
           orderBy: { startedAt: "desc" },
           take: 20,
         },
@@ -62,7 +62,7 @@ export async function PUT(
         triggerConfig,
         status,
         ...(actions && {
-          actions: {
+          AutomationStep: {
             create: actions.map((action: { actionType: string; config: Record<string, unknown>; order: number }) => ({
               actionType: action.actionType,
               config: action.config,
@@ -72,7 +72,7 @@ export async function PUT(
         }),
       },
       include: {
-        actions: {
+        AutomationStep: {
           orderBy: { order: "asc" },
         },
       },

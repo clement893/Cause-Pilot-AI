@@ -52,9 +52,9 @@ export async function GET(request: NextRequest) {
           },
           _count: {
             select: {
-              donors: true,
-              forms: true,
-              updates: true,
+              CampaignDonor: true,
+              CampaignForm: true,
+              CampaignUpdate: true,
             },
           },
         },

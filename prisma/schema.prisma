@@ -535,9 +535,9 @@ model DonationForm {
 }
 
 model DonationSubmission {
-  id                 String              @id
+  id                 String              @id @default(uuid())
   createdAt          DateTime            @default(now())
-  updatedAt          DateTime
+  updatedAt          DateTime            @updatedAt
   amount             Float
   currency           String              @default("CAD")
   paymentMethod      PaymentMethod?

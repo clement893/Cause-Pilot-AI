@@ -152,6 +152,32 @@ export default function SuperAdminUsersPage() {
     }
   };
 
+  const deleteUser = async (userId: string, userEmail: string) => {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${userEmail} ?\n\nCette action est irréversible et supprimera toutes les données associées.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/super-admin/users/${userId}`, {
+        method: "DELETE",
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        fetchUsers();
+        alert(`Utilisateur ${userEmail} supprimé avec succès`);
+      } else {
+        alert(data.error || "Erreur lors de la suppression");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de la suppression");
+    }
+  };
+
   const getRoleColor = (role: string) => {
     switch (role) {
       case "SUPER_ADMIN": return "bg-red-500/20 text-red-300";
@@ -403,9 +429,15 @@ export default function SuperAdminUsersPage() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors ml-auto block">
-                        <MoreVertical className="w-4 h-4 text-slate-400" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => deleteUser(user.id, user.email)}
+                          className="p-2 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-colors"
+                          title="Supprimer l'utilisateur"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

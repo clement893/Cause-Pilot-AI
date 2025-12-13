@@ -12,7 +12,7 @@ export async function GET(
     const donor = await prisma.donor.findUnique({
       where: { id },
       include: {
-        preferences: true,
+        DonorPreference: true,
         donations: {
           orderBy: { donationDate: "desc" },
           take: 10,
@@ -113,7 +113,7 @@ export async function PUT(
         consentMail: body.consentMail ?? existingDonor.consentMail,
       },
       include: {
-        preferences: true,
+        DonorPreference: true,
       },
     });
     

@@ -248,10 +248,10 @@ export async function GET(request: NextRequest) {
         take: limit,
         orderBy: { createdAt: "desc" },
         include: {
-          form: {
+          DonationForm: {
             select: { name: true, slug: true },
           },
-          donor: {
+          Donor: {
             select: { id: true, firstName: true, lastName: true },
           },
         },

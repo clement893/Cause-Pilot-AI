@@ -20,8 +20,14 @@ export async function POST(request: NextRequest) {
     // Seuls les super admins peuvent inviter
     const isSuper = await isSuperAdmin(session.user.id);
     if (!isSuper) {
+      // Debug: vérifier le rôle de l'utilisateur
+      const adminUser = await mainPrisma.adminUser.findUnique({
+        where: { id: session.user.id },
+        select: { role: true, status: true, email: true },
+      });
+      console.log("Accès refusé pour invitation - Utilisateur:", adminUser);
       return NextResponse.json(
-        { success: false, error: "Accès refusé" },
+        { success: false, error: "Accès refusé. Seuls les super admins peuvent inviter des utilisateurs.", userRole: adminUser?.role, userStatus: adminUser?.status },
         { status: 403 }
       );
     }

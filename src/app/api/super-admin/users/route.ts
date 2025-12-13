@@ -18,8 +18,14 @@ export async function GET(request: NextRequest) {
     // Seuls les super admins peuvent voir tous les utilisateurs
     const isSuper = await isSuperAdmin(session.user.id);
     if (!isSuper) {
+      // Debug: vérifier le rôle de l'utilisateur
+      const adminUser = await prisma.adminUser.findUnique({
+        where: { id: session.user.id },
+        select: { role: true, status: true, email: true },
+      });
+      console.log("Accès refusé - Utilisateur:", adminUser);
       return NextResponse.json(
-        { success: false, error: "Accès refusé" },
+        { success: false, error: "Accès refusé. Seuls les super admins peuvent accéder à cette page.", userRole: adminUser?.role, userStatus: adminUser?.status },
         { status: 403 }
       );
     }

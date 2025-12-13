@@ -450,7 +450,7 @@ export default function SuperAdminOrganizationDetailPage() {
                       }}
                       className="w-full px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl transition-colors text-left text-sm"
                     >
-                      Voir l'URL de la BD
+                      Voir l&apos;URL de la BD
                     </button>
                   </div>
                 )}

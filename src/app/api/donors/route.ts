@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { listQuerySchema, createDonorSchema, parseQueryParams, parseBody } from "@/lib/validation";
 import { getOrganizationId } from "@/lib/organization";
-import { getPrisma, getMainPrisma } from "@/lib/prisma-org";
+import { getPrisma } from "@/lib/prisma-org";
 import { hasDedicatedDatabase } from "@/lib/prisma-multi";
 
 // GET /api/donors - Liste des donateurs avec pagination et filtres

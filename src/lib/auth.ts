@@ -25,6 +25,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: CustomPrismaAdapter(prisma),
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   basePath: "/api/auth",
+  // Utiliser AUTH_URL ou NEXTAUTH_URL pour la configuration
+  ...(process.env.AUTH_URL || process.env.NEXTAUTH_URL ? {
+    url: process.env.AUTH_URL || process.env.NEXTAUTH_URL,
+  } : {}),
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -111,8 +115,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
+        // Utiliser secure=true si on est sur Railway (URL contient railway.app) ou si NODE_ENV=production
+        secure: process.env.NEXTAUTH_URL?.includes('railway.app') || process.env.NODE_ENV === 'production',
       },
     },
     callbackUrl: {
@@ -121,7 +125,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NEXTAUTH_URL?.includes('railway.app') || process.env.NODE_ENV === 'production',
       },
     },
     csrfToken: {
@@ -130,7 +134,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NEXTAUTH_URL?.includes('railway.app') || process.env.NODE_ENV === 'production',
       },
     },
   },

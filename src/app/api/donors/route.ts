@@ -52,6 +52,10 @@ export async function GET(request: NextRequest) {
       ];
     }
     
+    // Debug: logger la requête
+    console.log("🔍 Fetching donors with where:", JSON.stringify(where, null, 2));
+    console.log("🔍 OrganizationId:", organizationId);
+    
     // Exécution des requêtes
     const [donors, total] = await Promise.all([
       prisma.donor.findMany({
@@ -68,6 +72,11 @@ export async function GET(request: NextRequest) {
       }),
       prisma.donor.count({ where }),
     ]);
+    
+    console.log(`✅ Found ${donors.length} donors (total: ${total})`);
+    if (donors.length > 0) {
+      console.log("📋 Sample donor:", { id: donors[0].id, name: `${donors[0].firstName} ${donors[0].lastName}`, orgId: donors[0].organizationId });
+    }
     
     return NextResponse.json({
       success: true,

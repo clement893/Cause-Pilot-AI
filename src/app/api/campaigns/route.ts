@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         orderBy: { [sortBy]: sortOrder },
         include: {
-          milestones: {
+          CampaignMilestone: {
             orderBy: { sortOrder: "asc" },
             take: 5,
           },

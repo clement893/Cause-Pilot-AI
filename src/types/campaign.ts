@@ -123,15 +123,15 @@ export interface Campaign {
   matchingCap?: number;
   category?: string;
   tags: string[];
-  milestones?: CampaignMilestone[];
-  donors?: CampaignDonor[];
-  updates?: CampaignUpdate[];
-  team?: CampaignTeamMember[];
+  CampaignMilestone?: CampaignMilestone[];
+  CampaignDonor?: CampaignDonor[];
+  CampaignUpdate?: CampaignUpdate[];
+  CampaignTeamMember?: CampaignTeamMember[];
   _count?: {
-    donors: number;
-    forms: number;
-    updates: number;
-    team: number;
+    CampaignDonor: number;
+    CampaignForm: number;
+    CampaignUpdate: number;
+    CampaignTeamMember: number;
   };
   progress?: number;
   daysRemaining?: number | null;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Shield, Building2, Mail, CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";

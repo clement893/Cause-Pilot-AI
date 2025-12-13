@@ -410,9 +410,9 @@ model CustomFieldDefinition {
 }
 
 model DashboardLayout {
-  id             String        @id
+  id             String        @id @default(uuid())
   createdAt      DateTime      @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime      @updatedAt
   name           String
   description    String?
   isDefault      Boolean       @default(false)

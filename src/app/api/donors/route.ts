@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         orderBy: { [sortBy]: sortOrder },
         include: {
-          preferences: true,
+          DonorPreference: true,
           _count: {
             select: { Donation: true },
           },

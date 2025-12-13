@@ -448,14 +448,19 @@ function InviteUserModal({
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">
-              Email * <span className="text-xs text-slate-500">(@nukleo.com uniquement)</span>
+              Email *{" "}
+              <span className="text-xs text-slate-500">
+                {inviteType === "admin" 
+                  ? "(@nukleo.com uniquement pour les admins)" 
+                  : "(Tous les domaines autorisés pour les membres d'organisation)"}
+              </span>
             </label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="utilisateur@nukleo.com"
+              placeholder={inviteType === "admin" ? "utilisateur@nukleo.com" : "utilisateur@exemple.com"}
               className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>

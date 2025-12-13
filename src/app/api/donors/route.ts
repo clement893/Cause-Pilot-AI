@@ -14,12 +14,6 @@ export async function GET(request: NextRequest) {
     const { page, limit, sortBy = "createdAt", sortOrder = "desc", search, status, segment, donorType } = query;
     const skip = (page - 1) * limit;
     
-    // Filtres
-    const status = searchParams.get("status");
-    const segment = searchParams.get("segment");
-    const donorType = searchParams.get("donorType");
-    const search = searchParams.get("search");
-    
     // Construction de la requête
     const where: Prisma.DonorWhereInput = {};
     

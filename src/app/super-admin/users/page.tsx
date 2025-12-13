@@ -42,7 +42,6 @@ export default function SuperAdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [organizations, setOrganizations] = useState<Array<{ id: string; name: string }>>([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,

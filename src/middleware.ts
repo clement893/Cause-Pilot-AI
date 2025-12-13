@@ -11,6 +11,7 @@ const publicRoutes = [
   '/api/unsubscribe',
   '/api/webhooks',
   '/api/health',
+  '/api/seed', // Route seed accessible avec token
 ];
 
 // Routes qui nécessitent une authentification admin
@@ -99,16 +100,25 @@ export async function middleware(request: NextRequest) {
     // Pour les autres routes protégées, vérifier le token API ou la session
     const hasTokenAuth = verifyAuthToken(request);
     
-    // En production, forcer l'authentification
-    if (process.env.NODE_ENV === 'production' && !hasTokenAuth) {
+    // Vérifier aussi la session NextAuth pour les routes admin/donors/etc
+    let hasSessionAuth = false;
+    try {
+      const session = await auth();
+      hasSessionAuth = !!session?.user;
+    } catch (error) {
+      // Ignorer les erreurs d'auth silencieusement
+    }
+    
+    // En production, forcer l'authentification (token API ou session)
+    if (process.env.NODE_ENV === 'production' && !hasTokenAuth && !hasSessionAuth) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized', message: 'Authentication required' },
         { status: 401 }
       );
     }
 
-    // En développement, avertir mais permettre si pas de token
-    if (process.env.NODE_ENV === 'development' && !hasTokenAuth) {
+    // En développement, avertir mais permettre si pas de token ni session
+    if (process.env.NODE_ENV === 'development' && !hasTokenAuth && !hasSessionAuth) {
       console.warn(`⚠️  Unauthenticated request to protected route: ${pathname}`);
     }
   }

@@ -162,6 +162,9 @@ export default function DonorsPage() {
     try {
       const response = await fetch("/api/seed", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       const data = await response.json();

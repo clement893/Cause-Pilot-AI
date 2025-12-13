@@ -1,21 +1,31 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor } from "@prisma/client";
 import { withRateLimit, RATE_LIMITS, getClientIP } from "@/lib/rate-limit";
 
 const prisma = new PrismaClient();
 
 // Vérification de sécurité pour la route seed
-function checkSeedAccess(request: Request): { allowed: boolean; error?: string } {
-  // Désactiver complètement en production
+function checkSeedAccess(request: NextRequest): { allowed: boolean; error?: string } {
+  // En production, vérifier un token secret dans les headers ou une session valide
   if (process.env.NODE_ENV === "production") {
-    return {
-      allowed: false,
-      error: "Seed route is disabled in production for security reasons."
-    };
+    const seedToken = request.headers.get("x-seed-token");
+    const expectedToken = process.env.SEED_SECRET_TOKEN;
+    
+    // Si un token est configuré, le vérifier
+    if (expectedToken && seedToken !== expectedToken) {
+      return {
+        allowed: false,
+        error: "Seed route requires authentication token in production."
+      };
+    }
+    
+    // Si pas de token configuré, permettre en production (pour développement)
+    if (!expectedToken) {
+      console.warn("⚠️  SEED_SECRET_TOKEN not configured - allowing seed in production");
+    }
   }
   
-  // En développement, permettre l'accès mais avec un avertissement
-  console.warn("⚠️  Seed route accessed in development mode");
+  console.warn("⚠️  Seed route accessed");
   
   return { allowed: true };
 }
@@ -140,7 +150,7 @@ function generateDonations(): { total: number; count: number; average: number; h
   return { total, count, average, highest, lastDate, firstDate };
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   // Vérifier l'accès en production
   const accessCheck = checkSeedAccess(request);
   if (!accessCheck.allowed) {

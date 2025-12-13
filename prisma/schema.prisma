@@ -1019,6 +1019,7 @@ model Organization {
   maxUsers                Int                       @default(5)
   maxDonors               Int                       @default(1000)
   maxCampaigns            Int                       @default(10)
+  databaseUrl             String?                   // URL de la base de données dédiée (optionnel, null = base partagée)
   AdminOrganizationAccess AdminOrganizationAccess[]
   DashboardLayout         DashboardLayout[]
   Donor                   Donor[]

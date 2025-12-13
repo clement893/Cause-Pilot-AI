@@ -29,9 +29,15 @@ interface SendEmailOptions {
   };
   categories?: string[];
   customArgs?: Record<string, string>;
+  attachments?: Array<{
+    content: string;
+    filename: string;
+    type?: string;
+    disposition?: string;
+  }>;
 }
 
-export async function sendEmail({ to, subject, html, text, from, categories, customArgs }: SendEmailOptions) {
+export async function sendEmail({ to, subject, html, text, from, categories, customArgs, attachments }: SendEmailOptions) {
   if (!process.env.SENDGRID_API_KEY) {
     console.error("SENDGRID_API_KEY n'est pas configuré");
     throw new Error("Configuration email manquante");
@@ -48,6 +54,7 @@ export async function sendEmail({ to, subject, html, text, from, categories, cus
     html,
     ...(categories && { categories }),
     ...(customArgs && { customArgs }),
+    ...(attachments && { attachments }),
   };
 
   try {

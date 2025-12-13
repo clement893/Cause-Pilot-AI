@@ -30,14 +30,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Récupérer le formulaire depuis la base principale pour obtenir l'organisation
-    // Les formulaires sont liés aux campagnes qui ont un organizationId
+    // Les formulaires ont un campaignId qui pointe vers une campagne avec organizationId
     const mainPrisma = getMainPrisma();
     const form = await mainPrisma.donationForm.findUnique({
       where: { id: body.formId },
-      include: {
-        Campaign: {
-          select: { organizationId: true },
-        },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        startDate: true,
+        endDate: true,
+        minimumAmount: true,
+        maximumAmount: true,
+        campaignId: true,
       },
     });
 
@@ -48,8 +53,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Récupérer l'organizationId depuis la campagne
-    const organizationId = form.Campaign?.organizationId;
+    // Récupérer l'organizationId depuis la campagne si campaignId existe
+    let organizationId: string | null = null;
+    if (form.campaignId) {
+      const campaign = await mainPrisma.campaign.findUnique({
+        where: { id: form.campaignId },
+        select: { organizationId: true },
+      });
+      organizationId = campaign?.organizationId || null;
+    }
+
     if (!organizationId) {
       return NextResponse.json(
         { error: "Organisation non trouvée pour ce formulaire" },

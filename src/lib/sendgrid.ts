@@ -23,9 +23,15 @@ interface SendEmailOptions {
   subject: string;
   html: string;
   text?: string;
+  from?: {
+    email: string;
+    name?: string;
+  };
+  categories?: string[];
+  customArgs?: Record<string, string>;
 }
 
-export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
+export async function sendEmail({ to, subject, html, text, from, categories, customArgs }: SendEmailOptions) {
   if (!process.env.SENDGRID_API_KEY) {
     console.error("SENDGRID_API_KEY n'est pas configuré");
     throw new Error("Configuration email manquante");
@@ -33,13 +39,15 @@ export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
 
   const msg = {
     to,
-    from: {
+    from: from || {
       email: process.env.SENDGRID_FROM_EMAIL || "hello@nukleo.digital",
       name: process.env.SENDGRID_FROM_NAME || "CausePilotAI",
     },
     subject,
     text: text || html.replace(/<[^>]*>/g, ""), // Extraire le texte du HTML si pas fourni
     html,
+    ...(categories && { categories }),
+    ...(customArgs && { customArgs }),
   };
 
   try {

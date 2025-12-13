@@ -62,7 +62,12 @@ export default function SuperAdminOrganizationsPage() {
       if (statusFilter) params.append("status", statusFilter);
       if (planFilter) params.append("plan", planFilter);
 
-      const response = await fetch(`/api/super-admin/organizations?${params}`);
+      const response = await fetch(`/api/super-admin/organizations?${params}`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       const data = await response.json();
       if (data.success) {
         setOrganizations(data.data);
@@ -336,6 +341,7 @@ function CreateOrganizationModal({
     try {
       const response = await fetch("/api/super-admin/organizations", {
         method: "POST",
+        credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });

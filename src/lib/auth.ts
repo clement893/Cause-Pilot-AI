@@ -102,6 +102,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "database",
   },
   trustHost: true,
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
 });
 
 // Helper pour vérifier si l'utilisateur est super admin

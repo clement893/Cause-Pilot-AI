@@ -111,8 +111,8 @@ export const RATE_LIMITS = {
   // API d'import - 5 par minute
   import: { maxRequests: 5, windowSeconds: 60 },
   
-  // API de seed (très restrictif) - 1 par heure
-  seed: { maxRequests: 1, windowSeconds: 3600 },
+  // API de seed - 10 par heure (pour permettre plusieurs tentatives pendant le développement)
+  seed: { maxRequests: 10, windowSeconds: 3600 },
 };
 
 /**

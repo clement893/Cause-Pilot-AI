@@ -208,7 +208,7 @@ ORDER BY table_name;`,
                     {result.rowCount} ligne(s) retournée(s)
                   </p>
                 )}
-                {result.data && (
+                {result.data !== undefined && result.data !== null && (
                   <div className="mt-4">
                     <pre className="bg-white p-4 rounded border overflow-auto max-h-96 text-xs">
                       {JSON.stringify(result.data, null, 2)}

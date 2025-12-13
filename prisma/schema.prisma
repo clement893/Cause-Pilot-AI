@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Account {
-  id                String    @id
+  id                String    @id @default(uuid())
   userId            String
   type              String
   provider          String
@@ -26,7 +26,7 @@ model Account {
 }
 
 model AdminAuditLog {
-  id          String    @id
+  id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
   action      String
   entityType  String
@@ -45,7 +45,7 @@ model AdminAuditLog {
 }
 
 model AdminOrganizationAccess {
-  id             String       @id
+  id             String       @id @default(uuid())
   createdAt      DateTime     @default(now())
   adminUserId    String
   organizationId String
@@ -61,13 +61,13 @@ model AdminOrganizationAccess {
 }
 
 model AdminUser {
-  id                      String                    @id
+  id                      String                    @id @default(uuid())
   name                    String?
   email                   String                    @unique
   emailVerified           DateTime?
   image                   String?
   createdAt               DateTime                  @default(now())
-  updatedAt               DateTime
+  updatedAt               DateTime @updatedAt
   role                    SuperAdminRole            @default(ADMIN)
   status                  AdminStatus               @default(ACTIVE)
   lastLoginAt             DateTime?
@@ -78,7 +78,7 @@ model AdminUser {
 }
 
 model AuditLog {
-  id          String      @id
+  id          String      @id @default(uuid())
   createdAt   DateTime    @default(now())
   userId      Int?
   userName    String?
@@ -123,7 +123,7 @@ model Automation {
 }
 
 model AutomationExecution {
-  id                 String     @id
+  id                 String     @id @default(uuid())
   automationId       String
   donorId            String?
   donationId         String?
@@ -145,7 +145,7 @@ model AutomationExecution {
 }
 
 model AutomationLog {
-  id             String              @id
+  id             String              @id @default(uuid())
   createdAt      DateTime            @default(now())
   automationId   String
   automationName String
@@ -163,9 +163,9 @@ model AutomationLog {
 }
 
 model AutomationRule {
-  id             String            @id
+  id             String            @id @default(uuid())
   createdAt      DateTime          @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   name           String
   description    String?
   isActive       Boolean           @default(false)
@@ -189,7 +189,7 @@ model AutomationRule {
 }
 
 model AutomationStep {
-  id                   String           @id
+  id                   String           @id @default(uuid())
   automationId         String
   order                Int
   actionType           ActionType
@@ -199,7 +199,7 @@ model AutomationStep {
   conditionValue       String?
   parentActionId       String?
   createdAt            DateTime         @default(now())
-  updatedAt            DateTime
+  updatedAt            DateTime @updatedAt
   Automation           Automation       @relation(fields: [automationId], references: [id], onDelete: Cascade)
   AutomationStep       AutomationStep?  @relation("AutomationStepToAutomationStep", fields: [parentActionId], references: [id])
   other_AutomationStep AutomationStep[] @relation("AutomationStepToAutomationStep")
@@ -263,9 +263,9 @@ model Campaign {
 }
 
 model CampaignDonor {
-  id                String     @id
+  id                String     @id @default(uuid())
   createdAt         DateTime   @default(now())
-  updatedAt         DateTime
+  updatedAt         DateTime @updatedAt
   totalDonated      Float      @default(0)
   donationCount     Int        @default(0)
   firstDonationDate DateTime?
@@ -286,7 +286,7 @@ model CampaignDonor {
 }
 
 model CampaignForm {
-  id         String   @id
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   campaignId String
   formId     String
@@ -298,9 +298,9 @@ model CampaignForm {
 }
 
 model CampaignMilestone {
-  id           String    @id
+  id           String    @id @default(uuid())
   createdAt    DateTime  @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime @updatedAt
   title        String
   description  String?
   targetAmount Float?
@@ -319,7 +319,7 @@ model CampaignMilestone {
 }
 
 model CampaignTeamMember {
-  id           String   @id
+  id           String   @id @default(uuid())
   createdAt    DateTime @default(now())
   name         String
   role         String?
@@ -339,9 +339,9 @@ model CampaignTeamMember {
 }
 
 model CampaignUpdate {
-  id          String    @id
+  id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
   title       String
   content     String
   imageUrl    String?
@@ -358,7 +358,7 @@ model CampaignUpdate {
 }
 
 model Communication {
-  id        String               @id
+  id        String               @id @default(uuid())
   createdAt DateTime             @default(now())
   type      CommunicationType
   channel   CommunicationChannel
@@ -397,9 +397,9 @@ model ConsentHistory {
 }
 
 model CustomFieldDefinition {
-  id               String             @id
+  id               String             @id @default(uuid())
   createdAt        DateTime           @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime @updatedAt
   name             String             @unique
   label            String
   fieldType        FieldType
@@ -430,9 +430,9 @@ model DashboardLayout {
 }
 
 model DashboardWidget {
-  id            String         @id
+  id            String         @id @default(uuid())
   createdAt     DateTime       @default(now())
-  updatedAt     DateTime
+  updatedAt     DateTime @updatedAt
   widgetType    WidgetType
   config        Json?
   title         String?
@@ -488,9 +488,9 @@ model Donation {
 }
 
 model DonationForm {
-  id                  String               @id
+  id                  String               @id @default(uuid())
   createdAt           DateTime             @default(now())
-  updatedAt           DateTime
+  updatedAt           DateTime @updatedAt
   name                String
   slug                String               @unique
   description         String?
@@ -654,9 +654,9 @@ model Donor {
 }
 
 model DonorCustomField {
-  id                    String                @id
+  id                    String                @id @default(uuid())
   createdAt             DateTime              @default(now())
-  updatedAt             DateTime
+  updatedAt             DateTime @updatedAt
   value                 String
   donorId               String
   fieldId               String
@@ -683,9 +683,9 @@ model DonorPreference {
 }
 
 model DonorSegment {
-  id               String      @id
+  id               String      @id @default(uuid())
   createdAt        DateTime    @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime @updatedAt
   name             String
   description      String?
   color            String      @default("#8B5CF6")
@@ -706,7 +706,7 @@ model DonorSegment {
 }
 
 model DonorSegmentMembership {
-  id        String   @id
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   donorId   String
   segmentId String
@@ -766,7 +766,7 @@ model EmailCampaign {
 }
 
 model EmailEvent {
-  id             String         @id
+  id             String         @id @default(uuid())
   createdAt      DateTime       @default(now())
   recipientId    String
   campaignId     String
@@ -789,9 +789,9 @@ model EmailEvent {
 }
 
 model EmailRecipient {
-  id             String               @id
+  id             String               @id @default(uuid())
   createdAt      DateTime             @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime             @updatedAt
   email          String
   firstName      String?
   lastName       String?
@@ -821,9 +821,9 @@ model EmailRecipient {
 }
 
 model EmailTemplate {
-  id            String          @id
+  id            String          @id @default(uuid())
   createdAt     DateTime        @default(now())
-  updatedAt     DateTime
+  updatedAt     DateTime @updatedAt
   name          String
   description   String?
   category      EmailCategory   @default(GENERAL)
@@ -847,9 +847,9 @@ model EmailTemplate {
 }
 
 model FormField {
-  id           String        @id
+  id           String        @id @default(uuid())
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime @updatedAt
   name         String
   label        String
   fieldType    FormFieldType
@@ -873,9 +873,9 @@ model FormField {
 }
 
 model Integration {
-  id             String              @id
+  id             String              @id @default(uuid())
   createdAt      DateTime            @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   provider       String              @unique
   name           String
   description    String?
@@ -895,7 +895,7 @@ model Integration {
 }
 
 model Invitation {
-  id            String           @id
+  id            String           @id @default(uuid())
   createdAt     DateTime         @default(now())
   expiresAt     DateTime
   email         String
@@ -912,9 +912,9 @@ model Invitation {
 }
 
 model MailingList {
-  id                    String                  @id
+  id                    String                  @id @default(uuid())
   createdAt             DateTime                @default(now())
-  updatedAt             DateTime
+  updatedAt             DateTime @updatedAt
   name                  String
   description           String?
   isPublic              Boolean                 @default(false)
@@ -948,9 +948,9 @@ model MailingListSubscriber {
 }
 
 model Notification {
-  id          String               @id
+  id          String               @id @default(uuid())
   createdAt   DateTime             @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
   type        NotificationType
   category    NotificationCategory
   priority    NotificationPriority @default(MEDIUM)
@@ -977,9 +977,9 @@ model Notification {
 }
 
 model NotificationPreference {
-  id                     String   @id
+  id                     String   @id @default(uuid())
   createdAt              DateTime @default(now())
-  updatedAt              DateTime
+  updatedAt              DateTime @updatedAt
   userId                 Int      @unique
   preferences            String   @default("{}")
   majorDonationThreshold Int      @default(1000)
@@ -991,9 +991,9 @@ model NotificationPreference {
 }
 
 model Organization {
-  id                      String                    @id
+  id                      String                    @id @default(uuid())
   createdAt               DateTime                  @default(now())
-  updatedAt               DateTime
+  updatedAt               DateTime @updatedAt
   name                    String
   slug                    String                    @unique
   description             String?
@@ -1029,9 +1029,9 @@ model Organization {
 }
 
 model OrganizationMember {
-  id             String           @id
+  id             String           @id @default(uuid())
   createdAt      DateTime         @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   role           OrganizationRole @default(MEMBER)
   permissions    String[]
   status         MemberStatus     @default(ACTIVE)
@@ -1047,9 +1047,9 @@ model OrganizationMember {
 }
 
 model OrganizationSettings {
-  id                   String   @id
+  id                   String   @id @default(uuid())
   createdAt            DateTime @default(now())
-  updatedAt            DateTime
+  updatedAt            DateTime @updatedAt
   organizationName     String
   legalName            String?
   charityNumber        String?
@@ -1077,7 +1077,7 @@ model OrganizationSettings {
 }
 
 model P2PActivity {
-  id            String          @id
+  id            String          @id @default(uuid())
   createdAt     DateTime        @default(now())
   activityType  P2PActivityType
   title         String
@@ -1094,7 +1094,7 @@ model P2PActivity {
 }
 
 model P2PBadge {
-  id            String       @id
+  id            String       @id @default(uuid())
   createdAt     DateTime     @default(now())
   name          String
   description   String
@@ -1110,7 +1110,7 @@ model P2PBadge {
 }
 
 model P2PDonation {
-  id            String        @id
+  id            String        @id @default(uuid())
   createdAt     DateTime      @default(now())
   amount        Float
   currency      String        @default("CAD")
@@ -1130,9 +1130,9 @@ model P2PDonation {
 }
 
 model P2PFundraiser {
-  id              String        @id
+  id              String        @id @default(uuid())
   createdAt       DateTime      @default(now())
-  updatedAt       DateTime
+  updatedAt       DateTime @updatedAt
   firstName       String
   lastName        String
   email           String
@@ -1173,9 +1173,9 @@ model P2PFundraiser {
 }
 
 model P2PLeaderboard {
-  id              String            @id
+  id              String            @id @default(uuid())
   createdAt       DateTime          @default(now())
-  updatedAt       DateTime
+  updatedAt       DateTime @updatedAt
   periodType      LeaderboardPeriod
   periodStart     DateTime
   periodEnd       DateTime
@@ -1190,9 +1190,9 @@ model P2PLeaderboard {
 }
 
 model P2PTeam {
-  id            String          @id
+  id            String          @id @default(uuid())
   createdAt     DateTime        @default(now())
-  updatedAt     DateTime
+  updatedAt     DateTime @updatedAt
   name          String
   slug          String          @unique
   description   String?
@@ -1215,9 +1215,9 @@ model P2PTeam {
 }
 
 model Permission {
-  id             String           @id
+  id             String           @id @default(uuid())
   createdAt      DateTime         @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   code           String           @unique
   name           String
   description    String?
@@ -1229,9 +1229,9 @@ model Permission {
 }
 
 model Role {
-  id                 String               @id
+  id                 String               @id @default(uuid())
   createdAt          DateTime             @default(now())
-  updatedAt          DateTime
+  updatedAt          DateTime @updatedAt
   name               String               @unique
   description        String?
   isSystem           Boolean              @default(false)
@@ -1245,7 +1245,7 @@ model Role {
 }
 
 model RolePermission {
-  id           String     @id
+  id           String     @id @default(uuid())
   createdAt    DateTime   @default(now())
   roleId       String
   permissionId String
@@ -1258,7 +1258,7 @@ model RolePermission {
 }
 
 model Session {
-  id           String    @id
+  id           String    @id @default(uuid())
   sessionToken String    @unique
   userId       String
   expires      DateTime
@@ -1266,9 +1266,9 @@ model Session {
 }
 
 model SystemSetting {
-  id          String          @id
+  id          String          @id @default(uuid())
   createdAt   DateTime        @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
   key         String          @unique
   value       String
   category    String
@@ -1285,9 +1285,9 @@ model SystemSetting {
 }
 
 model TaxReceipt {
-  id             String        @id
+  id             String        @id @default(uuid())
   createdAt      DateTime      @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
   receiptNumber  String        @unique
   year           Int
   sequenceNumber Int
@@ -1326,16 +1326,16 @@ model User {
   name                          String?
   role                          UserRole   @default(USER)
   createdAt                     DateTime   @default(now())
-  updatedAt                     DateTime
+  updatedAt                     DateTime @updatedAt
   Donation                      Donation[]
   Donor_Donor_createdByIdToUser Donor[]    @relation("Donor_createdByIdToUser")
   Donor_Donor_updatedByIdToUser Donor[]    @relation("Donor_updatedByIdToUser")
 }
 
 model UserRoleAssignment {
-  id         String    @id
+  id         String    @id @default(uuid())
   createdAt  DateTime  @default(now())
-  updatedAt  DateTime
+  updatedAt  DateTime @updatedAt
   userId     Int
   roleId     String
   startDate  DateTime?

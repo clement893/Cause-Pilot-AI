@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
 import { getOrganizationId } from "@/lib/organization";
 
 // GET /api/donors/stats - Statistiques globales des donateurs
@@ -8,8 +8,18 @@ export async function GET(request: NextRequest) {
     // Récupérer l'organisation depuis les headers ou query params
     const organizationId = getOrganizationId(request);
     
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    // Obtenir l'instance Prisma appropriée pour cette organisation
+    const prisma = await getPrisma(request);
+    
     // Construire le filtre de base avec organisation
-    const baseWhere = organizationId ? { organizationId } : {};
+    const baseWhere = { organizationId };
     
     // Statistiques de base
     const [

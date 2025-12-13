@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor, Prisma } from "@prisma/client";
-import { withRateLimit, RATE_LIMITS, getClientIP } from "@/lib/rate-limit";
-
-const prisma = new PrismaClient();
+import { DonorStatus, DonorType, CommunicationChannel, CommunicationFrequency, Donor, Prisma } from "@prisma/client";
+import { withRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
+import { getMainPrisma, getPrismaForOrganization } from "@/lib/prisma-multi";
 
 // Vérification de sécurité pour la route seed
 function checkSeedAccess(request: NextRequest): { allowed: boolean; error?: string } {
@@ -166,8 +165,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Récupérer les organisations existantes
-    const organizations = await prisma.organization.findMany({
+    // Récupérer les organisations existantes depuis la base principale
+    const mainPrisma = getMainPrisma();
+    const organizations = await mainPrisma.organization.findMany({
       orderBy: { createdAt: "asc" },
       take: 2,
     });
@@ -186,19 +186,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Supprimer les données existantes dans le bon ordre
-    await prisma.communication.deleteMany();
-    await prisma.donorCustomField.deleteMany();
-    await prisma.donorPreference.deleteMany();
-    await prisma.donation.deleteMany();
-    await prisma.donor.deleteMany();
-
     const allDonors: Donor[] = [];
     const donorsPerOrg = 30; // 30 donateurs par organisation
 
-    // Créer des donateurs pour chaque organisation
+    // Créer des donateurs pour chaque organisation dans leur base dédiée
     for (let orgIndex = 0; orgIndex < organizations.length; orgIndex++) {
       const organization = organizations[orgIndex];
+      
+      // Obtenir l'instance Prisma pour cette organisation
+      const orgPrisma = await getPrismaForOrganization(organization.id);
+      
+      // Supprimer les données existantes dans le bon ordre pour cette organisation
+      await orgPrisma.communication.deleteMany();
+      await orgPrisma.donorCustomField.deleteMany();
+      await orgPrisma.donorPreference.deleteMany();
+      await orgPrisma.donation.deleteMany();
+      await orgPrisma.donor.deleteMany();
 
       for (let i = 0; i < donorsPerOrg; i++) {
         const firstName = randomElement(firstNames);
@@ -243,12 +246,12 @@ export async function POST(request: NextRequest) {
             organizationId: organization.id, // Lier explicitement à l'organisation
         };
 
-        const donor = await prisma.donor.create({
+        const donor = await orgPrisma.donor.create({
           data: donorData,
         });
 
         // Créer les préférences séparément
-        await prisma.donorPreference.create({
+        await orgPrisma.donorPreference.create({
           data: {
             donorId: donor.id,
             preferredChannel: randomElement(channels),

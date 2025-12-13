@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { listQuerySchema, createDonorSchema, parseQueryParams, parseBody } from "@/lib/validation";
 import { getOrganizationId } from "@/lib/organization";
+import { getPrisma } from "@/lib/prisma-org";
 
 // GET /api/donors - Liste des donateurs avec pagination et filtres
 export async function GET(request: NextRequest) {
@@ -13,19 +13,25 @@ export async function GET(request: NextRequest) {
     // Récupérer l'organisation depuis les headers ou query params
     const organizationId = getOrganizationId(request);
     
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    // Obtenir l'instance Prisma appropriée pour cette organisation
+    const prisma = await getPrisma(request);
+    
     // Validation avec Zod
     const query = parseQueryParams(searchParams, listQuerySchema);
     const { page, limit, sortBy = "createdAt", sortOrder = "desc", search, status, segment, donorType } = query;
     const skip = (page - 1) * limit;
     
     // Construction de la requête
-    const where: Prisma.DonorWhereInput = {};
-    
-    // Filtrer par organisation si fournie
-    if (organizationId) {
-      where.organizationId = organizationId;
-    }
-    // Si pas d'organisation fournie, retourner tous les donateurs (pour debug/fallback)
+    const where: Prisma.DonorWhereInput = {
+      organizationId, // Toujours filtrer par organisation
+    };
     
     if (status) {
       where.status = status as Prisma.EnumDonorStatusFilter["equals"];
@@ -102,15 +108,25 @@ export async function POST(request: NextRequest) {
     // Récupérer l'organisation depuis les headers ou query params
     const organizationId = getOrganizationId(request);
     
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    // Obtenir l'instance Prisma appropriée pour cette organisation
+    const prisma = await getPrisma(request);
+    
     // Validation avec Zod
     const validatedData = parseBody(body, createDonorSchema);
     
-    // Vérifier si l'email existe déjà (dans la même organisation si organisationId fourni)
+    // Vérifier si l'email existe déjà dans cette organisation
     if (validatedData.email) {
       const existingDonor = await prisma.donor.findFirst({
         where: {
           email: validatedData.email,
-          ...(organizationId ? { organizationId } : {}),
+          organizationId,
         },
       });
       
@@ -151,7 +167,7 @@ export async function POST(request: NextRequest) {
         consentPhone: validatedData.consentPhone,
         consentMail: validatedData.consentMail,
         consentDate: validatedData.consentEmail || validatedData.consentPhone || validatedData.consentMail ? new Date() : null,
-        organizationId: organizationId || null,
+        organizationId,
       },
       include: {
         DonorPreference: true,

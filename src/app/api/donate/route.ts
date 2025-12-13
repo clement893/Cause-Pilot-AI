@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { getPrisma, getMainPrisma } from "@/lib/prisma-org";
 
 // POST - Soumettre un don
 export async function POST(request: NextRequest) {
@@ -30,9 +28,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier que le formulaire existe et est publié
-    const form = await prisma.donationForm.findUnique({
+    // Récupérer le formulaire depuis la base principale pour obtenir l'organisation
+    // Les formulaires sont liés aux campagnes qui ont un organizationId
+    const mainPrisma = getMainPrisma();
+    const form = await mainPrisma.donationForm.findUnique({
       where: { id: body.formId },
+      include: {
+        Campaign: {
+          select: { organizationId: true },
+        },
+      },
     });
 
     if (!form) {
@@ -41,6 +46,18 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       );
     }
+
+    // Récupérer l'organizationId depuis la campagne
+    const organizationId = form.Campaign?.organizationId;
+    if (!organizationId) {
+      return NextResponse.json(
+        { error: "Organisation non trouvée pour ce formulaire" },
+        { status: 400 }
+      );
+    }
+
+    // Obtenir l'instance Prisma appropriée pour cette organisation
+    const prisma = await getPrisma(request);
 
     if (form.status !== "PUBLISHED") {
       return NextResponse.json(
@@ -78,9 +95,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Chercher ou créer le donateur
-    let donor = await prisma.donor.findUnique({
-      where: { email: body.email },
+    // Chercher ou créer le donateur dans la base dédiée de l'organisation
+    let donor = await prisma.donor.findFirst({
+      where: { 
+        email: body.email,
+        organizationId,
+      },
     });
 
     if (!donor) {
@@ -99,6 +119,7 @@ export async function POST(request: NextRequest) {
           source: `Formulaire: ${form.name}`,
           consentEmail: body.consentEmail || false,
           status: "ACTIVE",
+          organizationId,
         },
       });
     }

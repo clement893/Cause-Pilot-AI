@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
 import { getOrganizationId } from "@/lib/organization";
 
 // GET - Récupérer les données du dashboard amélioré
@@ -8,8 +8,18 @@ export async function GET(request: NextRequest) {
     // Récupérer l'organisation depuis les headers ou query params
     const organizationId = getOrganizationId(request);
     
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    // Obtenir l'instance Prisma appropriée pour cette organisation
+    const prisma = await getPrisma(request);
+    
     // Construire le filtre de base avec organisation
-    const baseDonorWhere = organizationId ? { organizationId } : {};
+    const baseDonorWhere = { organizationId };
     
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -43,7 +53,7 @@ export async function GET(request: NextRequest) {
     const recurringDonorIds = await prisma.donation.findMany({
       where: {
         isRecurring: true,
-        ...(organizationId ? { donor: { organizationId } } : {}),
+        donor: { organizationId },
       },
       select: { donorId: true },
       distinct: ['donorId'],
@@ -64,7 +74,7 @@ export async function GET(request: NextRequest) {
     const donations = await prisma.donation.findMany({
       where: {
         status: "COMPLETED",
-        ...(organizationId ? { donor: { organizationId } } : {}),
+        donor: { organizationId },
       },
       select: { amount: true, createdAt: true, donationDate: true, isRecurring: true },
     });

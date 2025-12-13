@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET /api/donors/[id] - Obtenir un donateur par ID
 export async function GET(
@@ -8,9 +9,22 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const organizationId = getOrganizationId(request);
     
-    const donor = await prisma.donor.findUnique({
-      where: { id },
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
+    
+    const donor = await prisma.donor.findFirst({
+      where: { 
+        id,
+        organizationId, // S'assurer que le donateur appartient à l'organisation
+      },
       include: {
         DonorPreference: true,
         Donation: {
@@ -55,10 +69,23 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
+    const organizationId = getOrganizationId(request);
     
-    // Vérifier que le donateur existe
-    const existingDonor = await prisma.donor.findUnique({
-      where: { id },
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
+    
+    // Vérifier que le donateur existe et appartient à l'organisation
+    const existingDonor = await prisma.donor.findFirst({
+      where: { 
+        id,
+        organizationId,
+      },
     });
     
     if (!existingDonor) {
@@ -68,10 +95,13 @@ export async function PUT(
       );
     }
     
-    // Vérifier l'unicité de l'email si modifié
+    // Vérifier l'unicité de l'email si modifié (dans la même organisation)
     if (body.email && body.email !== existingDonor.email) {
-      const emailExists = await prisma.donor.findUnique({
-        where: { email: body.email },
+      const emailExists = await prisma.donor.findFirst({
+        where: { 
+          email: body.email,
+          organizationId,
+        },
       });
       
       if (emailExists) {
@@ -154,10 +184,23 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    const organizationId = getOrganizationId(request);
     
-    // Vérifier que le donateur existe
-    const existingDonor = await prisma.donor.findUnique({
-      where: { id },
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
+    
+    // Vérifier que le donateur existe et appartient à l'organisation
+    const existingDonor = await prisma.donor.findFirst({
+      where: { 
+        id,
+        organizationId,
+      },
     });
     
     if (!existingDonor) {

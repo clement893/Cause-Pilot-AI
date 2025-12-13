@@ -3,7 +3,7 @@
  */
 
 import { NextRequest } from "next/server";
-import { prisma } from "./prisma";
+import { getMainPrisma } from "./prisma-org";
 
 /**
  * Récupère l'ID de l'organisation depuis les headers ou query params
@@ -40,7 +40,8 @@ export async function getCurrentOrganization(
   }
 
   try {
-    const organization = await prisma.organization.findUnique({
+    // Utiliser la base principale pour récupérer les métadonnées de l'organisation
+    const organization = await getMainPrisma().organization.findUnique({
       where: { id: organizationId },
       select: { id: true, name: true },
     });

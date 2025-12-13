@@ -137,10 +137,20 @@ async function migrateOrganizationData() {
     console.log(`   ✅ ${donationCount}/${donations.length} dons migrés`);
     console.log('');
 
-    // 3. Migrer les formulaires de don
+    // 3. Récupérer les campagnes de l'organisation (pour les formulaires et migration)
+    const campaigns = await mainPrisma.campaign.findMany({
+      where: { organizationId },
+    });
+    const campaignIds = campaigns.map(c => c.id);
+    
+    // Migrer les formulaires de don (via les campagnes de l'organisation)
     console.log('📝 Migration des formulaires...');
     const forms = await mainPrisma.donationForm.findMany({
-      where: { organizationId },
+      where: campaignIds.length > 0 ? {
+        campaignId: { in: campaignIds },
+      } : {
+        id: 'no-forms', // Condition impossible si pas de campagnes
+      },
       include: {
         FormField: true,
       },
@@ -177,11 +187,8 @@ async function migrateOrganizationData() {
     console.log(`   ✅ ${formCount}/${forms.length} formulaires migrés`);
     console.log('');
 
-    // 4. Migrer les campagnes
+    // 4. Migrer les campagnes (déjà récupérées ci-dessus)
     console.log('📧 Migration des campagnes...');
-    const campaigns = await mainPrisma.campaign.findMany({
-      where: { organizationId },
-    });
 
     console.log(`   ${campaigns.length} campagnes trouvées`);
 

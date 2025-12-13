@@ -1,7 +1,9 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { CustomPrismaAdapter } from "./prisma-adapter";
 import { prisma } from "./prisma";
+import { verifyPassword } from "./password";
 import type { AdapterUser } from "next-auth/adapters";
 
 // Domaine autorisé pour l'authentification admin
@@ -43,10 +45,70 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
     }),
+    Credentials({
+      name: "Email / Mot de passe",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Mot de passe", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const user = await prisma.adminUser.findUnique({
+          where: { email: credentials.email as string },
+          include: {
+            AdminOrganizationAccess: {
+              select: {
+                organizationId: true,
+              },
+            },
+          },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        // Si l'utilisateur n'a pas de mot de passe, il doit utiliser Google OAuth
+        if (!user.password) {
+          return null;
+        }
+
+        // Vérifier le mot de passe
+        const isValid = await verifyPassword(
+          credentials.password as string,
+          user.password
+        );
+
+        if (!isValid) {
+          return null;
+        }
+
+        // Vérifier que l'utilisateur est actif
+        if (user.status !== "ACTIVE") {
+          return null;
+        }
+
+        // Retourner l'utilisateur pour NextAuth
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+        };
+      },
+    }),
   ],
   callbacks: {
-    async signIn({ user }) {
-      // Vérifier si l'utilisateur existe déjà dans la base de données
+    async signIn({ user, account }) {
+      // Si c'est une connexion Credentials (email/mot de passe), elle a déjà été validée dans authorize()
+      if (account?.provider === "credentials") {
+        return true;
+      }
+
+      // Pour Google OAuth, vérifier si l'utilisateur existe déjà dans la base de données
       if (user.email) {
         const existingUser = await prisma.adminUser.findUnique({
           where: { email: user.email },
@@ -59,10 +121,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         // Si l'utilisateur n'existe pas encore, vérifier le domaine uniquement pour les super admins
-        // Les membres d'organisation peuvent avoir d'autres domaines
+        // Les membres d'organisation peuvent avoir d'autres domaines mais doivent utiliser email/mot de passe
         const domain = user.email.split("@")[1];
         if (domain !== ALLOWED_DOMAIN) {
-          console.log(`Accès refusé pour ${user.email} - domaine non autorisé pour les nouveaux utilisateurs admin`);
+          console.log(`Accès refusé pour ${user.email} - domaine non autorisé pour les nouveaux utilisateurs admin. Utilisez email/mot de passe pour les membres d'organisation.`);
           return false;
         }
       }

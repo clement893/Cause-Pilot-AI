@@ -87,6 +87,7 @@ model AdminUser {
   email                   String                    @unique
   emailVerified           DateTime?
   image                   String?
+  password                String?                   // Mot de passe hashé (optionnel, pour les membres d'organisation)
   createdAt               DateTime                  @default(now())
   updatedAt               DateTime @updatedAt
   role                    SuperAdminRole            @default(ADMIN)

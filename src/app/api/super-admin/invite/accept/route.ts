@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMainPrisma } from "@/lib/prisma-org";
+import { hashPassword } from "@/lib/password";
 
 // GET /api/super-admin/invite/accept?token=xxx - Vérifier le token d'invitation
 export async function GET(request: NextRequest) {
@@ -81,7 +82,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token } = body;
+    const { token, password } = body;
 
     if (!token) {
       return NextResponse.json(
@@ -128,6 +129,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser) {
+      // Si l'utilisateur existe déjà, mettre à jour le mot de passe si fourni
+      if (password) {
+        const hashedPassword = await hashPassword(password);
+        await mainPrisma.adminUser.update({
+          where: { id: existingUser.id },
+          data: { password: hashedPassword },
+        });
+      }
+
       // Si l'utilisateur existe déjà, mettre à jour l'invitation et créer l'accès si nécessaire
       if (invitation.organizationId) {
         // Créer l'accès à l'organisation s'il n'existe pas déjà
@@ -175,12 +185,16 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Hasher le mot de passe si fourni
+    const hashedPassword = password ? await hashPassword(password) : null;
+
     // Créer l'utilisateur admin
     const adminUser = await mainPrisma.adminUser.create({
       data: {
         email: invitation.email,
         role: invitation.role || "ADMIN",
         status: "ACTIVE", // Actif après acceptation
+        password: hashedPassword, // Mot de passe hashé (optionnel pour les admins généraux)
       },
     });
 

@@ -30,6 +30,8 @@ function AcceptInvitationContent() {
   const [invitation, setInvitation] = useState<InvitationData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const fetchInvitation = useCallback(async () => {
     try {
@@ -64,13 +66,34 @@ function AcceptInvitationContent() {
   const handleAccept = async () => {
     if (!token) return;
 
+    // Si c'est une invitation pour une organisation, vérifier le mot de passe
+    const isOrganizationInvitation = !!invitation?.organization;
+    if (isOrganizationInvitation) {
+      if (!password) {
+        setError("Le mot de passe est requis pour les membres d'organisation");
+        return;
+      }
+      if (password.length < 8) {
+        setError("Le mot de passe doit contenir au moins 8 caractères");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Les mots de passe ne correspondent pas");
+        return;
+      }
+    }
+
     setAccepting(true);
+    setError(null);
     try {
       const response = await fetch("/api/super-admin/invite/accept", {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ 
+          token,
+          password: isOrganizationInvitation ? password : undefined,
+        }),
       });
 
       const data = await response.json();
@@ -211,18 +234,58 @@ function AcceptInvitationContent() {
             )}
           </div>
 
-          {/* Avertissement */}
-          <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-yellow-300">
-                Important
-              </p>
-              <p className="text-xs text-yellow-400 mt-1">
-                Vous devez vous connecter avec un compte Google utilisant l&apos;adresse email <strong>{invitation.email}</strong>.
-              </p>
+          {/* Formulaire de mot de passe pour les membres d'organisation */}
+          {invitation.organization && (
+            <div className="mb-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Mot de passe *
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Minimum 8 caractères"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Confirmer le mot de passe *
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Répétez le mot de passe"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs text-blue-400">
+                    Les membres d&apos;organisation doivent utiliser un mot de passe pour se connecter. Vous pourrez vous connecter avec votre email et ce mot de passe.
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Avertissement pour les admins généraux */}
+          {!invitation.organization && (
+            <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-yellow-300">
+                  Important
+                </p>
+                <p className="text-xs text-yellow-400 mt-1">
+                  Vous devrez vous connecter avec un compte Google utilisant l&apos;adresse email <strong>{invitation.email}</strong>.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Bouton d'acceptation */}
           <button

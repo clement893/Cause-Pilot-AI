@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { getMainPrisma } from "@/lib/prisma-org";
 import { getPrismaForOrganization } from "@/lib/prisma-multi";
 import { prisma } from "@/lib/prisma";
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
     // Les campagnes n'ont pas de organizationId dans le schéma actuel
     // Pour une route publique, on peut accepter organizationId dans le body
     // ou utiliser la base par défaut si le système multi-database n'est pas activé
-    let organizationId: string | null = body.organizationId || null;
+    const organizationId: string | null = body.organizationId || null;
     let prismaInstance: typeof prisma;
     
     const useMultiDatabase = process.env.ENABLE_MULTI_DATABASE === "true";
@@ -108,7 +109,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Chercher ou créer le donateur
-    const donorWhere: any = { email: body.email };
+    const donorWhere: Prisma.DonorWhereInput = { email: body.email };
     if (organizationId) {
       donorWhere.organizationId = organizationId;
     }
@@ -118,7 +119,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!donor) {
-      const donorData: any = {
+      const donorData: Prisma.DonorCreateInput = {
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,

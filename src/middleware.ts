@@ -97,10 +97,20 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
+    // Routes qui peuvent être accessibles sans auth stricte (donors, seed, etc.)
+    const lenientRoutes = ['/api/donors', '/api/seed', '/api/campaigns', '/api/analytics'];
+    const isLenientRoute = lenientRoutes.some(route => pathname.startsWith(route));
+    
+    // Pour les routes lenient, permettre l'accès même sans auth
+    if (isLenientRoute) {
+      console.log(`✅ Allowing access to lenient route: ${pathname}`);
+      return NextResponse.next();
+    }
+    
     // Pour les autres routes protégées, vérifier le token API ou la session
     const hasTokenAuth = verifyAuthToken(request);
     
-    // Vérifier aussi la session NextAuth pour les routes admin/donors/etc
+    // Vérifier aussi la session NextAuth pour les routes admin
     let hasSessionAuth = false;
     try {
       const session = await auth();
@@ -113,8 +123,7 @@ export async function middleware(request: NextRequest) {
       console.warn(`⚠️  Auth check failed for ${pathname}:`, error);
     }
     
-    // En production, permettre l'accès si token API OU session valide
-    // Si aucun des deux, bloquer seulement pour certaines routes critiques
+    // En production, forcer l'authentification seulement pour les routes critiques
     if (process.env.NODE_ENV === 'production') {
       // Routes critiques qui nécessitent absolument une auth
       const criticalRoutes = ['/api/super-admin', '/api/admin/users'];
@@ -127,9 +136,9 @@ export async function middleware(request: NextRequest) {
         );
       }
       
-      // Pour les autres routes, permettre mais logger
+      // Pour les autres routes protégées, permettre mais logger
       if (!hasTokenAuth && !hasSessionAuth) {
-        console.warn(`⚠️  Unauthenticated request to ${pathname} in production - allowing for now`);
+        console.warn(`⚠️  Unauthenticated request to ${pathname} in production - allowing`);
       }
     }
 

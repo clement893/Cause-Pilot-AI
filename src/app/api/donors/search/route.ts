@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
         include: {
           preferences: true,
           _count: {
-            select: { donations: true },
+            select: { Donation: true },
           },
         },
       }),

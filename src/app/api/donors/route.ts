@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
         include: {
           preferences: true,
           _count: {
-            select: { donations: true },
+            select: { Donation: true },
           },
         },
       }),

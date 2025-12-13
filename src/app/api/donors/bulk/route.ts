@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
+import { getOrganizationId } from "@/lib/organization";
 
 // POST - Exécuter une action en masse sur les donateurs
 export async function POST(request: NextRequest) {
   try {
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
     const body = await request.json();
     const { action, donorIds, params } = body;
 
@@ -20,7 +31,10 @@ export async function POST(request: NextRequest) {
       case "update_segment":
         // Mettre à jour le segment des donateurs
         await prisma.donor.updateMany({
-          where: { id: { in: donorIds } },
+          where: { 
+            id: { in: donorIds },
+            organizationId, // S'assurer que les donateurs appartiennent à l'organisation
+          },
           data: { segment: params.segment },
         });
         result = {
@@ -33,7 +47,10 @@ export async function POST(request: NextRequest) {
       case "update_status":
         // Mettre à jour le statut des donateurs
         await prisma.donor.updateMany({
-          where: { id: { in: donorIds } },
+          where: { 
+            id: { in: donorIds },
+            organizationId,
+          },
           data: { status: params.status },
         });
         result = {
@@ -46,7 +63,10 @@ export async function POST(request: NextRequest) {
       case "add_tag":
         // Ajouter un tag aux donateurs
         const donorsForTag = await prisma.donor.findMany({
-          where: { id: { in: donorIds } },
+          where: { 
+            id: { in: donorIds },
+            organizationId,
+          },
           select: { id: true, tags: true },
         });
         
@@ -72,7 +92,10 @@ export async function POST(request: NextRequest) {
       case "remove_tag":
         // Retirer un tag des donateurs
         const donorsForTagRemoval = await prisma.donor.findMany({
-          where: { id: { in: donorIds } },
+          where: { 
+            id: { in: donorIds },
+            organizationId,
+          },
           select: { id: true, tags: true },
         });
         
@@ -109,7 +132,10 @@ export async function POST(request: NextRequest) {
         if (newDonorIds.length > 0) {
           // Récupérer les emails des donateurs
           const donors = await prisma.donor.findMany({
-            where: { id: { in: newDonorIds } },
+            where: { 
+              id: { in: newDonorIds },
+              organizationId,
+            },
             select: { id: true, email: true },
           });
           
@@ -136,6 +162,7 @@ export async function POST(request: NextRequest) {
         const donorsForEmail = await prisma.donor.findMany({
           where: { 
             id: { in: donorIds },
+            organizationId,
             email: { not: null },
           },
           select: { id: true, email: true, firstName: true, lastName: true },
@@ -170,7 +197,10 @@ export async function POST(request: NextRequest) {
       case "export":
         // Exporter les donateurs sélectionnés
         const donorsToExport = await prisma.donor.findMany({
-          where: { id: { in: donorIds } },
+          where: { 
+            id: { in: donorIds },
+            organizationId,
+          },
           select: {
             firstName: true,
             lastName: true,
@@ -199,7 +229,10 @@ export async function POST(request: NextRequest) {
       case "delete":
         // Supprimer les donateurs (soft delete via status)
         await prisma.donor.updateMany({
-          where: { id: { in: donorIds } },
+          where: { 
+            id: { in: donorIds },
+            organizationId,
+          },
           data: { status: "INACTIVE" },
         });
         result = {

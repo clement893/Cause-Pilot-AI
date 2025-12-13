@@ -1,15 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET - Récupérer les segments de donateurs avec compteurs
 export async function GET(request: NextRequest) {
   try {
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
     const { searchParams } = new URL(request.url);
     const includeCount = searchParams.get("includeCount") === "true";
 
     // Récupérer les segments uniques
     const donors = await prisma.donor.findMany({
       where: {
+        organizationId, // Filtrer par organisation
         consentEmail: true,
         email: { not: null },
         status: { not: "DO_NOT_CONTACT" },
@@ -106,6 +118,7 @@ export async function GET(request: NextRequest) {
         description: "Donateurs avec dons récurrents",
         count: await prisma.donor.count({
           where: {
+            organizationId, // Filtrer par organisation
             consentEmail: true,
             email: { not: null },
             Donation: {
@@ -123,6 +136,7 @@ export async function GET(request: NextRequest) {
         description: "Donateurs créés ce mois-ci",
         count: await prisma.donor.count({
           where: {
+            organizationId, // Filtrer par organisation
             consentEmail: true,
             email: { not: null },
             createdAt: {

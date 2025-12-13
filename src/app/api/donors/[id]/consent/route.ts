@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET - Récupérer les consentements d'un donateur
 export async function GET(
@@ -8,9 +9,22 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
 
-    const donor = await prisma.donor.findUnique({
-      where: { id },
+    const donor = await prisma.donor.findFirst({
+      where: { 
+        id,
+        organizationId, // S'assurer que le donateur appartient à l'organisation
+      },
       select: {
         id: true,
         firstName: true,
@@ -58,9 +72,23 @@ export async function PUT(
     const body = await request.json();
     const { consentEmail, consentPhone, consentMail, source, reason } = body;
 
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
+    
     // Récupérer les consentements actuels
-    const currentDonor = await prisma.donor.findUnique({
-      where: { id },
+    const currentDonor = await prisma.donor.findFirst({
+      where: { 
+        id,
+        organizationId, // S'assurer que le donateur appartient à l'organisation
+      },
       select: {
         consentEmail: true,
         consentPhone: true,

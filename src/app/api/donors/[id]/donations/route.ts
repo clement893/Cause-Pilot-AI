@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
+import { getOrganizationId } from "@/lib/organization";
 
 // GET - Récupérer les dons d'un donateur
 export async function GET(
@@ -8,9 +9,22 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
 
     const donations = await prisma.donation.findMany({
-      where: { donorId: id },
+      where: { 
+        donorId: id,
+        donor: { organizationId }, // S'assurer que le donateur appartient à l'organisation
+      },
       orderBy: { donationDate: "desc" },
     });
 

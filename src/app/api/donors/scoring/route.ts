@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma-org";
+import { getOrganizationId } from "@/lib/organization";
 
 // Algorithme de scoring prédictif pour les donateurs
 // Basé sur plusieurs facteurs: historique des dons, fréquence, récence, montants, engagement
@@ -112,14 +113,27 @@ function calculateChurnRiskScore(donor: DonorScoringData): number {
 // GET: Récupérer les scores d'un ou plusieurs donateurs
 export async function GET(request: NextRequest) {
   try {
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
     const { searchParams } = new URL(request.url);
     const donorId = searchParams.get("donorId");
     const recalculate = searchParams.get("recalculate") === "true";
     
     if (donorId) {
       // Score d'un donateur spécifique
-      const donor = await prisma.donor.findUnique({
-        where: { id: donorId },
+      const donor = await prisma.donor.findFirst({
+        where: { 
+          id: donorId,
+          organizationId,
+        },
         select: {
           id: true,
           totalDonations: true,
@@ -174,6 +188,7 @@ export async function GET(request: NextRequest) {
     
     // Stats globales des scores
     const stats = await prisma.donor.aggregate({
+      where: { organizationId },
       _avg: {
         potentialScore: true,
         churnRiskScore: true,
@@ -185,23 +200,41 @@ export async function GET(request: NextRequest) {
     
     // Distribution des scores
     const highPotential = await prisma.donor.count({
-      where: { potentialScore: { gte: 70 } },
+      where: { 
+        organizationId,
+        potentialScore: { gte: 70 } 
+      },
     });
     const mediumPotential = await prisma.donor.count({
-      where: { potentialScore: { gte: 40, lt: 70 } },
+      where: { 
+        organizationId,
+        potentialScore: { gte: 40, lt: 70 } 
+      },
     });
     const lowPotential = await prisma.donor.count({
-      where: { potentialScore: { lt: 40 } },
+      where: { 
+        organizationId,
+        potentialScore: { lt: 40 } 
+      },
     });
     
     const highRisk = await prisma.donor.count({
-      where: { churnRiskScore: { gte: 70 } },
+      where: { 
+        organizationId,
+        churnRiskScore: { gte: 70 } 
+      },
     });
     const mediumRisk = await prisma.donor.count({
-      where: { churnRiskScore: { gte: 40, lt: 70 } },
+      where: { 
+        organizationId,
+        churnRiskScore: { gte: 40, lt: 70 } 
+      },
     });
     const lowRisk = await prisma.donor.count({
-      where: { churnRiskScore: { lt: 40 } },
+      where: { 
+        organizationId,
+        churnRiskScore: { lt: 40 } 
+      },
     });
     
     return NextResponse.json({
@@ -224,14 +257,25 @@ export async function GET(request: NextRequest) {
 // POST: Recalculer les scores pour tous les donateurs ou une sélection
 export async function POST(request: NextRequest) {
   try {
+    const organizationId = getOrganizationId(request);
+    
+    if (!organizationId) {
+      return NextResponse.json(
+        { success: false, error: "Organization ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    const prisma = await getPrisma(request);
     const body = await request.json();
     const { donorIds, all } = body;
     
     let donors;
     
     if (all) {
-      // Tous les donateurs
+      // Tous les donateurs de l'organisation
       donors = await prisma.donor.findMany({
+        where: { organizationId },
         select: {
           id: true,
           totalDonations: true,
@@ -249,7 +293,10 @@ export async function POST(request: NextRequest) {
     } else if (donorIds && donorIds.length > 0) {
       // Sélection de donateurs
       donors = await prisma.donor.findMany({
-        where: { id: { in: donorIds } },
+        where: { 
+          id: { in: donorIds },
+          organizationId,
+        },
         select: {
           id: true,
           totalDonations: true,

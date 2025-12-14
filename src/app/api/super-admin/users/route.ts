@@ -167,7 +167,7 @@ export async function PUT(request: NextRequest) {
 
     // Préparer les données de mise à jour
     const updateData: Prisma.AdminUserUpdateInput = {};
-    const changes: Record<string, any> = {};
+    const changes: Record<string, { from: unknown; to: unknown }> = {};
 
     if (body.name !== undefined && body.name !== currentUser.name) {
       updateData.name = body.name;

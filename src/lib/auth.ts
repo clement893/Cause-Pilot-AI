@@ -27,8 +27,13 @@ declare module "next-auth" {
 // Nettoyer les valeurs (retirer les guillemets et espaces si présents)
 const cleanEnvVar = (value: string | undefined): string | undefined => {
   if (!value) return undefined;
-  // Retirer les espaces et guillemets (simples ou doubles) au début et à la fin
-  const cleaned = value.trim().replace(/^["']+|["']+$/g, '');
+  // Retirer les espaces au début et à la fin
+  let cleaned = value.trim();
+  // Retirer les guillemets (simples ou doubles) au début et à la fin si présents
+  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || 
+      (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
   return cleaned.length > 0 ? cleaned : undefined;
 };
 

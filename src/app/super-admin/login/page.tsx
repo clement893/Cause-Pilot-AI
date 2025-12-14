@@ -20,15 +20,28 @@ function LoginContent() {
     try {
       // signIn redirige vers Google OAuth
       // En cas d'erreur de configuration, NextAuth redirigera avec ?error=Configuration
-      await signIn("google", { 
+      const result = await signIn("google", { 
         callbackUrl: "/super-admin",
+        redirect: false,
       });
+      
+      if (result?.error) {
+        console.error("Erreur de connexion Google:", result.error);
+        if (result.error === "Configuration") {
+          setLoginError("Le provider Google OAuth n'est pas configuré. Veuillez vérifier les variables d'environnement GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET sur Railway.");
+        } else {
+          setLoginError("Erreur lors de la connexion avec Google. Veuillez réessayer.");
+        }
+        setIsLoading(false);
+      } else if (result?.ok) {
+        // Redirection manuelle si redirect: false
+        window.location.href = "/super-admin";
+      }
     } catch (error) {
       console.error("Erreur de connexion:", error);
+      setLoginError("Une erreur est survenue lors de la connexion avec Google.");
       setIsLoading(false);
     }
-    // Note: Si la redirection réussit, setIsLoading ne sera jamais appelé
-    // mais ce n'est pas un problème car le composant sera démonté lors de la redirection
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {

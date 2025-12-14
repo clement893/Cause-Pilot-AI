@@ -240,7 +240,7 @@ export async function PUT(request: NextRequest) {
           entityId: user.id,
           description: `Mise à jour de l'utilisateur ${user.email}`,
           adminUserId: session.user.id,
-          metadata: { changes },
+          metadata: { changes } as Prisma.InputJsonValue,
         },
       });
     }

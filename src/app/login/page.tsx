@@ -31,18 +31,25 @@ function LoginContent() {
         setLoginError("Email ou mot de passe incorrect");
         setIsLoading(false);
       } else if (result?.ok) {
-        // Vérifier le rôle de l'utilisateur pour déterminer la redirection
-        // On récupère la session après connexion pour vérifier le rôle
-        const sessionResponse = await fetch("/api/auth/session");
-        const sessionData = await sessionResponse.json();
-        
-        // Si super admin, rediriger vers /super-admin, sinon vers le dashboard organisation
-        if (sessionData?.user?.role === "SUPER_ADMIN") {
-          router.push("/super-admin");
-        } else {
-          // Utilisateur organisation : rediriger vers le dashboard
-          router.push("/");
-        }
+        // Attendre un peu pour que la session soit créée, puis vérifier le rôle
+        setTimeout(async () => {
+          try {
+            const sessionResponse = await fetch("/api/auth/session");
+            const sessionData = await sessionResponse.json();
+            
+            // Si super admin, rediriger vers /super-admin, sinon vers le dashboard organisation
+            if (sessionData?.user?.role === "SUPER_ADMIN") {
+              router.push("/super-admin");
+            } else {
+              // Utilisateur organisation : rediriger vers le dashboard
+              router.push("/");
+            }
+          } catch (error) {
+            console.error("Erreur lors de la vérification de la session:", error);
+            // En cas d'erreur, rediriger vers le dashboard par défaut
+            router.push("/");
+          }
+        }, 500);
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);

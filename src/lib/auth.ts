@@ -263,9 +263,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Si l'URL contient un callbackUrl, l'utiliser
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (new URL(url).origin === baseUrl) return url;
+      // Si l'URL contient un callbackUrl spécifique, l'utiliser
+      if (url.startsWith("/")) {
+        // Si c'est une URL relative, l'utiliser directement
+        return `${baseUrl}${url}`;
+      }
+      // Si c'est une URL complète du même domaine, l'utiliser
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
+      // Par défaut, retourner la baseUrl (sera géré par les pages de login)
       return baseUrl;
     },
   },

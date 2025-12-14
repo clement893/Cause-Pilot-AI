@@ -127,6 +127,20 @@ export default function AppLayout({ children, title, breadcrumbs, currentPage = 
                 <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
               </button>
 
+              {/* Logout button - visible for non-super-admin users */}
+              {session?.user?.role !== "SUPER_ADMIN" && (
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+                  title="Déconnexion"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span className="hidden md:inline">Déconnexion</span>
+                </button>
+              )}
+
               {/* User menu */}
               <div className="relative" ref={userMenuRef}>
                 <button

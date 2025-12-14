@@ -55,7 +55,7 @@ function AcceptInvitationContent() {
 
   useEffect(() => {
     if (!token) {
-      setError("Token d'invitation manquant");
+      setError("Token d&apos;invitation manquant");
       setLoading(false);
       return;
     }
@@ -117,7 +117,7 @@ function AcceptInvitationContent() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Chargement de l'invitation...</p>
+          <p className="text-slate-400">Chargement de l&apos;invitation...</p>
         </div>
       </div>
     );

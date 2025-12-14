@@ -67,7 +67,12 @@ function verifyAuthToken(request: NextRequest): boolean {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Routes publiques (pages et API)
+  // Routes publiques API (doivent être vérifiées AVANT les pages)
+  const publicApiRoutes = [
+    '/api/auth', // Routes NextAuth doivent être publiques - CRITIQUE
+  ];
+
+  // Routes publiques pages
   const publicPageRoutes = [
     '/login',
     '/login/accept',
@@ -78,20 +83,25 @@ export async function middleware(request: NextRequest) {
     '/fundraise/', // Routes de fundraising publiques
     '/preferences/', // Préférences de communication
     '/unsubscribe', // Désabonnement
-    '/api/donate',
-    '/api/forms/public',
-    '/api/forms/personalize',
-    '/api/preferences',
-    '/api/unsubscribe',
-    '/api/webhooks',
-    '/api/health',
-    '/api/seed', // Route seed accessible (vérification interne)
   ];
+
+  // Vérifier d'abord les routes API - TOUTES les routes API passent
+  // Le middleware ne bloque JAMAIS les routes API, elles gèrent leur propre auth
+  if (pathname.startsWith('/api')) {
+    // Permettre explicitement /api/auth (NextAuth)
+    if (pathname.startsWith('/api/auth')) {
+      return NextResponse.next();
+    }
+    
+    // Pour TOUTES les autres routes API, laisser passer
+    // La route API elle-même gère l'authentification et retourne du JSON
+    return NextResponse.next();
+  }
 
   // Vérifier si c'est une route publique (page)
   const isPublicPage = publicPageRoutes.some(route => {
     if (route === pathname) return true;
-    if (route.endsWith('*') && pathname.startsWith(route.slice(0, -1))) return true;
+    if (route.endsWith('/') && pathname.startsWith(route)) return true;
     return false;
   });
 
@@ -147,86 +157,6 @@ export async function middleware(request: NextRequest) {
       url.pathname = loginUrl;
       url.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(url);
-    }
-  }
-
-  // Pour les routes API, continuer avec la logique existante
-  if (!pathname.startsWith('/api')) {
-    return NextResponse.next();
-  }
-
-  // Permettre les routes publiques
-  if (isPublicRoute(pathname)) {
-    return NextResponse.next();
-  }
-
-  // Vérifier l'authentification pour les routes protégées
-  if (isProtectedRoute(pathname)) {
-    // En développement, permettre l'accès sans auth si DISABLE_AUTH=true
-    if (process.env.NODE_ENV === 'development' && process.env.DISABLE_AUTH === 'true') {
-      console.warn('⚠️  AUTHENTICATION DISABLED - Development mode only');
-      return NextResponse.next();
-    }
-
-    // Pour les routes super-admin, laisser la route API gérer l'authentification
-    // Le middleware ne bloque plus, la vérification se fait dans la route API elle-même
-    // Cela évite les problèmes de lecture de session dans le middleware avec NextAuth v5
-    if (pathname.startsWith('/api/super-admin')) {
-      // Log pour debug
-      const cookies = request.cookies.getAll();
-      console.log("Middleware - Allowing super-admin route:", pathname);
-      console.log("Middleware - Cookies:", cookies.map(c => c.name));
-      return NextResponse.next();
-    }
-
-    // Routes qui peuvent être accessibles sans auth stricte (donors, seed, etc.)
-    const lenientRoutes = ['/api/donors', '/api/seed', '/api/campaigns', '/api/analytics'];
-    const isLenientRoute = lenientRoutes.some(route => pathname.startsWith(route));
-    
-    // Pour les routes lenient, permettre l'accès même sans auth
-    if (isLenientRoute) {
-      console.log(`✅ Allowing access to lenient route: ${pathname}`);
-      return NextResponse.next();
-    }
-    
-    // Pour les autres routes protégées, vérifier le token API ou la session
-    const hasTokenAuth = verifyAuthToken(request);
-    
-    // Vérifier aussi la session NextAuth pour les routes admin
-    let hasSessionAuth = false;
-    try {
-      const session = await auth();
-      if (session?.user) {
-        hasSessionAuth = true;
-        console.log(`✅ Authenticated request to ${pathname} by user: ${session.user.email}`);
-      }
-    } catch (error) {
-      // Ignorer les erreurs d'auth silencieusement
-      console.warn(`⚠️  Auth check failed for ${pathname}:`, error);
-    }
-    
-    // En production, forcer l'authentification seulement pour les routes critiques
-    if (process.env.NODE_ENV === 'production') {
-      // Routes critiques qui nécessitent absolument une auth
-      const criticalRoutes = ['/api/super-admin', '/api/admin/users'];
-      const isCriticalRoute = criticalRoutes.some(route => pathname.startsWith(route));
-      
-      if (isCriticalRoute && !hasTokenAuth && !hasSessionAuth) {
-        return NextResponse.json(
-          { success: false, error: 'Unauthorized', message: 'Authentication required' },
-          { status: 401 }
-        );
-      }
-      
-      // Pour les autres routes protégées, permettre mais logger
-      if (!hasTokenAuth && !hasSessionAuth) {
-        console.warn(`⚠️  Unauthenticated request to ${pathname} in production - allowing`);
-      }
-    }
-
-    // En développement, avertir mais permettre si pas de token ni session
-    if (process.env.NODE_ENV === 'development' && !hasTokenAuth && !hasSessionAuth) {
-      console.warn(`⚠️  Unauthenticated request to protected route: ${pathname}`);
     }
   }
 

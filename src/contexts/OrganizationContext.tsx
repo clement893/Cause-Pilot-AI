@@ -28,8 +28,27 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchOrganizations = useCallback(async () => {
+    // Ne pas essayer de charger les organisations si l'utilisateur n'est pas authentifié
+    if (!session?.user) {
+      setIsLoading(false);
+      return;
+    }
+    
     try {
-      const response = await fetch("/api/organizations");
+      const response = await fetch("/api/organizations", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      // Vérifier que la réponse est bien du JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("Erreur: La réponse n'est pas du JSON", contentType, response.status);
+        setIsLoading(false);
+        return;
+      }
+      
       if (response.ok) {
         const data = await response.json();
         setOrganizations(data);
@@ -71,9 +90,22 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
         } else if (data.length > 0) {
           setCurrentOrganizationState(data[0]);
         }
+      } else {
+        // Si la réponse n'est pas OK, essayer de parser l'erreur JSON
+        try {
+          const errorData = await response.json();
+          console.error("Erreur API:", errorData);
+        } catch (jsonError) {
+          // Si ce n'est pas du JSON, c'est probablement une redirection HTML
+          console.error("Erreur: La réponse n'est pas du JSON (probablement une redirection)");
+        }
       }
     } catch (error) {
       console.error("Erreur lors du chargement des organisations:", error);
+      // Si c'est une erreur de parsing JSON, c'est probablement une redirection HTML
+      if (error instanceof SyntaxError && error.message.includes("JSON")) {
+        console.error("Erreur: Réponse HTML reçue au lieu de JSON (probablement une redirection)");
+      }
     } finally {
       setIsLoading(false);
     }

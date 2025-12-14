@@ -31,8 +31,18 @@ function LoginContent() {
         setLoginError("Email ou mot de passe incorrect");
         setIsLoading(false);
       } else if (result?.ok) {
-        // Rediriger vers le dashboard de l'organisation
-        router.push("/");
+        // Vérifier le rôle de l'utilisateur pour déterminer la redirection
+        // On récupère la session après connexion pour vérifier le rôle
+        const sessionResponse = await fetch("/api/auth/session");
+        const sessionData = await sessionResponse.json();
+        
+        // Si super admin, rediriger vers /super-admin, sinon vers le dashboard organisation
+        if (sessionData?.user?.role === "SUPER_ADMIN") {
+          router.push("/super-admin");
+        } else {
+          // Utilisateur organisation : rediriger vers le dashboard
+          router.push("/");
+        }
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);

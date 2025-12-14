@@ -15,29 +15,11 @@ function LoginContent() {
     setIsLoading(true);
     setLoginError(null);
     try {
-      // Utiliser redirect: false pour capturer les erreurs
+      // Pour le super admin, toujours rediriger vers /super-admin
       const result = await signIn("google", { 
         callbackUrl: "/super-admin",
-        redirect: false,
+        redirect: true, // Laisser NextAuth gérer la redirection
       });
-      
-      if (result?.error) {
-        console.error("Erreur de connexion Google:", result.error);
-        if (result.error === "Configuration") {
-          setLoginError("Le provider Google OAuth n'est pas configuré. Vérifiez les logs Railway pour plus de détails.");
-        } else {
-          setLoginError(`Erreur lors de la connexion: ${result.error}`);
-        }
-        setIsLoading(false);
-      } else if (result?.ok) {
-        // Redirection manuelle si redirect: false
-        window.location.href = "/super-admin";
-      } else {
-        // Pas de résultat, essayer la redirection normale
-        await signIn("google", { 
-          callbackUrl: "/super-admin",
-        });
-      }
     } catch (error) {
       console.error("Erreur de connexion:", error);
       setLoginError("Une erreur est survenue lors de la connexion avec Google.");

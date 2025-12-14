@@ -239,7 +239,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const organizationAccess = await prisma.adminOrganizationAccess.findFirst({
               where: { adminUserId: userId },
               include: {
-                organization: {
+                Organization: {
                   select: {
                     id: true,
                     name: true,
@@ -248,6 +248,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 },
               },
             });
+            
+            if (organizationAccess) {
+              // Ajouter l'organisation à la session
+              session.user.organizationId = organizationAccess.Organization.id;
+              session.user.organizationName = organizationAccess.Organization.name;
+              session.user.organizationSlug = organizationAccess.Organization.slug;
+            }
             
             if (organizationAccess) {
               // Ajouter l'organisation à la session
@@ -261,6 +268,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Si l'URL contient un callbackUrl, l'utiliser
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   pages: {

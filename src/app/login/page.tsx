@@ -31,25 +31,50 @@ function LoginContent() {
         setLoginError("Email ou mot de passe incorrect");
         setIsLoading(false);
       } else if (result?.ok) {
-        // Attendre un peu pour que la session soit créée, puis vérifier le rôle
-        setTimeout(async () => {
+        // Attendre que la session soit créée, puis vérifier le rôle
+        // Utiliser une approche plus fiable avec retry
+        let attempts = 0;
+        const maxAttempts = 5;
+        
+        const checkSessionAndRedirect = async () => {
           try {
-            const sessionResponse = await fetch("/api/auth/session");
+            const sessionResponse = await fetch("/api/auth/session", {
+              cache: "no-store",
+            });
+            
+            if (!sessionResponse.ok) {
+              throw new Error("Session response not OK");
+            }
+            
+            const contentType = sessionResponse.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+              throw new Error("Response is not JSON");
+            }
+            
             const sessionData = await sessionResponse.json();
             
             // Si super admin, rediriger vers /super-admin, sinon vers le dashboard organisation
             if (sessionData?.user?.role === "SUPER_ADMIN") {
-              router.push("/super-admin");
+              window.location.href = "/super-admin";
             } else {
               // Utilisateur organisation : rediriger vers le dashboard
-              router.push("/");
+              window.location.href = "/";
             }
           } catch (error) {
-            console.error("Erreur lors de la vérification de la session:", error);
-            // En cas d'erreur, rediriger vers le dashboard par défaut
-            router.push("/");
+            attempts++;
+            if (attempts < maxAttempts) {
+              // Réessayer après un court délai
+              setTimeout(checkSessionAndRedirect, 200);
+            } else {
+              console.error("Erreur lors de la vérification de la session:", error);
+              // En cas d'erreur après plusieurs tentatives, rediriger vers le dashboard par défaut
+              window.location.href = "/";
+            }
           }
-        }, 500);
+        };
+        
+        // Démarrer la vérification après un court délai
+        setTimeout(checkSessionAndRedirect, 300);
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);

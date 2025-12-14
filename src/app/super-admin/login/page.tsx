@@ -16,14 +16,24 @@ function LoginContent() {
     setLoginError(null);
     try {
       // Pour le super admin, toujours rediriger vers /super-admin
-      const result = await signIn("google", { 
+      // Utiliser redirect: true pour Google OAuth (nécessaire pour la redirection vers Google)
+      // L'erreur "message channel closed" est souvent causée par des extensions de navigateur
+      // et peut être ignorée car la redirection fonctionne quand même
+      await signIn("google", { 
         callbackUrl: "/super-admin",
-        redirect: true, // Laisser NextAuth gérer la redirection
+        redirect: true,
       });
+      // Note: Si redirect: true, cette ligne ne sera jamais atteinte car NextAuth redirige
+      // Mais si une erreur survient avant la redirection, elle sera catchée ci-dessous
     } catch (error) {
-      console.error("Erreur de connexion:", error);
-      setLoginError("Une erreur est survenue lors de la connexion avec Google.");
-      setIsLoading(false);
+      // Ignorer l'erreur "message channel closed" qui est souvent causée par des extensions
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (!errorMessage.includes("message channel closed")) {
+        console.error("Erreur de connexion:", error);
+        setLoginError("Une erreur est survenue lors de la connexion avec Google.");
+        setIsLoading(false);
+      }
+      // Si c'est l'erreur "message channel closed", laisser NextAuth gérer la redirection
     }
   };
 

@@ -9,7 +9,7 @@ import type { AdapterUser } from "next-auth/adapters";
 // Domaine autorisé pour l'authentification admin
 const ALLOWED_DOMAIN = "nukleo.com";
 
-// Étendre le type Session pour inclure role et status
+// Étendre le type Session pour inclure role, status et organisation
 declare module "next-auth" {
   interface Session {
     user: {
@@ -19,6 +19,9 @@ declare module "next-auth" {
       image?: string | null;
       role?: string;
       status?: string;
+      organizationId?: string;
+      organizationName?: string;
+      organizationSlug?: string;
     };
   }
 }
@@ -248,9 +251,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             
             if (organizationAccess) {
               // Ajouter l'organisation à la session
-              (session.user as any).organizationId = organizationAccess.organization.id;
-              (session.user as any).organizationName = organizationAccess.organization.name;
-              (session.user as any).organizationSlug = organizationAccess.organization.slug;
+              session.user.organizationId = organizationAccess.organization.id;
+              session.user.organizationName = organizationAccess.organization.name;
+              session.user.organizationSlug = organizationAccess.organization.slug;
             }
           } catch (error) {
             console.error("Error fetching organization access in session callback:", error);

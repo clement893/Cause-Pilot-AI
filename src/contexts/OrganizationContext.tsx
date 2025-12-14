@@ -35,7 +35,7 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
         setOrganizations(data);
         
         // Si l'utilisateur n'est pas super admin et a une organisation dans sa session, l'utiliser
-        const sessionUser = session?.user as any;
+        const sessionUser = session?.user as { organizationId?: string; role?: string } | undefined;
         if (sessionUser?.organizationId && sessionUser?.role !== "SUPER_ADMIN") {
           const sessionOrg = data.find((org: Organization) => org.id === sessionUser.organizationId);
           if (sessionOrg) {

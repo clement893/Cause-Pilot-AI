@@ -18,11 +18,17 @@ function LoginContent() {
     setIsLoading(true);
     setLoginError(null);
     try {
-      await signIn("google", { callbackUrl: "/super-admin" });
+      // signIn redirige vers Google OAuth
+      // En cas d'erreur de configuration, NextAuth redirigera avec ?error=Configuration
+      await signIn("google", { 
+        callbackUrl: "/super-admin",
+      });
     } catch (error) {
       console.error("Erreur de connexion:", error);
       setIsLoading(false);
     }
+    // Note: Si la redirection réussit, setIsLoading ne sera jamais appelé
+    // mais ce n'est pas un problème car le composant sera démonté lors de la redirection
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -53,6 +59,8 @@ function LoginContent() {
 
   const getErrorMessage = (error: string | null) => {
     switch (error) {
+      case "Configuration":
+        return "Erreur de configuration: Les variables d'environnement Google OAuth ne sont pas configurées. Veuillez vérifier GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET sur Railway.";
       case "AccessDenied":
         return "Accès refusé. Seuls les utilisateurs du domaine nukleo.com peuvent accéder à cette zone.";
       case "OAuthAccountNotLinked":
@@ -60,8 +68,10 @@ function LoginContent() {
       case "OAuthSignin":
       case "OAuthCallback":
         return "Erreur lors de la connexion avec Google. Veuillez réessayer.";
+      case "CredentialsSignin":
+        return "Erreur d'authentification. Veuillez réessayer.";
       default:
-        return error ? "Une erreur est survenue. Veuillez réessayer." : null;
+        return error ? `Une erreur est survenue: ${error}. Veuillez réessayer ou contacter le support.` : null;
     }
   };
 

@@ -27,17 +27,32 @@ declare module "next-auth" {
 // Nettoyer les valeurs (retirer les guillemets et espaces si présents)
 const cleanEnvVar = (value: string | undefined): string | undefined => {
   if (!value) return undefined;
-  return value.trim().replace(/^["']|["']$/g, '');
+  // Retirer les espaces et guillemets (simples ou doubles) au début et à la fin
+  const cleaned = value.trim().replace(/^["']+|["']+$/g, '');
+  return cleaned.length > 0 ? cleaned : undefined;
 };
 
-const googleClientId = cleanEnvVar(process.env.GOOGLE_CLIENT_ID);
-const googleClientSecret = cleanEnvVar(process.env.GOOGLE_CLIENT_SECRET);
+const rawGoogleClientId = process.env.GOOGLE_CLIENT_ID;
+const rawGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const googleClientId = cleanEnvVar(rawGoogleClientId);
+const googleClientSecret = cleanEnvVar(rawGoogleClientSecret);
 const authSecret = cleanEnvVar(process.env.AUTH_SECRET) || cleanEnvVar(process.env.NEXTAUTH_SECRET);
 
+// Logs de débogage détaillés
+if (process.env.NODE_ENV === "production") {
+  console.log("🔍 Debug Google OAuth Configuration:");
+  console.log(`   Raw GOOGLE_CLIENT_ID: ${rawGoogleClientId ? `présent (${rawGoogleClientId.length} chars): "${rawGoogleClientId.substring(0, 20)}..."` : "manquant"}`);
+  console.log(`   Cleaned GOOGLE_CLIENT_ID: ${googleClientId ? `présent (${googleClientId.length} chars)` : "manquant"}`);
+  console.log(`   Raw GOOGLE_CLIENT_SECRET: ${rawGoogleClientSecret ? `présent (${rawGoogleClientSecret.length} chars): "${rawGoogleClientSecret.substring(0, 10)}..."` : "manquant"}`);
+  console.log(`   Cleaned GOOGLE_CLIENT_SECRET: ${googleClientSecret ? `présent (${googleClientSecret.length} chars)` : "manquant"}`);
+}
+
 if (!googleClientId || !googleClientSecret) {
-  console.error("❌ GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET manquant dans les variables d'environnement");
-  console.error(`   GOOGLE_CLIENT_ID: ${process.env.GOOGLE_CLIENT_ID ? `présent (${process.env.GOOGLE_CLIENT_ID.length} caractères)` : "manquant"}`);
-  console.error(`   GOOGLE_CLIENT_SECRET: ${process.env.GOOGLE_CLIENT_SECRET ? `présent (${process.env.GOOGLE_CLIENT_SECRET.length} caractères)` : "manquant"}`);
+  console.error("❌ GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET manquant ou invalide dans les variables d'environnement");
+  console.error(`   GOOGLE_CLIENT_ID brut: ${rawGoogleClientId ? `présent (${rawGoogleClientId.length} caractères)` : "manquant"}`);
+  console.error(`   GOOGLE_CLIENT_SECRET brut: ${rawGoogleClientSecret ? `présent (${rawGoogleClientSecret.length} caractères)` : "manquant"}`);
+  console.error(`   GOOGLE_CLIENT_ID nettoyé: ${googleClientId ? `présent (${googleClientId.length} caractères)` : "manquant ou vide"}`);
+  console.error(`   GOOGLE_CLIENT_SECRET nettoyé: ${googleClientSecret ? `présent (${googleClientSecret.length} caractères)` : "manquant ou vide"}`);
 }
 if (!authSecret) {
   console.error("❌ AUTH_SECRET ou NEXTAUTH_SECRET manquant dans les variables d'environnement");
@@ -46,12 +61,13 @@ if (!process.env.AUTH_URL && !process.env.NEXTAUTH_URL && !process.env.NEXT_PUBL
   console.error("❌ AUTH_URL, NEXTAUTH_URL ou NEXT_PUBLIC_APP_URL manquant dans les variables d'environnement");
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: CustomPrismaAdapter(prisma),
-  secret: authSecret || "fallback-secret-for-development",
-  basePath: "/api/auth",
-  providers: [
-    ...(googleClientId && googleClientSecret ? [Google({
+// Construire la liste des providers
+const providers = [];
+
+// Ajouter Google OAuth si les credentials sont disponibles
+if (googleClientId && googleClientSecret) {
+  try {
+    providers.push(Google({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
       authorization: {
@@ -63,7 +79,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // La vérification se fait dans le callback signIn
         },
       },
-    })] : []),
+    }));
+    if (process.env.NODE_ENV === "production") {
+      console.log("✅ Provider Google OAuth ajouté avec succès");
+    }
+  } catch (error) {
+    console.error("❌ Erreur lors de l'ajout du provider Google:", error);
+  }
+} else {
+  if (process.env.NODE_ENV === "production") {
+    console.warn("⚠️  Provider Google OAuth non ajouté - credentials manquants");
+  }
+}
+
+// Toujours ajouter le provider Credentials
+providers.push(
     Credentials({
       name: "Email / Mot de passe",
       credentials: {
@@ -118,8 +148,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           image: user.image,
         };
       },
-    }),
-  ],
+    })
+);
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter: CustomPrismaAdapter(prisma),
+  secret: authSecret || "fallback-secret-for-development",
+  basePath: "/api/auth",
+  providers,
   callbacks: {
     async signIn({ user, account }) {
       // Si c'est une connexion Credentials (email/mot de passe), elle a déjà été validée dans authorize()

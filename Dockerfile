@@ -24,7 +24,11 @@ COPY . .
 # Build de l'application
 RUN NODE_ENV=production pnpm build
 
+# Copier le script de démarrage
+COPY scripts/start.sh /app/scripts/start.sh
+RUN chmod +x /app/scripts/start.sh
+
 # Commande de démarrage
 # Exécute prisma db push au démarrage (quand DATABASE_URL est disponible) puis démarre l'application
-CMD ["pnpm", "start:with-db-push"]
+CMD ["/app/scripts/start.sh"]
 

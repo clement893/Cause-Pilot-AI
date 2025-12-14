@@ -8,7 +8,7 @@ cmds = ["pnpm install"]
 cmds = ["NODE_ENV=production pnpm build", "chmod +x scripts/start.sh"]
 
 [start]
-cmd = "sh scripts/start.sh"
+cmd = "npx prisma db push --accept-data-loss --skip-generate && pnpm start"
 
 [variables]
 NODE_ENV = "production"

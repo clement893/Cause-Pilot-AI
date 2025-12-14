@@ -14,6 +14,7 @@ import {
   Building2,
   Clock,
   Trash2,
+  Edit,
 } from "lucide-react";
 
 interface AdminUser {
@@ -66,6 +67,7 @@ export default function SuperAdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -445,6 +447,13 @@ export default function SuperAdminUsersPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <button
+                          onClick={() => setEditingUser(user)}
+                          className="p-2 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 rounded-lg transition-colors"
+                          title="Modifier l'utilisateur"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
                           onClick={() => deleteUser(user.id, user.email)}
                           className="p-2 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-colors"
                           title="Supprimer l'utilisateur"
@@ -495,6 +504,18 @@ export default function SuperAdminUsersPage() {
               setShowInviteModal(false);
               fetchUsers();
               fetchInvitations();
+            }}
+          />
+        )}
+
+        {/* Edit User Modal */}
+        {editingUser && (
+          <EditUserModal
+            user={editingUser}
+            onClose={() => setEditingUser(null)}
+            onUpdated={() => {
+              setEditingUser(null);
+              fetchUsers();
             }}
           />
         )}
@@ -697,6 +718,324 @@ function InviteUserModal({
               className="px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors disabled:opacity-50"
             >
               {loading ? "Envoi..." : "Envoyer l'invitation"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function EditUserModal({
+  user,
+  onClose,
+  onUpdated,
+}: {
+  user: AdminUser;
+  onClose: () => void;
+  onUpdated: () => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [organizations, setOrganizations] = useState<Array<{ id: string; name: string }>>([]);
+  const [userOrganizations, setUserOrganizations] = useState<Array<{
+    id: string;
+    organizationId: string;
+    organization: { id: string; name: string; slug: string };
+    canEdit: boolean;
+    canDelete: boolean;
+    canManageUsers: boolean;
+  }>>([]);
+  const [formData, setFormData] = useState({
+    name: user.name || "",
+    email: user.email,
+    role: user.role,
+    status: user.status,
+  });
+
+  useEffect(() => {
+    fetchOrganizations();
+    fetchUserOrganizations();
+  }, []);
+
+  const fetchOrganizations = async () => {
+    try {
+      const response = await fetch("/api/super-admin/organizations?limit=100", {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setOrganizations(data.data.map((org: { id: string; name: string }) => ({
+          id: org.id,
+          name: org.name,
+        })));
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+    }
+  };
+
+  const fetchUserOrganizations = async () => {
+    try {
+      const response = await fetch(`/api/super-admin/users/${user.id}/organizations`, {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setUserOrganizations(data.data);
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/super-admin/users", {
+        method: "PUT",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: user.id,
+          ...formData,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        onUpdated();
+      } else {
+        alert(data.error || "Erreur lors de la mise à jour");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de la mise à jour");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddOrganization = async (organizationId: string) => {
+    if (!organizationId) return;
+
+    try {
+      const response = await fetch(`/api/super-admin/users/${user.id}/organizations`, {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          organizationId,
+          canEdit: true,
+          canDelete: false,
+          canManageUsers: false,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        fetchUserOrganizations();
+      } else {
+        alert(data.error || "Erreur lors de l'attribution");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de l'attribution");
+    }
+  };
+
+  const handleRemoveOrganization = async (organizationId: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir retirer cette organisation ?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/super-admin/users/${user.id}/organizations/${organizationId}`, {
+        method: "DELETE",
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        fetchUserOrganizations();
+      } else {
+        alert(data.error || "Erreur lors du retrait");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors du retrait");
+    }
+  };
+
+  const availableOrganizations = organizations.filter(
+    org => !userOrganizations.some(uo => uo.organizationId === org.id)
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+          <h2 className="text-xl font-semibold text-white">
+            Modifier l&apos;utilisateur
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5 text-slate-400" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Informations de base */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-white border-b border-slate-700 pb-2">
+              Informations de base
+            </h3>
+
+            {/* Nom */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Nom
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Nom de l'utilisateur"
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Email *
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="email@exemple.com"
+              />
+            </div>
+
+            {/* Rôle */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Rôle
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="ADMIN">Admin</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="MANAGER">Manager</option>
+                <option value="VIEWER">Viewer</option>
+                <option value="SUPPORT">Support</option>
+              </select>
+            </div>
+
+            {/* Statut */}
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Statut
+              </label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="ACTIVE">Actif</option>
+                <option value="INACTIVE">Inactif</option>
+                <option value="SUSPENDED">Suspendu</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Organisations */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-white border-b border-slate-700 pb-2">
+              Organisations
+            </h3>
+
+            {/* Liste des organisations actuelles */}
+            {userOrganizations.length > 0 && (
+              <div className="space-y-2">
+                {userOrganizations.map((uo) => (
+                  <div
+                    key={uo.id}
+                    className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg border border-slate-600"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-blue-400" />
+                      <span className="text-white">{uo.organization.name}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveOrganization(uo.organizationId)}
+                      className="p-1 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded transition-colors"
+                      title="Retirer cette organisation"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Ajouter une organisation */}
+            {availableOrganizations.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Ajouter une organisation
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        handleAddOrganization(e.target.value);
+                        e.target.value = "";
+                      }
+                    }}
+                    className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="">Sélectionner une organisation...</option>
+                    {availableOrganizations.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {userOrganizations.length === 0 && availableOrganizations.length === 0 && (
+              <p className="text-sm text-slate-400">Aucune organisation disponible</p>
+            )}
+          </div>
+
+          {/* Boutons */}
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-700">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-slate-300 hover:text-white transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors disabled:opacity-50"
+            >
+              {loading ? "Enregistrement..." : "Enregistrer les modifications"}
             </button>
           </div>
         </form>

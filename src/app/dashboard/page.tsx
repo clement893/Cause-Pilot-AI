@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
@@ -31,6 +31,7 @@ import {
   ChevronRight,
   X,
   LayoutGrid,
+  LogOut,
 } from "lucide-react";
 
 interface Alert {
@@ -192,6 +193,13 @@ export default function DashboardPage() {
     fetchDashboard();
   };
 
+  const handleSignOut = async () => {
+    await signOut({ 
+      callbackUrl: "/login",
+      redirect: true 
+    });
+  };
+
   const dismissAlert = (alertId: string) => {
     setDismissedAlerts([...dismissedAlerts, alertId]);
   };
@@ -277,6 +285,17 @@ export default function DashboardPage() {
                   </span>
                 </button>
               </div>
+            )}
+            {/* Logout button - visible for non-super-admin users */}
+            {session?.user?.role !== "SUPER_ADMIN" && (
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-lg transition-colors"
+                title="Déconnexion"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">Déconnexion</span>
+              </button>
             )}
             <Link
               href="/dashboard/customize"

@@ -149,8 +149,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers,
   callbacks: {
     async signIn({ user, account }) {
+      console.log(`[AUTH] signIn callback - provider: ${account?.provider}, email: ${user.email}`);
+      
       // Si c'est une connexion Credentials (email/mot de passe), elle a déjà été validée dans authorize()
       if (account?.provider === "credentials") {
+        console.log(`[AUTH] Credentials login allowed for ${user.email}`);
         return true;
       }
 
@@ -163,6 +166,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // Si l'utilisateur existe déjà, permettre la connexion (peut être admin ou membre d'organisation)
         if (existingUser) {
+          console.log(`[AUTH] Existing user ${user.email} found, allowing sign in. Role: ${existingUser.role}, Status: ${existingUser.status}`);
           return true;
         }
 
@@ -170,9 +174,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Les membres d'organisation peuvent avoir d'autres domaines mais doivent utiliser email/mot de passe
         const domain = user.email.split("@")[1];
         if (domain !== ALLOWED_DOMAIN) {
-          console.log(`Accès refusé pour ${user.email} - domaine non autorisé pour les nouveaux utilisateurs admin. Utilisez email/mot de passe pour les membres d'organisation.`);
+          console.log(`[AUTH] Accès refusé pour ${user.email} - domaine ${domain} non autorisé pour les nouveaux utilisateurs admin. Utilisez email/mot de passe pour les membres d'organisation.`);
           return false;
         }
+        
+        console.log(`[AUTH] New user ${user.email} with allowed domain ${domain}, allowing sign in`);
       }
       return true;
     },

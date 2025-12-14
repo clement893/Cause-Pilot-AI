@@ -165,6 +165,20 @@ export default function SuperAdminUsersPage() {
           'Content-Type': 'application/json',
         },
       });
+
+      // Vérifier le statut HTTP avant de parser le JSON
+      if (!response.ok) {
+        let errorMessage = `Erreur ${response.status}: ${response.statusText}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+          // Si le parsing JSON échoue, utiliser le message d'erreur par défaut
+        }
+        alert(`Erreur lors de la suppression: ${errorMessage}`);
+        return;
+      }
+
       const data = await response.json();
       if (data.success) {
         fetchUsers();
@@ -174,7 +188,7 @@ export default function SuperAdminUsersPage() {
       }
     } catch (error) {
       console.error("Erreur:", error);
-      alert("Erreur lors de la suppression");
+      alert(`Erreur lors de la suppression: ${error instanceof Error ? error.message : "Erreur inconnue"}`);
     }
   };
 

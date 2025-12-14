@@ -365,7 +365,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 // Helper pour vérifier si l'utilisateur est super admin
 export async function isSuperAdmin(userId: string): Promise<boolean> {
-  const adminUser = await prisma.adminUser.findUnique({
+  const { getMainPrisma } = await import("@/lib/prisma-org");
+  const mainPrisma = getMainPrisma();
+  const adminUser = await mainPrisma.adminUser.findUnique({
     where: { id: userId },
     select: { role: true, status: true },
   });
@@ -377,7 +379,9 @@ export async function hasOrganizationAccess(
   userId: string,
   organizationId: string
 ): Promise<boolean> {
-  const adminUser = await prisma.adminUser.findUnique({
+  const { getMainPrisma } = await import("@/lib/prisma-org");
+  const mainPrisma = getMainPrisma();
+  const adminUser = await mainPrisma.adminUser.findUnique({
     where: { id: userId },
     select: { role: true, status: true },
   });
@@ -388,7 +392,7 @@ export async function hasOrganizationAccess(
   }
 
   // Vérifier l'accès spécifique à l'organisation
-  const access = await prisma.adminOrganizationAccess.findUnique({
+  const access = await mainPrisma.adminOrganizationAccess.findUnique({
     where: {
       adminUserId_organizationId: {
         adminUserId: userId,

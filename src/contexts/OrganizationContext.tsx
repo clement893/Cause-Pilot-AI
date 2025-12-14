@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
 
 interface Organization {
   id: string;
@@ -21,6 +22,7 @@ interface OrganizationContextType {
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
 
 export function OrganizationProvider({ children }: { children: React.ReactNode }) {
+  const { data: session } = useSession();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [currentOrganization, setCurrentOrganizationState] = useState<Organization | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,6 +33,26 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
       if (response.ok) {
         const data = await response.json();
         setOrganizations(data);
+        
+        // Si l'utilisateur n'est pas super admin et a une organisation dans sa session, l'utiliser
+        const sessionUser = session?.user as any;
+        if (sessionUser?.organizationId && sessionUser?.role !== "SUPER_ADMIN") {
+          const sessionOrg = data.find((org: Organization) => org.id === sessionUser.organizationId);
+          if (sessionOrg) {
+            setCurrentOrganizationState(sessionOrg);
+            localStorage.setItem("currentOrganizationId", sessionOrg.id);
+            setIsLoading(false);
+            return;
+          }
+        }
+        
+        // Si l'utilisateur n'a qu'une seule organisation, l'utiliser automatiquement
+        if (data.length === 1) {
+          setCurrentOrganizationState(data[0]);
+          localStorage.setItem("currentOrganizationId", data[0].id);
+          setIsLoading(false);
+          return;
+        }
         
         // Restaurer l'organisation sauvegardée ou prendre la première
         const savedOrgId = localStorage.getItem("currentOrganizationId");
@@ -50,7 +72,7 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     fetchOrganizations();

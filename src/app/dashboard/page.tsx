@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import CausePilotWidget from "@/components/CausePilotWidget";
@@ -142,12 +144,21 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const { currentOrganization } = useOrganization();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<"today" | "week" | "month" | "year">("month");
+
+  // Rediriger les super admins vers /super-admin
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "SUPER_ADMIN") {
+      router.replace("/super-admin");
+    }
+  }, [status, session, router]);
 
   const fetchDashboard = async () => {
     try {

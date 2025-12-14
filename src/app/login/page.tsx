@@ -42,76 +42,28 @@ function LoginContent() {
     setLoginError(null);
 
     try {
-      const result = await signIn("credentials", {
+      // Utiliser redirect: true pour que NextAuth gère le cookie de session correctement
+      // Rediriger vers /dashboard qui vérifiera le rôle et redirigera si nécessaire
+      await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: "/dashboard",
       });
-
-      if (result?.error) {
+      
+      // Si redirect: true, cette ligne ne sera jamais atteinte car NextAuth redirige
+      // Mais si une erreur survient, elle sera catchée ci-dessous
+    } catch (error) {
+      // Si signIn avec redirect: true échoue, cela signifie qu'il y a une erreur
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // Ignorer l'erreur "message channel closed" qui est souvent causée par des extensions
+      if (!errorMessage.includes("message channel closed")) {
+        console.error("Erreur de connexion:", error);
         setLoginError("Email ou mot de passe incorrect");
         setIsLoading(false);
-      } else if (result?.ok) {
-        // Rafraîchir la session et rediriger
-        // Utiliser router.refresh() pour forcer le rafraîchissement de la session
-        router.refresh();
-        
-        // Attendre un peu pour que la session soit rafraîchie, puis vérifier le rôle
-        let attempts = 0;
-        const maxAttempts = 10;
-        
-        const checkSessionAndRedirect = async () => {
-          try {
-            // Rafraîchir la session à chaque tentative
-            router.refresh();
-            
-            const sessionResponse = await fetch("/api/auth/session", {
-              cache: "no-store",
-              credentials: "include",
-            });
-            
-            if (!sessionResponse.ok) {
-              throw new Error(`Session response not OK: ${sessionResponse.status}`);
-            }
-            
-            const contentType = sessionResponse.headers.get("content-type");
-            if (!contentType || !contentType.includes("application/json")) {
-              throw new Error("Response is not JSON");
-            }
-            
-            const sessionData = await sessionResponse.json();
-            
-            // Vérifier que la session contient bien un utilisateur
-            if (!sessionData?.user) {
-              throw new Error("No user in session");
-            }
-            
-            // Si super admin, rediriger vers /super-admin, sinon vers le dashboard organisation
-            if (sessionData?.user?.role === "SUPER_ADMIN") {
-              window.location.href = "/super-admin";
-            } else {
-              // Utilisateur organisation : rediriger vers le dashboard
-              window.location.href = "/";
-            }
-          } catch (error) {
-            attempts++;
-            console.log(`Tentative ${attempts}/${maxAttempts} de vérification de session:`, error);
-            
-            if (attempts < maxAttempts) {
-              // Réessayer après un délai progressif
-              setTimeout(checkSessionAndRedirect, 300 + (attempts * 100));
-            } else {
-              console.error("Erreur lors de la vérification de la session après plusieurs tentatives:", error);
-              // En cas d'erreur après plusieurs tentatives, rediriger vers le dashboard par défaut
-              // Le middleware vérifiera l'authentification et redirigera si nécessaire
-              window.location.href = "/";
-            }
-          }
-        };
-        
-        // Démarrer la vérification après un court délai
-        setTimeout(checkSessionAndRedirect, 500);
       }
+    }
     } catch (error) {
       console.error("Erreur de connexion:", error);
       setLoginError("Une erreur est survenue lors de la connexion");

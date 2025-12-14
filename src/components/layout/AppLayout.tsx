@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Sidebar from "./Sidebar";
 import CausePilotChat from "../CausePilotChat";
 import Link from "next/link";
@@ -15,7 +16,32 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children, title, breadcrumbs, currentPage = "dashboard" }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Rediriger vers /login si non authentifié
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  // Afficher un loader pendant la vérification de la session
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-400">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Ne rien afficher si non authentifié (redirection en cours)
+  if (!session) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-slate-950">

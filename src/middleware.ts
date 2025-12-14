@@ -67,7 +67,90 @@ function verifyAuthToken(request: NextRequest): boolean {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Ignorer les routes non-API
+  // Routes publiques (pages et API)
+  const publicPageRoutes = [
+    '/login',
+    '/login/accept',
+    '/super-admin/login',
+    '/super-admin/invite/accept',
+    '/donate',
+    '/donate/', // Routes de donation publiques
+    '/fundraise/', // Routes de fundraising publiques
+    '/preferences/', // Préférences de communication
+    '/unsubscribe', // Désabonnement
+    '/api/donate',
+    '/api/forms/public',
+    '/api/forms/personalize',
+    '/api/preferences',
+    '/api/unsubscribe',
+    '/api/webhooks',
+    '/api/health',
+    '/api/seed', // Route seed accessible (vérification interne)
+  ];
+
+  // Vérifier si c'est une route publique (page)
+  const isPublicPage = publicPageRoutes.some(route => {
+    if (route === pathname) return true;
+    if (route.endsWith('*') && pathname.startsWith(route.slice(0, -1))) return true;
+    return false;
+  });
+
+  // Si c'est une route publique, permettre l'accès
+  if (isPublicPage) {
+    return NextResponse.next();
+  }
+
+  // Routes protégées (pages qui nécessitent une authentification)
+  const protectedPageRoutes = [
+    '/', // Dashboard principal
+    '/dashboard',
+    '/donors',
+    '/campaigns',
+    '/forms',
+    '/analytics',
+    '/automations',
+    '/reports',
+    '/segments',
+    '/organizations',
+    '/settings',
+    '/admin',
+    '/marketing',
+    '/p2p',
+    '/copilot',
+    '/super-admin',
+  ];
+
+  // Vérifier si c'est une page protégée
+  const isProtectedPage = protectedPageRoutes.some(route => pathname.startsWith(route));
+
+  if (isProtectedPage) {
+    // Vérifier l'authentification
+    try {
+      const session = await auth();
+      if (!session?.user) {
+        // Rediriger vers la page de login appropriée
+        const loginUrl = pathname.startsWith('/super-admin') 
+          ? '/super-admin/login'
+          : '/login';
+        const url = request.nextUrl.clone();
+        url.pathname = loginUrl;
+        url.searchParams.set('callbackUrl', pathname);
+        return NextResponse.redirect(url);
+      }
+    } catch (error) {
+      console.error(`[MIDDLEWARE] Auth check failed for ${pathname}:`, error);
+      // En cas d'erreur, rediriger vers login pour sécurité
+      const loginUrl = pathname.startsWith('/super-admin') 
+        ? '/super-admin/login'
+        : '/login';
+      const url = request.nextUrl.clone();
+      url.pathname = loginUrl;
+      url.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Pour les routes API, continuer avec la logique existante
   if (!pathname.startsWith('/api')) {
     return NextResponse.next();
   }
@@ -162,7 +245,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Matcher pour toutes les routes API
+    // Matcher pour toutes les routes API et pages protégées
     '/api/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

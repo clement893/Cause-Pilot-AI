@@ -43,11 +43,11 @@ function AcceptInvitationContent() {
       if (data.success) {
         setInvitation(data.data);
       } else {
-        setError(data.error || "Erreur lors de la récupération de l'invitation");
+        setError(data.error || "Erreur lors de la récupération de l&apos;invitation");
       }
     } catch (err) {
       console.error("Erreur:", err);
-      setError("Erreur lors de la récupération de l'invitation");
+      setError("Erreur lors de la récupération de l&apos;invitation");
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ function AcceptInvitationContent() {
   const handleAccept = async () => {
     if (!token) return;
 
-    // Pour les invitations d'organisation, le mot de passe est requis
+    // Pour les invitations d&apos;organisation, le mot de passe est requis
     if (!password) {
       setError("Le mot de passe est requis");
       return;
@@ -102,11 +102,11 @@ function AcceptInvitationContent() {
           router.push("/login");
         }, 3000);
       } else {
-        setError(data.error || "Erreur lors de l'acceptation de l'invitation");
+        setError(data.error || "Erreur lors de l&apos;acceptation de l&apos;invitation");
       }
     } catch (err) {
       console.error("Erreur:", err);
-      setError("Erreur lors de l'acceptation de l'invitation");
+      setError("Erreur lors de l&apos;acceptation de l&apos;invitation");
     } finally {
       setAccepting(false);
     }
@@ -189,7 +189,7 @@ function AcceptInvitationContent() {
           </p>
         </div>
 
-        {/* Carte d'invitation */}
+        {/* Carte d&apos;invitation */}
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8">
           {/* Info invitation */}
           <div className="mb-6 space-y-4">

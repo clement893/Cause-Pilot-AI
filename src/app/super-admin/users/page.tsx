@@ -437,20 +437,23 @@ export default function SuperAdminUsersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-2">
-                        {(user.AdminOrganizationAccess || user.managedOrganizations || []).length > 0 ? (
+                        {(user.AdminOrganizationAccess || user.managedOrganizations || []).filter(access => access?.organization).length > 0 ? (
                           <div className="flex flex-wrap gap-1">
-                            {(user.AdminOrganizationAccess || user.managedOrganizations || []).slice(0, 2).map((access) => (
-                              <span
-                                key={access.organization.id}
-                                className="px-2 py-1 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300"
-                                title={access.organization.name}
-                              >
-                                {access.organization.name}
-                              </span>
-                            ))}
-                            {(user.AdminOrganizationAccess || user.managedOrganizations || []).length > 2 && (
+                            {(user.AdminOrganizationAccess || user.managedOrganizations || [])
+                              .filter(access => access?.organization)
+                              .slice(0, 2)
+                              .map((access) => (
+                                <span
+                                  key={access.organization.id}
+                                  className="px-2 py-1 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300"
+                                  title={access.organization.name}
+                                >
+                                  {access.organization.name}
+                                </span>
+                              ))}
+                            {(user.AdminOrganizationAccess || user.managedOrganizations || []).filter(access => access?.organization).length > 2 && (
                               <span className="px-2 py-1 rounded-lg text-xs font-medium bg-slate-500/20 text-slate-300">
-                                +{(user.AdminOrganizationAccess || user.managedOrganizations || []).length - 2}
+                                +{(user.AdminOrganizationAccess || user.managedOrganizations || []).filter(access => access?.organization).length - 2}
                               </span>
                             )}
                           </div>
@@ -462,7 +465,7 @@ export default function SuperAdminUsersPage() {
                           className="text-xs text-blue-400 hover:text-blue-300 underline"
                           title="Gérer les organisations"
                         >
-                          {(user.AdminOrganizationAccess || user.managedOrganizations || []).length > 0 ? "Modifier" : "Ajouter des organisations"}
+                          {(user.AdminOrganizationAccess || user.managedOrganizations || []).filter(access => access?.organization).length > 0 ? "Modifier" : "Ajouter des organisations"}
                         </button>
                       </div>
                     </td>
@@ -1002,9 +1005,9 @@ function EditUserModal({
             </div>
 
             {/* Liste des organisations actuelles */}
-            {userOrganizations.length > 0 ? (
+            {userOrganizations.filter(uo => uo?.organization).length > 0 ? (
               <div className="space-y-2 max-h-48 overflow-y-auto">
-                {userOrganizations.map((uo) => (
+                {userOrganizations.filter(uo => uo?.organization).map((uo) => (
                   <div
                     key={uo.id}
                     className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors"
@@ -1012,7 +1015,7 @@ function EditUserModal({
                     <div className="flex items-center gap-3 flex-1">
                       <Building2 className="w-4 h-4 text-blue-400 flex-shrink-0" />
                       <div className="flex-1">
-                        <span className="text-white font-medium">{uo.organization.name}</span>
+                        <span className="text-white font-medium">{uo.organization?.name || "Organisation inconnue"}</span>
                         <div className="flex gap-2 mt-1">
                           {uo.canEdit && (
                             <span className="text-xs px-1.5 py-0.5 rounded bg-green-500/20 text-green-300">Édition</span>

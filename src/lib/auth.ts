@@ -48,7 +48,7 @@ if (!process.env.AUTH_URL && !process.env.NEXTAUTH_URL && !process.env.NEXT_PUBL
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: CustomPrismaAdapter(prisma),
-  secret: authSecret || process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "fallback-secret-for-development",
+  secret: authSecret || "fallback-secret-for-development",
   basePath: "/api/auth",
   providers: [
     ...(googleClientId && googleClientSecret ? [Google({

@@ -127,7 +127,10 @@ export async function sendInvitationEmail({
   invitedByName?: string;
 }) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app";
-  const acceptUrl = `${baseUrl}/super-admin/invite/accept?token=${token}`;
+  // Pour les organisations, utiliser /login/accept avec token, pour les admins utiliser /super-admin/invite/accept
+  const acceptUrl = inviteType === "organization" 
+    ? `${baseUrl}/login/accept?token=${token}`
+    : `${baseUrl}/super-admin/invite/accept?token=${token}`;
 
   const subject = inviteType === "admin" 
     ? `Invitation à rejoindre CausePilot AI en tant qu'administrateur`

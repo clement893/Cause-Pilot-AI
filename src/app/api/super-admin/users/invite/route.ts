@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
             organizationName: organization.name,
             message: emailSent ? "Invitation envoyée par email" : "Invitation créée (email non envoyé)",
             emailSent,
-            acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app"}/super-admin/invite/accept?token=${token}`,
+            acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app"}/login/accept?token=${token}`,
           } 
         },
         { status: 201 }
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
             role: invitation.role,
             message: emailSent ? "Invitation envoyée par email" : "Invitation créée (email non envoyé)",
             emailSent,
-            acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app"}/super-admin/invite/accept?token=${token}`,
+            acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "https://web-production-4c73d.up.railway.app"}/login/accept?token=${token}`,
           } 
         },
         { status: 201 }

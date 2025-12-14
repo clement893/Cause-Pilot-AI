@@ -100,9 +100,10 @@ function AcceptInvitationContent() {
 
       if (data.success) {
         setSuccess(true);
-        // Rediriger vers la page de connexion après 3 secondes
+        // Rediriger vers la page de connexion appropriée selon le type d'invitation
+        const redirectPath = invitation?.organization ? "/login" : "/super-admin/login";
         setTimeout(() => {
-          router.push("/super-admin/login");
+          router.push(redirectPath);
         }, 3000);
       } else {
         setError(data.error || "Erreur lors de l&apos;acceptation de l&apos;invitation");

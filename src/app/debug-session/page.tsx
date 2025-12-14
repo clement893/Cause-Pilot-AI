@@ -3,9 +3,47 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
+interface DebugData {
+  session?: {
+    userId?: string;
+    email?: string | null;
+    role?: string;
+    status?: string;
+    organizationId?: string;
+    organizationName?: string;
+    organizationSlug?: string;
+  };
+  adminUser?: {
+    id: string;
+    email: string;
+    name: string | null;
+    role: string;
+    status: string;
+  };
+  organizationAccesses?: Array<{
+    id: string;
+    organizationId: string;
+    Organization: {
+      id: string;
+      name: string;
+      slug: string;
+    } | null;
+  }>;
+  allOrganizations?: Array<{
+    id: string;
+    name: string;
+    slug: string;
+  }>;
+  debug?: {
+    hasOrganizationInSession: boolean;
+    hasOrganizationAccesses: boolean;
+    totalOrganizations: number;
+  };
+}
+
 export default function DebugSessionPage() {
   const { data: session } = useSession();
-  const [debugData, setDebugData] = useState<any>(null);
+  const [debugData, setDebugData] = useState<DebugData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

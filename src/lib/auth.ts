@@ -238,8 +238,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
         
         // Si l'utilisateur n'est pas super admin, récupérer son organisation
+        console.log(`[AUTH] Session callback - userId: ${userId}, role: ${session.user.role}, email: ${session.user.email}`);
         if (userId && session.user.role !== "SUPER_ADMIN") {
           try {
+            console.log(`[AUTH] Fetching organization access for user ${userId}...`);
             const organizationAccess = await mainPrisma.adminOrganizationAccess.findFirst({
               where: { adminUserId: userId },
               include: {
@@ -253,15 +255,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               },
             });
             
+            console.log(`[AUTH] Organization access found:`, organizationAccess);
+            
             if (organizationAccess && organizationAccess.Organization) {
               // Ajouter l'organisation à la session
               const org = organizationAccess.Organization;
               session.user.organizationId = org.id;
               session.user.organizationName = org.name;
               session.user.organizationSlug = org.slug;
-              console.log(`[AUTH] Organization assigned to session for user ${userId}: ${org.name} (${org.id})`);
+              console.log(`[AUTH] ✅ Organization assigned to session for user ${userId}: ${org.name} (${org.id})`);
             } else {
-              console.warn(`[AUTH] No organization access found for user ${userId}. Checking AdminOrganizationAccess table...`);
+              console.warn(`[AUTH] ⚠️ No organization access found for user ${userId}. Checking AdminOrganizationAccess table...`);
               // Debug: vérifier tous les accès de l'utilisateur
               const allAccesses = await mainPrisma.adminOrganizationAccess.findMany({
                 where: { adminUserId: userId },
@@ -275,10 +279,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                   },
                 },
               });
-              console.log(`[AUTH] All organization accesses for user ${userId}:`, allAccesses);
+              console.log(`[AUTH] All organization accesses for user ${userId}:`, JSON.stringify(allAccesses, null, 2));
+              
+              // Si on trouve des accès mais sans Organization, c'est un problème de relation
+              if (allAccesses.length > 0) {
+                console.error(`[AUTH] ❌ Found ${allAccesses.length} access(es) but Organization is null. This might indicate a data integrity issue.`);
+              }
             }
           } catch (error) {
-            console.error("Error fetching organization access in session callback:", error);
+            console.error(`[AUTH] ❌ Error fetching organization access in session callback for user ${userId}:`, error);
+          }
+        } else {
+          if (!userId) {
+            console.warn(`[AUTH] ⚠️ Cannot fetch organization: userId is undefined`);
+          } else if (session.user.role === "SUPER_ADMIN") {
+            console.log(`[AUTH] Skipping organization fetch: user is SUPER_ADMIN`);
           }
         }
       }

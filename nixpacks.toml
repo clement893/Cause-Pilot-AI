@@ -5,10 +5,10 @@ nixPkgs = ["nodejs_20", "pnpm"]
 cmds = ["pnpm install"]
 
 [phases.build]
-cmds = ["NODE_ENV=production pnpm build"]
+cmds = ["NODE_ENV=production pnpm build", "chmod +x scripts/start.sh"]
 
 [start]
-cmd = "/app/scripts/start.sh"
+cmd = "sh scripts/start.sh"
 
 [variables]
 NODE_ENV = "production"

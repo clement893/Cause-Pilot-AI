@@ -6,10 +6,10 @@ import { prisma } from "./prisma";
 import { verifyPassword } from "./password";
 import type { AdapterUser } from "next-auth/adapters";
 
-// Domaine autorisÃ© pour l'authentification admin
+// Domaine autorisÃƒÂ© pour l'authentification admin
 const ALLOWED_DOMAIN = "nukleo.com";
 
-// Ã‰tendre le type Session pour inclure role et status
+// Ãƒâ€°tendre le type Session pour inclure role et status
 declare module "next-auth" {
   interface Session {
     user: {
@@ -31,15 +31,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   url: process.env.AUTH_URL || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://web-production-4c73d.up.railway.app",
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
           // Ne pas restreindre avec hd pour permettre d'autres domaines pour les membres d'organisation
-          // La vÃ©rification se fait dans le callback signIn
+          // La vÃƒÂ©rification se fait dans le callback signIn
         },
       },
     }),
@@ -74,7 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        // VÃ©rifier le mot de passe
+        // VÃƒÂ©rifier le mot de passe
         const isValid = await verifyPassword(
           credentials.password as string,
           user.password
@@ -84,7 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        // VÃ©rifier que l'utilisateur est actif
+        // VÃƒÂ©rifier que l'utilisateur est actif
         if (user.status !== "ACTIVE") {
           return null;
         }
@@ -101,41 +101,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // Si c'est une connexion Credentials (email/mot de passe), elle a dÃ©jÃ  Ã©tÃ© validÃ©e dans authorize()
+      // Si c'est une connexion Credentials (email/mot de passe), elle a dÃƒÂ©jÃƒÂ  ÃƒÂ©tÃƒÂ© validÃƒÂ©e dans authorize()
       if (account?.provider === "credentials") {
         return true;
       }
 
-      // Pour Google OAuth, vÃ©rifier si l'utilisateur existe dÃ©jÃ  dans la base de donnÃ©es
+      // Pour Google OAuth, vÃƒÂ©rifier si l'utilisateur existe dÃƒÂ©jÃƒÂ  dans la base de donnÃƒÂ©es
       if (user.email) {
         const existingUser = await prisma.adminUser.findUnique({
           where: { email: user.email },
           select: { role: true, status: true },
         });
 
-        // Si l'utilisateur existe dÃ©jÃ , permettre la connexion (peut Ãªtre admin ou membre d'organisation)
+        // Si l'utilisateur existe dÃƒÂ©jÃƒÂ , permettre la connexion (peut ÃƒÂªtre admin ou membre d'organisation)
         if (existingUser) {
           return true;
         }
 
-        // Si l'utilisateur n'existe pas encore, vÃ©rifier le domaine uniquement pour les super admins
+        // Si l'utilisateur n'existe pas encore, vÃƒÂ©rifier le domaine uniquement pour les super admins
         // Les membres d'organisation peuvent avoir d'autres domaines mais doivent utiliser email/mot de passe
         const domain = user.email.split("@")[1];
         if (domain !== ALLOWED_DOMAIN) {
-          console.log(`AccÃ¨s refusÃ© pour ${user.email} - domaine non autorisÃ© pour les nouveaux utilisateurs admin. Utilisez email/mot de passe pour les membres d'organisation.`);
+          console.log(`AccÃƒÂ¨s refusÃƒÂ© pour ${user.email} - domaine non autorisÃƒÂ© pour les nouveaux utilisateurs admin. Utilisez email/mot de passe pour les membres d'organisation.`);
           return false;
         }
       }
       return true;
     },
     async session({ session, user }) {
-      // Avec la stratÃ©gie "database", user est un AdapterUser
+      // Avec la stratÃƒÂ©gie "database", user est un AdapterUser
       const adapterUser = user as AdapterUser;
       
       if (session.user && adapterUser) {
         session.user.id = adapterUser.id;
         
-        // RÃ©cupÃ©rer le rÃ´le et le statut de l'admin
+        // RÃƒÂ©cupÃƒÂ©rer le rÃƒÂ´le et le statut de l'admin
         const adminUser = await prisma.adminUser.findUnique({
           where: { id: adapterUser.id },
           select: { role: true, status: true },
@@ -154,7 +154,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   events: {
     async signIn({ user }) {
-      // Mettre Ã  jour la date de derniÃ¨re connexion
+      // Mettre ÃƒÂ  jour la date de derniÃƒÂ¨re connexion
       if (user.id) {
         try {
           await prisma.adminUser.update({
@@ -172,7 +172,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
           });
         } catch (error) {
-          console.error("Erreur lors de la mise Ã  jour du login:", error);
+          console.error("Erreur lors de la mise ÃƒÂ  jour du login:", error);
         }
       }
     },
@@ -213,7 +213,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 });
 
-// Helper pour vÃ©rifier si l'utilisateur est super admin
+// Helper pour vÃƒÂ©rifier si l'utilisateur est super admin
 export async function isSuperAdmin(userId: string): Promise<boolean> {
   const adminUser = await prisma.adminUser.findUnique({
     where: { id: userId },
@@ -222,7 +222,7 @@ export async function isSuperAdmin(userId: string): Promise<boolean> {
   return adminUser?.role === "SUPER_ADMIN" && adminUser?.status === "ACTIVE";
 }
 
-// Helper pour vÃ©rifier l'accÃ¨s Ã  une organisation
+// Helper pour vÃƒÂ©rifier l'accÃƒÂ¨s ÃƒÂ  une organisation
 export async function hasOrganizationAccess(
   userId: string,
   organizationId: string
@@ -232,12 +232,12 @@ export async function hasOrganizationAccess(
     select: { role: true, status: true },
   });
 
-  // Super admin a accÃ¨s Ã  tout
+  // Super admin a accÃƒÂ¨s ÃƒÂ  tout
   if (adminUser?.role === "SUPER_ADMIN" && adminUser?.status === "ACTIVE") {
     return true;
   }
 
-  // VÃ©rifier l'accÃ¨s spÃ©cifique Ã  l'organisation
+  // VÃƒÂ©rifier l'accÃƒÂ¨s spÃƒÂ©cifique ÃƒÂ  l'organisation
   const access = await prisma.adminOrganizationAccess.findUnique({
     where: {
       adminUserId_organizationId: {

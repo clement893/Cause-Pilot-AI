@@ -233,7 +233,6 @@ export async function PUT(request: NextRequest) {
 
     // Log d'audit seulement si des changements ont été effectués
     if (Object.keys(changes).length > 0) {
-      const metadataValue: Prisma.InputJsonValue = { changes };
       await mainPrisma.adminAuditLog.create({
         data: {
           action: "UPDATE",
@@ -241,7 +240,7 @@ export async function PUT(request: NextRequest) {
           entityId: user.id,
           description: `Mise à jour de l'utilisateur ${user.email}`,
           adminUserId: session.user.id,
-          metadata: metadataValue,
+          metadata: { changes } as unknown as Prisma.InputJsonValue,
         },
       });
     }

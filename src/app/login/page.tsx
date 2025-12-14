@@ -52,19 +52,26 @@ function LoginContent() {
         setLoginError("Email ou mot de passe incorrect");
         setIsLoading(false);
       } else if (result?.ok) {
-        // Attendre que la session soit créée, puis vérifier le rôle
-        // Utiliser une approche plus fiable avec retry
+        // Rafraîchir la session et rediriger
+        // Utiliser router.refresh() pour forcer le rafraîchissement de la session
+        router.refresh();
+        
+        // Attendre un peu pour que la session soit rafraîchie, puis vérifier le rôle
         let attempts = 0;
-        const maxAttempts = 5;
+        const maxAttempts = 10;
         
         const checkSessionAndRedirect = async () => {
           try {
+            // Rafraîchir la session à chaque tentative
+            router.refresh();
+            
             const sessionResponse = await fetch("/api/auth/session", {
               cache: "no-store",
+              credentials: "include",
             });
             
             if (!sessionResponse.ok) {
-              throw new Error("Session response not OK");
+              throw new Error(`Session response not OK: ${sessionResponse.status}`);
             }
             
             const contentType = sessionResponse.headers.get("content-type");
@@ -73,6 +80,11 @@ function LoginContent() {
             }
             
             const sessionData = await sessionResponse.json();
+            
+            // Vérifier que la session contient bien un utilisateur
+            if (!sessionData?.user) {
+              throw new Error("No user in session");
+            }
             
             // Si super admin, rediriger vers /super-admin, sinon vers le dashboard organisation
             if (sessionData?.user?.role === "SUPER_ADMIN") {
@@ -83,19 +95,22 @@ function LoginContent() {
             }
           } catch (error) {
             attempts++;
+            console.log(`Tentative ${attempts}/${maxAttempts} de vérification de session:`, error);
+            
             if (attempts < maxAttempts) {
-              // Réessayer après un court délai
-              setTimeout(checkSessionAndRedirect, 200);
+              // Réessayer après un délai progressif
+              setTimeout(checkSessionAndRedirect, 300 + (attempts * 100));
             } else {
-              console.error("Erreur lors de la vérification de la session:", error);
+              console.error("Erreur lors de la vérification de la session après plusieurs tentatives:", error);
               // En cas d'erreur après plusieurs tentatives, rediriger vers le dashboard par défaut
+              // Le middleware vérifiera l'authentification et redirigera si nécessaire
               window.location.href = "/";
             }
           }
         };
         
         // Démarrer la vérification après un court délai
-        setTimeout(checkSessionAndRedirect, 300);
+        setTimeout(checkSessionAndRedirect, 500);
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);

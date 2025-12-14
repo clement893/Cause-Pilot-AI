@@ -36,7 +36,7 @@ model AdminAuditLog {
   ipAddress   String?
   userAgent   String?
   adminUserId String
-  AdminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+  AdminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
 
   @@index([action])
   @@index([adminUserId])

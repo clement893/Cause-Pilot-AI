@@ -8,7 +8,7 @@ cmds = ["pnpm install"]
 cmds = ["NODE_ENV=production pnpm build"]
 
 [start]
-cmd = "pnpm start"
+cmd = "/app/scripts/start.sh"
 
 [variables]
 NODE_ENV = "production"

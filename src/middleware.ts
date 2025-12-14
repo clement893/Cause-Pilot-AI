@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth';
 
 // Routes publiques qui ne nécessitent pas d'authentification
 const publicRoutes = [
@@ -134,22 +133,12 @@ export async function middleware(request: NextRequest) {
   const isProtectedPage = protectedPageRoutes.some(route => pathname.startsWith(route));
 
   if (isProtectedPage) {
-    // Vérifier l'authentification
-    try {
-      const session = await auth();
-      if (!session?.user) {
-        // Rediriger vers la page de login appropriée
-        const loginUrl = pathname.startsWith('/super-admin') 
-          ? '/super-admin/login'
-          : '/login';
-        const url = request.nextUrl.clone();
-        url.pathname = loginUrl;
-        url.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(url);
-      }
-    } catch (error) {
-      console.error(`[MIDDLEWARE] Auth check failed for ${pathname}:`, error);
-      // En cas d'erreur, rediriger vers login pour sécurité
+    // Vérifier la présence du cookie de session (sans utiliser Prisma car on est dans Edge Runtime)
+    // Le cookie de session NextAuth s'appelle 'authjs.session-token'
+    const sessionToken = request.cookies.get('authjs.session-token');
+    
+    if (!sessionToken) {
+      // Pas de cookie de session, rediriger vers la page de login appropriée
       const loginUrl = pathname.startsWith('/super-admin') 
         ? '/super-admin/login'
         : '/login';
@@ -158,6 +147,7 @@ export async function middleware(request: NextRequest) {
       url.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(url);
     }
+    // Si le cookie existe, laisser passer - la validation réelle se fera dans les pages/API routes
   }
 
   // Ajouter les headers de sécurité

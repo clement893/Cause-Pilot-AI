@@ -24,12 +24,20 @@ declare module "next-auth" {
 }
 
 // Vérifier que les variables d'environnement sont présentes
-const googleClientId = process.env.GOOGLE_CLIENT_ID;
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+// Nettoyer les valeurs (retirer les guillemets et espaces si présents)
+const cleanEnvVar = (value: string | undefined): string | undefined => {
+  if (!value) return undefined;
+  return value.trim().replace(/^["']|["']$/g, '');
+};
+
+const googleClientId = cleanEnvVar(process.env.GOOGLE_CLIENT_ID);
+const googleClientSecret = cleanEnvVar(process.env.GOOGLE_CLIENT_SECRET);
+const authSecret = cleanEnvVar(process.env.AUTH_SECRET) || cleanEnvVar(process.env.NEXTAUTH_SECRET);
 
 if (!googleClientId || !googleClientSecret) {
   console.error("❌ GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET manquant dans les variables d'environnement");
+  console.error(`   GOOGLE_CLIENT_ID: ${process.env.GOOGLE_CLIENT_ID ? `présent (${process.env.GOOGLE_CLIENT_ID.length} caractères)` : "manquant"}`);
+  console.error(`   GOOGLE_CLIENT_SECRET: ${process.env.GOOGLE_CLIENT_SECRET ? `présent (${process.env.GOOGLE_CLIENT_SECRET.length} caractères)` : "manquant"}`);
 }
 if (!authSecret) {
   console.error("❌ AUTH_SECRET ou NEXTAUTH_SECRET manquant dans les variables d'environnement");

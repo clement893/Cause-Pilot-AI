@@ -255,13 +255,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               session.user.organizationName = organizationAccess.Organization.name;
               session.user.organizationSlug = organizationAccess.Organization.slug;
             }
-            
-            if (organizationAccess) {
-              // Ajouter l'organisation à la session
-              session.user.organizationId = organizationAccess.organization.id;
-              session.user.organizationName = organizationAccess.organization.name;
-              session.user.organizationSlug = organizationAccess.organization.slug;
-            }
           } catch (error) {
             console.error("Error fetching organization access in session callback:", error);
           }

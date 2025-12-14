@@ -33,13 +33,17 @@ export async function POST() {
       success: true,
       message: "Schema pushed and Prisma client regenerated successfully",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Error pushing schema:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const stdout = error && typeof error === "object" && "stdout" in error ? String(error.stdout) : undefined;
+    const stderr = error && typeof error === "object" && "stderr" in error ? String(error.stderr) : undefined;
+    
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Unknown error",
-        output: error.stdout?.toString() || error.stderr?.toString(),
+        error: errorMessage,
+        output: stdout || stderr,
       },
       { status: 500 }
     );

@@ -54,6 +54,7 @@ function LoginContent() {
       // Si redirect: true, cette ligne ne sera jamais atteinte car NextAuth redirige
       // Mais si une erreur survient, elle sera catchée ci-dessous
     } catch (error) {
+      // Gestion des erreurs de connexion
       // Si signIn avec redirect: true échoue, cela signifie qu'il y a une erreur
       const errorMessage = error instanceof Error ? error.message : String(error);
       

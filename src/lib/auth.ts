@@ -178,19 +178,46 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, user }) {
       // Avec la stratégie "database", user est un AdapterUser
-      const adapterUser = user as AdapterUser;
+      const adapterUser = user as AdapterUser | undefined;
       
-      if (session.user && adapterUser) {
-        session.user.id = adapterUser.id;
-        
-        // Récupérer le rôle et le statut de l'admin
-        const adminUser = await prisma.adminUser.findUnique({
-          where: { id: adapterUser.id },
-          select: { role: true, status: true },
-        });
-        if (adminUser) {
-          session.user.role = adminUser.role;
-          session.user.status = adminUser.status;
+      if (session.user) {
+        // Si user est disponible (stratégie database), utiliser son id
+        if (adapterUser?.id) {
+          session.user.id = adapterUser.id;
+          
+          // Récupérer le rôle et le statut de l'admin
+          try {
+            const adminUser = await prisma.adminUser.findUnique({
+              where: { id: adapterUser.id },
+              select: { role: true, status: true },
+            });
+            if (adminUser) {
+              session.user.role = adminUser.role;
+              session.user.status = adminUser.status;
+            }
+          } catch (error) {
+            console.error("Error fetching admin user in session callback:", error);
+          }
+        } else if (session.user.email) {
+          // Fallback: chercher par email si user n'est pas disponible
+          try {
+            const adminUser = await prisma.adminUser.findUnique({
+              where: { email: session.user.email },
+              select: { id: true, role: true, status: true },
+            });
+            
+            if (adminUser) {
+              session.user.id = adminUser.id;
+              session.user.role = adminUser.role;
+              session.user.status = adminUser.status;
+            } else {
+              console.warn(`[AUTH] AdminUser not found for email: ${session.user.email}`);
+            }
+          } catch (error) {
+            console.error("Error fetching admin user by email in session callback:", error);
+          }
+        } else {
+          console.warn("[AUTH] Session callback: No user.id and no email available");
         }
       }
       return session;

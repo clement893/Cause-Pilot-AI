@@ -192,6 +192,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         let userId: string | undefined;
         
+        // Utiliser getMainPrisma() pour s'assurer d'utiliser le bon client Prisma
+        const { getMainPrisma } = await import("@/lib/prisma-org");
+        const mainPrisma = getMainPrisma();
+        
         // Si user est disponible (stratégie database), utiliser son id
         if (adapterUser?.id) {
           userId = adapterUser.id;
@@ -199,7 +203,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           
           // Récupérer le rôle et le statut de l'admin
           try {
-            const adminUser = await prisma.adminUser.findUnique({
+            const adminUser = await mainPrisma.adminUser.findUnique({
               where: { id: adapterUser.id },
               select: { role: true, status: true },
             });
@@ -213,7 +217,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } else if (session.user.email) {
           // Fallback: chercher par email si user n'est pas disponible
           try {
-            const adminUser = await prisma.adminUser.findUnique({
+            const adminUser = await mainPrisma.adminUser.findUnique({
               where: { email: session.user.email },
               select: { id: true, role: true, status: true },
             });
@@ -236,7 +240,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Si l'utilisateur n'est pas super admin, récupérer son organisation
         if (userId && session.user.role !== "SUPER_ADMIN") {
           try {
-            const organizationAccess = await prisma.adminOrganizationAccess.findFirst({
+            const organizationAccess = await mainPrisma.adminOrganizationAccess.findFirst({
               where: { adminUserId: userId },
               include: {
                 Organization: {
@@ -255,6 +259,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               session.user.organizationId = org.id;
               session.user.organizationName = org.name;
               session.user.organizationSlug = org.slug;
+              console.log(`[AUTH] Organization assigned to session for user ${userId}: ${org.name} (${org.id})`);
+            } else {
+              console.warn(`[AUTH] No organization access found for user ${userId}. Checking AdminOrganizationAccess table...`);
+              // Debug: vérifier tous les accès de l'utilisateur
+              const allAccesses = await mainPrisma.adminOrganizationAccess.findMany({
+                where: { adminUserId: userId },
+                include: {
+                  Organization: {
+                    select: {
+                      id: true,
+                      name: true,
+                      slug: true,
+                    },
+                  },
+                },
+              });
+              console.log(`[AUTH] All organization accesses for user ${userId}:`, allAccesses);
             }
           } catch (error) {
             console.error("Error fetching organization access in session callback:", error);

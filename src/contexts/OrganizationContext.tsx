@@ -51,6 +51,7 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
       
       if (response.ok) {
         const data = await response.json();
+        console.log(`[OrganizationContext] Organizations fetched:`, data.length, data);
         setOrganizations(data);
         
         // Si l'utilisateur n'est pas super admin et a une organisation dans sa session, l'utiliser
@@ -59,19 +60,26 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
           const orgId = 'organizationId' in sessionUser ? (sessionUser as { organizationId?: string; role?: string }).organizationId : undefined;
           const role = 'role' in sessionUser ? (sessionUser as { organizationId?: string; role?: string }).role : undefined;
           
+          console.log(`[OrganizationContext] Session user - orgId: ${orgId}, role: ${role}`);
+          
           if (orgId && role !== "SUPER_ADMIN") {
             const sessionOrg = data.find((org: Organization) => org.id === orgId);
+            console.log(`[OrganizationContext] Looking for org ${orgId} in data:`, sessionOrg);
             if (sessionOrg) {
+              console.log(`[OrganizationContext] Setting organization from session:`, sessionOrg.name);
               setCurrentOrganizationState(sessionOrg);
               localStorage.setItem("currentOrganizationId", sessionOrg.id);
               setIsLoading(false);
               return;
+            } else {
+              console.warn(`[OrganizationContext] Organization ${orgId} from session not found in fetched organizations`);
             }
           }
         }
         
         // Si l'utilisateur n'a qu'une seule organisation, l'utiliser automatiquement
         if (data.length === 1) {
+          console.log(`[OrganizationContext] Only one organization, setting it:`, data[0].name);
           setCurrentOrganizationState(data[0]);
           localStorage.setItem("currentOrganizationId", data[0].id);
           setIsLoading(false);
@@ -83,12 +91,17 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
         if (savedOrgId) {
           const savedOrg = data.find((org: Organization) => org.id === savedOrgId);
           if (savedOrg) {
+            console.log(`[OrganizationContext] Restoring saved organization:`, savedOrg.name);
             setCurrentOrganizationState(savedOrg);
           } else if (data.length > 0) {
+            console.log(`[OrganizationContext] Saved org not found, using first:`, data[0].name);
             setCurrentOrganizationState(data[0]);
           }
         } else if (data.length > 0) {
+          console.log(`[OrganizationContext] No saved org, using first:`, data[0].name);
           setCurrentOrganizationState(data[0]);
+        } else {
+          console.warn(`[OrganizationContext] No organizations found for user`);
         }
       } else {
         // Si la réponse n'est pas OK, essayer de parser l'erreur JSON

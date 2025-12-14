@@ -40,18 +40,30 @@ export async function GET(request: NextRequest) {
       // Si l'utilisateur n'est pas super admin, filtrer par ses accès
       const userAccesses = await mainPrisma.adminOrganizationAccess.findMany({
         where: { adminUserId: session.user.id },
-        select: { organizationId: true },
+        include: {
+          Organization: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+        },
       });
 
-      const organizationIds = userAccesses.map(access => access.organizationId);
+      console.log(`[API /organizations] User ${session.user.id} (${session.user.email}) has ${userAccesses.length} organization accesses:`, userAccesses);
+
+      const organizationIds = userAccesses.map(access => access.organizationId).filter(id => id !== null);
       
       if (organizationIds.length === 0) {
         // L'utilisateur n'a accès à aucune organisation
+        console.warn(`[API /organizations] User ${session.user.id} has no organization accesses`);
         return NextResponse.json([]);
       }
 
       // Filtrer pour ne retourner que les organisations auxquelles l'utilisateur a accès
       where.id = { in: organizationIds };
+      console.log(`[API /organizations] Filtering organizations by IDs:`, organizationIds);
     }
 
     const organizations = await mainPrisma.organization.findMany({
@@ -64,6 +76,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    console.log(`[API /organizations] Returning ${organizations.length} organizations for user ${session.user.id}`);
     return NextResponse.json(organizations);
   } catch (error) {
     console.error("Error fetching organizations:", error);

@@ -52,7 +52,7 @@ export default function DebugSessionPage() {
         const response = await fetch("/api/debug/session", {
           credentials: 'include',
         });
-        const data = await response.json();
+        const data = await response.json() as DebugData;
         setDebugData(data);
       } catch (error) {
         console.error("Error fetching debug data:", error);

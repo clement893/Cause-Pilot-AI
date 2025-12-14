@@ -64,11 +64,6 @@ function LoginContent() {
         setIsLoading(false);
       }
     }
-    } catch (error) {
-      console.error("Erreur de connexion:", error);
-      setLoginError("Une erreur est survenue lors de la connexion");
-      setIsLoading(false);
-    }
   };
 
   const getErrorMessage = (error: string | null) => {

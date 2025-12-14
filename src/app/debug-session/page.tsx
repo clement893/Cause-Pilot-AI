@@ -109,7 +109,7 @@ export default function DebugSessionPage() {
             <h2 className="text-xl font-semibold text-white mb-4">
               Organization Accesses ({debugData?.organizationAccesses?.length || 0})
             </h2>
-            {debugData?.organizationAccesses?.length > 0 ? (
+            {debugData?.organizationAccesses && debugData.organizationAccesses.length > 0 ? (
               <pre className="bg-slate-900 p-4 rounded text-sm text-gray-300 overflow-auto">
                 {JSON.stringify(debugData.organizationAccesses, null, 2)}
               </pre>

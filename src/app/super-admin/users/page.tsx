@@ -25,7 +25,14 @@ interface AdminUser {
   status: string;
   createdAt: string;
   lastLoginAt: string | null;
-  managedOrganizations: Array<{
+  AdminOrganizationAccess?: Array<{
+    organization: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }>;
+  managedOrganizations?: Array<{
     organization: {
       id: string;
       name: string;
@@ -429,9 +436,34 @@ export default function SuperAdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-slate-300">
-                        <Users className="w-4 h-4" />
-                        {user._count.managedOrganizations}
+                      <div className="flex flex-col gap-2">
+                        {(user.AdminOrganizationAccess || user.managedOrganizations || []).length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {(user.AdminOrganizationAccess || user.managedOrganizations || []).slice(0, 2).map((access) => (
+                              <span
+                                key={access.organization.id}
+                                className="px-2 py-1 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300"
+                                title={access.organization.name}
+                              >
+                                {access.organization.name}
+                              </span>
+                            ))}
+                            {(user.AdminOrganizationAccess || user.managedOrganizations || []).length > 2 && (
+                              <span className="px-2 py-1 rounded-lg text-xs font-medium bg-slate-500/20 text-slate-300">
+                                +{(user.AdminOrganizationAccess || user.managedOrganizations || []).length - 2}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-slate-500 text-sm">Aucune organisation</span>
+                        )}
+                        <button
+                          onClick={() => setEditingUser(user)}
+                          className="text-xs text-blue-400 hover:text-blue-300 underline"
+                          title="Gérer les organisations"
+                        >
+                          {(user.AdminOrganizationAccess || user.managedOrganizations || []).length > 0 ? "Modifier" : "Ajouter des organisations"}
+                        </button>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-slate-400 text-sm">
@@ -835,7 +867,8 @@ function EditUserModal({
 
       const data = await response.json();
       if (data.success) {
-        fetchUserOrganizations();
+        // Rafraîchir les listes
+        await Promise.all([fetchUserOrganizations(), fetchOrganizations()]);
       } else {
         alert(data.error || "Erreur lors de l'attribution");
       }
@@ -858,7 +891,8 @@ function EditUserModal({
 
       const data = await response.json();
       if (data.success) {
-        fetchUserOrganizations();
+        // Rafraîchir les listes
+        await Promise.all([fetchUserOrganizations(), fetchOrganizations()]);
       } else {
         alert(data.error || "Erreur lors du retrait");
       }
@@ -960,26 +994,42 @@ function EditUserModal({
 
           {/* Organisations */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-white border-b border-slate-700 pb-2">
-              Organisations
-            </h3>
+            <div className="flex items-center justify-between border-b border-slate-700 pb-2">
+              <h3 className="text-lg font-medium text-white flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-blue-400" />
+                Organisations ({userOrganizations.length})
+              </h3>
+            </div>
 
             {/* Liste des organisations actuelles */}
-            {userOrganizations.length > 0 && (
-              <div className="space-y-2">
+            {userOrganizations.length > 0 ? (
+              <div className="space-y-2 max-h-48 overflow-y-auto">
                 {userOrganizations.map((uo) => (
                   <div
                     key={uo.id}
-                    className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg border border-slate-600"
+                    className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors"
                   >
-                    <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-blue-400" />
-                      <span className="text-white">{uo.organization.name}</span>
+                    <div className="flex items-center gap-3 flex-1">
+                      <Building2 className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                      <div className="flex-1">
+                        <span className="text-white font-medium">{uo.organization.name}</span>
+                        <div className="flex gap-2 mt-1">
+                          {uo.canEdit && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-green-500/20 text-green-300">Édition</span>
+                          )}
+                          {uo.canDelete && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-red-500/20 text-red-300">Suppression</span>
+                          )}
+                          {uo.canManageUsers && (
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">Utilisateurs</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => handleRemoveOrganization(uo.organizationId)}
-                      className="p-1 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded transition-colors"
+                      className="p-2 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-colors ml-2"
                       title="Retirer cette organisation"
                     >
                       <X className="w-4 h-4" />
@@ -987,37 +1037,44 @@ function EditUserModal({
                   </div>
                 ))}
               </div>
+            ) : (
+              <div className="p-4 bg-slate-700/30 rounded-lg border border-slate-600 text-center">
+                <p className="text-sm text-slate-400">Aucune organisation attribuée</p>
+              </div>
             )}
 
             {/* Ajouter une organisation */}
             {availableOrganizations.length > 0 && (
-              <div>
+              <div className="pt-2 border-t border-slate-700">
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Ajouter une organisation
                 </label>
-                <div className="flex gap-2">
-                  <select
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        handleAddOrganization(e.target.value);
-                        e.target.value = "";
-                      }
-                    }}
-                    className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="">Sélectionner une organisation...</option>
-                    {availableOrganizations.map((org) => (
-                      <option key={org.id} value={org.id}>
-                        {org.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleAddOrganization(e.target.value);
+                      e.target.value = "";
+                    }
+                  }}
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionner une organisation à ajouter...</option>
+                  {availableOrganizations.map((org) => (
+                    <option key={org.id} value={org.id}>
+                      {org.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-slate-400 mt-1">
+                  {availableOrganizations.length} organisation{availableOrganizations.length > 1 ? 's' : ''} disponible{availableOrganizations.length > 1 ? 's' : ''}
+                </p>
               </div>
             )}
 
-            {userOrganizations.length === 0 && availableOrganizations.length === 0 && (
-              <p className="text-sm text-slate-400">Aucune organisation disponible</p>
+            {availableOrganizations.length === 0 && userOrganizations.length > 0 && (
+              <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                <p className="text-sm text-yellow-300">Toutes les organisations sont déjà attribuées</p>
+              </div>
             )}
           </div>
 

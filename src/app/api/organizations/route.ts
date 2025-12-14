@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getMainPrisma } from "@/lib/prisma-org";
 import { auth, isSuperAdmin } from "@/lib/auth";
 
 // GET - Liste des organisations
@@ -31,12 +31,14 @@ export async function GET(request: NextRequest) {
       ];
     }
 
+    const mainPrisma = getMainPrisma();
+
     // Vérifier si l'utilisateur est super admin
     const isSuper = await isSuperAdmin(session.user.id);
     
     if (!isSuper) {
       // Si l'utilisateur n'est pas super admin, filtrer par ses accès
-      const userAccesses = await prisma.adminOrganizationAccess.findMany({
+      const userAccesses = await mainPrisma.adminOrganizationAccess.findMany({
         where: { adminUserId: session.user.id },
         select: { organizationId: true },
       });
@@ -52,7 +54,7 @@ export async function GET(request: NextRequest) {
       where.id = { in: organizationIds };
     }
 
-    const organizations = await prisma.organization.findMany({
+    const organizations = await mainPrisma.organization.findMany({
       where,
       orderBy: { createdAt: "desc" },
       include: {
@@ -82,8 +84,10 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
 
+    const mainPrisma = getMainPrisma();
+
     // Vérifier l'unicité du slug
-    const existingOrg = await prisma.organization.findUnique({
+    const existingOrg = await mainPrisma.organization.findUnique({
       where: { slug },
     });
 
@@ -91,7 +95,7 @@ export async function POST(request: NextRequest) {
       slug = `${slug}-${Date.now()}`;
     }
 
-    const organization = await prisma.organization.create({
+    const organization = await mainPrisma.organization.create({
       data: {
         name: body.name,
         slug,
@@ -122,7 +126,7 @@ export async function POST(request: NextRequest) {
 
     // Ajouter le créateur comme propriétaire si userId fourni
     if (body.userId) {
-      await prisma.organizationMember.create({
+      await mainPrisma.organizationMember.create({
         data: {
           organizationId: organization.id,
           userId: body.userId,

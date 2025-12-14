@@ -23,47 +23,55 @@ declare module "next-auth" {
   }
 }
 
-// Variables d'environnement - utiliser directement sans nettoyage complexe
-// Railway injecte les variables directement, pas besoin de nettoyer les guillemets
-const googleClientId = process.env.GOOGLE_CLIENT_ID;
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+// Variables d'environnement - utiliser directement
+// Railway injecte les variables directement dans process.env
+const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+const authSecret = (process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET)?.trim();
 
-// Logs de débogage simples
-if (process.env.NODE_ENV === "production") {
-  console.log("🔍 Google OAuth Configuration:");
-  console.log(`   GOOGLE_CLIENT_ID: ${googleClientId ? `présent (${googleClientId.length} chars)` : "manquant"}`);
-  console.log(`   GOOGLE_CLIENT_SECRET: ${googleClientSecret ? `présent (${googleClientSecret.length} chars)` : "manquant"}`);
-}
+// Logs de débogage détaillés (toujours en production pour diagnostiquer)
+console.log("🔍 [AUTH] Google OAuth Configuration Check:");
+console.log(`   GOOGLE_CLIENT_ID: ${googleClientId ? `✅ présent (${googleClientId.length} chars, starts with: ${googleClientId.substring(0, 10)}...)` : "❌ manquant"}`);
+console.log(`   GOOGLE_CLIENT_SECRET: ${googleClientSecret ? `✅ présent (${googleClientSecret.length} chars, starts with: ${googleClientSecret.substring(0, 5)}...)` : "❌ manquant"}`);
+console.log(`   AUTH_SECRET: ${authSecret ? `✅ présent (${authSecret.length} chars)` : "❌ manquant"}`);
 
 if (!googleClientId || !googleClientSecret) {
-  console.error("❌ GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET manquant");
+  console.error("❌ [AUTH] GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET manquant ou vide");
+  console.error(`   GOOGLE_CLIENT_ID type: ${typeof googleClientId}, value: "${googleClientId}"`);
+  console.error(`   GOOGLE_CLIENT_SECRET type: ${typeof googleClientSecret}, value: "${googleClientSecret?.substring(0, 5)}..."`);
 }
 if (!authSecret) {
-  console.error("❌ AUTH_SECRET ou NEXTAUTH_SECRET manquant");
+  console.error("❌ [AUTH] AUTH_SECRET ou NEXTAUTH_SECRET manquant");
 }
 
 // Construire la liste des providers
 const providers = [];
 
 // Ajouter Google OAuth si les credentials sont disponibles
-if (googleClientId && googleClientSecret) {
-  providers.push(Google({
-    clientId: googleClientId,
-    clientSecret: googleClientSecret,
-    authorization: {
-      params: {
-        prompt: "consent",
-        access_type: "offline",
-        response_type: "code",
-        // Ne pas restreindre avec hd pour permettre d'autres domaines pour les membres d'organisation
-        // La vérification se fait dans le callback signIn
+if (googleClientId && googleClientSecret && googleClientId.length > 0 && googleClientSecret.length > 0) {
+  try {
+    const googleProvider = Google({
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+          // Ne pas restreindre avec hd pour permettre d'autres domaines pour les membres d'organisation
+          // La vérification se fait dans le callback signIn
+        },
       },
-    },
-  }));
-  if (process.env.NODE_ENV === "production") {
-    console.log("✅ Provider Google OAuth ajouté");
+    });
+    providers.push(googleProvider);
+    console.log("✅ [AUTH] Provider Google OAuth ajouté avec succès");
+  } catch (error) {
+    console.error("❌ [AUTH] Erreur lors de la création du provider Google:", error);
   }
+} else {
+  console.warn("⚠️  [AUTH] Provider Google OAuth NON ajouté - credentials manquants ou invalides");
+  console.warn(`   googleClientId valide: ${!!googleClientId && googleClientId.length > 0}`);
+  console.warn(`   googleClientSecret valide: ${!!googleClientSecret && googleClientSecret.length > 0}`);
 }
 
 // Toujours ajouter le provider Credentials
@@ -124,6 +132,15 @@ providers.push(
       },
     })
 );
+
+// Vérifier qu'on a au moins un provider
+if (providers.length === 0) {
+  console.error("❌ [AUTH] ERREUR CRITIQUE: Aucun provider configuré!");
+  console.error("   NextAuth ne peut pas fonctionner sans au moins un provider.");
+  throw new Error("NextAuth configuration error: No authentication providers configured. Please check GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.");
+}
+
+console.log(`✅ [AUTH] NextAuth initialisé avec ${providers.length} provider(s)`);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: CustomPrismaAdapter(prisma),

@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth, isSuperAdmin } from "@/lib/auth";
 
 // GET - Liste des organisations
 export async function GET(request: NextRequest) {
   try {
+    // Vérifier l'authentification
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Non authentifié" },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const search = searchParams.get("search");
@@ -19,6 +29,27 @@ export async function GET(request: NextRequest) {
         { name: { contains: search, mode: "insensitive" } },
         { slug: { contains: search, mode: "insensitive" } },
       ];
+    }
+
+    // Vérifier si l'utilisateur est super admin
+    const isSuper = await isSuperAdmin(session.user.id);
+    
+    if (!isSuper) {
+      // Si l'utilisateur n'est pas super admin, filtrer par ses accès
+      const userAccesses = await prisma.adminOrganizationAccess.findMany({
+        where: { adminUserId: session.user.id },
+        select: { organizationId: true },
+      });
+
+      const organizationIds = userAccesses.map(access => access.organizationId);
+      
+      if (organizationIds.length === 0) {
+        // L'utilisateur n'a accès à aucune organisation
+        return NextResponse.json([]);
+      }
+
+      // Filtrer pour ne retourner que les organisations auxquelles l'utilisateur a accès
+      where.id = { in: organizationIds };
     }
 
     const organizations = await prisma.organization.findMany({

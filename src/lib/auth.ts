@@ -187,8 +187,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const adapterUser = user as AdapterUser | undefined;
       
       if (session.user) {
+        let userId: string | undefined;
+        
         // Si user est disponible (stratégie database), utiliser son id
         if (adapterUser?.id) {
+          userId = adapterUser.id;
           session.user.id = adapterUser.id;
           
           // Récupérer le rôle et le statut de l'admin
@@ -213,6 +216,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             });
             
             if (adminUser) {
+              userId = adminUser.id;
               session.user.id = adminUser.id;
               session.user.role = adminUser.role;
               session.user.status = adminUser.status;
@@ -224,6 +228,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         } else {
           console.warn("[AUTH] Session callback: No user.id and no email available");
+        }
+        
+        // Si l'utilisateur n'est pas super admin, récupérer son organisation
+        if (userId && session.user.role !== "SUPER_ADMIN") {
+          try {
+            const organizationAccess = await prisma.adminOrganizationAccess.findFirst({
+              where: { adminUserId: userId },
+              include: {
+                organization: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                  },
+                },
+              },
+            });
+            
+            if (organizationAccess) {
+              // Ajouter l'organisation à la session
+              (session.user as any).organizationId = organizationAccess.organization.id;
+              (session.user as any).organizationName = organizationAccess.organization.name;
+              (session.user as any).organizationSlug = organizationAccess.organization.slug;
+            }
+          } catch (error) {
+            console.error("Error fetching organization access in session callback:", error);
+          }
         }
       }
       return session;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import Sidebar from "./Sidebar";
 import CausePilotChat from "../CausePilotChat";
 import Link from "next/link";
@@ -14,6 +15,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children, title, breadcrumbs, currentPage = "dashboard" }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <div className="min-h-screen bg-slate-950">
@@ -76,11 +78,17 @@ export default function AppLayout({ children, title, breadcrumbs, currentPage = 
               {/* User menu */}
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">A</span>
+                  <span className="text-white text-sm font-medium">
+                    {session?.user?.name?.charAt(0)?.toUpperCase() || session?.user?.email?.charAt(0)?.toUpperCase() || "A"}
+                  </span>
                 </div>
                 <div className="hidden md:block">
-                  <p className="text-sm font-medium text-white">Admin</p>
-                  <p className="text-xs text-gray-400">admin@nucleuscause.com</p>
+                  <p className="text-sm font-medium text-white">
+                    {session?.user?.name || "Utilisateur"}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {session?.user?.email || "Chargement..."}
+                  </p>
                 </div>
               </div>
             </div>

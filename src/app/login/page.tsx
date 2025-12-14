@@ -1,13 +1,12 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
 import { Building2, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 
 function LoginContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const error = searchParams.get("error");
   const token = searchParams.get("token"); // Token d'invitation optionnel
   const [email, setEmail] = useState("");
